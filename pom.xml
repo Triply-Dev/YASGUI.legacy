@@ -52,6 +52,16 @@
       <classifier>sources</classifier>
       <scope>test</scope>
     </dependency>
+    <dependency>
+    	<groupId>com.smartgwt</groupId>
+    	<artifactId>smartgwt</artifactId>
+    	<version>2.4</version>
+    </dependency>
+    <dependency>
+    	<groupId>com.smartgwt</groupId>
+    	<artifactId>smartgwt-skins</artifactId>
+    	<version>2.4</version>
+    </dependency>
   </dependencies>
 
   <build>

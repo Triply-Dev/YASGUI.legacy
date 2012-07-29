@@ -2,8 +2,9 @@ package com.data2semantics.yasgui.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.RootPanel;
+import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.types.VerticalAlignment;
+import com.smartgwt.client.widgets.Label;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -19,10 +20,15 @@ public class Yasgui implements EntryPoint {
    * This is the entry point method.
    */
   public void onModuleLoad() {
-    final Button sendButton = new Button( "Send button");
-
-
-    RootPanel.get().add(sendButton);
+	        Label label = new Label();  
+	        label.setHeight(30);  
+	        label.setPadding(10);  
+	        label.setAlign(Alignment.CENTER);  
+	        label.setValign(VerticalAlignment.CENTER);  
+	        label.setWrap(false);  
+	        label.setShowEdges(true);  
+	        label.setContents("<i>Approved</i> for release");  
+	        label.draw();  
 
   }
 }
