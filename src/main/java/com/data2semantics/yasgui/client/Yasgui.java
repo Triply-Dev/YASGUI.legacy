@@ -12,9 +12,10 @@ public class Yasgui implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
-		ServerSideApiAsync serverSideApi = GWT.create(ServerSideApi.class);
-
-		View view = new View(serverSideApi);
+		//YasguiServiceAsync serverSideApi = GWT.create(YasguiService.class);
+		//YasguiServiceAsync serverSideApi = GWT.create(YasguiService.class);
+		
+		View view = new View();
 		view.draw();
 	}
 }

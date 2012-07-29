@@ -1,7 +1,6 @@
 package com.data2semantics.yasgui.client;
 
-import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.types.VerticalAlignment;
+import com.data2semantics.yasgui.client.queryform.QueryForm;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
@@ -9,20 +8,10 @@ import com.smartgwt.client.widgets.events.CloseClientEvent;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 public class View extends VLayout {
-	private ServerSideApiAsync serverSideApi;
-
-	public View(ServerSideApiAsync serverSideApi) {
-		this.serverSideApi = serverSideApi;
+	private YasguiServiceAsync remoteService = YasguiServiceAsync.Util.getInstance();
+	public View() {
 		setMargin(20);
-		Label label = new Label();
-		label.setHeight(30);
-		label.setPadding(10);
-		label.setAlign(Alignment.CENTER);
-		label.setValign(VerticalAlignment.CENTER);
-		label.setWrap(false);
-		label.setShowEdges(true);
-		label.setContents("<i>Approved</i> for release");
-		addMember(label);
+		addMember(new QueryForm(this));
 	}
 
 	public void onError(String error) {
@@ -49,8 +38,8 @@ public class View extends VLayout {
 		// loading.loadingEnd();
 	}
 
-	public ServerSideApiAsync getServerSideApi() {
-		return serverSideApi;
+	public YasguiServiceAsync getRemoteService() {
+		return remoteService;
 	}
 
 }
