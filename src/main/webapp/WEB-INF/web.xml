@@ -7,12 +7,12 @@
 
   <!-- Servlets -->
   <servlet>
-    <servlet-name>serverSideApi</servlet-name>
+    <servlet-name>yasguiService</servlet-name>
     <servlet-class>com.data2semantics.yasgui.server.YasguiServiceImpl</servlet-class>
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>serverSideApi</servlet-name>
+    <servlet-name>yasguiService</servlet-name>
     <url-pattern>/Yasgui/YasguiService</url-pattern>
   </servlet-mapping>
 

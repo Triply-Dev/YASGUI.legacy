@@ -1,12 +1,10 @@
 package com.data2semantics.yasgui.client.queryform;
 
 import com.data2semantics.yasgui.client.View;
-import com.data2semantics.yasgui.client.YasguiServiceAsync;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.TextArea;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.Button;
-import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -16,7 +14,8 @@ public class QueryForm extends VLayout {
 	public QueryForm(View view) {
 		this.view = view;
 		TextArea queryInput = new TextArea();
-		
+		queryInput.setHeight("400px");
+		queryInput.setWidth("600px");
 		addMember(queryInput);
 		
 		Button button = new Button("Molecule");
@@ -25,16 +24,14 @@ public class QueryForm extends VLayout {
         button.setAlign(Alignment.CENTER);
         button.addClickHandler(new ClickHandler() {
         	public void onClick(ClickEvent event) {
-            	getView().getRemoteService().query(new AsyncCallback<String>() {
+            	getView().getRemoteService().query("http://eculture2.cs.vu.nl:5020/sparql/", "SELECT * {?x ?f ?g} LIMIT 10", new AsyncCallback<String>() {
             		public void onFailure(Throwable caught) {
-            			getView().onError(caught.getMessage());
+            			getView().onError(caught);
             		}
 					public void onSuccess(String queryResult) {
-						Label label = new Label();
-						addMember(label);
+						getView().onError(queryResult);
 					}
             	});
-        		
         	}
         });
         addMember(button);

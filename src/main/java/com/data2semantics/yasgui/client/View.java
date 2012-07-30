@@ -9,6 +9,7 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 public class View extends VLayout {
 	private YasguiServiceAsync remoteService = YasguiServiceAsync.Util.getInstance();
+
 	public View() {
 		setMargin(20);
 		addMember(new QueryForm(this));
@@ -17,8 +18,8 @@ public class View extends VLayout {
 	public void onError(String error) {
 		onLoadingFinish();
 		final Window winModal = new Window();
-		winModal.setWidth(360);
-		winModal.setHeight(115);
+		winModal.setWidth(600);
+		winModal.setHeight(400);
 		winModal.setTitle("Error");
 		winModal.setShowMinimizeButton(false);
 		winModal.setIsModal(true);
@@ -32,6 +33,14 @@ public class View extends VLayout {
 		Label label = new Label(error);
 		winModal.addItem(label);
 		winModal.draw();
+	}
+
+	public void onError(Throwable throwable) {
+		String st = throwable.getClass().getName() + ": " + throwable.getMessage();
+		for (StackTraceElement ste : throwable.getStackTrace()) {
+			st += "\n" + ste.toString();
+		}
+		onError(st);
 	}
 
 	public void onLoadingFinish() {
