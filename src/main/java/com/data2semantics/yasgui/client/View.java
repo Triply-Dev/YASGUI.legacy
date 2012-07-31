@@ -1,6 +1,6 @@
 package com.data2semantics.yasgui.client;
 
-import com.data2semantics.yasgui.client.queryform.QueryForm;
+import com.data2semantics.yasgui.client.queryform.QueryLayout;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
@@ -12,7 +12,7 @@ public class View extends VLayout {
 
 	public View() {
 		setMargin(20);
-		addMember(new QueryForm(this));
+		addMember(new QueryLayout(this));
 	}
 
 	public void onError(String error) {
