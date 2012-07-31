@@ -14,12 +14,12 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 	}
 
 	public String query(String endpoint, String queryString) throws IllegalArgumentException {
-		String queryResult = "";
+		String queryResult = "sdfsdf";
 		try {
 			QueryService query = new QueryService(endpoint, queryString);
 			query.execute();
-			query.getResultsAsString();
-			queryResult = query.getResultsAsString();
+			//query.getResultsAsString();
+			//queryResult = query.getResultsAsString();
 		} catch (Exception e) {
 			queryResult = e.getMessage();
 		}

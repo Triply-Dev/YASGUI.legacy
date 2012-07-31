@@ -18,7 +18,7 @@ public class QueryForm extends VLayout {
 		queryInput.setWidth("600px");
 		addMember(queryInput);
 		
-		Button button = new Button("Molecule");
+		Button button = new Button("Query");
         button.setHeight(18);  
         button.setWidth(110);
         button.setAlign(Alignment.CENTER);

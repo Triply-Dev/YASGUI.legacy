@@ -5,20 +5,37 @@
 
 <web-app>
 
-  <!-- Servlets -->
-  <servlet>
-    <servlet-name>yasguiService</servlet-name>
-    <servlet-class>com.data2semantics.yasgui.server.YasguiServiceImpl</servlet-class>
-  </servlet>
+	<!-- Servlets -->
+	<servlet>
+		<servlet-name>yasguiService</servlet-name>
+		<servlet-class>com.data2semantics.yasgui.server.YasguiServiceImpl</servlet-class>
+	</servlet>
 
-  <servlet-mapping>
-    <servlet-name>yasguiService</servlet-name>
-    <url-pattern>/Yasgui/YasguiService</url-pattern>
-  </servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>yasguiService</servlet-name>
+		<url-pattern>/Yasgui/YasguiService</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>jUnitHostImpl</servlet-name>
+		<servlet-class>com.google.gwt.junit.server.JUnitHostImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>jUnitHostImpl</servlet-name>
+		<url-pattern>/Yasgui/junithost/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>jUnitHostImpl</servlet-name>
+		<url-pattern>/com.data2semantics.yasgui.YasguiJUnit/junithost/*</url-pattern>
+	</servlet-mapping>
 
-  <!-- Default page to serve -->
-  <welcome-file-list>
-    <welcome-file>Yasgui.html</welcome-file>
-  </welcome-file-list>
+	<servlet-mapping>
+		<servlet-name>yasguiService</servlet-name>
+		<url-pattern>/com.data2semantics.yasgui.YasguiJUnit/Yasgui/YasguiService</url-pattern>
+	</servlet-mapping>
+
+	<!-- Default page to serve -->
+	<welcome-file-list>
+		<welcome-file>Yasgui.html</welcome-file>
+	</welcome-file-list>
 
 </web-app>

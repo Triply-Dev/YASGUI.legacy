@@ -10,7 +10,6 @@
   <artifactId>yasgui</artifactId>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>GWT Maven Archetype</name>
 
   <properties>
     <!-- Convenience property to set the GWT version -->
@@ -18,6 +17,7 @@
     <!-- GWT needs at least java 1.5 -->
     <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <generated-sources>target/generated-sources/gwt</generated-sources>
   </properties>
 
   <dependencies>
@@ -80,6 +80,24 @@
   </dependencies>
 
   <build>
+    <resources>
+
+      <!-- bundle generated sources with the jar, so they are visible to GWT's compiler -->
+      <resource>
+        <directory>${generated-sources}</directory>
+        <includes>
+          <include>**/*.java</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>**/*.java</include>
+        </includes>
+      </resource>
+      </resources>
+      
+
     <!-- Generate compiled stuff in the folder used for developing mode -->
     <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
 
@@ -95,7 +113,6 @@
             <goals>
               <goal>compile</goal>
               <goal>test</goal>
-              <goal>i18n</goal>
               <goal>generateAsync</goal>
             </goals>
           </execution>
@@ -105,7 +122,6 @@
         <configuration>
           <runTarget>Yasgui.html</runTarget>
           <hostedWebapp>${webappDirectory}</hostedWebapp>
-          <i18nMessagesBundle>com.data2semantics.yasgui.client.Messages</i18nMessagesBundle>
         </configuration>
       </plugin>
 
@@ -157,7 +173,6 @@
     								</versionRange>
     								<goals>
     									<goal>generateAsync</goal>
-    									<goal>i18n</goal>
     								</goals>
     							</pluginExecutionFilter>
     							<action>
@@ -172,4 +187,5 @@
     </pluginManagement>
   </build>
 
+  <name>yasgui</name>
 </project>

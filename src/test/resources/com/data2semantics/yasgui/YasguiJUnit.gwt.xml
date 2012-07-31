@@ -4,6 +4,6 @@
   <inherits name='com.data2semantics.yasgui.Yasgui' />
 
   <!-- Specify the path to any remote services.                   -->
-  <servlet path="/Yasgui/greet" class="com.data2semantics.yasgui.server.GreetingServiceImpl" />
+  <servlet path="/Yasgui/YasguiService" class="com.data2semantics.yasgui.server.YasguiServiceImpl" />
 
 </module>
