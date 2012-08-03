@@ -1,18 +1,41 @@
 package com.data2semantics.yasgui.client;
 
 import com.data2semantics.yasgui.client.queryform.QueryLayout;
+import com.google.gwt.dom.client.Style.Unit;
+import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.types.VerticalAlignment;
+import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.events.CloseClientEvent;
+import com.smartgwt.client.widgets.layout.HLayout;
+import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
+import com.smartgwt.client.widgets.toolbar.ToolStrip;
 
 public class View extends VLayout {
 	private YasguiServiceAsync remoteService = YasguiServiceAsync.Util.getInstance();
-
+	private ToolStrip header = new ToolStrip();
+	private HLayout content = new HLayout();
 	public View() {
-		setMargin(20);
-		addMember(new QueryLayout(this));
+		setWidth100();  
+        setHeight100();
+        
+        header.setWidth100();
+        header.setHeight(50);
+        header.setAlign(Alignment.CENTER);
+        header.setAlign(VerticalAlignment.CENTER);
+        Label label = new Label();
+        label.setAlign(Alignment.CENTER);
+        label.setContents("Yet Another SPARQL GUI");
+        label.setWidth100();
+        header.addMember(label);
+        addMember(header);
+		content.addMember(new LayoutSpacer());
+		content.addMember(new QueryLayout(this));
+		content.addMember(new LayoutSpacer());
+		addMember(content);
 	}
 
 	public void onError(String error) {

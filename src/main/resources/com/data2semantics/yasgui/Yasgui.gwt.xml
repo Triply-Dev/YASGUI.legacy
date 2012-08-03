@@ -13,7 +13,7 @@
   <!-- <inherits name='com.google.gwt.user.theme.standard.Standard' /> -->
   <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
   <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
-
+<inherits name="com.smartclient.theme.graphite.GraphiteResources"/>
   <!-- Other module inherits                                      -->
 
   <!-- Specify the app entry point class.                         -->

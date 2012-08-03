@@ -1,11 +1,13 @@
 package com.data2semantics.yasgui.client.queryform;
 
 import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.shared.ResultSetContainer;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.TextArea;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.Button;
+import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -15,14 +17,17 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 public class QueryLayout extends VLayout {
 	private View view;
-	private Label queryResult = new Label();
+	private Label queryResultText = new Label();
 	private TextItem endpoint;
 	private TextArea queryInput;
 	public QueryLayout(View view) {
+//		setAlign(Alignment.CENTER);
+		setMargin(10);
+		setWidth(800);
 		this.view = view;
 		queryInput = new TextArea();
 		queryInput.setHeight("400px");
-		queryInput.setWidth("600px");
+		queryInput.setWidth("100%");
 		queryInput.setText("SELECT * {?x ?f ?g} LIMIT 10");
 		addMember(queryInput);
 		
@@ -35,25 +40,45 @@ public class QueryLayout extends VLayout {
 	    addMember(endpointForm);
 	    
 		
-		Button button = new Button("Query");
-        button.setHeight(18);  
-        button.setWidth(110);
-        button.setAlign(Alignment.CENTER);
-        button.addClickHandler(new ClickHandler() {
+		Button buttonText = new Button("Get Text");
+        buttonText.setHeight(18);  
+        buttonText.setWidth(110);
+        buttonText.setAlign(Alignment.CENTER);
+        buttonText.addClickHandler(new ClickHandler() {
         	public void onClick(ClickEvent event) {
-            	getView().getRemoteService().query(endpoint.getValueAsString(), queryInput.getText(), new AsyncCallback<String>() {
+            	getView().getRemoteService().queryGetJson(endpoint.getValueAsString(), queryInput.getText(), new AsyncCallback<String>() {
             		public void onFailure(Throwable caught) {
             			getView().onError(caught);
             		}
 					public void onSuccess(String queryResultString) {
-						queryResult.setContents(SafeHtmlUtils.htmlEscape(queryResultString));
+						queryResultText.setContents(SafeHtmlUtils.htmlEscape(queryResultString));
 					}
             	});
         	}
         });
-        addMember(button);
+        addMember(buttonText);
         
-        addMember(queryResult);
+        Button buttonTable = new Button("Get Table");
+        buttonTable.setHeight(18);  
+        buttonTable.setWidth(110);
+        buttonTable.setAlign(Alignment.CENTER);
+        buttonTable.addClickHandler(new ClickHandler() {
+        	public void onClick(ClickEvent event) {
+            	getView().getRemoteService().queryGetObject(endpoint.getValueAsString(), queryInput.getText(), new AsyncCallback<ResultSetContainer>() {
+            		public void onFailure(Throwable caught) {
+            			getView().onError(caught);
+            		}
+					public void onSuccess(ResultSetContainer resultSet) {
+						addMember(new ResultGrid(getView(), resultSet));
+					}
+            	});
+        	}
+        });
+        addMember(buttonTable);
+        
+        
+        addMember(queryResultText);
+        
 //		try {
 //			getView().getServerSideApi().getInfo(patientId, new AsyncCallback<Patient>() {
 //				public void onFailure(Throwable caught) {
