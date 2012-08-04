@@ -11,7 +11,6 @@ import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
-import com.smartgwt.client.widgets.events.CloseClientEvent;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -52,11 +51,11 @@ public class View extends VLayout {
 		winModal.setIsModal(true);
 		winModal.setShowModalMask(true);
 		winModal.centerInPage();
-		winModal.addCloseClickHandler(new CloseClickHandler() {
-			public void onCloseClick(CloseClientEvent event) {
-				winModal.destroy();
-			}
-		});
+//		winModal.addCloseClickHandler(new CloseClickHandler() {
+//			public void onCloseClick(CloseClientEvent event) {
+//				winModal.destroy();
+//			}
+//		});
 		Label label = new Label(error);
 		winModal.addItem(label);
 		winModal.draw();

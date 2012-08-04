@@ -55,12 +55,12 @@
     <dependency>
     	<groupId>com.smartgwt</groupId>
     	<artifactId>smartgwt</artifactId>
-    	<version>2.4</version>
+    	<version>3.0</version>
     </dependency>
     <dependency>
     	<groupId>com.smartgwt</groupId>
     	<artifactId>smartgwt-skins</artifactId>
-    	<version>2.4</version>
+    	<version>3.0</version>
     </dependency>
     <dependency>
     	<groupId>com.hp.hpl.jena</groupId>
@@ -99,6 +99,13 @@
         <directory>src/main/java</directory>
         <includes>
           <include>**/*.java</include>
+          <include>**/*.gwt.xml</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*.gwt.xml</include>
         </includes>
       </resource>
       </resources>
@@ -153,8 +160,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.3.2</version>
         <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
+          <source>1.6</source>
+          <target>1.6</target>
         </configuration>
       </plugin>
     </plugins>
@@ -194,4 +201,11 @@
   </build>
 
   <name>yasgui</name>
+  <repositories>
+  <repository>
+  <id>com.smartgwt</id>
+  <url>http://www.smartclient.com/maven2</url>
+  </repository>
+  </repositories>
+  
 </project>

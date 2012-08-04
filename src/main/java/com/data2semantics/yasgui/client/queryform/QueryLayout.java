@@ -4,7 +4,6 @@ import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.shared.ResultSetContainer;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.Button;
@@ -15,29 +14,47 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.VLayout;
+import com.smartgwt.client.widgets.menu.Menu;
+import com.smartgwt.client.widgets.menu.MenuButton;
 
 public class QueryLayout extends VLayout {
 	public static String QUERY_INPUT_ID = "queryInput";
 	private static String DEFAULT_QUERY = "SELECT * {?x ?f ?g} LIMIT 10";
+	private static String DEFAULT_ENDPOINT = "http://eculture2.cs.vu.nl:5020/sparql/";
 	private View view;
 	private Label queryResultText = new Label();
 	private TextItem endpoint;
 	private TextArea queryInput;
 
 	public QueryLayout(View view) {
-		// setAlign(Alignment.CENTER);
 		setMargin(10);
 		setWidth(800);
 		this.view = view;
+//		RibbonBar ribbonBar = new RibbonBar();  
+//        ribbonBar.setLeft(0);  
+//        ribbonBar.setTop(75);  
+//        ribbonBar.setWidth100();
+//        Menu menu = new Menu();  
+//        
+//        RibbonGroup fileGroup = new RibbonGroup();  
+//        fileGroup.setTitle("File");  
+//        fileGroup.setTitleAlign(Alignment.LEFT);  
+//        fileGroup.setNumRows(1);  
+//        fileGroup.setRowHeight(76);  
+//        fileGroup.addControl(new MenuButton("bla1", menu));
+//
+//        ribbonBar.addMember(fileGroup);
+//        addMember(ribbonBar);
+        
 		HTMLPane queryInput = new HTMLPane();
-		
+		queryInput.setHeight("350px");
 		queryInput.setContents(getTextArea());
 		addMember(queryInput);
 		DynamicForm endpointForm = new DynamicForm();
 		endpoint = new TextItem();
 		endpoint.setTitle("Endpoint");
 		endpoint.setWidth(250);
-		endpoint.setDefaultValue("http://eculture2.cs.vu.nl:5020/sparql/");
+		endpoint.setDefaultValue(DEFAULT_ENDPOINT);
 		endpointForm.setFields(endpoint);
 		addMember(endpointForm);
 
@@ -81,33 +98,12 @@ public class QueryLayout extends VLayout {
 		addMember(buttonTable);
 
 		addMember(queryResultText);
-
-		// try {
-		// getView().getServerSideApi().getInfo(patientId, new
-		// AsyncCallback<Patient>() {
-		// public void onFailure(Throwable caught) {
-		// getView().onError("Failed retrieving patient details:<br/>" +
-		// caught.getMessage());
-		// }
-		// public void onSuccess(Patient patient) {
-		// patientInfo = patient;
-		// drawInfoIntoTable(patientInfo);
-		// getView().onLoadingFinish();
-		// groupBy(Row.KEY);
-		//
-		// }
-		// });
-		// } catch (Exception e) {
-		// getView().onError("Failed retrieving patient details:<br/>" +
-		// e.getMessage());
-		// }
 	}
 
 	private String getTextArea() {
 		String textArea = "" +
 			"<textarea " +
 				"id=\"" + QUERY_INPUT_ID + "\"" +
-				"style=\"border-style:solid;\"" +
 				">" +
 					DEFAULT_QUERY +
 			"</textarea>";
