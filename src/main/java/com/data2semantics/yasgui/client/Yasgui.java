@@ -1,9 +1,7 @@
 package com.data2semantics.yasgui.client;
 
+import com.data2semantics.yasgui.client.queryform.QueryLayout;
 import com.google.gwt.core.client.EntryPoint;
-import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.widgets.Canvas;
-import com.smartgwt.client.widgets.layout.HLayout;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -16,5 +14,10 @@ public class Yasgui implements EntryPoint {
 	public void onModuleLoad() {
 		View view = new View();
 		view.draw();
+		postProcess();
+	}
+
+	private void postProcess() {
+		QueryLayout.attachCodeMirror(QueryLayout.QUERY_INPUT_ID);
 	}
 }

@@ -1,5 +1,8 @@
 package com.data2semantics.yasgui.client;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import com.data2semantics.yasgui.client.queryform.QueryLayout;
 import com.google.gwt.dom.client.Style.Unit;
 import com.smartgwt.client.types.Alignment;
@@ -18,10 +21,11 @@ public class View extends VLayout {
 	private YasguiServiceAsync remoteService = YasguiServiceAsync.Util.getInstance();
 	private ToolStrip header = new ToolStrip();
 	private HLayout content = new HLayout();
+	private ArrayList<HashMap<String, String>> postProcessArray;
 	public View() {
+		postProcessArray = new ArrayList<HashMap<String, String>>();
 		setWidth100();  
         setHeight100();
-        
         header.setWidth100();
         header.setHeight(50);
         header.setAlign(Alignment.CENTER);
@@ -73,5 +77,7 @@ public class View extends VLayout {
 	public YasguiServiceAsync getRemoteService() {
 		return remoteService;
 	}
+
+	
 
 }
