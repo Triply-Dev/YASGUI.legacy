@@ -18,7 +18,8 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 public class QueryLayout extends VLayout {
 	public static String QUERY_INPUT_ID = "queryInput";
-	private static String DEFAULT_QUERY = "SELECT * {?x ?f ?g} LIMIT 10";
+	private static String DEFAULT_QUERY = "PREFIX aers: <http://aers.data2semantics.org/resource/> .\n" +
+			"SELECT * {?x ?f ?g} LIMIT 10";
 	private static String DEFAULT_ENDPOINT = "http://eculture2.cs.vu.nl:5020/sparql/";
 	private View view;
 	private TextItem endpoint;

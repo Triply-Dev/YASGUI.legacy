@@ -6,6 +6,7 @@ public class RdfNodeContainer implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String varName;
 	private String value;
+	private boolean isUri;
 	
 	public RdfNodeContainer() {
 		
@@ -22,6 +23,14 @@ public class RdfNodeContainer implements Serializable {
 	}
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public boolean isUri() {
+		return isUri;
+	}
+
+	public void setIsUri(boolean isUri) {
+		this.isUri = isUri;
 	}
 		
 		
