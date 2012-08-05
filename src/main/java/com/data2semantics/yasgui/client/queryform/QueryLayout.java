@@ -32,8 +32,8 @@ public class QueryLayout extends VLayout {
 		this.view = view;
 		this.toolBar = new ToolBar(getView());
 		addMember(this.toolBar);
-//        Img img = new Img("xml.png");
-//        addMember(img);
+		// Img img = new Img("xml.png");
+		// addMember(img);
 		HTMLPane queryInput = new HTMLPane();
 		queryInput.setHeight("350px");
 		queryInput.setContents(getTextArea());
@@ -68,8 +68,7 @@ public class QueryLayout extends VLayout {
 									queryTable.drawQueryResults(resultSet);
 								}
 							});
-					
-					
+
 				} else {
 					getView().onError("Other output formats not supported yet");
 				}
@@ -83,15 +82,16 @@ public class QueryLayout extends VLayout {
 		queryAsText.setAlign(Alignment.CENTER);
 		queryAsText.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				getView().getRemoteService().queryGetJson(endpoint.getValueAsString(), getQuery(QUERY_INPUT_ID), new AsyncCallback<String>() {
-					public void onFailure(Throwable caught) {
-						getView().onError(caught);
-					}
+				getView().getRemoteService().queryGetJson(endpoint.getValueAsString(), getQuery(QUERY_INPUT_ID),
+						new AsyncCallback<String>() {
+							public void onFailure(Throwable caught) {
+								getView().onError(caught);
+							}
 
-					public void onSuccess(String queryResultString) {
-						queryResultText.setContents(SafeHtmlUtils.htmlEscape(queryResultString));
-					}
-				});
+							public void onSuccess(String queryResultString) {
+								queryResultText.setContents(SafeHtmlUtils.htmlEscape(queryResultString));
+							}
+						});
 			}
 		});
 		addMember(queryAsText);
@@ -100,37 +100,34 @@ public class QueryLayout extends VLayout {
 	}
 
 	private String getTextArea() {
-		String textArea = "" +
-			"<textarea " +
-				"id=\"" + QUERY_INPUT_ID + "\"" +
-				">" +
-					DEFAULT_QUERY +
-			"</textarea>";
-		
+		String textArea = "" + "<textarea " + "id=\"" + QUERY_INPUT_ID + "\"" + ">" + DEFAULT_QUERY + "</textarea>";
+
 		return textArea;
-		
+
 	}
-	
+
 	private ToolBar getToolBar() {
 		return this.toolBar;
 	}
-	
+
 	private View getView() {
 		return this.view;
 	}
 
 	public static native void attachCodeMirror(String queryInputId) /*-{
 		if ($doc.getElementById(queryInputId)) {
-			var editor = $wnd.CodeMirror.fromTextArea($doc.getElementById(queryInputId), {
+			$wnd.sparqlHighlight = $wnd.CodeMirror.fromTextArea($doc
+					.getElementById(queryInputId), {
 				mode : "application/x-sparql-query",
 				tabMode : "indent",
 				matchBrackets : true
 			});
 		}
 	}-*/;
-	
+
 	public static native String getQuery(String queryInputId) /*-{
 		query = "";
+		$wnd.sparqlHighlight.save();
 		if ($doc.getElementById(queryInputId)) {
 			if ($doc.getElementById(queryInputId).value) {
 				query = $doc.getElementById(queryInputId).value;
