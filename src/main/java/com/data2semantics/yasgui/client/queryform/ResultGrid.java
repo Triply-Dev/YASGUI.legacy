@@ -15,9 +15,8 @@ public class ResultGrid extends ListGrid {
 	private View view;
 	
 	public ResultGrid(View view) {
-		setWidth(500);
-//		setWidth100();
-		setWidth(500);
+		setWidth100();
+		setHeight(350);
 		this.view = view;
 	}
 	
