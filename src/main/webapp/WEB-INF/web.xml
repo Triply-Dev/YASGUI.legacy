@@ -10,11 +10,20 @@
 		<servlet-name>yasguiService</servlet-name>
 		<servlet-class>com.data2semantics.yasgui.server.YasguiServiceImpl</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>yasguiService</servlet-name>
 		<url-pattern>/Yasgui/YasguiService</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>fileServlet</servlet-name>
+		<servlet-class>com.data2semantics.yasgui.server.FileServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>fileServlet</servlet-name>
+		<url-pattern>/Yasgui/file</url-pattern>
+	</servlet-mapping>
+
 	<servlet>
 		<servlet-name>jUnitHostImpl</servlet-name>
 		<servlet-class>com.google.gwt.junit.server.JUnitHostImpl</servlet-class>

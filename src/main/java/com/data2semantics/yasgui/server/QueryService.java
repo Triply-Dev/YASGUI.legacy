@@ -9,30 +9,8 @@ import com.hp.hpl.jena.query.ResultSetFormatter;
 
 public class QueryService {
 
-	private String endpoint;
-	private String queryString;
-	private ResultSet resultSet;
-	public QueryService(String endpoint, String queryString) {
-		this.endpoint = endpoint;
-		this.queryString = queryString;
-	}
 	
-	public ResultSet execute() {
-		resultSet = query(endpoint, queryString);
-		return resultSet;
-	}
-
-
-	
-	public void printResult() {
-		ResultSetFormatter.out(System.out, resultSet);
-	}
-	
-	public String getResultsAsString() {
-		return ResultSetFormatter.asText(resultSet);
-	}
-	
-	private ResultSet query(String endpoint, String queryString) {
+	public static ResultSet query(String endpoint, String queryString) {
 		Query query = QueryFactory.create(queryString);
 		QueryExecution queryExecution = QueryExecutionFactory.sparqlService(endpoint, query);
 		ResultSet results = queryExecution.execSelect();

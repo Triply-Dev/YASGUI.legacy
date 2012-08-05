@@ -93,27 +93,6 @@ public class ToolBar extends ToolStrip {
 		});
 		addMember(queryButton);
 
-//		Button queryAsText = new Button("Get Text");
-//		queryAsText.setHeight(18);
-//		queryAsText.setWidth(110);
-//		queryAsText.setAlign(Alignment.CENTER);
-//		queryAsText.addClickHandler(new ClickHandler() {
-//			public void onClick(ClickEvent event) {
-//				final Label queryResultText = new Label();
-//				getView().getQueryLayout().addQueryResult(queryResultText);
-//				getView().getRemoteService().queryGetJson(getView().getQueryLayout().getEndpoint(), QueryLayout.getQuery(QueryLayout.QUERY_INPUT_ID),
-//						new AsyncCallback<String>() {
-//							public void onFailure(Throwable caught) {
-//								getView().onError(caught);
-//							}
-//
-//							public void onSuccess(String queryResultString) {
-//								queryResultText.setContents(SafeHtmlUtils.htmlEscape(queryResultString));
-//							}
-//						});
-//			}
-//		});
-//		addMember(queryAsText);
 	}
 	private View getView() {
 		return this.view;
