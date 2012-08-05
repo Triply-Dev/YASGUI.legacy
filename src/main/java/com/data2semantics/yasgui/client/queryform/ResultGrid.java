@@ -13,16 +13,27 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 public class ResultGrid extends ListGrid {
 	private View view;
-	public ResultGrid(View view, ResultSetContainer resultSet) {
+	
+	public ResultGrid(View view) {
 		setWidth(500);
 		setHeight(400);
 		this.view = view;
+	}
+	
+	public ResultGrid(View view, ResultSetContainer resultSet) {
+		this(view);
+		drawQueryResults(resultSet);
+		
+		
+		
+	}
+	
+	public void drawQueryResults(ResultSetContainer resultSet) {
 		List<ListGridField> listGridFields = getVarsAsListGridFields(resultSet.getResultVars());
 		List<ListGridRecord> listGridRecords = getSolutionsAsGridRecords(resultSet.getQuerySolutions());
 		
 		setFields(listGridFields.toArray(new ListGridField[listGridFields.size()]));
 		setData(listGridRecords.toArray(new ListGridRecord[listGridRecords.size()]));
-		
 	}
 	
 	private List<ListGridRecord> getSolutionsAsGridRecords(List<SolutionContainer> querySolutions) {

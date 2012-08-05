@@ -14,8 +14,6 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.VLayout;
-import com.smartgwt.client.widgets.menu.Menu;
-import com.smartgwt.client.widgets.menu.MenuButton;
 
 public class QueryLayout extends VLayout {
 	public static String QUERY_INPUT_ID = "queryInput";
@@ -25,27 +23,17 @@ public class QueryLayout extends VLayout {
 	private Label queryResultText = new Label();
 	private TextItem endpoint;
 	private TextArea queryInput;
+	private ToolBar toolBar;
+	private ResultGrid queryTable;
 
 	public QueryLayout(View view) {
 		setMargin(10);
 		setWidth(800);
 		this.view = view;
-//		RibbonBar ribbonBar = new RibbonBar();  
-//        ribbonBar.setLeft(0);  
-//        ribbonBar.setTop(75);  
-//        ribbonBar.setWidth100();
-//        Menu menu = new Menu();  
-//        
-//        RibbonGroup fileGroup = new RibbonGroup();  
-//        fileGroup.setTitle("File");  
-//        fileGroup.setTitleAlign(Alignment.LEFT);  
-//        fileGroup.setNumRows(1);  
-//        fileGroup.setRowHeight(76);  
-//        fileGroup.addControl(new MenuButton("bla1", menu));
-//
-//        ribbonBar.addMember(fileGroup);
-//        addMember(ribbonBar);
-        
+		this.toolBar = new ToolBar(getView());
+		addMember(this.toolBar);
+//        Img img = new Img("xml.png");
+//        addMember(img);
 		HTMLPane queryInput = new HTMLPane();
 		queryInput.setHeight("350px");
 		queryInput.setContents(getTextArea());
@@ -58,11 +46,42 @@ public class QueryLayout extends VLayout {
 		endpointForm.setFields(endpoint);
 		addMember(endpointForm);
 
-		Button buttonText = new Button("Get Text");
-		buttonText.setHeight(18);
-		buttonText.setWidth(110);
-		buttonText.setAlign(Alignment.CENTER);
-		buttonText.addClickHandler(new ClickHandler() {
+		Button queryButton = new Button("Query");
+		queryButton.setHeight(18);
+		queryButton.setWidth(110);
+		queryButton.setAlign(Alignment.CENTER);
+		queryButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				if (getToolBar().getSelectedOutput().equals(ToolBar.OUTPUT_TABLE)) {
+					if (queryTable != null && hasMember(queryTable)) {
+						removeMember(queryTable);
+					}
+					queryTable = new ResultGrid(getView());
+					addMember(queryTable);
+					getView().getRemoteService().queryGetObject(endpoint.getValueAsString(), getQuery(QUERY_INPUT_ID),
+							new AsyncCallback<ResultSetContainer>() {
+								public void onFailure(Throwable caught) {
+									getView().onError(caught);
+								}
+
+								public void onSuccess(ResultSetContainer resultSet) {
+									queryTable.drawQueryResults(resultSet);
+								}
+							});
+					
+					
+				} else {
+					getView().onError("Other output formats not supported yet");
+				}
+			}
+		});
+		addMember(queryButton);
+
+		Button queryAsText = new Button("Get Text");
+		queryAsText.setHeight(18);
+		queryAsText.setWidth(110);
+		queryAsText.setAlign(Alignment.CENTER);
+		queryAsText.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				getView().getRemoteService().queryGetJson(endpoint.getValueAsString(), getQuery(QUERY_INPUT_ID), new AsyncCallback<String>() {
 					public void onFailure(Throwable caught) {
@@ -75,27 +94,7 @@ public class QueryLayout extends VLayout {
 				});
 			}
 		});
-		addMember(buttonText);
-
-		Button buttonTable = new Button("Get Table");
-		buttonTable.setHeight(18);
-		buttonTable.setWidth(110);
-		buttonTable.setAlign(Alignment.CENTER);
-		buttonTable.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				getView().getRemoteService().queryGetObject(endpoint.getValueAsString(), getQuery(QUERY_INPUT_ID),
-						new AsyncCallback<ResultSetContainer>() {
-							public void onFailure(Throwable caught) {
-								getView().onError(caught);
-							}
-
-							public void onSuccess(ResultSetContainer resultSet) {
-								addMember(new ResultGrid(getView(), resultSet));
-							}
-						});
-			}
-		});
-		addMember(buttonTable);
+		addMember(queryAsText);
 
 		addMember(queryResultText);
 	}
@@ -111,7 +110,11 @@ public class QueryLayout extends VLayout {
 		return textArea;
 		
 	}
-
+	
+	private ToolBar getToolBar() {
+		return this.toolBar;
+	}
+	
 	private View getView() {
 		return this.view;
 	}
