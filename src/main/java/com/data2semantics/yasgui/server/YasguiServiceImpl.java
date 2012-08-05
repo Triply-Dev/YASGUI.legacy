@@ -1,7 +1,10 @@
 package com.data2semantics.yasgui.server;
 
+import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import com.data2semantics.yasgui.client.YasguiService;
+import com.data2semantics.yasgui.shared.Output;
 import com.data2semantics.yasgui.shared.RdfNodeContainer;
 import com.data2semantics.yasgui.shared.ResultSetContainer;
 import com.data2semantics.yasgui.shared.SolutionContainer;
@@ -22,15 +25,32 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiService {
 
 
-	public String queryGetJson(String endpoint, String queryString) {
+	public String queryGetText(String endpoint, String queryString, String format) throws IllegalArgumentException {
+		String result = "";
 		ResultSet resultSet = query(endpoint, queryString);
-//		ResultSetFormatter.outputAsJSON(resultSet);
-//		ResultSetFormatter.outputAsCSV(resultSet);
-		return ResultSetFormatter.asText(resultSet);
-	}
-	
-	public String queryGetXml(String endpoint, String queryString) {
-		return "";
+		if (format.equals(Output.OUTPUT_JSON)) {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ResultSetFormatter.outputAsJSON(baos, resultSet);
+			try {
+				result = baos.toString("UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				
+			}
+		} else if (format.equals(Output.OUTPUT_XML)) {
+			result = ResultSetFormatter.asXMLString(resultSet);
+		} else if (format.equals(Output.OUTPUT_CSV)) {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ResultSetFormatter.outputAsCSV(baos, resultSet);
+			try {
+				result = baos.toString("UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				
+			}
+		} else {
+			throw new IllegalArgumentException("No valid output format given as parameter");
+		}
+		
+		return result;
 	}
 	
 	public ResultSetContainer queryGetObject(String endpoint, String queryString) {

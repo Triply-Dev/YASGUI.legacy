@@ -9,8 +9,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("YasguiService")
 public interface YasguiService extends RemoteService {
-  String queryGetJson(String endpoint, String query) throws IllegalArgumentException;
   ResultSetContainer queryGetObject(String endpoint, String query) throws IllegalArgumentException;
-  
+  String queryGetText(String endpoint, String query, String format) throws IllegalArgumentException;
   
 }
