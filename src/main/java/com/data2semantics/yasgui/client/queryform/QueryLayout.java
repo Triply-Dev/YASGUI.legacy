@@ -7,6 +7,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.TextArea;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.Button;
+import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLPane;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -20,11 +21,11 @@ public class QueryLayout extends VLayout {
 	private static String DEFAULT_QUERY = "SELECT * {?x ?f ?g} LIMIT 10";
 	private static String DEFAULT_ENDPOINT = "http://eculture2.cs.vu.nl:5020/sparql/";
 	private View view;
-	private Label queryResultText = new Label();
 	private TextItem endpoint;
 	private TextArea queryInput;
 	private ToolBar toolBar;
 	private ResultGrid queryTable;
+	private VLayout queryResultContainer = new VLayout();
 
 	public QueryLayout(View view) {
 		setMargin(10);
@@ -45,63 +46,13 @@ public class QueryLayout extends VLayout {
 		endpoint.setDefaultValue(DEFAULT_ENDPOINT);
 		endpointForm.setFields(endpoint);
 		addMember(endpointForm);
+		addMember(queryResultContainer);
 
-		Button queryButton = new Button("Query");
-		queryButton.setHeight(18);
-		queryButton.setWidth(110);
-		queryButton.setAlign(Alignment.CENTER);
-		queryButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				if (getToolBar().getSelectedOutput().equals(ToolBar.OUTPUT_TABLE)) {
-					if (queryTable != null && hasMember(queryTable)) {
-						removeMember(queryTable);
-					}
-					queryTable = new ResultGrid(getView());
-					addMember(queryTable);
-					getView().getRemoteService().queryGetObject(endpoint.getValueAsString(), getQuery(QUERY_INPUT_ID),
-							new AsyncCallback<ResultSetContainer>() {
-								public void onFailure(Throwable caught) {
-									getView().onError(caught);
-								}
 
-								public void onSuccess(ResultSetContainer resultSet) {
-									queryTable.drawQueryResults(resultSet);
-								}
-							});
-
-				} else {
-					getView().onError("Other output formats not supported yet");
-				}
-			}
-		});
-		addMember(queryButton);
-
-		Button queryAsText = new Button("Get Text");
-		queryAsText.setHeight(18);
-		queryAsText.setWidth(110);
-		queryAsText.setAlign(Alignment.CENTER);
-		queryAsText.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				getView().getRemoteService().queryGetJson(endpoint.getValueAsString(), getQuery(QUERY_INPUT_ID),
-						new AsyncCallback<String>() {
-							public void onFailure(Throwable caught) {
-								getView().onError(caught);
-							}
-
-							public void onSuccess(String queryResultString) {
-								queryResultText.setContents(SafeHtmlUtils.htmlEscape(queryResultString));
-							}
-						});
-			}
-		});
-		addMember(queryAsText);
-
-		addMember(queryResultText);
 	}
 
 	private String getTextArea() {
 		String textArea = "" + "<textarea " + "id=\"" + QUERY_INPUT_ID + "\"" + ">" + DEFAULT_QUERY + "</textarea>";
-
 		return textArea;
 
 	}
@@ -135,4 +86,20 @@ public class QueryLayout extends VLayout {
 		}
 		return query;
 	}-*/;
+	
+	public void resetQueryResult() {
+		Canvas[] members = queryResultContainer.getMembers();
+		for (Canvas member: members) {
+			queryResultContainer.removeMember(member);
+		}
+	}
+	
+	public void addQueryResult(Canvas member) {
+		resetQueryResult();
+		addMember(member);
+	}
+	
+	public String getEndpoint() {
+		return endpoint.getValueAsString();
+	}
 }

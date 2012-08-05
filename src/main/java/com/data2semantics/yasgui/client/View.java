@@ -21,6 +21,7 @@ public class View extends VLayout {
 	private ToolStrip header = new ToolStrip();
 	private HLayout content = new HLayout();
 	private ArrayList<HashMap<String, String>> postProcessArray;
+	private QueryLayout queryLayout;
 	public View() {
 		postProcessArray = new ArrayList<HashMap<String, String>>();
 		setWidth100();  
@@ -36,7 +37,8 @@ public class View extends VLayout {
         header.addMember(label);
         addMember(header);
 		content.addMember(new LayoutSpacer());
-		content.addMember(new QueryLayout(this));
+		queryLayout = new QueryLayout(this);
+		content.addMember(queryLayout);
 		content.addMember(new LayoutSpacer());
 		addMember(content);
 	}
@@ -75,6 +77,10 @@ public class View extends VLayout {
 
 	public YasguiServiceAsync getRemoteService() {
 		return remoteService;
+	}
+	
+	public QueryLayout getQueryLayout() {
+		return this.queryLayout;
 	}
 
 	

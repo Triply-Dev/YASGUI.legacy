@@ -16,23 +16,21 @@ public class ResultGrid extends ListGrid {
 	
 	public ResultGrid(View view) {
 		setWidth(500);
-		setHeight(400);
+//		setWidth100();
+		setWidth(500);
 		this.view = view;
 	}
 	
 	public ResultGrid(View view, ResultSetContainer resultSet) {
 		this(view);
 		drawQueryResults(resultSet);
-		
-		
-		
 	}
 	
 	public void drawQueryResults(ResultSetContainer resultSet) {
 		List<ListGridField> listGridFields = getVarsAsListGridFields(resultSet.getResultVars());
-		List<ListGridRecord> listGridRecords = getSolutionsAsGridRecords(resultSet.getQuerySolutions());
-		
 		setFields(listGridFields.toArray(new ListGridField[listGridFields.size()]));
+		
+		List<ListGridRecord> listGridRecords = getSolutionsAsGridRecords(resultSet.getQuerySolutions());
 		setData(listGridRecords.toArray(new ListGridRecord[listGridRecords.size()]));
 	}
 	
