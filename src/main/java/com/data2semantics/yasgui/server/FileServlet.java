@@ -27,16 +27,24 @@ public class FileServlet extends HttpServlet {
 		
 		if (format != null && format.length() > 0 && query != null && query.length() > 0 && endpoint != null && endpoint.length() > 0) {
 			ResultSet resultSet = QueryService.query(endpoint, query);
+			String fileName = "yasgui." + format;
 			OutputStream out = response.getOutputStream();
 			if (format.equals(Output.OUTPUT_CSV)) {
-				ResultSetFormatter.outputAsCSV(out, resultSet);
 				response.setContentType("text/csv");
+				response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+		        
+				ResultSetFormatter.outputAsCSV(out, resultSet);
+				
 			} else if (format.equals(Output.OUTPUT_JSON)) {
-				ResultSetFormatter.outputAsJSON(out, resultSet);
 				response.setContentType("application/json");
+				response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+				ResultSetFormatter.outputAsJSON(out, resultSet);
+				
 			} else if (format.equals(Output.OUTPUT_XML)) {
-				ResultSetFormatter.outputAsXML(out, resultSet);
 				response.setContentType("application/sparql-results+xml");
+				response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+				ResultSetFormatter.outputAsXML(out, resultSet);
+				
 			}
 		} else {
 			PrintWriter out = response.getWriter();

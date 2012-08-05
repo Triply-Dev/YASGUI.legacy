@@ -4,7 +4,9 @@ import java.util.LinkedHashMap;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.shared.Output;
 import com.data2semantics.yasgui.shared.ResultSetContainer;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.TitleOrientation;
@@ -76,18 +78,24 @@ public class ToolBar extends ToolStrip {
 							});
 
 				} else {
-					final Label queryResultText = new Label();
-					getView().getQueryLayout().addQueryResult(queryResultText);
-					getView().getRemoteService().queryGetText(getView().getQueryLayout().getEndpoint(), QueryLayout.getQuery(QueryLayout.QUERY_INPUT_ID), getSelectedOutput(),
-							new AsyncCallback<String>() {
-								public void onFailure(Throwable caught) {
-									getView().onError(caught);
-								}
-
-								public void onSuccess(String queryResultString) {
-									queryResultText.setContents(SafeHtmlUtils.htmlEscape(queryResultString));
-								}
-							});
+					String endpoint = SafeHtmlUtils.htmlEscape(getView().getQueryLayout().getEndpoint());
+					String query = QueryLayout.getQuery(QueryLayout.QUERY_INPUT_ID);
+					String format = getSelectedOutput();
+					String url = GWT.getModuleBaseURL() + "file?endpoint=" + endpoint + "&query=" + query + "&format=" + format;
+					Window.open(url, "YASGUI - " + format, "");
+//					final Label queryResultText = new Label();
+//					getView().getQueryLayout().addQueryResult(queryResultText);
+//					getView().getRemoteService().queryGetText(getView().getQueryLayout().getEndpoint(), QueryLayout.getQuery(QueryLayout.QUERY_INPUT_ID), getSelectedOutput(),
+//							new AsyncCallback<String>() {
+//								public void onFailure(Throwable caught) {
+//									getView().onError(caught);
+//								}
+//
+//								public void onSuccess(String queryResultString) {
+//									queryResultText.setContents(SafeHtmlUtils.htmlEscape(queryResultString));
+//								}
+//							});
+					
 				}
 			}
 		});
