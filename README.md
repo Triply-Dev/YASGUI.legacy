@@ -1,4 +1,8 @@
-yasgui
+yasgui: Yet another SPARQL GUI
 ======
 
-Yet another SPARQL GUI
+Libraries
+===
+
+Similar tools
+===
