@@ -72,6 +72,7 @@ public class QueryLayout extends VLayout {
 					.getElementById(queryInputId), {
 				mode : "application/x-sparql-query",
 				tabMode : "indent",
+				lineNumbers: true,
 				matchBrackets : true
 			});
 		}
