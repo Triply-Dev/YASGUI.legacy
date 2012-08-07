@@ -8,7 +8,7 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QueryParseException;
 import com.hp.hpl.jena.query.ResultSet;
 
-public class QueryService {
+public class SparqlService {
 
 	
 	public static ResultSet query(String endpoint, String queryString) throws SparqlRuntimeException {

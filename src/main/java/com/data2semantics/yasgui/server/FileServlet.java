@@ -23,7 +23,7 @@ public class FileServlet extends HttpServlet {
 		String endpoint = request.getParameter("endpoint");
 		
 		if (format != null && format.length() > 0 && query != null && query.length() > 0 && endpoint != null && endpoint.length() > 0) {
-			ResultSet resultSet = QueryService.query(endpoint, query);
+			ResultSet resultSet = SparqlService.query(endpoint, query);
 			String fileName = "yasgui." + format;
 			OutputStream out = response.getOutputStream();
 			if (format.equals(Output.OUTPUT_CSV)) {

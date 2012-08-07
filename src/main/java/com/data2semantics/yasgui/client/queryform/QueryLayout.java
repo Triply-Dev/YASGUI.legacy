@@ -90,7 +90,7 @@ public class QueryLayout extends VLayout {
 	
 	public void addQueryResult(Canvas member) {
 		resetQueryResult();
-		addMember(member);
+		queryResultContainer.addMember(member);
 	}
 	
 	public String getEndpoint() {

@@ -24,7 +24,7 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 
 	public String queryGetText(String endpoint, String queryString, String format) throws IllegalArgumentException, SparqlRuntimeException {
 		String result = "";
-		ResultSet resultSet = QueryService.query(endpoint, queryString);
+		ResultSet resultSet = SparqlService.query(endpoint, queryString);
 		if (format.equals(Output.OUTPUT_JSON)) {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ResultSetFormatter.outputAsJSON(baos, resultSet);
@@ -52,7 +52,7 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 	
 	public ResultSetContainer queryGetObject(String endpoint, String queryString) throws IllegalArgumentException, SparqlRuntimeException  {
 		ResultSetContainer resultSetContainer = new ResultSetContainer();
-		ResultSet resultSet = QueryService.query(endpoint, queryString);
+		ResultSet resultSet = SparqlService.query(endpoint, queryString);
 		resultSetContainer.setResultVars(resultSet.getResultVars());
 		while (resultSet.hasNext()) {
 			QuerySolution querySolution = resultSet.next();
