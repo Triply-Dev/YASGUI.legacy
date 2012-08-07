@@ -10,6 +10,7 @@ import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
+import com.smartgwt.client.widgets.events.CloseClickEvent;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
@@ -45,22 +46,23 @@ public class View extends VLayout {
 
 	public void onError(String error) {
 		onLoadingFinish();
-		final Window winModal = new Window();
-		winModal.setWidth(600);
-		winModal.setHeight(400);
-		winModal.setTitle("Error");
-		winModal.setShowMinimizeButton(false);
-		winModal.setIsModal(true);
-		winModal.setShowModalMask(true);
-		winModal.centerInPage();
-//		winModal.addCloseClickHandler(new CloseClickHandler() {
-//			public void onCloseClick(CloseClientEvent event) {
-//				winModal.destroy();
-//			}
-//		});
+		final Window window = new Window();
+		window.setAutoSize(true);
+		window.setTitle("Error");
+		window.setShowMinimizeButton(false);
+		window.setIsModal(true);
+		window.setShowModalMask(true);
+		window.setAutoCenter(true);
+		window.addCloseClickHandler(new CloseClickHandler() {
+			@Override
+			public void onCloseClick(CloseClickEvent event) {
+				window.destroy();
+				
+			}
+		});
 		Label label = new Label(error);
-		winModal.addItem(label);
-		winModal.draw();
+		window.addItem(label);
+		window.draw();
 	}
 
 	public void onError(Throwable throwable) {
