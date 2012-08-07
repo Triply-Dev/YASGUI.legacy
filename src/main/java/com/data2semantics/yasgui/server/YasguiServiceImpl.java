@@ -8,11 +8,8 @@ import com.data2semantics.yasgui.shared.Output;
 import com.data2semantics.yasgui.shared.RdfNodeContainer;
 import com.data2semantics.yasgui.shared.ResultSetContainer;
 import com.data2semantics.yasgui.shared.SolutionContainer;
+import com.data2semantics.yasgui.shared.SparqlRuntimeException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
@@ -25,7 +22,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiService {
 
 
-	public String queryGetText(String endpoint, String queryString, String format) throws IllegalArgumentException {
+	public String queryGetText(String endpoint, String queryString, String format) throws IllegalArgumentException, SparqlRuntimeException {
 		String result = "";
 		ResultSet resultSet = QueryService.query(endpoint, queryString);
 		if (format.equals(Output.OUTPUT_JSON)) {
@@ -53,7 +50,7 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 		return result;
 	}
 	
-	public ResultSetContainer queryGetObject(String endpoint, String queryString) {
+	public ResultSetContainer queryGetObject(String endpoint, String queryString) throws IllegalArgumentException, SparqlRuntimeException  {
 		ResultSetContainer resultSetContainer = new ResultSetContainer();
 		ResultSet resultSet = QueryService.query(endpoint, queryString);
 		resultSetContainer.setResultVars(resultSet.getResultVars());

@@ -1,27 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='Yasgui'>
-  <!-- Inherit the core Web Toolkit stuff.                        -->
-  <inherits name='com.google.gwt.user.User' />
-  <inherits name="com.smartgwt.SmartGwt"/>
-  <inherits name="com.google.gwt.resources.Resources" />
-  <!-- We need the JUnit module in the main module,               -->
-  <!-- otherwise eclipse complains (Google plugin bug?)           -->
-  <inherits name='com.google.gwt.junit.JUnit' />
+	<!-- Inherit the core Web Toolkit stuff. -->
+	<inherits name='com.google.gwt.user.User' />
+	<inherits name="com.smartgwt.SmartGwt" />
+	<inherits name="com.google.gwt.resources.Resources" />
+	<!-- We need the JUnit module in the main module, -->
+	<!-- otherwise eclipse complains (Google plugin bug?) -->
+	<inherits name='com.google.gwt.junit.JUnit' />
 
-  <!-- Inherit the default GWT style sheet.  You can change       -->
-  <!-- the theme of your GWT application by uncommenting          -->
-  <!-- any one of the following lines.                            -->
-  <!-- <inherits name='com.google.gwt.user.theme.standard.Standard' /> -->
-  <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
-  <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
-<inherits name="com.smartclient.theme.graphite.GraphiteResources"/>
-  <!-- Other module inherits                                      -->
+	<!-- Inherit the default GWT style sheet. You can change -->
+	<!-- the theme of your GWT application by uncommenting -->
+	<!-- any one of the following lines. -->
+	<!-- <inherits name='com.google.gwt.user.theme.standard.Standard' /> -->
+	<!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
+	<!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/> -->
+	<inherits name="com.smartclient.theme.graphite.GraphiteResources" />
+	<!-- Other module inherits -->
 
-  <!-- Specify the app entry point class.                         -->
-  <entry-point class='com.data2semantics.yasgui.client.Yasgui' />
+	<!-- Specify the app entry point class. -->
+	<entry-point class='com.data2semantics.yasgui.client.Yasgui' />
 
-  <!-- Specify the paths for translatable code                    -->
-  <source path='client' />
-  <source path='shared' />
-
+	<!-- Specify the paths for translatable code -->
+	<source path='client' />
+	<source path='shared' />
+	
+	
+	<inherits name="com.google.gwt.logging.Logging" />
+	<set-property name="gwt.logging.logLevel" value="INFO" />
+	<set-property name="gwt.logging.enabled" value="TRUE" />
+	<set-property name="gwt.logging.developmentModeHandler"	value="ENABLED" />
+	<set-property name="gwt.logging.systemHandler" value="DISABLED" />
+	<set-property name="gwt.logging.popupHandler" value="DISABLED" />
+	<set-property name="gwt.logging.consoleHandler" value="ENABLED" />
+	<set-property name="gwt.logging.firebugHandler" value="ENABLED" />
 </module>

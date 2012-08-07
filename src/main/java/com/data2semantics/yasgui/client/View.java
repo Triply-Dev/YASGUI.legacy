@@ -1,13 +1,9 @@
 package com.data2semantics.yasgui.client;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
+import java.util.logging.Logger;
 import com.data2semantics.yasgui.client.queryform.QueryLayout;
-import com.google.gwt.dom.client.Style.Unit;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.VerticalAlignment;
-import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.CloseClickEvent;
@@ -18,13 +14,12 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.toolbar.ToolStrip;
 
 public class View extends VLayout {
+	private Logger logger = Logger.getLogger("");
 	private YasguiServiceAsync remoteService = YasguiServiceAsync.Util.getInstance();
 	private ToolStrip header = new ToolStrip();
 	private HLayout content = new HLayout();
-	private ArrayList<HashMap<String, String>> postProcessArray;
 	private QueryLayout queryLayout;
 	public View() {
-		postProcessArray = new ArrayList<HashMap<String, String>>();
 		setWidth100();  
         setHeight100();
         header.setWidth100();
@@ -85,6 +80,7 @@ public class View extends VLayout {
 		return this.queryLayout;
 	}
 
-	
-
+	public Logger getLogger() {
+		return this.logger;
+	}
 }

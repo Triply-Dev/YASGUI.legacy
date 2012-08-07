@@ -2,7 +2,6 @@ package com.data2semantics.yasgui.client.queryform;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.shared.RdfNodeContainer;
 import com.data2semantics.yasgui.shared.ResultSetContainer;

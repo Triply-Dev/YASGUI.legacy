@@ -11,7 +11,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.TitleOrientation;
 import com.smartgwt.client.widgets.Button;
-import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
@@ -69,7 +68,7 @@ public class ToolBar extends ToolStrip {
 					getView().getRemoteService().queryGetObject(getView().getQueryLayout().getEndpoint(), QueryLayout.getQuery(QueryLayout.QUERY_INPUT_ID),
 							new AsyncCallback<ResultSetContainer>() {
 								public void onFailure(Throwable caught) {
-									getView().onError(caught);
+									getView().onError(caught.getMessage());
 								}
 
 								public void onSuccess(ResultSetContainer resultSet) {
