@@ -62,9 +62,13 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 				String varName = varnames.next();
 				RDFNode rdfNode = querySolution.get(varName);
 				String value = (String) rdfNode.visitWith(new CustomRdfVisitor());
+				
 				RdfNodeContainer rdfNodeContainer = new RdfNodeContainer();
 				rdfNodeContainer.setValue(value);
 				rdfNodeContainer.setVarName(varName);
+				rdfNodeContainer.setIsAnon(rdfNode.isAnon());
+				rdfNodeContainer.setIsLiteral(rdfNode.isLiteral());
+				rdfNodeContainer.setIsUri(rdfNode.isURIResource());
 				solutionContainer.addRdfNodeContainer(rdfNodeContainer);
 			}
 			resultSetContainer.addQuerySolution(solutionContainer);

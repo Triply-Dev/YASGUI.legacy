@@ -32,10 +32,10 @@ public class View extends VLayout {
         label.setWidth100();
         header.addMember(label);
         addMember(header);
-		content.addMember(new LayoutSpacer());
+		//content.addMember(new LayoutSpacer());
 		queryLayout = new QueryLayout(this);
 		content.addMember(queryLayout);
-		content.addMember(new LayoutSpacer());
+		//content.addMember(new LayoutSpacer());
 		addMember(content);
 	}
 

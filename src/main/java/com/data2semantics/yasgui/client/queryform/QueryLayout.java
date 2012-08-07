@@ -22,7 +22,7 @@ public class QueryLayout extends VLayout {
 
 	public QueryLayout(View view) {
 		setMargin(10);
-		setWidth(800);
+		setWidth100();
 		this.view = view;
 		this.toolBar = new ToolBar(getView());
 		addMember(this.toolBar);

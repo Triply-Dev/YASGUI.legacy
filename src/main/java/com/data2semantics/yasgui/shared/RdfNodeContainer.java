@@ -7,6 +7,8 @@ public class RdfNodeContainer implements Serializable {
 	private String varName;
 	private String value;
 	private boolean isUri;
+	private boolean isAnon;
+	private boolean isLiteral;
 	
 	public RdfNodeContainer() {
 		
@@ -32,6 +34,24 @@ public class RdfNodeContainer implements Serializable {
 	public void setIsUri(boolean isUri) {
 		this.isUri = isUri;
 	}
+
+	public boolean isAnon() {
+		return isAnon;
+	}
+
+	public void setIsAnon(boolean isAnon) {
+		this.isAnon = isAnon;
+	}
+
+	public boolean isLiteral() {
+		return isLiteral;
+	}
+
+	public void setIsLiteral(boolean isLiteral) {
+		this.isLiteral = isLiteral;
+	}
+	
+	
 		
 		
 }
