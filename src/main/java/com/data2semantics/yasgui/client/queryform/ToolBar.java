@@ -62,39 +62,26 @@ public class ToolBar extends ToolStrip {
 		queryButton.setAlign(Alignment.CENTER);
 		queryButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
+				getView().getQueryInterface().storePrefixes();
 				if (getSelectedOutput().equals(Output.OUTPUT_TABLE)) {
 					final ResultGrid queryTable = new ResultGrid(getView());
-					getView().getQueryLayout().addQueryResult(queryTable);
-					getView().getRemoteService().queryGetObject(getView().getQueryLayout().getEndpoint(), QueryLayout.getQuery(QueryLayout.QUERY_INPUT_ID),
+					getView().getQueryInterface().addQueryResult(queryTable);
+					getView().getRemoteService().queryGetObject(getView().getQueryInterface().getEndpoint(), QueryInterface.getQuery(QueryInterface.QUERY_INPUT_ID),
 							new AsyncCallback<ResultSetContainer>() {
 								public void onFailure(Throwable caught) {
 									getView().onError(caught.getMessage());
 								}
-
 								public void onSuccess(ResultSetContainer resultSet) {
 									queryTable.drawQueryResults(resultSet);
 								}
 							});
 
 				} else {
-					String endpoint = SafeHtmlUtils.htmlEscape(getView().getQueryLayout().getEndpoint());
-					String query = QueryLayout.getQuery(QueryLayout.QUERY_INPUT_ID);
+					String endpoint = SafeHtmlUtils.htmlEscape(getView().getQueryInterface().getEndpoint());
+					String query = QueryInterface.getQuery(QueryInterface.QUERY_INPUT_ID);
 					String format = getSelectedOutput();
 					String url = GWT.getModuleBaseURL() + "file?endpoint=" + endpoint + "&query=" + query + "&format=" + format;
 					Window.open(url, "YASGUI - " + format, "");
-//					final Label queryResultText = new Label();
-//					getView().getQueryLayout().addQueryResult(queryResultText);
-//					getView().getRemoteService().queryGetText(getView().getQueryLayout().getEndpoint(), QueryLayout.getQuery(QueryLayout.QUERY_INPUT_ID), getSelectedOutput(),
-//							new AsyncCallback<String>() {
-//								public void onFailure(Throwable caught) {
-//									getView().onError(caught);
-//								}
-//
-//								public void onSuccess(String queryResultString) {
-//									queryResultText.setContents(SafeHtmlUtils.htmlEscape(queryResultString));
-//								}
-//							});
-					
 				}
 			}
 		});

@@ -1,14 +1,20 @@
 package com.data2semantics.yasgui.client.queryform;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
+import javax.swing.GroupLayout.Alignment;
+
 import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.RdfNodeContainer;
 import com.data2semantics.yasgui.shared.ResultSetContainer;
 import com.data2semantics.yasgui.shared.SolutionContainer;
 import com.smartgwt.client.types.Autofit;
+import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLPane;
 import com.smartgwt.client.widgets.Label;
@@ -20,8 +26,10 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 public class ResultGrid extends ListGrid {
 	private View view;
-
+	private HashMap<String, Prefix> prefixes;
 	public ResultGrid(View view) {
+		this.view = view;
+		this.prefixes = getView().getQueryInterface().getPrefixes();
 		setWidth100();
 		setHeight(350);
 		setShowRecordComponents(true);
@@ -31,7 +39,6 @@ public class ResultGrid extends ListGrid {
 		setAutoFitData(Autofit.VERTICAL);
 		setCanResizeFields(true);
 		setEmptyMessage("Executing query");
-		this.view = view;
 	}
 
 	public ResultGrid(View view, ResultSetContainer resultSet) {
@@ -51,30 +58,40 @@ public class ResultGrid extends ListGrid {
 		// fieldname is the identifier of the column, in our case the same as
 		// the column header
 		String fieldName = this.getFieldName(colNum);
-		getView().getLogger().severe(fieldName);
+//		getView().getLogger().severe(fieldName);
 		if (fieldName.startsWith("yasgui__")) {
 			String varName = fieldName.substring("yasgui__".length());
 			if (record.getAttributeAsBoolean(varName + "__isUri__")) {
-				getView().getLogger().severe(varName + ": " + Integer.toString(colNum));
-				String value = record.getAttributeAsString(varName);
+				
+//				getView().getLogger().severe(varName + ": " + Integer.toString(colNum));
+				String uri = record.getAttributeAsString(varName);
+				Prefix prefix = getPrefixForUri(uri);
+				String text = uri;
+				if (prefix != null) {
+					text = prefix.getPrefix() + ":" + uri.substring(prefix.getUri().length());
+				}
 //				DynamicForm form = new DynamicForm();
 //				LinkItem linkItem = new LinkItem("link");
 //				linkItem.setShowTitle(false);
 //				linkItem.setLinkTitle(value);
 //				linkItem.setTarget(value);
+//				linkItem.setHeight(null);
+//				
+//				
 //				form.setFields(linkItem);
+//				form.setAutoHeight();
+//				form.setAutoWidth();
 //				return form;
 //				Label label = new Label("firstIf" + value);
 //				label.setHeight(5);
 //				return label;
 				HTMLPane html = new HTMLPane();
-				html.setContents("<a href=\"" + value + "\" target=\"_blank\">" + value + "</a>");
+				html.setContents("<a href=\"" + uri + "\" target=\"_blank\">" + text + "</a>");
 				html.setHeight100();
 				html.setWidth100();
 				return html;
 			} else {
 				Label label = new Label(record.getAttributeAsString(varName));
-				label.setHeight(5);
 				return label;
 			}
 		}
@@ -116,6 +133,18 @@ public class ResultGrid extends ListGrid {
 			listGridFields.add(field);
 		}
 		return listGridFields;
+	}
+	
+	private Prefix getPrefixForUri(String uri) {
+		Prefix prefix = null;
+		for (Map.Entry<String, Prefix> entry : prefixes.entrySet()) {
+		    String prefixUri = entry.getKey();
+		    if (uri.startsWith(prefixUri)) {
+		    	prefix = entry.getValue();
+		    	break;
+		    }
+		}
+		return prefix;
 	}
 
 	private View getView() {

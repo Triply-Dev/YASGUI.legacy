@@ -1,6 +1,10 @@
 package com.data2semantics.yasgui.client.queryform;
 
+import java.util.HashMap;
 import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.shared.Prefix;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.ui.TextArea;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLPane;
@@ -8,10 +12,11 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.VLayout;
 
-public class QueryLayout extends VLayout {
+public class QueryInterface extends VLayout {
 	public static String QUERY_INPUT_ID = "queryInput";
 	private static String DEFAULT_QUERY = "PREFIX aers: <http://aers.data2semantics.org/resource/> \n" +
 			"SELECT * {?x ?f ?g} LIMIT 10";
+//	"SELECT * {?d <http://aers.data2semantics.org/vocab/event_date> ?t} LIMIT 10";
 	private static String DEFAULT_ENDPOINT = "http://eculture2.cs.vu.nl:5020/sparql/";
 	private View view;
 	private TextItem endpoint;
@@ -19,8 +24,9 @@ public class QueryLayout extends VLayout {
 	private ToolBar toolBar;
 	private ResultGrid queryTable;
 	private VLayout queryResultContainer = new VLayout();
+	private HashMap<String, Prefix> prefixes = new HashMap<String, Prefix>();
 
-	public QueryLayout(View view) {
+	public QueryInterface(View view) {
 		setMargin(10);
 		setWidth100();
 		this.view = view;
@@ -95,5 +101,19 @@ public class QueryLayout extends VLayout {
 	
 	public String getEndpoint() {
 		return endpoint.getValueAsString();
+	}
+	
+	public void storePrefixes() {
+		String query = getQuery(QUERY_INPUT_ID);
+		RegExp regExp = RegExp.compile("^\\s*PREFIX\\s*(\\w*):\\s*<(.*)>\\s*$", "gm");
+		while (true) {
+			MatchResult matcher = regExp.exec(query);
+			if (matcher == null) break;
+			prefixes.put(matcher.getGroup(2), new Prefix(matcher.getGroup(1), matcher.getGroup(2)));
+	    }
+	}
+	
+	public HashMap<String, Prefix> getPrefixes() {
+		return this.prefixes;
 	}
 }

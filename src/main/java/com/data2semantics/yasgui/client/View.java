@@ -1,7 +1,7 @@
 package com.data2semantics.yasgui.client;
 
 import java.util.logging.Logger;
-import com.data2semantics.yasgui.client.queryform.QueryLayout;
+import com.data2semantics.yasgui.client.queryform.QueryInterface;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Label;
@@ -9,7 +9,6 @@ import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.CloseClickEvent;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
-import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.toolbar.ToolStrip;
 
@@ -18,7 +17,7 @@ public class View extends VLayout {
 	private YasguiServiceAsync remoteService = YasguiServiceAsync.Util.getInstance();
 	private ToolStrip header = new ToolStrip();
 	private HLayout content = new HLayout();
-	private QueryLayout queryLayout;
+	private QueryInterface queryInterface;
 	public View() {
 		setWidth100();  
         setHeight100();
@@ -33,8 +32,8 @@ public class View extends VLayout {
         header.addMember(label);
         addMember(header);
 		//content.addMember(new LayoutSpacer());
-		queryLayout = new QueryLayout(this);
-		content.addMember(queryLayout);
+		queryInterface = new QueryInterface(this);
+		content.addMember(queryInterface);
 		//content.addMember(new LayoutSpacer());
 		addMember(content);
 	}
@@ -76,8 +75,8 @@ public class View extends VLayout {
 		return remoteService;
 	}
 	
-	public QueryLayout getQueryLayout() {
-		return this.queryLayout;
+	public QueryInterface getQueryInterface() {
+		return this.queryInterface;
 	}
 
 	public Logger getLogger() {
