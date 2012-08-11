@@ -2,7 +2,6 @@ package com.data2semantics.yasgui.client;
 
 import java.util.logging.Level;
 
-import com.data2semantics.yasgui.client.queryform.QueryInterface;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.UmbrellaException;
@@ -31,7 +30,7 @@ public class Yasgui implements EntryPoint {
 	}
 
 	private void postProcess() {
-		QueryInterface.attachCodeMirror(QueryInterface.QUERY_INPUT_ID);
+		View.attachCodeMirror(View.QUERY_INPUT_ID);
 	}
 	
 	private Throwable unwrap(Throwable e) {   

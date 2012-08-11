@@ -62,11 +62,11 @@ public class ToolBar extends ToolStrip {
 		queryButton.setAlign(Alignment.CENTER);
 		queryButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				getView().getQueryInterface().storePrefixes();
+				getView().storePrefixes();
 				if (getSelectedOutput().equals(Output.OUTPUT_TABLE)) {
 					final ResultGrid queryTable = new ResultGrid(getView());
-					getView().getQueryInterface().addQueryResult(queryTable);
-					getView().getRemoteService().queryGetObject(getView().getQueryInterface().getEndpoint(), QueryInterface.getQuery(QueryInterface.QUERY_INPUT_ID),
+					getView().addQueryResult(queryTable);
+					getView().getRemoteService().queryGetObject(getView().getEndpoint(), View.getQuery(View.QUERY_INPUT_ID),
 							new AsyncCallback<ResultSetContainer>() {
 								public void onFailure(Throwable caught) {
 									getView().onError(caught.getMessage());
@@ -77,8 +77,10 @@ public class ToolBar extends ToolStrip {
 							});
 
 				} else {
-					String endpoint = SafeHtmlUtils.htmlEscape(getView().getQueryInterface().getEndpoint());
-					String query = QueryInterface.getQuery(QueryInterface.QUERY_INPUT_ID);
+					//TODO: use request builder:
+					//http://google-web-toolkit.googlecode.com/svn/javadoc/2.3/com/google/gwt/http/client/package-summary.html
+					String endpoint = SafeHtmlUtils.htmlEscape(getView().getEndpoint());
+					String query = View.getQuery(View.QUERY_INPUT_ID);
 					String format = getSelectedOutput();
 					String url = GWT.getModuleBaseURL() + "file?endpoint=" + endpoint + "&query=" + query + "&format=" + format;
 					Window.open(url, "YASGUI - " + format, "");

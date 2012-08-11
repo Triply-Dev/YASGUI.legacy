@@ -4,22 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-
-import javax.swing.GroupLayout.Alignment;
-
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.RdfNodeContainer;
 import com.data2semantics.yasgui.shared.ResultSetContainer;
 import com.data2semantics.yasgui.shared.SolutionContainer;
 import com.smartgwt.client.types.Autofit;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLPane;
 import com.smartgwt.client.widgets.Label;
-import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.LinkItem;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
@@ -29,7 +22,7 @@ public class ResultGrid extends ListGrid {
 	private HashMap<String, Prefix> prefixes;
 	public ResultGrid(View view) {
 		this.view = view;
-		this.prefixes = getView().getQueryInterface().getPrefixes();
+		this.prefixes = getView().getPrefixes();
 		setWidth100();
 		setHeight(350);
 		setShowRecordComponents(true);
