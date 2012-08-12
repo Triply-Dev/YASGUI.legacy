@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.client.queryform;
+package com.data2semantics.yasgui.client.queryform.grid;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +18,8 @@ import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 public class ResultGrid extends ListGrid {
+	private static String SOLUTION_PREFIX = "yasgui___solution";
+	private static String VARIABLE_PREFIX = "yasgui___var";
 	private View view;
 	private HashMap<String, Prefix> prefixes;
 	public ResultGrid(View view) {
@@ -43,86 +45,61 @@ public class ResultGrid extends ListGrid {
 		List<ListGridField> listGridFields = getVarsAsListGridFields(resultSet.getResultVars());
 		setFields(listGridFields.toArray(new ListGridField[listGridFields.size()]));
 
-		List<ListGridRecord> listGridRecords = getSolutionsAsGridRecords(resultSet.getQuerySolutions());
-		setData(listGridRecords.toArray(new ListGridRecord[listGridRecords.size()]));
+		List<ListGridRecord> rows = getSolutionsAsGridRecords(resultSet.getQuerySolutions());
+		setData(rows.toArray(new ListGridRecord[rows.size()]));
 	}
 
-	protected Canvas createRecordComponent(final ListGridRecord record, Integer colNum) {
+	
+	protected Canvas createRecordComponent(ListGridRecord row, Integer colNum) {
 		// fieldname is the identifier of the column, in our case the same as
 		// the column header
-		String fieldName = this.getFieldName(colNum);
-//		getView().getLogger().severe(fieldName);
-		if (fieldName.startsWith("yasgui__")) {
-			String varName = fieldName.substring("yasgui__".length());
-			if (record.getAttributeAsBoolean(varName + "__isUri__")) {
-				
-//				getView().getLogger().severe(varName + ": " + Integer.toString(colNum));
-				String uri = record.getAttributeAsString(varName);
+		String colName = this.getFieldName(colNum);
+		
+		//the numbering field created by smartgwt has field name starting with $
+		if (colName.startsWith(VARIABLE_PREFIX)) { 
+			String varName = colName.substring(VARIABLE_PREFIX.length());
+			SolutionContainer solution = (SolutionContainer) row.getAttributeAsObject(SOLUTION_PREFIX);
+			RdfNodeContainer node = solution.get(varName);
+			if (node.isUri()) {
+				String uri = row.getAttributeAsString(varName);
 				Prefix prefix = getPrefixForUri(uri);
 				String text = uri;
 				if (prefix != null) {
 					text = prefix.getPrefix() + ":" + uri.substring(prefix.getUri().length());
 				}
-//				DynamicForm form = new DynamicForm();
-//				LinkItem linkItem = new LinkItem("link");
-//				linkItem.setShowTitle(false);
-//				linkItem.setLinkTitle(value);
-//				linkItem.setTarget(value);
-//				linkItem.setHeight(null);
-//				
-//				
-//				form.setFields(linkItem);
-//				form.setAutoHeight();
-//				form.setAutoWidth();
-//				return form;
-//				Label label = new Label("firstIf" + value);
-//				label.setHeight(5);
-//				return label;
 				HTMLPane html = new HTMLPane();
 				html.setContents("<a href=\"" + uri + "\" target=\"_blank\">" + text + "</a>");
 				html.setHeight100();
 				html.setWidth100();
 				return html;
 			} else {
-				Label label = new Label(record.getAttributeAsString(varName));
+				Label label = new Label(row.getAttributeAsString(colName));
 				return label;
 			}
 		}
 		return null;
 	}
 
-	private List<ListGridRecord> getSolutionsAsGridRecords(List<SolutionContainer> querySolutions) {
-		List<ListGridRecord> listGridRecords = new ArrayList<ListGridRecord>();
+	private ArrayList<ListGridRecord> getSolutionsAsGridRecords(List<SolutionContainer> querySolutions) {
+		ArrayList<ListGridRecord> rows = new ArrayList<ListGridRecord>();
 		for (SolutionContainer solution : querySolutions) {
-			ListGridRecord listGridRecord = new ListGridRecord();
-			List<RdfNodeContainer> nodes = solution.getRdfNodes();
-			for (RdfNodeContainer node : nodes) {
-
-				listGridRecord.setAttribute(node.getVarName(), getValueForField(node));
-				listGridRecord.setAttribute(node.getVarName() + "__isUri__", node.isUri());
+			ListGridRecord row = new ListGridRecord();
+			row.setAttribute(SOLUTION_PREFIX, solution); 
+			HashMap<String, RdfNodeContainer> nodes = solution.getRdfNodes();
+			for (RdfNodeContainer node : nodes.values()) {
+				row.setAttribute(node.getVarName(), node.getValue());
 			}
-			listGridRecords.add(listGridRecord);
+			rows.add(row);
 		}
-		return listGridRecords;
+		return rows;
 	}
 
-	private String getValueForField(RdfNodeContainer node) {
-		String value = "";
-		if (node.isAnon()) {
-			value = node.getValue();
-		} else if (node.isLiteral()) {
-			value = node.getValue();
-		} else if (node.isUri()) {
-			value = node.getValue();
+	
 
-		}
-		return value;
-	}
-
-	private List<ListGridField> getVarsAsListGridFields(List<String> resultVars) {
-		List<ListGridField> listGridFields = new ArrayList<ListGridField>();
+	private ArrayList<ListGridField> getVarsAsListGridFields(List<String> resultVars) {
+		ArrayList<ListGridField> listGridFields = new ArrayList<ListGridField>();
 		for (String resultVar : resultVars) {
-			ListGridField field = new ListGridField("yasgui__" + resultVar, resultVar);
+			ListGridField field = new ListGridField(VARIABLE_PREFIX + resultVar, resultVar);
 			listGridFields.add(field);
 		}
 		return listGridFields;

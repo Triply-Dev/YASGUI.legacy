@@ -3,8 +3,8 @@ package com.data2semantics.yasgui.client;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
-import com.data2semantics.yasgui.client.queryform.ResultGrid;
 import com.data2semantics.yasgui.client.queryform.ToolBar;
+import com.data2semantics.yasgui.client.queryform.grid.ResultGrid;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;

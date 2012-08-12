@@ -2,6 +2,7 @@ package com.data2semantics.yasgui.server;
 
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import com.data2semantics.yasgui.client.YasguiService;
 import com.data2semantics.yasgui.shared.Output;
@@ -53,7 +54,7 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 	public ResultSetContainer queryGetObject(String endpoint, String queryString) throws IllegalArgumentException, SparqlRuntimeException  {
 		ResultSetContainer resultSetContainer = new ResultSetContainer();
 		ResultSet resultSet = SparqlService.query(endpoint, queryString);
-		resultSetContainer.setResultVars(resultSet.getResultVars());
+		resultSetContainer.setResultVars((ArrayList<String>)resultSet.getResultVars());
 		while (resultSet.hasNext()) {
 			QuerySolution querySolution = resultSet.next();
 			Iterator<String> varnames = querySolution.varNames();

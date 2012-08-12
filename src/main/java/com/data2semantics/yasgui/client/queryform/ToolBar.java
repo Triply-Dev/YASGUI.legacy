@@ -2,6 +2,7 @@ package com.data2semantics.yasgui.client.queryform;
 
 import java.util.LinkedHashMap;
 import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.client.queryform.grid.ResultGrid;
 import com.data2semantics.yasgui.shared.Output;
 import com.data2semantics.yasgui.shared.ResultSetContainer;
 import com.google.gwt.core.client.GWT;

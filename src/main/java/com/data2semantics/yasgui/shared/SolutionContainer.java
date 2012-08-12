@@ -1,23 +1,30 @@
 package com.data2semantics.yasgui.shared;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 public class SolutionContainer implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private List<RdfNodeContainer> rdfNodes = new ArrayList<RdfNodeContainer>();
+	private HashMap<String, RdfNodeContainer> rdfNodes = new HashMap<String, RdfNodeContainer>();
 	
 	public SolutionContainer() {
 		
 	}
 	
 	public void addRdfNodeContainer(RdfNodeContainer rdfNode) {
-		rdfNodes.add(rdfNode);
+		rdfNodes.put(rdfNode.getVarName(), rdfNode);
 	}
 	
-	public List<RdfNodeContainer> getRdfNodes() {
+	public HashMap<String, RdfNodeContainer> getRdfNodes() {
 		return this.rdfNodes;
+	}
+	
+	public RdfNodeContainer get(String varName) {
+		RdfNodeContainer node = null;
+//		if (rdfNodes.containsKey(varName)) {
+			node = rdfNodes.get(varName);
+//		}
+		return node;
 	}
 		
 }
