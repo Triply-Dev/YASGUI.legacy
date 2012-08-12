@@ -6,14 +6,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import com.data2semantics.yasgui.client.YasguiService;
 import com.data2semantics.yasgui.shared.Output;
-import com.data2semantics.yasgui.shared.RdfNodeContainer;
-import com.data2semantics.yasgui.shared.ResultSetContainer;
-import com.data2semantics.yasgui.shared.SolutionContainer;
 import com.data2semantics.yasgui.shared.SparqlRuntimeException;
+import com.data2semantics.yasgui.shared.rdf.RdfNodeContainer;
+import com.data2semantics.yasgui.shared.rdf.ResultSetContainer;
+import com.data2semantics.yasgui.shared.rdf.SolutionContainer;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
+import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 
 /**
@@ -62,14 +63,24 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 			while (varnames.hasNext()) {
 				String varName = varnames.next();
 				RDFNode rdfNode = querySolution.get(varName);
-				String value = (String) rdfNode.visitWith(new CustomRdfVisitor());
-				
 				RdfNodeContainer rdfNodeContainer = new RdfNodeContainer();
-				rdfNodeContainer.setValue(value);
 				rdfNodeContainer.setVarName(varName);
-				rdfNodeContainer.setIsAnon(rdfNode.isAnon());
-				rdfNodeContainer.setIsLiteral(rdfNode.isLiteral());
-				rdfNodeContainer.setIsUri(rdfNode.isURIResource());
+				if (rdfNode.isLiteral()) {
+					Literal literal = rdfNode.asLiteral();
+					rdfNodeContainer.setIsLiteral(true);
+					rdfNodeContainer.setValue(literal.getString());
+					rdfNodeContainer.setDatatype(literal.getDatatypeURI());
+				} else if (rdfNode.isAnon()){
+					rdfNodeContainer.setIsAnon(true);
+					rdfNodeContainer.setValue(rdfNode.asResource().getURI());
+				} else {
+					//is uri
+					rdfNodeContainer.setIsUri(true);
+					rdfNodeContainer.setValue(rdfNode.asResource().getURI());
+					
+				}
+				
+				
 				solutionContainer.addRdfNodeContainer(rdfNodeContainer);
 			}
 			resultSetContainer.addQuerySolution(solutionContainer);

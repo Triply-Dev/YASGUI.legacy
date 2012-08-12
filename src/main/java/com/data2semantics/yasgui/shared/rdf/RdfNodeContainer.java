@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.shared;
+package com.data2semantics.yasgui.shared.rdf;
 
 import java.io.Serializable;
 
@@ -9,6 +9,7 @@ public class RdfNodeContainer implements Serializable {
 	private boolean isUri;
 	private boolean isAnon;
 	private boolean isLiteral;
+	private String datatypeUri;
 	
 	public RdfNodeContainer() {
 		
@@ -49,6 +50,14 @@ public class RdfNodeContainer implements Serializable {
 
 	public void setIsLiteral(boolean isLiteral) {
 		this.isLiteral = isLiteral;
+	}
+
+	public void setDatatype(String datatypeUri) {
+		this.datatypeUri = datatypeUri;
+		
+	}
+	public String getDatatypeUri() {
+		return this.datatypeUri;
 	}
 	
 	

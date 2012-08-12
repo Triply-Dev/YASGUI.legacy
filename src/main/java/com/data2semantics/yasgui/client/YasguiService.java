@@ -1,7 +1,7 @@
 package com.data2semantics.yasgui.client;
 
-import com.data2semantics.yasgui.shared.ResultSetContainer;
 import com.data2semantics.yasgui.shared.SparqlRuntimeException;
+import com.data2semantics.yasgui.shared.rdf.ResultSetContainer;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 

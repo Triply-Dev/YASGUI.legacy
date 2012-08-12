@@ -24,7 +24,7 @@ public class View extends VLayout {
 	private YasguiServiceAsync remoteService = YasguiServiceAsync.Util.getInstance();
 	public static String QUERY_INPUT_ID = "queryInput";
 	private static String DEFAULT_QUERY = "PREFIX aers: <http://aers.data2semantics.org/resource/> \n" +
-			"SELECT * {<http://aers.data2semantics.org/page/resource/report/5578636> ?f ?g} LIMIT 50";
+			"SELECT * {<http://aers.data2semantics.org/resource/report/5578636> ?f ?g} LIMIT 50";
 //	"SELECT * {?d <http://aers.data2semantics.org/vocab/event_date> ?t} LIMIT 10";
 	private static String DEFAULT_ENDPOINT = "http://eculture2.cs.vu.nl:5020/sparql/";
 	private TextItem endpoint;

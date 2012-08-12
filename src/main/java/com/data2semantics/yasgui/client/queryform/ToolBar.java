@@ -4,7 +4,7 @@ import java.util.LinkedHashMap;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.queryform.grid.ResultGrid;
 import com.data2semantics.yasgui.shared.Output;
-import com.data2semantics.yasgui.shared.ResultSetContainer;
+import com.data2semantics.yasgui.shared.rdf.ResultSetContainer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;

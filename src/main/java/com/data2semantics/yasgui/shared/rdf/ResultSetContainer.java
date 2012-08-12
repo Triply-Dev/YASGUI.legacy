@@ -1,7 +1,8 @@
-package com.data2semantics.yasgui.shared;
+package com.data2semantics.yasgui.shared.rdf;
 
 import java.util.ArrayList;
 import java.io.Serializable;
+
 
 public class ResultSetContainer implements Serializable {
 

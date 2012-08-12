@@ -1,7 +1,8 @@
-package com.data2semantics.yasgui.shared;
+package com.data2semantics.yasgui.shared.rdf;
 
 import java.io.Serializable;
 import java.util.HashMap;
+
 
 public class SolutionContainer implements Serializable {
 	private static final long serialVersionUID = 1L;

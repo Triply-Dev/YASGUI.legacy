@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.shared.Prefix;
-import com.data2semantics.yasgui.shared.RdfNodeContainer;
-import com.data2semantics.yasgui.shared.ResultSetContainer;
-import com.data2semantics.yasgui.shared.SolutionContainer;
+import com.data2semantics.yasgui.shared.rdf.RdfNodeContainer;
+import com.data2semantics.yasgui.shared.rdf.ResultSetContainer;
+import com.data2semantics.yasgui.shared.rdf.SolutionContainer;
 import com.smartgwt.client.types.Autofit;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLPane;
@@ -20,6 +20,7 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 public class ResultGrid extends ListGrid {
 	private static String SOLUTION_PREFIX = "yasgui___solution";
 	private static String VARIABLE_PREFIX = "yasgui___var";
+	private static String XSD_DATA_PREFIX = "http://www.w3.org/2001/XMLSchema#";
 	private View view;
 	private HashMap<String, Prefix> prefixes;
 	public ResultGrid(View view) {
@@ -65,7 +66,7 @@ public class ResultGrid extends ListGrid {
 			SolutionContainer solution = (SolutionContainer) row.getAttributeAsObject(SOLUTION_PREFIX);
 			RdfNodeContainer node = solution.get(varName);
 			if (node.isUri()) {
-				String uri = row.getAttributeAsString(varName);
+				String uri = node.getValue();
 				Prefix prefix = getPrefixForUri(uri);
 				String text = uri;
 				if (prefix != null) {
@@ -76,8 +77,17 @@ public class ResultGrid extends ListGrid {
 				html.setHeight100();
 				html.setWidth100();
 				return html;
+			} else if (node.isLiteral()) {
+				String literal = node.getValue();
+				Label label = new Label(literal);
+				if (node.getDatatypeUri() != null) {
+					label.setPrompt("xsd:" + node.getDatatypeUri().substring(XSD_DATA_PREFIX.length()));
+				}
+				return label;
 			} else {
-				Label label = new Label(row.getAttributeAsString(colName));
+				//is bnode
+				String uri = node.getValue();
+				Label label = new Label(uri);
 				return label;
 			}
 		}
