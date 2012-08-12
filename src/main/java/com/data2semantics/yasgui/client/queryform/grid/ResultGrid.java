@@ -9,10 +9,15 @@ import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.rdf.RdfNodeContainer;
 import com.data2semantics.yasgui.shared.rdf.ResultSetContainer;
 import com.data2semantics.yasgui.shared.rdf.SolutionContainer;
+import com.google.gwt.user.client.Window;
 import com.smartgwt.client.types.Autofit;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLPane;
 import com.smartgwt.client.widgets.Label;
+import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.LinkItem;
+import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
+import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
@@ -66,12 +71,13 @@ public class ResultGrid extends ListGrid {
 			SolutionContainer solution = (SolutionContainer) row.getAttributeAsObject(SOLUTION_PREFIX);
 			RdfNodeContainer node = solution.get(varName);
 			if (node.isUri()) {
-				String uri = node.getValue();
+				final String uri = node.getValue();
 				Prefix prefix = getPrefixForUri(uri);
 				String text = uri;
 				if (prefix != null) {
 					text = prefix.getPrefix() + ":" + uri.substring(prefix.getUri().length());
 				}
+				
 				HTMLPane html = new HTMLPane();
 				html.setContents("<a href=\"" + uri + "\" target=\"_blank\">" + text + "</a>");
 				html.setHeight100();
@@ -80,6 +86,8 @@ public class ResultGrid extends ListGrid {
 			} else if (node.isLiteral()) {
 				String literal = node.getValue();
 				Label label = new Label(literal);
+				label.setHeight100();
+				label.setWidth100();
 				if (node.getDatatypeUri() != null) {
 					label.setPrompt("xsd:" + node.getDatatypeUri().substring(XSD_DATA_PREFIX.length()));
 				}
