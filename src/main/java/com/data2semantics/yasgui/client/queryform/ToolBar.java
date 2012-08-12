@@ -58,7 +58,7 @@ public class ToolBar extends ToolStrip {
 	
 	private void addButtons() {
 		Button queryButton = new Button("Query");
-		queryButton.setHeight(18);
+		queryButton.setHeight100();
 		queryButton.setWidth(110);
 		queryButton.setAlign(Alignment.CENTER);
 		queryButton.addClickHandler(new ClickHandler() {
