@@ -1,5 +1,6 @@
 package com.data2semantics.yasgui.client;
 
+import com.data2semantics.yasgui.shared.Settings;
 import com.data2semantics.yasgui.shared.SparqlRuntimeException;
 import com.data2semantics.yasgui.shared.rdf.ResultSetContainer;
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -10,7 +11,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("YasguiService")
 public interface YasguiService extends RemoteService {
-  ResultSetContainer queryGetObject(String endpoint, String query) throws IllegalArgumentException, SparqlRuntimeException;
-  String queryGetText(String endpoint, String query, String format) throws IllegalArgumentException, SparqlRuntimeException;
+  ResultSetContainer queryGetObject(Settings settings) throws IllegalArgumentException, SparqlRuntimeException;
+  String queryGetText(Settings settings) throws IllegalArgumentException, SparqlRuntimeException;
   
 }

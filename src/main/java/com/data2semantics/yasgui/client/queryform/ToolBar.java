@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.queryform.grid.ResultGrid;
 import com.data2semantics.yasgui.shared.Output;
+import com.data2semantics.yasgui.shared.Settings;
 import com.data2semantics.yasgui.shared.rdf.ResultSetContainer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -23,13 +24,9 @@ public class ToolBar extends ToolStrip {
 	private SelectItem outputSelection;
 	public ToolBar(View view) {
 		this.view = view;
-		
         setWidth100();
-        
         addOutputSelection();
-        
         addButtons();
-        
 	}
 
 	private void addOutputSelection() {
@@ -64,10 +61,12 @@ public class ToolBar extends ToolStrip {
 		queryButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				getView().storePrefixes();
+				getView().updateSettings();
+				Settings settings = getView().getSettings();
 				if (getSelectedOutput().equals(Output.OUTPUT_TABLE)) {
 					final ResultGrid queryTable = new ResultGrid(getView());
 					getView().addQueryResult(queryTable);
-					getView().getRemoteService().queryGetObject(getView().getEndpoint(), View.getQuery(View.QUERY_INPUT_ID),
+					getView().getRemoteService().queryGetObject(settings,
 							new AsyncCallback<ResultSetContainer>() {
 								public void onFailure(Throwable caught) {
 									getView().onError(caught.getMessage());

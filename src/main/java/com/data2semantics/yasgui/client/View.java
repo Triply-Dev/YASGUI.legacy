@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import com.data2semantics.yasgui.client.queryform.ToolBar;
 import com.data2semantics.yasgui.client.queryform.grid.ResultGrid;
 import com.data2semantics.yasgui.shared.Prefix;
+import com.data2semantics.yasgui.shared.Settings;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.ui.TextArea;
@@ -33,6 +34,7 @@ public class View extends VLayout {
 	private ResultGrid queryTable;
 	private VLayout queryResultContainer = new VLayout();
 	private HashMap<String, Prefix> prefixes = new HashMap<String, Prefix>();
+	private Settings settings;
 
 	public View() {
 		setMargin(10);
@@ -157,5 +159,15 @@ public class View extends VLayout {
 	
 	public Logger getLogger() {
 		return this.logger;
+	}
+	
+	public Settings getSettings() {
+		return this.settings;
+	}
+	public void updateSettings() {
+		settings = new Settings();
+		settings.setQueryString(getQuery(QUERY_INPUT_ID));
+		settings.setEndpoint(getEndpoint());
+		settings.setOutputFormat(getToolBar().getSelectedOutput());
 	}
 }
