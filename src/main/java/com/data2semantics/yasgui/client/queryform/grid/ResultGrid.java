@@ -44,9 +44,13 @@ public class ResultGrid extends ListGrid {
 	public void drawQueryResults(ResultSetContainer resultSet) {
 		List<ListGridField> listGridFields = getVarsAsListGridFields(resultSet.getResultVars());
 		setFields(listGridFields.toArray(new ListGridField[listGridFields.size()]));
-
-		List<ListGridRecord> rows = getSolutionsAsGridRecords(resultSet.getQuerySolutions());
-		setData(rows.toArray(new ListGridRecord[rows.size()]));
+		if (resultSet.getQuerySolutions().size() > 0) {
+			List<ListGridRecord> rows = getSolutionsAsGridRecords(resultSet.getQuerySolutions());
+			setData(rows.toArray(new ListGridRecord[rows.size()]));
+		} else {
+			setEmptyMessage("No results");
+			redraw();
+		}
 	}
 
 	
