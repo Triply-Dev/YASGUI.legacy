@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+    <title>Codemirror Test</title>
+	<script src="js/codemirror/codemirror.js"></script>
+	<script type="text/javascript">var sparqlHighlight;</script>
+	<link rel="stylesheet" href="js/codemirror/codemirror.css">
+	<link rel="stylesheet" href="js/codemirror/util/simple-hint.css">
+	<script src="js/codemirror/mode/sparql/sparql.js"></script>
+	<script src="js/codemirror/util/simple-hint.js"></script>
+	<script src="js/codemirror/prefix-hint.js"></script>
+  </head>
+
+  <body>
+
+	<textarea id="test" style="width:400px;height:300px;">PREFIX aers: &lt;http://aers.data2semantics.org/resource/&gt; 
+SELECT * {&lt;http://aers.data2semantics.org/resource/report/5578636&gt; ?f ?g} LIMIT 50</textarea>
+	<script type="text/javascript">
+
+    CodeMirror.commands.autocomplete = function(cm) {
+      CodeMirror.simpleHint(cm, CodeMirror.prefixHint);
+    }
+		var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("test"),  {
+		      lineNumbers: true,
+		      extraKeys: {"Ctrl-Space": "autocomplete"}
+	    });
+	</script>
+  </body>
+</html>

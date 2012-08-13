@@ -27,6 +27,7 @@ public class View extends VLayout {
 	private static String DEFAULT_QUERY = "PREFIX aers: <http://aers.data2semantics.org/resource/> \n" +
 			"SELECT * {<http://aers.data2semantics.org/resource/report/5578636> ?f ?g} LIMIT 50";
 //	"SELECT * {?d <http://aers.data2semantics.org/vocab/event_date> ?t} LIMIT 10";
+	private HashMap<String, String> prefixCC = new HashMap<String, String>();
 	private static String DEFAULT_ENDPOINT = "http://eculture2.cs.vu.nl:5020/sparql/";
 	private TextItem endpoint;
 	private TextArea queryInput;
@@ -40,6 +41,8 @@ public class View extends VLayout {
 		setMargin(10);
 		setWidth100();
 		this.toolBar = new ToolBar(this);
+		prefixCC.put("aers", "http://aers.data2semantics.org/resource/");
+		prefixCC.put("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 		addMember(this.toolBar);
 		// Img img = new Img("xml.png");
 		// addMember(img);
