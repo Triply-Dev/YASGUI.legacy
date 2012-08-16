@@ -30,7 +30,7 @@ public class ResultGrid extends ListGrid {
 	private HashMap<String, Prefix> prefixes;
 	public ResultGrid(View view) {
 		this.view = view;
-		this.prefixes = getView().getPrefixes();
+		this.prefixes = getView().getQueryPrefixes();
 		setWidth100();
 		setHeight(350);
 		setShowRecordComponents(true);

@@ -1,5 +1,7 @@
 package com.data2semantics.yasgui.client;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
@@ -7,8 +9,12 @@ import com.data2semantics.yasgui.client.queryform.ToolBar;
 import com.data2semantics.yasgui.client.queryform.grid.ResultGrid;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.Settings;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.TextArea;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLPane;
@@ -24,25 +30,25 @@ public class View extends VLayout {
 	private Logger logger = Logger.getLogger("");
 	private YasguiServiceAsync remoteService = YasguiServiceAsync.Util.getInstance();
 	public static String QUERY_INPUT_ID = "queryInput";
+	private static String COOKIE_PREFIXES = "prefixes";
 	private static String DEFAULT_QUERY = "PREFIX aers: <http://aers.data2semantics.org/resource/> \n" +
 			"SELECT * {<http://aers.data2semantics.org/resource/report/5578636> ?f ?g} LIMIT 50";
 //	"SELECT * {?d <http://aers.data2semantics.org/vocab/event_date> ?t} LIMIT 10";
-	private HashMap<String, String> prefixCC = new HashMap<String, String>();
+	private JSONArray prefixes = new JSONArray();
 	private static String DEFAULT_ENDPOINT = "http://eculture2.cs.vu.nl:5020/sparql/";
 	private TextItem endpoint;
 	private TextArea queryInput;
 	private ToolBar toolBar;
 	private ResultGrid queryTable;
 	private VLayout queryResultContainer = new VLayout();
-	private HashMap<String, Prefix> prefixes = new HashMap<String, Prefix>();
+	private HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
 	private Settings settings;
 
 	public View() {
+		
 		setMargin(10);
 		setWidth100();
 		this.toolBar = new ToolBar(this);
-		prefixCC.put("aers", "http://aers.data2semantics.org/resource/");
-		prefixCC.put("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 		addMember(this.toolBar);
 		// Img img = new Img("xml.png");
 		// addMember(img);
@@ -58,6 +64,8 @@ public class View extends VLayout {
 		endpointForm.setFields(endpoint);
 		addMember(endpointForm);
 		addMember(queryResultContainer);
+		setAutocompletePrefixes();
+		
 	}
 
 	private String getTextArea() {
@@ -72,7 +80,6 @@ public class View extends VLayout {
 
 	public static native void attachCodeMirror(String queryInputId) /*-{
 		if ($doc.getElementById(queryInputId)) {
-			$wnd.prefixes = ["aers: bwah", "aebs: sdf"];
 			$wnd.CodeMirror.commands.autocomplete = function(cm) {
 				$wnd.CodeMirror.simpleHint(cm, $wnd.CodeMirror.prefixHint);
 			}
@@ -84,6 +91,29 @@ public class View extends VLayout {
 				extraKeys: {"Ctrl-Space": "autocomplete"}
 			});
 		}
+	}-*/;
+	
+	private void setAutocompletePrefixes() {
+		String prefixesString = Cookies.getCookie(COOKIE_PREFIXES);
+		
+		if (prefixesString == null) {
+			getLogger().severe("fetching prefixes from server");
+			//get prefixes from server
+			prefixes.set(prefixes.size(), new JSONString("aers: <http://aers.data2semantics.org/resource/>\n"));
+			prefixes.set(prefixes.size(), new JSONString("rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"));
+			prefixesString = prefixes.toString();
+			
+			Date expires = new Date();
+			long nowLong = expires.getTime();
+			nowLong = nowLong + (1000 * 60 * 60 * 24 * 1);//one day
+			expires.setTime(nowLong);
+			Cookies.setCookie(COOKIE_PREFIXES, prefixesString, expires);
+		}
+		setAutocompletePrefixes(prefixesString);
+	}
+	
+	private static native void setAutocompletePrefixes(String prefixes) /*-{
+		$wnd.prefixes = eval(prefixes);
 	}-*/;
 
 	public static native String getQuery(String queryInputId) /*-{
@@ -119,12 +149,12 @@ public class View extends VLayout {
 		while (true) {
 			MatchResult matcher = regExp.exec(query);
 			if (matcher == null) break;
-			prefixes.put(matcher.getGroup(2), new Prefix(matcher.getGroup(1), matcher.getGroup(2)));
+			queryPrefixes.put(matcher.getGroup(2), new Prefix(matcher.getGroup(1), matcher.getGroup(2)));
 	    }
 	}
 	
-	public HashMap<String, Prefix> getPrefixes() {
-		return this.prefixes;
+	public HashMap<String, Prefix> getQueryPrefixes() {
+		return this.queryPrefixes;
 	}
 	
 	public void onError(String error) {
