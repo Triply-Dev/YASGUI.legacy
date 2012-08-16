@@ -18,7 +18,7 @@
 	<textarea id="test" style="width:400px;height:300px;">PREFIX aers: &lt;http://aers.data2semantics.org/resource/&gt; 
 SELECT * {&lt;http://aers.data2semantics.org/resource/report/5578636&gt; ?f ?g} LIMIT 50</textarea>
 	<script type="text/javascript">
-
+	var prefixes = ["aers: bwah", "aebs: sdf"];
     CodeMirror.commands.autocomplete = function(cm) {
       CodeMirror.simpleHint(cm, CodeMirror.prefixHint);
     }

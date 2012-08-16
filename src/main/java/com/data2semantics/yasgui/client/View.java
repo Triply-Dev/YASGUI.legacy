@@ -133,10 +133,8 @@ public class View extends VLayout {
 		window.setShowModalMask(true);
 		window.setAutoCenter(true);
 		window.addCloseClickHandler(new CloseClickHandler() {
-			@Override
 			public void onCloseClick(CloseClickEvent event) {
 				window.destroy();
-				
 			}
 		});
 		Label label = new Label(error);

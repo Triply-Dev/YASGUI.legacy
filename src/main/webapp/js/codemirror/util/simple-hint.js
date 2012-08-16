@@ -4,7 +4,9 @@
     if (editor.somethingSelected()) return;
     //don't show completion if the token is empty
     var tempToken = editor.getTokenAt(editor.getCursor());
-    if(!(/[\S]/gi.test(tempToken.string))) return;
+    
+    //We want to process empty tokens (see if the token before is relevant)
+    //if(!(/[\S]/gi.test(tempToken.string))) return;
 
     var result = getHints(editor);
     if (!result || !result.list.length) return;

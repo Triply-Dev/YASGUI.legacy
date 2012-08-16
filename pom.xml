@@ -83,6 +83,7 @@
     	<version>2.5.0-rc1</version>
     	<type>pom</type>
     </dependency>
+    
   </dependencies>
 
   <build>
