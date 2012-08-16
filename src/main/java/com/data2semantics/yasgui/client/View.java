@@ -72,12 +72,16 @@ public class View extends VLayout {
 
 	public static native void attachCodeMirror(String queryInputId) /*-{
 		if ($doc.getElementById(queryInputId)) {
-			$wnd.sparqlHighlight = $wnd.CodeMirror.fromTextArea($doc
-					.getElementById(queryInputId), {
+			$wnd.prefixes = ["aers: bwah", "aebs: sdf"];
+			$wnd.CodeMirror.commands.autocomplete = function(cm) {
+				$wnd.CodeMirror.simpleHint(cm, $wnd.CodeMirror.prefixHint);
+			}
+			$wnd.sparqlHighlight = $wnd.CodeMirror.fromTextArea($doc.getElementById(queryInputId), {
 				mode : "application/x-sparql-query",
 				tabMode : "indent",
 				lineNumbers: true,
-				matchBrackets : true
+				matchBrackets : true,
+				extraKeys: {"Ctrl-Space": "autocomplete"}
 			});
 		}
 	}-*/;

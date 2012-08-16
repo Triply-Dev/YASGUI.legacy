@@ -1,6 +1,6 @@
 .CodeMirror-completions {
   position: absolute;
-  z-index: 10;
+  z-index: 10000;
   overflow: hidden;
   -webkit-box-shadow: 2px 3px 5px rgba(0,0,0,.2);
   -moz-box-shadow: 2px 3px 5px rgba(0,0,0,.2);
@@ -12,5 +12,6 @@
   border: none;
   padding: 0;
   margin: 0;
+  z-index: 10001;
   font-family: monospace;
 }

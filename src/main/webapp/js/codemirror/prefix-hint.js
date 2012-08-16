@@ -58,7 +58,7 @@
 			return e.getTokenAt(cur);
 		});
 	};
-
+	
 	function getCompletions(token, keywords) {
 		//the keywords should contain the prefixes
 		//Start: end of string being typed
