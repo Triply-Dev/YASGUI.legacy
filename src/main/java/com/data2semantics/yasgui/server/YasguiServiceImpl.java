@@ -1,9 +1,20 @@
 package com.data2semantics.yasgui.server;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+
 import com.data2semantics.yasgui.client.YasguiService;
 import com.data2semantics.yasgui.shared.Output;
 import com.data2semantics.yasgui.shared.Settings;
@@ -88,5 +99,30 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 			resultSetContainer.addQuerySolution(solutionContainer);
 		}
 		return resultSetContainer;
+	}
+
+	@Override
+	public String fetchPrefixes(boolean forceUpdate) throws IllegalArgumentException {
+		JSONArray prefixes = new JSONArray();
+		DefaultHttpClient httpclient = new DefaultHttpClient();
+
+        HttpGet httpget = new HttpGet("http://prefix.cc/popular/all.json");
+		try {
+			HttpResponse response = httpclient.execute(httpget);
+			HttpEntity entity = response.getEntity();
+			System.out.println(EntityUtils.toString(entity));
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        
+		
+		prefixes.put("aers: <http://aers.data2semantics.org/resource/>\n");
+		prefixes.put("rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n");
+		return prefixes.toString();
 	}
 }

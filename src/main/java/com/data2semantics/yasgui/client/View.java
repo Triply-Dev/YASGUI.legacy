@@ -1,20 +1,16 @@
 package com.data2semantics.yasgui.client;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Logger;
-
 import com.data2semantics.yasgui.client.queryform.ToolBar;
 import com.data2semantics.yasgui.client.queryform.grid.ResultGrid;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.Settings;
-import com.google.gwt.json.client.JSONArray;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONString;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.TextArea;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLPane;
@@ -34,7 +30,7 @@ public class View extends VLayout {
 	private static String DEFAULT_QUERY = "PREFIX aers: <http://aers.data2semantics.org/resource/> \n" +
 			"SELECT * {<http://aers.data2semantics.org/resource/report/5578636> ?f ?g} LIMIT 50";
 //	"SELECT * {?d <http://aers.data2semantics.org/vocab/event_date> ?t} LIMIT 10";
-	private JSONArray prefixes = new JSONArray();
+	
 	private static String DEFAULT_ENDPOINT = "http://eculture2.cs.vu.nl:5020/sparql/";
 	private TextItem endpoint;
 	private TextArea queryInput;
@@ -95,26 +91,41 @@ public class View extends VLayout {
 	
 	private void setAutocompletePrefixes() {
 		String prefixesString = Cookies.getCookie(COOKIE_PREFIXES);
-		
-		if (prefixesString == null) {
+//		if (prefixesString == null) {
+		if (true) {
 			getLogger().severe("fetching prefixes from server");
 			//get prefixes from server
-			prefixes.set(prefixes.size(), new JSONString("aers: <http://aers.data2semantics.org/resource/>\n"));
-			prefixes.set(prefixes.size(), new JSONString("rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"));
-			prefixesString = prefixes.toString();
 			
-			Date expires = new Date();
-			long nowLong = expires.getTime();
-			nowLong = nowLong + (1000 * 60 * 60 * 24 * 1);//one day
-			expires.setTime(nowLong);
-			Cookies.setCookie(COOKIE_PREFIXES, prefixesString, expires);
+			getRemoteService().fetchPrefixes(true,
+					new AsyncCallback<String>() {
+						public void onFailure(Throwable caught) {
+							onError(caught.getMessage());
+						}
+						public void onSuccess(String prefixes) {
+							Date expires = new Date();
+							long nowLong = expires.getTime();
+							nowLong = nowLong + (1000 * 60 * 60 * 24 * 1);//one day
+							expires.setTime(nowLong);
+							Cookies.setCookie(COOKIE_PREFIXES, prefixes, expires);
+							setAutocompletePrefixes(prefixes);
+						}
+					});
+//			prefixes.set(prefixes.size(), new JSONString("aers: <http://aers.data2semantics.org/resource/>\n"));
+//			prefixes.set(prefixes.size(), new JSONString("rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"));
+//			prefixesString = prefixes.toString();
+//			
+			
+			
+		} else {
+			setAutocompletePrefixes(prefixesString);
 		}
-		setAutocompletePrefixes(prefixesString);
+		
 	}
 	
 	private static native void setAutocompletePrefixes(String prefixes) /*-{
 		$wnd.prefixes = eval(prefixes);
 	}-*/;
+	
 
 	public static native String getQuery(String queryInputId) /*-{
 		query = "";
