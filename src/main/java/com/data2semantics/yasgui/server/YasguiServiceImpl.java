@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.regex.Pattern;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -17,11 +18,14 @@ import org.json.JSONArray;
 
 import com.data2semantics.yasgui.client.YasguiService;
 import com.data2semantics.yasgui.shared.Output;
+import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.Settings;
 import com.data2semantics.yasgui.shared.SparqlRuntimeException;
 import com.data2semantics.yasgui.shared.rdf.RdfNodeContainer;
 import com.data2semantics.yasgui.shared.rdf.ResultSetContainer;
 import com.data2semantics.yasgui.shared.rdf.SolutionContainer;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
@@ -110,7 +114,12 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 		try {
 			HttpResponse response = httpclient.execute(httpget);
 			HttpEntity entity = response.getEntity();
-			System.out.println(EntityUtils.toString(entity));
+			
+			//Gives back json, but in html... (setting accept header doesnt help). Need to parse it manually. blegh
+			String regex = "(.*<pre class=\"source json\">)(.*)(</pre>.*)";
+			String updated = Pattern.compile(regex, Pattern.DOTALL | Pattern.MULTILINE).matcher(EntityUtils.toString(entity)).replaceAll("$2");
+			
+			
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
