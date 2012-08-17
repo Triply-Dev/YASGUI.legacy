@@ -22,17 +22,21 @@
 		var cur = editor.getCursor(), token = getToken(editor, cur), tprop = token;
 
 		//First token of line needs to be PREFIX
-		if (getToken(editor, {
-			line : cur.line,
-			ch : 1
-		}).string != "PREFIX")
-			return;
-
+		if (getToken(editor, {line : cur.line,ch : 1}).string != "PREFIX") return;
+		
+		if (token.string == "PREFIX") {
+			//Cursor is immediately after prefix. Move it one item to the right, and set token as empty string
+			editor.replaceRange(" ", {line : cur.line,ch : token.end}, {line : cur.line,ch : token.end + 1});
+			token = tprop = {
+					start : cur.ch + 1,
+					end : cur.ch + 1,
+					string : "",
+					state : token.state
+				};
+		}
+		
 		//If this is a whitespace, and token is just after PREFIX, proceed using empty string as token
-		if (/\s*/.test(token.string) && getToken(editor, {
-			line : cur.line,
-			ch : tprop.start
-		}).string == "PREFIX") {
+		if (/\s*/.test(token.string) && getToken(editor, {line : cur.line,ch : tprop.start}).string == "PREFIX") {
 			token = tprop = {
 				start : cur.ch,
 				end : cur.ch,

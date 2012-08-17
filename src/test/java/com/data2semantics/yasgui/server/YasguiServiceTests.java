@@ -2,7 +2,6 @@ package com.data2semantics.yasgui.server;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.PrintWriter;
 
 import junit.framework.TestCase;
@@ -27,7 +26,6 @@ public class YasguiServiceTests extends TestCase {
 		File cacheFile = new File(testDir.getAbsolutePath() + "/" + Prefixes.CACHE_FILENAME);
 		assertTrue("No cache file created", cacheFile.exists());
 		
-		
 		PrintWriter writer = new PrintWriter(cacheFile);
 		writer.print("");
 		writer.close();
@@ -36,8 +34,6 @@ public class YasguiServiceTests extends TestCase {
 		
 		result = Prefixes.fetch(true, testDir);
 		assertTrue("Forcing update, so should have a cache file with content", result.length() > 0);
-		
-		
 	}
 	
 	
