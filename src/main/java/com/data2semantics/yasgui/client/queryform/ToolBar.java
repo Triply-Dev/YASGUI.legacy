@@ -99,6 +99,7 @@ public class ToolBar extends ToolStrip {
 				
 			}
 		});
+		addMember(forcePrefixUpdate);
 
 	}
 	private View getView() {

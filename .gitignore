@@ -5,3 +5,5 @@ src/main/webapp/WEB-INF/lib
 src/main/webapp/Yasgui
 src/main/webapp/WEB-INF/deploy
 .settings
+www-test
+gwt-unitCache

@@ -104,16 +104,11 @@ public class View extends VLayout {
 							long nowLong = expires.getTime();
 							nowLong = nowLong + (1000 * 60 * 60 * 24 * 1);//one day
 							expires.setTime(nowLong);
+							Cookies.removeCookie(COOKIE_PREFIXES);//appearently need to remove before setting it. Won't work otherwise
 							Cookies.setCookie(COOKIE_PREFIXES, prefixes, expires);
 							setAutocompletePrefixes(prefixes);
 						}
 					});
-//			prefixes.set(prefixes.size(), new JSONString("aers: <http://aers.data2semantics.org/resource/>\n"));
-//			prefixes.set(prefixes.size(), new JSONString("rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"));
-//			prefixesString = prefixes.toString();
-//			
-			
-			
 		} else {
 			setAutocompletePrefixes(prefixesString);
 		}
