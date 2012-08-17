@@ -1,6 +1,5 @@
 package com.data2semantics.yasgui.client;
 
-import com.google.gwt.json.client.JSONArray;
 import com.data2semantics.yasgui.shared.Settings;
 import com.data2semantics.yasgui.shared.SparqlRuntimeException;
 import com.data2semantics.yasgui.shared.rdf.ResultSetContainer;
