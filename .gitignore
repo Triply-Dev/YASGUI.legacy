@@ -7,3 +7,4 @@ src/main/webapp/WEB-INF/deploy
 .settings
 www-test
 gwt-unitCache
+junitTest

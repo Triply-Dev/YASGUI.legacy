@@ -22,10 +22,10 @@ import org.json.JSONTokener;
 public class Prefixes {
 	public static String CACHE_FILENAME = "prefixes.json";
 	public static String PREFIX_CC_URL = "http://prefix.cc/popular/all.file.json";
-	public static String fetch(boolean forceUpdate, String cacheDir) {
+	public static String fetch(boolean forceUpdate, File cacheDir) {
 		String result = "";
 		JSONArray prefixes = new JSONArray();
-		File file = new File(cacheDir + CACHE_FILENAME);
+		File file = new File(cacheDir + "/" + CACHE_FILENAME);
 		boolean updateFile = forceUpdate;
 		if (!updateFile) {
 			if (!file.exists()) {
