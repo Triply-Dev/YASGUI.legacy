@@ -17,7 +17,7 @@
 		return arr.indexOf(item) != -1;
 	}
 
-	function scriptHint(editor, prefixes, getToken) {
+	function prefixHint(editor, prefixes, getToken) {
 		// Find the token at the cursor
 		var cur = editor.getCursor(), token = getToken(editor, cur), tprop = token;
 
@@ -25,6 +25,7 @@
 		if (getToken(editor, {line : cur.line,ch : 1}).string != "PREFIX") return;
 		
 		if (token.string == "PREFIX") {
+		
 			//Cursor is immediately after prefix. Move it one item to the right, and set token as empty string
 			editor.replaceRange(" ", {line : cur.line,ch : token.end}, {line : cur.line,ch : token.end + 1});
 			token = tprop = {
@@ -58,7 +59,7 @@
 	}
 
 	CodeMirror.prefixHint = function(editor) {
-		return scriptHint(editor, prefixes, function(e, cur) {
+		return prefixHint(editor, prefixes, function(e, cur) {
 			return e.getTokenAt(cur);
 		});
 	};

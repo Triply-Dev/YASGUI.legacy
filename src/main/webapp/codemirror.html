@@ -1,16 +1,25 @@
 <!doctype html>
 <html>
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
-    <title>Codemirror Test</title>
-	<script src="js/codemirror/codemirror.js"></script>
-	<script type="text/javascript">var sparqlHighlight;</script>
-	<link rel="stylesheet" href="js/codemirror/codemirror.css">
-	<link rel="stylesheet" href="js/codemirror/util/simple-hint.css">
-	<script src="js/codemirror/mode/sparql/sparql.js"></script>
-	<script src="js/codemirror/util/simple-hint.js"></script>
-	<script src="js/codemirror/prefix-hint.js"></script>
+<title>Codemirror Test</title>
+<script src="js/codemirror/codemirror.js"></script>
+<script type="text/javascript">var sparqlHighlight;</script>
+<link rel="stylesheet" href="js/codemirror/codemirror.css">
+<link rel="stylesheet" href="js/codemirror/util/simple-hint.css">
+<script src="js/codemirror/mode/sparql/sparql.js"></script>
+<script src="js/codemirror/util/simple-hint.js"></script>
+<script src="js/codemirror/util/searchcursor.js"></script>
+<script src="js/codemirror/util/match-highlighter.js"></script>
+<style type="text/css">
+span.CodeMirror-matchhighlight {
+	background: #e9e9e9
+}
+.CodeMirror-focused span.CodeMirror-matchhighlight {
+	background: #e7e4ff;!important
+}
+</style><script src="js/codemirror/prefix-hint.js"></script>
   </head>
 
   <body>
@@ -24,8 +33,17 @@ SELECT * {&lt;http://aers.data2semantics.org/resource/report/5578636&gt; ?f ?g} 
     }
 		var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("test"),  {
 		      lineNumbers: true,
-		      extraKeys: {"Ctrl-Space": "autocomplete"}
+		      extraKeys: {"Ctrl-Space": "autocomplete"},
+		      onCursorActivity: function() {
+				    myCodeMirror.matchHighlight("CodeMirror-matchhighlight");
+				  },
+		      onChange: function(cm) {
+		    	  CodeMirror.simpleHint(cm, CodeMirror.prefixHint);
+		      }
 	    });
+		
+
+
 	</script>
   </body>
 </html>

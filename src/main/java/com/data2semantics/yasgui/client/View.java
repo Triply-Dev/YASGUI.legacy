@@ -79,12 +79,18 @@ public class View extends VLayout {
 			$wnd.CodeMirror.commands.autocomplete = function(cm) {
 				$wnd.CodeMirror.simpleHint(cm, $wnd.CodeMirror.prefixHint);
 			}
-			$wnd.sparqlHighlight = $wnd.CodeMirror.fromTextArea($doc.getElementById(queryInputId), {
+			$wnd.sparqlHighlight = $wnd.CodeMirror.fromTextArea($doc
+					.getElementById(queryInputId), {
 				mode : "application/x-sparql-query",
 				tabMode : "indent",
-				lineNumbers: true,
+				lineNumbers : true,
 				matchBrackets : true,
-				extraKeys: {"Ctrl-Space": "autocomplete"}
+				onCursorActivity : function() {
+					$wnd.sparqlHighlight.matchHighlight("CodeMirror-matchhighlight");
+				},
+				onChange : function(cm) {
+					$wnd.CodeMirror.simpleHint(cm, $wnd.CodeMirror.prefixHint);
+				}
 			});
 		}
 	}-*/;
