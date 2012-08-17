@@ -60,7 +60,7 @@ public class View extends VLayout {
 		endpointForm.setFields(endpoint);
 		addMember(endpointForm);
 		addMember(queryResultContainer);
-		setAutocompletePrefixes();
+		setAutocompletePrefixes(false);
 		
 	}
 
@@ -89,14 +89,12 @@ public class View extends VLayout {
 		}
 	}-*/;
 	
-	private void setAutocompletePrefixes() {
+	public void setAutocompletePrefixes(boolean forceUpdate) {
 		String prefixesString = Cookies.getCookie(COOKIE_PREFIXES);
-//		if (prefixesString == null) {
-		if (true) {
+		if (forceUpdate || prefixesString == null) {
 			getLogger().severe("fetching prefixes from server");
 			//get prefixes from server
-			
-			getRemoteService().fetchPrefixes(true,
+			getRemoteService().fetchPrefixes(forceUpdate,
 					new AsyncCallback<String>() {
 						public void onFailure(Throwable caught) {
 							onError(caught.getMessage());

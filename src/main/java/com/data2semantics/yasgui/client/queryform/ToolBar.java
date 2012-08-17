@@ -88,6 +88,17 @@ public class ToolBar extends ToolStrip {
 			}
 		});
 		addMember(queryButton);
+		
+		Button forcePrefixUpdate = new Button("For prefixes update");
+		forcePrefixUpdate.setHeight100();
+		forcePrefixUpdate.setWidth(200);
+		forcePrefixUpdate.setAlign(Alignment.CENTER);
+		forcePrefixUpdate.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				getView().setAutocompletePrefixes(true);
+				
+			}
+		});
 
 	}
 	private View getView() {

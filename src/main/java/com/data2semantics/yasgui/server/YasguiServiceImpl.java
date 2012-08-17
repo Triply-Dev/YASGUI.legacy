@@ -1,7 +1,11 @@
 package com.data2semantics.yasgui.server;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -10,6 +14,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.TreeMap;
 
@@ -103,38 +108,70 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 	}
 
 	public String fetchPrefixes(boolean forceUpdate) throws IllegalArgumentException {
+		String result = "";
 		JSONArray prefixes = new JSONArray();
-		try {
-			URI uri = new URI("http://prefix.cc/popular/all.file.json");
-			BufferedReader reader = new BufferedReader(new InputStreamReader(uri.toURL().openStream()));
-			JSONTokener tokener = new JSONTokener(reader);
-			JSONObject jsonObject = new JSONObject(tokener);
-
-			// Get list of keys, and sort them
-			@SuppressWarnings("unchecked")
-			Iterator<String> keys = jsonObject.keys();
-			ArrayList<String> keysList = new ArrayList<String>();
-			while (keys.hasNext()) {
-				keysList.add(keys.next());
-			}
-			Collections.sort(keysList);
-
-			// Build new JSONArray (JSONArray is sorted, JSONObject is not)
-			// using this keylist
-			for (String key : keysList) {
-				if (!jsonObject.isNull(key)) {
-					prefixes.put(key + ": <" + jsonObject.getString(key) + ">\n");
+		String myWebFilesPath = getServletContext().getRealPath("/cache");
+		String fileName = "prefixes.json";
+		File file = new File(myWebFilesPath + fileName);
+		boolean updateFile = forceUpdate;
+		if (!updateFile) {
+			if (!file.exists()) {
+				updateFile = true;
+			} else {
+				Long now = new Date().getTime();
+				Long lastModified = file.lastModified();
+				if ((now - lastModified) > 1000 * 60 * 60 * 24 * 1) {
+					updateFile = true;
 				}
 			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
-		return prefixes.toString();
+		if (updateFile) {
+			try {
+				URI uri = new URI("http://prefix.cc/popular/all.file.json");
+				BufferedReader reader = new BufferedReader(new InputStreamReader(uri.toURL().openStream()));
+				JSONTokener tokener = new JSONTokener(reader);
+				JSONObject jsonObject = new JSONObject(tokener);
+	
+				// Get list of keys, and sort them
+				@SuppressWarnings("unchecked")
+				Iterator<String> keys = jsonObject.keys();
+				ArrayList<String> keysList = new ArrayList<String>();
+				while (keys.hasNext()) {
+					keysList.add(keys.next());
+				}
+				Collections.sort(keysList);
+	
+				// Build new JSONArray (JSONArray is sorted, JSONObject is not)
+				// using this keylist
+				for (String key : keysList) {
+					if (!jsonObject.isNull(key)) {
+						prefixes.put(key + ": <" + jsonObject.getString(key) + ">\n");
+					}
+				}
+				result = prefixes.toString();
+				//Write to file on server
+
+				BufferedWriter out = new BufferedWriter(new FileWriter(file));
+				out.write(result);
+				out.close();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			try {
+				result = Helper.readFile(file);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return result;
 	}
 }
