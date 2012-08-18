@@ -24,26 +24,111 @@ span.CodeMirror-matchhighlight {
 
   <body>
 
-	<textarea id="test" style="width:400px;height:300px;">PREFIX aers: &lt;http://aers.data2semantics.org/resource/&gt; 
-SELECT * {&lt;http://aers.data2semantics.org/resource/report/5578636&gt; ?f ?g} LIMIT 50</textarea>
+	<textarea id="test" style="width:400px;height:300px;">PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
+PREFIX : &lt;http://aers.data2semantics.org/vocab/&gt; PREFIX patient: &lt;http://www.data2semantics.org/ontology/patient/&gt;
+SELECT DISTINCT ?age 
+?comment 
+{
+?patient rdfs:comment ?comment.
+OPTIONAL{?patient patient:usesMedication ?drug.?drug rdfs:label ?drug_label;skos:exactMatch ?drug_sameAs.?drug_sameAs &lt;http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/primaryAccessionNo&gt; ?pan .}.
+OPTIONAL{?patient patient:hasStatus ?status}.
+OPTIONAL{
+?patient patient:hasDiagnosis ?indication.
+OPTIONAL{
+?indication rdfs:label ?indication_label.
+}
+}.
+OPTIONAL{?patient patient:hadPreviousIndication ?previousIndication}.
+}
+</textarea>
 	<script type="text/javascript">
 	var prefixes = ["aers: bwah", "aebs: sdf"];
     CodeMirror.commands.autocomplete = function(cm) {
       CodeMirror.simpleHint(cm, CodeMirror.prefixHint);
     }
-		var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("test"),  {
-		      lineNumbers: true,
-		      extraKeys: {"Ctrl-Space": "autocomplete"},
-		      onCursorActivity: function() {
-				    myCodeMirror.matchHighlight("CodeMirror-matchhighlight");
-				  },
-		      onChange: function(cm) {
-		    	  CodeMirror.simpleHint(cm, CodeMirror.prefixHint);
-		      }
-	    });
+    //Make sure deleteLine also -removes- the line
+    CodeMirror.commands.deleteLines = function(cm) {
+    	var startLine = cm.getCursor(true).line;
+    	var endLine = cm.getCursor(false).line;
+    	var min = Math.min(startLine, endLine);
+    	var max = Math.max(startLine, endLine);
+    	for (var i=min; i <= max; i++) {
+    		//Do not remove i, because line counter changes after deleting 1 line. 
+    		//Therefore, keep on deleting the minimum of the selection
+    		cm.removeLine(min);
+    	}
+    	
+    }
+    CodeMirror.commands.commentLines = function(cm) {
+    	var startLine = cm.getCursor(true).line;
+    	var endLine = cm.getCursor(false).line;
+    	var min = Math.min(startLine, endLine);
+    	var max = Math.max(startLine, endLine);
+    	
+    	//if all lines start with #, remove this char. Otherwise add this char
+    	var linesAreCommented = true;
+    	for (var i=min; i <= max; i++) {
+    		var line = cm.getLine(i);
+    		if (line.length == 0 || line.substring(0,1) != "#") {
+    			linesAreCommented = false;
+    			break;
+    		}
+    	}
+    	for (var i=min; i <= max; i++) {
+    		if (linesAreCommented) {
+    			//lines are commented, so remove comments
+    			cm.replaceRange("", {line: i, ch: 0}, {line: i, ch: 1});
+    		} else {
+    			//Not all lines are commented, so add comments
+    			cm.replaceRange("#", {line: i, ch: 0});
+    		}
+    		
+    	}
+		}
+
+		CodeMirror.commands.copyLineUp = function(cm) {
+			var cursor = cm.getCursor();
+			var lineCount = cm.lineCount();
+			var text = cm.getLine(cursor.line);
+			//First create new empty line at end of text
+			cm.replaceRange("\n", {line: lineCount-1, ch: cm.getLine(lineCount-1).length});
+			//Copy all lines to their next line
+			for (var i = lineCount; i > cursor.line; i--) {
+				cm.setLine(i, cm.getLine(i-1));
+			}
+		}
+		CodeMirror.commands.copyLineDown = function(cm) {
+			var cursor = cm.getCursor();
+			var lineCount = cm.lineCount();
+			var text = cm.getLine(cursor.line);
+			//First create new empty line at end of text
+			cm.replaceRange("\n", {line: lineCount-1, ch: cm.getLine(lineCount-1).length});
+			//Copy all lines to their next line
+			for (var i = lineCount; i > cursor.line; i--) {
+				cm.setLine(i, cm.getLine(i-1));
+			}
+			//Make sure cursor goes one down (we are copying downwards)
+			cursor.line++;
+			cm.setCursor(cursor);
+		}
 		
-
-
+		var myCodeMirror = CodeMirror.fromTextArea(document
+				.getElementById("test"), {
+			lineNumbers : true,
+			extraKeys : {
+				"Ctrl-Space" : "autocomplete",
+				"Ctrl-D" : "deleteLines",
+				"Ctrl-/" : "commentLines",
+				"Ctrl-Alt-Down" : "copyLineDown",
+				"Ctrl-Alt-Up" : "copyLineUp"
+			},
+			onCursorActivity : function() {
+				myCodeMirror.matchHighlight("CodeMirror-matchhighlight");
+			},
+			onChange : function(cm) {
+				CodeMirror.simpleHint(cm, CodeMirror.prefixHint);
+			}
+		});
 	</script>
-  </body>
+</body>
 </html>

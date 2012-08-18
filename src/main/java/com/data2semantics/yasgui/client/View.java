@@ -79,8 +79,7 @@ public class View extends VLayout {
 			$wnd.CodeMirror.commands.autocomplete = function(cm) {
 				$wnd.CodeMirror.simpleHint(cm, $wnd.CodeMirror.prefixHint);
 			}
-			$wnd.sparqlHighlight = $wnd.CodeMirror.fromTextArea($doc
-					.getElementById(queryInputId), {
+			$wnd.sparqlHighlight = $wnd.CodeMirror.fromTextArea($doc.getElementById(queryInputId), {
 				mode : "application/x-sparql-query",
 				tabMode : "indent",
 				lineNumbers : true,
