@@ -73,3 +73,52 @@ function copyLinesBelow(cm) {
 		cm.setLine(i, cm.getLine(i - 1));
 	}
 }
+var clearError = function() {};
+var markerHandle = null;
+function checkSyntax(cm) {
+    var queryValid=true;
+    if (clearError!=null) { clearError(); clearError=null; };
+    if (markerHandle != null) cm.clearMarker(markerHandle);
+    for (var l=0; l<cm.lineCount(); ++l) {
+	var state= cm.getTokenAt({line:l, ch: cm.getLine(l).length}).state;
+	if (state.OK==false) {
+	    markerHandle= 
+		cm.setMarker(l, 
+			     "<span style=\"color: #f00 ; font-size: large;\">&rarr;</span> %N%");
+	    clearError = cm.markText(
+		{line:l, ch:state.errorStartPos},
+		{line:l, ch:state.errorEndPos}, 
+		"sp-error");
+	    queryValid=false;
+	    break;
+	}
+    }
+    var stack=state.stack, len=state.stack.length;
+    // Because incremental parser doesn't receive end-of-input
+    // it can't clear stack, so we have to check that whatever
+    // is left on the stack is nillable
+    if (len>1) queryValid=false;
+    else if (len==1) {
+	if (stack[0]!="solutionModifier" &&
+	    stack[0]!="?limitOffsetClauses" &&
+	    stack[0]!="?offsetClause")
+	    queryValid=false;
+    }
+
+    if (queryValid) {
+//	submitItemCoolbar.enable();
+//	submitItemEndpointBar.enable();
+//	datasetMimeTypeItem.setDisableElements(state.queryType);
+//	endpointMimeTypeItem.setDisableElements(state.queryType);
+//	statusArea.setQueryValid(true);
+//	statusArea.updateStatus();
+    } else {
+//	submitItemCoolbar.disable();
+//	submitItemEndpointBar.disable();
+//	datasetMimeTypeItem.setDisableElements(state.queryType);	
+//	endpointMimeTypeItem.setDisableElements(state.queryType);
+//	statusArea.setQueryValid(false);
+//	statusArea.updateStatus();
+    }		    
+}
+

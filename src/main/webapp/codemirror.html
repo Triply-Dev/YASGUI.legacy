@@ -4,17 +4,19 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
 <title>Codemirror Test</title>
-<script src="js/codemirrorLib/codemirror.js"></script>
+<script src="externals/codemirror/codemirror.js"></script>
 <script type="text/javascript">var sparqlHighlight;</script>
-<link rel="stylesheet" href="js/codemirrorLib/codemirror.css">
-<link rel="stylesheet" href="js/codemirrorLib/util/simple-hint.css">
-<link rel="stylesheet" href="js/codemirror/custom.css">
-<script src="js/codemirrorLib/mode/sparql/sparql.js"></script>
-<script src="js/codemirrorLib/util/simple-hint.js"></script>
-<script src="js/codemirrorLib/util/searchcursor.js"></script>
-<script src="js/codemirrorLib/util/match-highlighter.js"></script>
-<script src="js/codemirror/addCommands.js"></script>
-<script src="js/codemirror/prefix-hint.js"></script>
+<link rel="stylesheet" href="externals/codemirror/codemirror.css">
+<link rel="stylesheet" href="externals/codemirror/util/simple-hint.css">
+<link rel="stylesheet" href="externals/yasgui.css">
+<!-- <script src="js/codemirror/mode/sparql/sparql.js"></script>-->
+<script src="externals/codemirror/util/simple-hint.js"></script>
+<script src="externals/codemirror/util/searchcursor.js"></script>
+<script src="externals/codemirror/util/match-highlighter.js"></script>
+<script src="externals/addCommands.js"></script>
+<script src="externals/prefix-hint.js"></script>
+<script src="externals/flint/sparql.js"></script>
+<link rel="stylesheet" href="externals/flint/sparql.css">
   </head>
 
   <body>
@@ -55,6 +57,9 @@ OPTIONAL{?patient patient:hadPreviousIndication ?previousIndication}.
 			},
 			onChange : function(cm) {
 				CodeMirror.simpleHint(cm, CodeMirror.prefixHint);
+			},
+			onHighlightComplete:  function(cm) {
+				checkSyntax(cm);
 			}
 		});
 	</script>
