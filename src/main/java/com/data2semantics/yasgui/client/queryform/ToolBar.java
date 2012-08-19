@@ -91,7 +91,7 @@ public class ToolBar extends ToolStrip {
 		});
 		addMember(queryButton);
 		
-		Button forcePrefixUpdate = new Button("For prefixes update");
+		Button forcePrefixUpdate = new Button("Force prefixes update");
 		forcePrefixUpdate.setHeight100();
 		forcePrefixUpdate.setWidth(200);
 		forcePrefixUpdate.setAlign(Alignment.CENTER);

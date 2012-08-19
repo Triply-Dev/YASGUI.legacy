@@ -75,7 +75,6 @@ public class View extends VLayout {
 	public void setAutocompletePrefixes(boolean forceUpdate) {
 		String prefixesString = Cookies.getCookie(COOKIE_PREFIXES);
 		if (forceUpdate || prefixesString == null) {
-			getLogger().severe("fetching prefixes from server");
 			//get prefixes from server
 			getRemoteService().fetchPrefixes(forceUpdate,
 					new AsyncCallback<String>() {

@@ -26,6 +26,9 @@ public class JsMethods {
 					"Ctrl-Alt-Down" : "copyLineDown",
 					"Ctrl-Alt-Up" : "copyLineUp"
 				},
+				onHighlightComplete : function(cm) {
+					$wnd.checkSyntax(cm);
+				}
 			});
 		}
 	}-*/;
