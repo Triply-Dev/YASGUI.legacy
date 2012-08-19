@@ -3,9 +3,13 @@ package com.data2semantics.yasgui.client;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Logger;
+
+import com.data2semantics.yasgui.client.queryform.Helper;
 import com.data2semantics.yasgui.client.queryform.ToolBar;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.Settings;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Cookies;
@@ -24,20 +28,17 @@ public class View extends VLayout {
 	private Logger logger = Logger.getLogger("");
 	private YasguiServiceAsync remoteService = YasguiServiceAsync.Util.getInstance();
 	public static String QUERY_INPUT_ID = "queryInput";
-	private static String COOKIE_PREFIXES = "prefixes";
-	private static String DEFAULT_QUERY = "PREFIX aers: <http://aers.data2semantics.org/resource/> \n" +
-			"SELECT * {<http://aers.data2semantics.org/resource/report/5578636> ?f ?g} LIMIT 50";
-//	"SELECT * {?d <http://aers.data2semantics.org/vocab/event_date> ?t} LIMIT 10";
+	private static String COOKIE_PREFIXES = "yasgui_prefixes";
+	private static String COOKIE_SETTINGS = "yasgui_settings";
 	
-	private static String DEFAULT_ENDPOINT = "http://eculture2.cs.vu.nl:5020/sparql/";
 	private TextItem endpoint;
 	private ToolBar toolBar;
 	private VLayout queryResultContainer = new VLayout();
 	private HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
-	private Settings settings;
+	private Settings settings = new Settings();
 
 	public View() {
-		
+		getSettingsFromCookie();
 		setMargin(10);
 		setWidth100();
 		this.toolBar = new ToolBar(this);
@@ -52,7 +53,7 @@ public class View extends VLayout {
 		endpoint = new TextItem();
 		endpoint.setTitle("Endpoint");
 		endpoint.setWidth(250);
-		endpoint.setDefaultValue(DEFAULT_ENDPOINT);
+		endpoint.setDefaultValue(settings.getEndpoint());
 		endpointForm.setFields(endpoint);
 		addMember(endpointForm);
 		addMember(queryResultContainer);
@@ -61,7 +62,7 @@ public class View extends VLayout {
 	}
 
 	private String getTextArea() {
-		String textArea = "" + "<textarea " + "id=\"" + QUERY_INPUT_ID + "\"" + ">" + DEFAULT_QUERY + "</textarea>";
+		String textArea = "" + "<textarea " + "id=\"" + QUERY_INPUT_ID + "\"" + ">" + settings.getQueryString() + "</textarea>";
 		return textArea;
 
 	}
@@ -174,6 +175,19 @@ public class View extends VLayout {
 	
 	public Settings getSettings() {
 		return this.settings;
+	}
+	
+	public void storeSettingsInCookie() {
+		updateSettings();
+		Cookies.removeCookie(COOKIE_SETTINGS);
+		Cookies.setCookie(COOKIE_SETTINGS, Helper.getHashMapAsJson(settings.getSettingsHashMap()));
+	}
+	
+	public void getSettingsFromCookie() {
+		String jsonString = Cookies.getCookie(COOKIE_SETTINGS);
+		if (jsonString != null && jsonString.length() > 0) {
+			settings = Helper.getSettingsFromJsonString(jsonString);
+		} 
 	}
 	public void updateSettings() {
 		settings = new Settings();

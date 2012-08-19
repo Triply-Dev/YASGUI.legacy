@@ -24,7 +24,8 @@ public class JsMethods {
 					"Ctrl-D" : "deleteLines",
 					"Ctrl-/" : "commentLines",
 					"Ctrl-Alt-Down" : "copyLineDown",
-					"Ctrl-Alt-Up" : "copyLineUp"
+					"Ctrl-Alt-Up" : "copyLineUp",
+					"Ctrl-S": "doNothing"
 				},
 				onHighlightComplete : function(cm) {
 					$wnd.checkSyntax(cm);

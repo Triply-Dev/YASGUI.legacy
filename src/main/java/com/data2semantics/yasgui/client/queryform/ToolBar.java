@@ -62,8 +62,9 @@ public class ToolBar extends ToolStrip {
 		queryButton.setAlign(Alignment.CENTER);
 		queryButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				getView().storePrefixes();
 				getView().updateSettings();
+				getView().storeSettingsInCookie();
+				getView().storePrefixes();
 				Settings settings = getView().getSettings();
 				if (getSelectedOutput().equals(Output.OUTPUT_TABLE)) {
 					final ResultGrid queryTable = new ResultGrid(getView());
