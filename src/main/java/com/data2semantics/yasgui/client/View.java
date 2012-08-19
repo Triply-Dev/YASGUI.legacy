@@ -8,14 +8,18 @@ import com.data2semantics.yasgui.client.queryform.Helper;
 import com.data2semantics.yasgui.client.queryform.ToolBar;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.Settings;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.types.Positioning;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLPane;
+import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.CloseClickEvent;
@@ -30,7 +34,7 @@ public class View extends VLayout {
 	public static String QUERY_INPUT_ID = "queryInput";
 	private static String COOKIE_PREFIXES = "yasgui_prefixes";
 	private static String COOKIE_SETTINGS = "yasgui_settings";
-	
+	private Label loading;
 	private TextItem endpoint;
 	private ToolBar toolBar;
 	private VLayout queryResultContainer = new VLayout();
@@ -39,6 +43,7 @@ public class View extends VLayout {
 
 	public View() {
 		getSettingsFromCookie();
+		initLoadingWidget();
 		setMargin(10);
 		setWidth100();
 		this.toolBar = new ToolBar(this);
@@ -76,6 +81,7 @@ public class View extends VLayout {
 	public void setAutocompletePrefixes(boolean forceUpdate) {
 		String prefixesString = Cookies.getCookie(COOKIE_PREFIXES);
 		if (forceUpdate || prefixesString == null) {
+			onLoadingStart();
 			//get prefixes from server
 			getRemoteService().fetchPrefixes(forceUpdate,
 					new AsyncCallback<String>() {
@@ -90,6 +96,7 @@ public class View extends VLayout {
 							Cookies.removeCookie(COOKIE_PREFIXES);//appearently need to remove before setting it. Won't work otherwise
 							Cookies.setCookie(COOKIE_PREFIXES, prefixes, expires);
 							JsMethods.setAutocompletePrefixes(prefixes);
+							onLoadingFinish();
 						}
 					});
 		} else {
@@ -97,11 +104,6 @@ public class View extends VLayout {
 		}
 		
 	}
-	
-	
-	
-
-	
 	
 	public void resetQueryResult() {
 		Canvas[] members = queryResultContainer.getMembers();
@@ -160,10 +162,32 @@ public class View extends VLayout {
 		}
 		onError(st);
 	}
-
-	public void onLoadingFinish() {
-		// loading.loadingEnd();
+	
+	private void initLoadingWidget() {
+		loading = new Label("Loading...");
+		loading.setIcon("loading.gif");
+		loading.setBackgroundColor("#f0f0f0");
+		loading.setBorder("1px solid grey");
+		loading.getElement().getStyle().setPosition(Position.ABSOLUTE);
+		loading.getElement().getStyle().setBottom(0, Unit.PX);
+		loading.getElement().getStyle().setLeft(0, Unit.PX);
+		loading.setHeight(30);
+		loading.setWidth(80);
+		loading.setAlign(Alignment.CENTER);
+		loading.adjustForContent(false);
+		loading.hide();
+		loading.redraw();
+		
 	}
+	
+	public void onLoadingStart() {
+		loading.show();
+	}
+	
+	public void onLoadingFinish() {
+		loading.hide();
+	}
+	
 
 	public YasguiServiceAsync getRemoteService() {
 		return remoteService;
