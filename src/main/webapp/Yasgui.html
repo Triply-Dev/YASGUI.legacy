@@ -15,26 +15,28 @@
 <link type="text/css" rel="stylesheet" href="Yasgui.css">
 
 <title>YASGUI</title>
-<script src="js/codemirror/codemirror.js"></script>
+
+<!-- Main codemirror stuff -->
+<script src="js/codemirrorLib/codemirror.js"></script>
 <script type="text/javascript">
 	var sparqlHighlight;
 	var prefixes;
 </script>
-<link rel="stylesheet" href="js/codemirror/codemirror.css">
-<link rel="stylesheet" href="js/codemirror/util/simple-hint.css">
-<script src="js/codemirror/mode/sparql/sparql.js"></script>
-<script src="js/codemirror/util/simple-hint.js"></script>
+<link rel="stylesheet" href="js/codemirrorLib/codemirror.css">
+<script src="js/codemirrorLib/mode/sparql/sparql.js"></script>
+<!-- Autocompletion code -->
+<link rel="stylesheet" href="js/codemirrorLib/util/simple-hint.css">
+<script src="js/codemirrorLib/util/simple-hint.js"></script>
 <script src="js/codemirror/prefix-hint.js"></script>
-<script src="js/codemirror/util/searchcursor.js"></script>
-<script src="js/codemirror/util/match-highlighter.js"></script>
-<style type="text/css">
-span.CodeMirror-matchhighlight {
-	background: #e9e9e9
-}
-.CodeMirror-focused span.CodeMirror-matchhighlight {
-	background: #e7e4ff;!important
-}
-</style>
+<!-- Highlight words onclick code -->
+<script src="js/codemirrorLib/util/searchcursor.js"></script>
+<script src="js/codemirrorLib/util/match-highlighter.js"></script>
+<link rel="stylesheet" href="js/codemirror/custom.css">
+<!-- Code for adding custom keycombination/mouseclick commands to codemirror -->
+<script src="js/codemirror/addCommands.js"></script>
+
+
+
 <!--                                           -->
 <!-- This script loads your compiled module.   -->
 <!-- If you add any GWT meta tags, they must   -->

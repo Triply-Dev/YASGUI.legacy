@@ -4,14 +4,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Logger;
 import com.data2semantics.yasgui.client.queryform.ToolBar;
-import com.data2semantics.yasgui.client.queryform.grid.ResultGrid;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.Settings;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.TextArea;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLPane;
 import com.smartgwt.client.widgets.Label;
@@ -33,9 +31,7 @@ public class View extends VLayout {
 	
 	private static String DEFAULT_ENDPOINT = "http://eculture2.cs.vu.nl:5020/sparql/";
 	private TextItem endpoint;
-	private TextArea queryInput;
 	private ToolBar toolBar;
-	private ResultGrid queryTable;
 	private VLayout queryResultContainer = new VLayout();
 	private HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
 	private Settings settings;
@@ -74,25 +70,7 @@ public class View extends VLayout {
 		return this.toolBar;
 	}
 
-	public static native void attachCodeMirror(String queryInputId) /*-{
-		if ($doc.getElementById(queryInputId)) {
-			$wnd.CodeMirror.commands.autocomplete = function(cm) {
-				$wnd.CodeMirror.simpleHint(cm, $wnd.CodeMirror.prefixHint);
-			}
-			$wnd.sparqlHighlight = $wnd.CodeMirror.fromTextArea($doc.getElementById(queryInputId), {
-				mode : "application/x-sparql-query",
-				tabMode : "indent",
-				lineNumbers : true,
-				matchBrackets : true,
-				onCursorActivity : function() {
-					$wnd.sparqlHighlight.matchHighlight("CodeMirror-matchhighlight");
-				},
-				onChange : function(cm) {
-					$wnd.CodeMirror.simpleHint(cm, $wnd.CodeMirror.prefixHint);
-				}
-			});
-		}
-	}-*/;
+	
 	
 	public void setAutocompletePrefixes(boolean forceUpdate) {
 		String prefixesString = Cookies.getCookie(COOKIE_PREFIXES);
@@ -111,30 +89,19 @@ public class View extends VLayout {
 							expires.setTime(nowLong);
 							Cookies.removeCookie(COOKIE_PREFIXES);//appearently need to remove before setting it. Won't work otherwise
 							Cookies.setCookie(COOKIE_PREFIXES, prefixes, expires);
-							setAutocompletePrefixes(prefixes);
+							JsMethods.setAutocompletePrefixes(prefixes);
 						}
 					});
 		} else {
-			setAutocompletePrefixes(prefixesString);
+			JsMethods.setAutocompletePrefixes(prefixesString);
 		}
 		
 	}
 	
-	private static native void setAutocompletePrefixes(String prefixes) /*-{
-		$wnd.prefixes = eval(prefixes);
-	}-*/;
+	
 	
 
-	public static native String getQuery(String queryInputId) /*-{
-		query = "";
-		$wnd.sparqlHighlight.save();
-		if ($doc.getElementById(queryInputId)) {
-			if ($doc.getElementById(queryInputId).value) {
-				query = $doc.getElementById(queryInputId).value;
-			}
-		}
-		return query;
-	}-*/;
+	
 	
 	public void resetQueryResult() {
 		Canvas[] members = queryResultContainer.getMembers();
@@ -152,8 +119,9 @@ public class View extends VLayout {
 		return endpoint.getValueAsString();
 	}
 	
+	
 	public void storePrefixes() {
-		String query = getQuery(QUERY_INPUT_ID);
+		String query = JsMethods.getQuery(QUERY_INPUT_ID);
 		RegExp regExp = RegExp.compile("^\\s*PREFIX\\s*(\\w*):\\s*<(.*)>\\s*$", "gm");
 		while (true) {
 			MatchResult matcher = regExp.exec(query);
@@ -210,7 +178,7 @@ public class View extends VLayout {
 	}
 	public void updateSettings() {
 		settings = new Settings();
-		settings.setQueryString(getQuery(QUERY_INPUT_ID));
+		settings.setQueryString(JsMethods.getQuery(QUERY_INPUT_ID));
 		settings.setEndpoint(getEndpoint());
 		settings.setOutputFormat(getToolBar().getSelectedOutput());
 	}

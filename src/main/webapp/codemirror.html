@@ -4,22 +4,17 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
 <title>Codemirror Test</title>
-<script src="js/codemirror/codemirror.js"></script>
+<script src="js/codemirrorLib/codemirror.js"></script>
 <script type="text/javascript">var sparqlHighlight;</script>
-<link rel="stylesheet" href="js/codemirror/codemirror.css">
-<link rel="stylesheet" href="js/codemirror/util/simple-hint.css">
-<script src="js/codemirror/mode/sparql/sparql.js"></script>
-<script src="js/codemirror/util/simple-hint.js"></script>
-<script src="js/codemirror/util/searchcursor.js"></script>
-<script src="js/codemirror/util/match-highlighter.js"></script>
-<style type="text/css">
-span.CodeMirror-matchhighlight {
-	background: #e9e9e9
-}
-.CodeMirror-focused span.CodeMirror-matchhighlight {
-	background: #e7e4ff;!important
-}
-</style><script src="js/codemirror/prefix-hint.js"></script>
+<link rel="stylesheet" href="js/codemirrorLib/codemirror.css">
+<link rel="stylesheet" href="js/codemirrorLib/util/simple-hint.css">
+<link rel="stylesheet" href="js/codemirror/custom.css">
+<script src="js/codemirrorLib/mode/sparql/sparql.js"></script>
+<script src="js/codemirrorLib/util/simple-hint.js"></script>
+<script src="js/codemirrorLib/util/searchcursor.js"></script>
+<script src="js/codemirrorLib/util/match-highlighter.js"></script>
+<script src="js/codemirror/addCommands.js"></script>
+<script src="js/codemirror/prefix-hint.js"></script>
   </head>
 
   <body>
@@ -43,74 +38,7 @@ OPTIONAL{?patient patient:hadPreviousIndication ?previousIndication}.
 </textarea>
 	<script type="text/javascript">
 	var prefixes = ["aers: bwah", "aebs: sdf"];
-    CodeMirror.commands.autocomplete = function(cm) {
-      CodeMirror.simpleHint(cm, CodeMirror.prefixHint);
-    }
-    //Make sure deleteLine also -removes- the line
-    CodeMirror.commands.deleteLines = function(cm) {
-    	var startLine = cm.getCursor(true).line;
-    	var endLine = cm.getCursor(false).line;
-    	var min = Math.min(startLine, endLine);
-    	var max = Math.max(startLine, endLine);
-    	for (var i=min; i <= max; i++) {
-    		//Do not remove i, because line counter changes after deleting 1 line. 
-    		//Therefore, keep on deleting the minimum of the selection
-    		cm.removeLine(min);
-    	}
-    	
-    }
-    CodeMirror.commands.commentLines = function(cm) {
-    	var startLine = cm.getCursor(true).line;
-    	var endLine = cm.getCursor(false).line;
-    	var min = Math.min(startLine, endLine);
-    	var max = Math.max(startLine, endLine);
-    	
-    	//if all lines start with #, remove this char. Otherwise add this char
-    	var linesAreCommented = true;
-    	for (var i=min; i <= max; i++) {
-    		var line = cm.getLine(i);
-    		if (line.length == 0 || line.substring(0,1) != "#") {
-    			linesAreCommented = false;
-    			break;
-    		}
-    	}
-    	for (var i=min; i <= max; i++) {
-    		if (linesAreCommented) {
-    			//lines are commented, so remove comments
-    			cm.replaceRange("", {line: i, ch: 0}, {line: i, ch: 1});
-    		} else {
-    			//Not all lines are commented, so add comments
-    			cm.replaceRange("#", {line: i, ch: 0});
-    		}
-    		
-    	}
-		}
-
-		CodeMirror.commands.copyLineUp = function(cm) {
-			var cursor = cm.getCursor();
-			var lineCount = cm.lineCount();
-			var text = cm.getLine(cursor.line);
-			//First create new empty line at end of text
-			cm.replaceRange("\n", {line: lineCount-1, ch: cm.getLine(lineCount-1).length});
-			//Copy all lines to their next line
-			for (var i = lineCount; i > cursor.line; i--) {
-				cm.setLine(i, cm.getLine(i-1));
-			}
-		}
-		CodeMirror.commands.copyLineDown = function(cm) {
-			var cursor = cm.getCursor();
-			var lineCount = cm.lineCount();
-			var text = cm.getLine(cursor.line);
-			//First create new empty line at end of text
-			cm.replaceRange("\n", {line: lineCount-1, ch: cm.getLine(lineCount-1).length});
-			//Copy all lines to their next line
-			for (var i = lineCount; i > cursor.line; i--) {
-				cm.setLine(i, cm.getLine(i-1));
-			}
-			//Make sure cursor goes one down (we are copying downwards)
-			cursor.line++;
-			cm.setCursor(cursor);
-		}
+    
 		
 		var myCodeMirror = CodeMirror.fromTextArea(document
 				.getElementById("test"), {

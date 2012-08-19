@@ -1,6 +1,8 @@
 package com.data2semantics.yasgui.client.queryform;
 
 import java.util.LinkedHashMap;
+
+import com.data2semantics.yasgui.client.JsMethods;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.queryform.grid.ResultGrid;
 import com.data2semantics.yasgui.shared.Output;
@@ -80,7 +82,7 @@ public class ToolBar extends ToolStrip {
 					//TODO: use request builder:
 					//http://google-web-toolkit.googlecode.com/svn/javadoc/2.3/com/google/gwt/http/client/package-summary.html
 					String endpoint = SafeHtmlUtils.htmlEscape(getView().getEndpoint());
-					String query = View.getQuery(View.QUERY_INPUT_ID);
+					String query = JsMethods.getQuery(View.QUERY_INPUT_ID);
 					String format = getSelectedOutput();
 					String url = GWT.getModuleBaseURL() + "file?endpoint=" + endpoint + "&query=" + query + "&format=" + format;
 					Window.open(url, "YASGUI - " + format, "");
