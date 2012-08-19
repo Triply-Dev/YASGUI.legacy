@@ -50,31 +50,26 @@ CodeMirror.commands.commentLines = function(cm) {
 };
 
 CodeMirror.commands.copyLineUp = function(cm) {
-	var cursor = cm.getCursor();
-	var lineCount = cm.lineCount();
-	//First create new empty line at end of text
-	cm.replaceRange("\n", {
-		line : lineCount - 1,
-		ch : cm.getLine(lineCount - 1).length
-	});
-	//Copy all lines to their next line
-	for ( var i = lineCount; i > cursor.line; i--) {
-		cm.setLine(i, cm.getLine(i - 1));
-	}
+	copyLinesBelow(cm);
+	
 };
 CodeMirror.commands.copyLineDown = function(cm) {
-	var cursor = cm.getCursor();
-	var lineCount = cm.lineCount();
-	//First create new empty line at end of text
-	cm.replaceRange("\n", {
-		line : lineCount - 1,
-		ch : cm.getLine(lineCount - 1).length
-	});
-	//Copy all lines to their next line
-	for ( var i = lineCount; i > cursor.line; i--) {
-		cm.setLine(i, cm.getLine(i - 1));
-	}
+	copyLinesBelow(cm);
 	//Make sure cursor goes one down (we are copying downwards)
+	var cursor = cm.getCursor();
 	cursor.line++;
 	cm.setCursor(cursor);
 };
+function copyLinesBelow(cm) {
+	var cursor = cm.getCursor();
+	var lineCount = cm.lineCount();
+	//First create new empty line at end of text
+	cm.replaceRange("\n", {
+		line : lineCount - 1,
+		ch : cm.getLine(lineCount - 1).length
+	});
+	//Copy all lines to their next line
+	for ( var i = lineCount; i > cursor.line; i--) {
+		cm.setLine(i, cm.getLine(i - 1));
+	}
+}
