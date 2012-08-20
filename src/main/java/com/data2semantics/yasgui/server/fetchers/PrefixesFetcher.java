@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.server;
+package com.data2semantics.yasgui.server.fetchers;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -19,7 +19,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-public class Prefixes {
+import com.data2semantics.yasgui.server.Helper;
+
+public class PrefixesFetcher {
 	public static String CACHE_FILENAME = "prefixes.json";
 	public static String PREFIX_CC_URL = "http://prefix.cc/popular/all.file.json";
 	public static String fetch(boolean forceUpdate, File cacheDir) {

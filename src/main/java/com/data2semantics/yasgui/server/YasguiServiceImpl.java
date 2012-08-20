@@ -3,6 +3,7 @@ package com.data2semantics.yasgui.server;
 import java.io.File;
 
 import com.data2semantics.yasgui.client.YasguiService;
+import com.data2semantics.yasgui.server.fetchers.PrefixesFetcher;
 import com.data2semantics.yasgui.shared.Settings;
 import com.data2semantics.yasgui.shared.SparqlRuntimeException;
 import com.data2semantics.yasgui.shared.rdf.ResultSetContainer;
@@ -27,7 +28,7 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 	}
 
 	public String fetchPrefixes(boolean forceUpdate) throws IllegalArgumentException {
-		return Prefixes.fetch(forceUpdate, new File(getServletContext().getRealPath(CACHE_DIR)));
+		return PrefixesFetcher.fetch(forceUpdate, new File(getServletContext().getRealPath(CACHE_DIR)));
 	}
 	
 }
