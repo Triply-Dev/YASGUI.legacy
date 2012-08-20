@@ -40,6 +40,7 @@ public class Prefixes {
 		}
 		if (updateFile) {
 			try {
+				System.out.println("updating file on server");
 				URI uri = new URI(PREFIX_CC_URL);
 				BufferedReader reader = new BufferedReader(new InputStreamReader(uri.toURL().openStream()));
 				JSONTokener tokener = new JSONTokener(reader);
@@ -78,6 +79,7 @@ public class Prefixes {
 			}
 		} else {
 			try {
+				System.out.println("reading file on server");
 				result = Helper.readFile(file);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

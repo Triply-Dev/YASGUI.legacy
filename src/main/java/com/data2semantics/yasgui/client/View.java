@@ -8,7 +8,6 @@ import com.data2semantics.yasgui.client.queryform.Helper;
 import com.data2semantics.yasgui.client.queryform.ToolBar;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.Settings;
-import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.regexp.shared.MatchResult;
@@ -16,10 +15,8 @@ import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.types.Positioning;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLPane;
-import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.CloseClickEvent;
@@ -32,7 +29,6 @@ public class View extends VLayout {
 	private Logger logger = Logger.getLogger("");
 	private YasguiServiceAsync remoteService = YasguiServiceAsync.Util.getInstance();
 	public static String QUERY_INPUT_ID = "queryInput";
-	private static String COOKIE_PREFIXES = "yasgui_prefixes";
 	private static String COOKIE_SETTINGS = "yasgui_settings";
 	private Label loading;
 	private TextItem endpoint;
@@ -79,29 +75,18 @@ public class View extends VLayout {
 	
 	
 	public void setAutocompletePrefixes(boolean forceUpdate) {
-		String prefixesString = Cookies.getCookie(COOKIE_PREFIXES);
-		if (forceUpdate || prefixesString == null) {
-			onLoadingStart();
-			//get prefixes from server
-			getRemoteService().fetchPrefixes(forceUpdate,
-					new AsyncCallback<String>() {
-						public void onFailure(Throwable caught) {
-							onError(caught.getMessage());
-						}
-						public void onSuccess(String prefixes) {
-							Date expires = new Date();
-							long nowLong = expires.getTime();
-							nowLong = nowLong + (1000 * 60 * 60 * 24 * 1);//one day
-							expires.setTime(nowLong);
-							Cookies.removeCookie(COOKIE_PREFIXES);//appearently need to remove before setting it. Won't work otherwise
-							Cookies.setCookie(COOKIE_PREFIXES, prefixes, expires);
-							JsMethods.setAutocompletePrefixes(prefixes);
-							onLoadingFinish();
-						}
-					});
-		} else {
-			JsMethods.setAutocompletePrefixes(prefixesString);
-		}
+		onLoadingStart();
+		//get prefixes from server
+		getRemoteService().fetchPrefixes(forceUpdate,
+		new AsyncCallback<String>() {
+			public void onFailure(Throwable caught) {
+				onError(caught.getMessage());
+			}
+			public void onSuccess(String prefixes) {
+				JsMethods.setAutocompletePrefixes(prefixes);
+				onLoadingFinish();
+			}
+		});
 		
 	}
 	
