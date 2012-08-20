@@ -22,24 +22,14 @@
   <body>
 
 	<textarea id="test" style="width:400px;height:300px;">PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
-PREFIX : &lt;http://aers.data2semantics.org/vocab/&gt; PREFIX patient: &lt;http://www.data2semantics.org/ontology/patient/&gt;
-SELECT DISTINCT ?age 
-?comment 
+PREFIX : &lt;http://aers.data2semantics.org/vocab/&gt; 
+SELECT DISTINCT *
 {
 ?patient rdfs:comment ?comment.
-OPTIONAL{?patient patient:usesMedication ?drug.?drug rdfs:label ?drug_label;skos:exactMatch ?drug_sameAs.?drug_sameAs &lt;http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugbank/primaryAccessionNo&gt; ?pan .}.
-OPTIONAL{?patient patient:hasStatus ?status}.
-OPTIONAL{
-?patient patient:hasDiagnosis ?indication.
-OPTIONAL{
-?indication rdfs:label ?indication_label.
-}
-}.
-OPTIONAL{?patient patient:hadPreviousIndication ?previousIndication}.
 }
 </textarea>
 	<script type="text/javascript">
-	var prefixes = ["aers: bwah", "aebs: sdf"];
+	var prefixes = ["aers: <bwah>", "aebs: <sdf>"];
     
 		
 		var myCodeMirror = CodeMirror.fromTextArea(document
