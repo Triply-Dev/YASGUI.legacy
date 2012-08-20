@@ -89,6 +89,11 @@
     	<artifactId>httpclient</artifactId>
     	<version>4.2.1</version>
     </dependency>
+    <dependency>
+    	<groupId>org.json</groupId>
+    	<artifactId>json</artifactId>
+    	<version>20090211</version>
+    </dependency>
   </dependencies>
 
   <build>
