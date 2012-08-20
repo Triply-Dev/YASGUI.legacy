@@ -1442,101 +1442,101 @@ CodeMirror.defineMode("sparql", function(config, parserConfig) {
 
 		    { name: "WS", 
 		      regex:new RegExp("^"+WS+"+"), 
-		      style:"sp-ws" }, 
+		      style:"ws" }, 
 
 		    { name: "COMMENT", 
 		      regex:new RegExp("^"+COMMENT), 
-		      style:"sp-comment" }, 
+		      style:"comment" }, 
 
 		    { name: "IRI_REF", 
 		      regex:new RegExp("^"+IRI_REF), 
-		      style:"sp-uri" }, 
+		      style:"variable-3" }, 
 
 		    { name: "VAR1", 
 		      regex:new RegExp("^"+VAR1), 
-		      style:"sp-var"}, 
+		      style:"variable-2"}, 
 
 		    { name: "VAR2", 
 		      regex:new RegExp("^"+VAR2), 
-		      style:"sp-var"},
+		      style:"variable-2"},
  
 		    { name: "LANGTAG", 
 		      regex:new RegExp("^"+LANGTAG), 
-		      style:"sp-punc"}, 
+		      style:"qualifier"}, 
 
 		    { name: "DOUBLE", 
 		      regex:new RegExp("^"+DOUBLE), 
-		      style:"sp-number" }, 
+		      style:"string" }, 
 
 		    { name: "DECIMAL", 
 		      regex:new RegExp("^"+DECIMAL), 
-		      style:"sp-number" }, 
+		      style:"string" }, 
 
 		    { name: "INTEGER", 
 		      regex:new RegExp("^"+INTEGER), 
-		      style:"sp-number" }, 
+		      style:"string" }, 
 
 		    { name: "DOUBLE_POSITIVE", 
 		      regex:new RegExp("^"+DOUBLE_POSITIVE), 
-		      style:"sp-number" }, 
+		      style:"string" }, 
 
 		    { name: "DECIMAL_POSITIVE", 
 		      regex:new RegExp("^"+DECIMAL_POSITIVE), 
-		      style:"sp-number" }, 
+		      style:"string" }, 
 
 		    { name: "INTEGER_POSITIVE", 
 		      regex:new RegExp("^"+INTEGER_POSITIVE), 
-		      style:"sp-number" }, 
+		      style:"string" }, 
 
 		    { name: "DOUBLE_NEGATIVE", 
 		      regex:new RegExp("^"+DOUBLE_NEGATIVE), 
-		      style:"sp-number" }, 
+		      style:"string" }, 
 
 		    { name: "DECIMAL_NEGATIVE", 
 		      regex:new RegExp("^"+DECIMAL_NEGATIVE), 
-		      style:"sp-number" }, 
+		      style:"string" }, 
 
 		    { name: "INTEGER_NEGATIVE", 
 		      regex:new RegExp("^"+INTEGER_NEGATIVE), 
-		      style:"sp-number" }, 
+		      style:"string" }, 
 
 		    { name: "STRING_LITERAL_LONG1", 
 		      regex:new RegExp("^"+STRING_LITERAL_LONG1), 
-		      style:"sp-literal" }, 
+		      style:"string" }, 
 
 		    { name: "STRING_LITERAL_LONG2", 
 		      regex:new RegExp("^"+STRING_LITERAL_LONG2), 
-		      style:"sp-literal" }, 
+		      style:"string" }, 
 
 		    { name: "STRING_LITERAL1", 
 		      regex:new RegExp("^"+STRING_LITERAL1), 
-		      style:"sp-literal" }, 
+		      style:"string" }, 
 
 		    { name: "STRING_LITERAL2", 
 		      regex:new RegExp("^"+STRING_LITERAL2), 
-		      style:"sp-literal" }, 
+		      style:"string" }, 
 
 		    // Enclosed comments won't be highlighted
 		    { name: "NIL", 
 		      regex:new RegExp("^"+NIL), 
-		      style:"sp-punc" }, 
+		      style:"meta" }, 
 
 		    // Enclosed comments won't be highlighted
 		    { name: "ANON", 
 		      regex:new RegExp("^"+ANON), 
-		      style:"sp-punc" }, 
+		      style:"meta" }, 
 
 		    { name: "PNAME_LN", 
 		      regex:new RegExp("^"+PNAME_LN), 
-		      style:"sp-prefixed" }, 
+		      style:"string-2" }, 
 
 		    { name: "PNAME_NS", 
 		      regex:new RegExp("^"+PNAME_NS), 
-		      style:"sp-prefixed" }, 
+		      style:"string-2" }, 
 
 		    { name: "BLANK_NODE_LABEL", 
 		      regex:new RegExp("^"+BLANK_NODE_LABEL), 
-		      style:"sp-prefixed" }
+		      style:"string-2" }
 		],
 
 		punct: /^(\*|a|\.|\{|\}|,|\(|\)|;|\[|\]|\|\||&&|=|!=|!|<=|>=|<|>|\+|-|\/|\^\^)/,
@@ -1586,7 +1586,7 @@ CodeMirror.defineMode("sparql", function(config, parserConfig) {
 	    consumed= stream.match(keywords,true,false);
 	    if (consumed)
 		return { cat: stream.current().toUpperCase(),
-			 style: "sp-keyword",
+			 style: "keyword",
 			 text: consumed[0]
 		       };
 	
@@ -1594,7 +1594,7 @@ CodeMirror.defineMode("sparql", function(config, parserConfig) {
 	    consumed= stream.match(punct,true,false);
 	    if (consumed) 
 		return { cat: stream.current(),
-			 style: "sp-punc",
+			 style: "meta",
 			 text: consumed[0]
 		       };
 	    
@@ -1602,7 +1602,7 @@ CodeMirror.defineMode("sparql", function(config, parserConfig) {
 	    // better consume something anyway, or else we're stuck
 	    consumed= stream.match(/^.[A-Za-z0-9]*/,true,false);
 	    return { cat:"<invalid_token>", 
-		     style: "sp-invalid",
+		     style: "error",
 		     text: consumed[0]
 		   };
 	}

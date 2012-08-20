@@ -4,3 +4,7 @@ span.CodeMirror-matchhighlight {
 .CodeMirror-focused span.CodeMirror-matchhighlight {
 	background: #e7e4ff;!important
 }
+.CodeMirror-gutter {
+	width: 37px;	
+}
+.cm-s-default span.cm-error { border-bottom:2px dotted red;}

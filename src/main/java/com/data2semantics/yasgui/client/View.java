@@ -1,9 +1,7 @@
 package com.data2semantics.yasgui.client;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Logger;
-
 import com.data2semantics.yasgui.client.queryform.Helper;
 import com.data2semantics.yasgui.client.queryform.ToolBar;
 import com.data2semantics.yasgui.shared.Prefix;
