@@ -53,10 +53,8 @@ CodeMirror.commands.copyLineUp = function(cm) {
 	copyLinesBelow(cm);
 	
 };
-CodeMirror.commands.doNothing = function(cm) {
-	//do nothign. Added to get rid of popup when pressing ctrl-s
-	//Should eventually save all settings to cookie when doing this
-	
+CodeMirror.commands.storeSettings = function(cm) {
+	storeSettingsInCookie();
 };
 CodeMirror.commands.copyLineDown = function(cm) {
 	copyLinesBelow(cm);

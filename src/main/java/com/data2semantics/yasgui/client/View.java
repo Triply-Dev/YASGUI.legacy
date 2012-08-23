@@ -10,7 +10,6 @@ import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.Canvas;
@@ -19,15 +18,20 @@ import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.CloseClickEvent;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
+import com.smartgwt.client.widgets.events.KeyPressEvent;
+import com.smartgwt.client.widgets.events.KeyPressHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
+import com.smartgwt.client.widgets.form.fields.events.BlurEvent;
+import com.smartgwt.client.widgets.form.fields.events.BlurHandler;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 public class View extends VLayout {
 	private Logger logger = Logger.getLogger("");
 	private YasguiServiceAsync remoteService = YasguiServiceAsync.Util.getInstance();
 	public static String QUERY_INPUT_ID = "queryInput";
-	private static String COOKIE_SETTINGS = "yasgui_settings";
+	
+	public static String ENDPOINT_INPUT_NAME = "EndpointInput";
 	private Label loading;
 	private TextItem endpoint;
 	private ToolBar toolBar;
@@ -36,7 +40,7 @@ public class View extends VLayout {
 	private Settings settings = new Settings();
 
 	public View() {
-		getSettingsFromCookie();
+		settings = Helper.getSettingsFromCookie();
 		initLoadingWidget();
 		setMargin(10);
 		setWidth100();
@@ -53,10 +57,27 @@ public class View extends VLayout {
 		endpoint.setTitle("Endpoint");
 		endpoint.setWidth(250);
 		endpoint.setDefaultValue(settings.getEndpoint());
+		endpoint.setName(ENDPOINT_INPUT_NAME);
+		endpoint.addBlurHandler(new BlurHandler() {
+			@Override
+			public void onBlur(BlurEvent event) {
+				updateSettings();
+			}
+			
+		});
 		endpointForm.setFields(endpoint);
 		addMember(endpointForm);
 		addMember(queryResultContainer);
 		setAutocompletePrefixes(false);
+		addKeyPressHandler(new KeyPressHandler() {
+			@Override
+			public void onKeyPress(KeyPressEvent event) {
+				if (event.isCtrlKeyDown() && event.getKeyName().equals("S")) {
+					//Save settings in cookie
+					Helper.getAndStoreSettingsInCookie();
+				}
+			}
+		});
 		
 	}
 
@@ -66,12 +87,6 @@ public class View extends VLayout {
 
 	}
 
-	private ToolBar getToolBar() {
-		return this.toolBar;
-	}
-
-	
-	
 	public void setAutocompletePrefixes(boolean forceUpdate) {
 		onLoadingStart();
 		//get prefixes from server
@@ -106,7 +121,7 @@ public class View extends VLayout {
 	
 	
 	public void storePrefixes() {
-		String query = JsMethods.getQuery(QUERY_INPUT_ID);
+		String query = JsMethods.getValueUsingId(QUERY_INPUT_ID);
 		RegExp regExp = RegExp.compile("^\\s*PREFIX\\s*(\\w*):\\s*<(.*)>\\s*$", "gm");
 		while (true) {
 			MatchResult matcher = regExp.exec(query);
@@ -184,22 +199,9 @@ public class View extends VLayout {
 		return this.settings;
 	}
 	
-	public void storeSettingsInCookie() {
-		updateSettings();
-		Cookies.removeCookie(COOKIE_SETTINGS);
-		Cookies.setCookie(COOKIE_SETTINGS, Helper.getHashMapAsJson(settings.getSettingsHashMap()));
+	public void updateSettings() {
+		settings = Helper.getSettings(); //Gets settings from all js objects
 	}
 	
-	public void getSettingsFromCookie() {
-		String jsonString = Cookies.getCookie(COOKIE_SETTINGS);
-		if (jsonString != null && jsonString.length() > 0) {
-			settings = Helper.getSettingsFromJsonString(jsonString);
-		} 
-	}
-	public void updateSettings() {
-		settings = new Settings();
-		settings.setQueryString(JsMethods.getQuery(QUERY_INPUT_ID));
-		settings.setEndpoint(getEndpoint());
-		settings.setOutputFormat(getToolBar().getSelectedOutput());
-	}
+	
 }

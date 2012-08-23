@@ -5,13 +5,18 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import com.data2semantics.yasgui.client.JsMethods;
+import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.shared.Settings;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.user.client.Cookies;
 
 public class Helper {
+	private static String COOKIE_SETTINGS = "yasgui_settings";
 	public static String implode(ArrayList<String> arrayList, String glue) {
 		String result = "";
 		for (String stringItem: arrayList) {
@@ -49,6 +54,40 @@ public class Helper {
         	}
         }
 
+		return settings;
+	}
+	
+	/**
+	 * Get settings from js elements
+	 * 
+	 * @return Settings object
+	 */
+	public static Settings getSettings() {
+		Settings settings = new Settings();
+		JsMethods.saveCodeMirror();
+		settings.setQueryString(JsMethods.getValueUsingId(View.QUERY_INPUT_ID));
+		settings.setEndpoint(JsMethods.getValueUsingName(View.ENDPOINT_INPUT_NAME));
+		settings.setOutputFormat(JsMethods.getValueUsingId(ToolBar.QUERY_FORMAT_SELECTOR_ID));
+		return settings;
+	}
+	
+	public static void getAndStoreSettingsInCookie() {
+		Settings settings = getSettings();
+		Cookies.removeCookie(COOKIE_SETTINGS);
+		Cookies.setCookie(COOKIE_SETTINGS, Helper.getHashMapAsJson(settings.getSettingsHashMap()));
+	}
+	
+	public static void storeSettingsInCookie(Settings settings) {
+		Cookies.removeCookie(COOKIE_SETTINGS);
+		Cookies.setCookie(COOKIE_SETTINGS, Helper.getHashMapAsJson(settings.getSettingsHashMap()));
+	}
+	
+	public static Settings getSettingsFromCookie() {
+		Settings settings = new Settings();
+		String jsonString = Cookies.getCookie(COOKIE_SETTINGS);
+		if (jsonString != null && jsonString.length() > 0) {
+			settings = Helper.getSettingsFromJsonString(jsonString);
+		}
 		return settings;
 	}
 	

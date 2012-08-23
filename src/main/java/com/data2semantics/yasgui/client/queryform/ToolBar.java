@@ -12,17 +12,20 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.hp.hpl.jena.reasoner.rulesys.builtins.AddOne;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.TitleOrientation;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
+import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
+import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.toolbar.ToolStrip;
 
 public class ToolBar extends ToolStrip {
 	private View view;
-
+	public static String QUERY_FORMAT_SELECTOR_ID = "queryFormat";
 	private SelectItem outputSelection;
 	public ToolBar(View view) {
 		this.view = view;
@@ -51,6 +54,12 @@ public class ToolBar extends ToolStrip {
         outputSelection.setImageURLPrefix("logos/formats/");  
         outputSelection.setImageURLSuffix(".png");  
         outputSelection.setDefaultValue(Output.OUTPUT_TABLE);
+        outputSelection.addChangedHandler(new ChangedHandler() {
+			@Override
+			public void onChanged(ChangedEvent event) {
+				getView().updateSettings();
+			}
+        });
         addFormItem(outputSelection);
 	}
 	
@@ -60,10 +69,11 @@ public class ToolBar extends ToolStrip {
 		queryButton.setHeight100();
 		queryButton.setWidth(110);
 		queryButton.setAlign(Alignment.CENTER);
+		queryButton.setID(QUERY_FORMAT_SELECTOR_ID);
 		queryButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				getView().updateSettings();
-				getView().storeSettingsInCookie();
+				Helper.storeSettingsInCookie(getView().getSettings());
 				getView().storePrefixes();
 				Settings settings = getView().getSettings();
 				if (getSelectedOutput().equals(Output.OUTPUT_TABLE)) {
@@ -83,7 +93,8 @@ public class ToolBar extends ToolStrip {
 					//TODO: use request builder:
 					//http://google-web-toolkit.googlecode.com/svn/javadoc/2.3/com/google/gwt/http/client/package-summary.html
 					String endpoint = SafeHtmlUtils.htmlEscape(getView().getEndpoint());
-					String query = JsMethods.getQuery(View.QUERY_INPUT_ID);
+					JsMethods.saveCodeMirror();
+					String query = JsMethods.getValueUsingId(View.QUERY_INPUT_ID);
 					String format = getSelectedOutput();
 					String url = GWT.getModuleBaseURL() + "file?endpoint=" + endpoint + "&query=" + query + "&format=" + format;
 					Window.open(url, "YASGUI - " + format, "");

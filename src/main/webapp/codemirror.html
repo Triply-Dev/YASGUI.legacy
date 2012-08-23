@@ -16,10 +16,11 @@
 <script src="externals/addCommands.js"></script>
 <script src="externals/prefix-hint.js"></script>
 <script src="externals/flint/sparql.js"></script>
+<script src="externals/yasgui.js"></script>
   </head>
 
   <body>
-
+<!-- 
 	<textarea id="test" style="width:400px;height:300px;">PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
 PREFIX : &lt;http://aers.data2semantics.org/vocab/&gt; 
 SELECT DISTINCT *
@@ -52,6 +53,12 @@ SELECT DISTINCT *
 				checkSyntax(cm);
 			}
 		});
+	</script>-->
+	<div id="bla">sdf</div>
+	<script type="text/javascript">
+	
+	sparqlQueryJson("SELECT * {?x ?F ?s} LIMIT 10", "http://sws.ifi.uio.no/sparql/npd", function(result){alert(result);})
+//queryStr, endpoint, callback, isDebug
 	</script>
 </body>
 </html>
