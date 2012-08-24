@@ -28,9 +28,11 @@ public class ResultGrid extends ListGrid {
 	private static String XSD_DATA_PREFIX = "http://www.w3.org/2001/XMLSchema#";
 	private View view;
 	private HashMap<String, Prefix> prefixes;
+	private String jsonString;
 	public ResultGrid(View view) {
 		this.view = view;
 		this.prefixes = getView().getQueryPrefixes();
+		storeJsonResult();
 		setWidth100();
 		setHeight(350);
 		setShowRecordComponents(true);
@@ -46,6 +48,18 @@ public class ResultGrid extends ListGrid {
 		this(view);
 		drawQueryResults(resultSet);
 	}
+	 public native void storeJsonResult() /*-{
+     var itself = this; 
+      $wnd.storeJsonResults = function(param) { 
+         itself.@com.data2semantics.yasgui.client.queryform.grid.ResultGrid::storeJson(Ljava/lang/String;)(param); 
+       }
+      
+     }-*/;
+	 
+	 public void storeJson(String json) {
+		 getView().getLogger().severe("finally");
+		 this.jsonString = json;
+	 }
 
 	public void drawQueryResults(ResultSetContainer resultSet) {
 		List<ListGridField> listGridFields = getVarsAsListGridFields(resultSet.getResultVars());

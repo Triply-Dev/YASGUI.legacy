@@ -48,8 +48,8 @@ public class JsMethods {
 	}-*/;
 
 	
-	public static native void sparqlQueryJson(String queryString, String endpoint, String callbackFunction) /*-{
-		sparqlQueryJson(queryString, endpoint, callbackFunction);
+	public static native void queryJson(String queryString, String endpoint) /*-{
+		$wnd.sparqlQueryJson(queryString, endpoint, function(result) {$wnd.storeJsonResults(result);});
 	}-*/;
 	
 	public static native void saveCodeMirror() /*-{

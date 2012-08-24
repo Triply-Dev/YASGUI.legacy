@@ -9,6 +9,8 @@ import com.data2semantics.yasgui.shared.Output;
 import com.data2semantics.yasgui.shared.Settings;
 import com.data2semantics.yasgui.shared.rdf.ResultSetContainer;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -65,9 +67,9 @@ public class ToolBar extends ToolStrip {
 	
 	
 	private void addButtons() {
-		Button queryButton = new Button("Query");
+		Button queryButton = new Button("Query via Jena");
 		queryButton.setHeight100();
-		queryButton.setWidth(110);
+		queryButton.setWidth(130);
 		queryButton.setAlign(Alignment.CENTER);
 		queryButton.setID(QUERY_FORMAT_SELECTOR_ID);
 		queryButton.addClickHandler(new ClickHandler() {
@@ -114,7 +116,18 @@ public class ToolBar extends ToolStrip {
 			}
 		});
 		addMember(forcePrefixUpdate);
-
+		
+		Button queryViaJs = new Button("Query via JS");
+		queryViaJs.setHeight100();
+		queryViaJs.setWidth(130);
+		queryViaJs.setAlign(Alignment.CENTER);
+		queryViaJs.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				JsMethods.queryJson(getView().getSettings().getQueryString(), getView().getSettings().getEndpoint());
+				
+			}
+		});
+		addMember(queryViaJs);
 	}
 	private View getView() {
 		return this.view;
