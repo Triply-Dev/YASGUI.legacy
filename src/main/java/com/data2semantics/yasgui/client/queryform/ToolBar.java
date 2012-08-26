@@ -4,17 +4,15 @@ import java.util.LinkedHashMap;
 
 import com.data2semantics.yasgui.client.JsMethods;
 import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.queryform.grid.ResultGrid;
 import com.data2semantics.yasgui.shared.Output;
 import com.data2semantics.yasgui.shared.Settings;
 import com.data2semantics.yasgui.shared.rdf.ResultSetContainer;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.hp.hpl.jena.reasoner.rulesys.builtins.AddOne;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.TitleOrientation;
 import com.smartgwt.client.widgets.Button;
@@ -87,7 +85,8 @@ public class ToolBar extends ToolStrip {
 									getView().onError(caught.getMessage());
 								}
 								public void onSuccess(ResultSetContainer resultSet) {
-									queryTable.drawQueryResults(resultSet);
+									getView().onError("Querying via server and jena not supported anymore");
+									//queryTable.drawQueryResults(resultSet);
 								}
 							});
 
@@ -123,6 +122,11 @@ public class ToolBar extends ToolStrip {
 		queryViaJs.setAlign(Alignment.CENTER);
 		queryViaJs.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
+				getView().updateSettings();
+				Helper.storeSettingsInCookie(getView().getSettings());
+				getView().storePrefixes();
+				ResultGrid queryTable = new ResultGrid(getView());
+				getView().addQueryResult(queryTable);
 				JsMethods.queryJson(getView().getSettings().getQueryString(), getView().getSettings().getEndpoint());
 				
 			}

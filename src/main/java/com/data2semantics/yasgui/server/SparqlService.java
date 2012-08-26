@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.data2semantics.yasgui.shared.Output;
-import com.data2semantics.yasgui.shared.SparqlRuntimeException;
+import com.data2semantics.yasgui.shared.exceptions.SparqlException;
 import com.data2semantics.yasgui.shared.rdf.RdfNodeContainer;
 import com.data2semantics.yasgui.shared.rdf.ResultSetContainer;
 import com.data2semantics.yasgui.shared.rdf.SolutionContainer;
@@ -24,14 +24,14 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 public class SparqlService {
 
 	
-	public static ResultSet query(String endpoint, String queryString) throws SparqlRuntimeException {
+	public static ResultSet query(String endpoint, String queryString) throws SparqlException {
 		ResultSet results;
 		try {
 			Query query = QueryFactory.create(queryString);
 			QueryExecution queryExecution = QueryExecutionFactory.sparqlService(endpoint, query);
 			results = queryExecution.execSelect();
 		} catch (QueryParseException e) {
-			throw new SparqlRuntimeException(e.getMessage(), e);
+			throw new SparqlException(e.getMessage(), e);
 		}
 		return results;
 	}
@@ -70,7 +70,7 @@ public class SparqlService {
 		return resultSetContainer;
 	}
 	
-	public static String getAsFormattedString(ResultSet resultSet, String format) throws IllegalArgumentException, SparqlRuntimeException {
+	public static String getAsFormattedString(ResultSet resultSet, String format) throws IllegalArgumentException, SparqlException {
 		String result = "";
 		if (format.equals(Output.OUTPUT_JSON)) {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();

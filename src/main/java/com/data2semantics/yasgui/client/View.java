@@ -2,8 +2,10 @@ package com.data2semantics.yasgui.client;
 
 import java.util.HashMap;
 import java.util.logging.Logger;
-import com.data2semantics.yasgui.client.queryform.Helper;
+
+import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.queryform.ToolBar;
+import com.data2semantics.yasgui.client.queryform.grid.ResultGrid;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.Settings;
 import com.google.gwt.dom.client.Style.Position;
@@ -30,7 +32,7 @@ public class View extends VLayout {
 	private Logger logger = Logger.getLogger("");
 	private YasguiServiceAsync remoteService = YasguiServiceAsync.Util.getInstance();
 	public static String QUERY_INPUT_ID = "queryInput";
-	
+
 	public static String ENDPOINT_INPUT_NAME = "EndpointInput";
 	private Label loading;
 	private TextItem endpoint;
@@ -38,9 +40,11 @@ public class View extends VLayout {
 	private VLayout queryResultContainer = new VLayout();
 	private HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
 	private Settings settings = new Settings();
-
+	private String jsonString;
+	private ResultGrid resultGrid;
 	public View() {
 		settings = Helper.getSettingsFromCookie();
+		addViewJs();
 		initLoadingWidget();
 		setMargin(10);
 		setWidth100();
@@ -63,7 +67,7 @@ public class View extends VLayout {
 			public void onBlur(BlurEvent event) {
 				updateSettings();
 			}
-			
+
 		});
 		endpointForm.setFields(endpoint);
 		addMember(endpointForm);
@@ -73,12 +77,11 @@ public class View extends VLayout {
 			@Override
 			public void onKeyPress(KeyPressEvent event) {
 				if (event.isCtrlKeyDown() && event.getKeyName().equals("S")) {
-					//Save settings in cookie
+					// Save settings in cookie
 					Helper.getAndStoreSettingsInCookie();
 				}
 			}
 		});
-		
 	}
 
 	private String getTextArea() {
@@ -89,51 +92,52 @@ public class View extends VLayout {
 
 	public void setAutocompletePrefixes(boolean forceUpdate) {
 		onLoadingStart();
-		//get prefixes from server
-		getRemoteService().fetchPrefixes(forceUpdate,
-		new AsyncCallback<String>() {
+		// get prefixes from server
+		getRemoteService().fetchPrefixes(forceUpdate, new AsyncCallback<String>() {
 			public void onFailure(Throwable caught) {
 				onError(caught.getMessage());
 			}
+
 			public void onSuccess(String prefixes) {
 				JsMethods.setAutocompletePrefixes(prefixes);
 				onLoadingFinish();
 			}
 		});
-		
+
 	}
-	
+
 	public void resetQueryResult() {
 		Canvas[] members = queryResultContainer.getMembers();
-		for (Canvas member: members) {
+		for (Canvas member : members) {
 			queryResultContainer.removeMember(member);
 		}
 	}
-	
-	public void addQueryResult(Canvas member) {
+
+	public void addQueryResult(ResultGrid resultGrid) {
 		resetQueryResult();
-		queryResultContainer.addMember(member);
+		this.resultGrid = resultGrid;
+		queryResultContainer.addMember(resultGrid);
 	}
-	
+
 	public String getEndpoint() {
 		return endpoint.getValueAsString();
 	}
-	
-	
+
 	public void storePrefixes() {
 		String query = JsMethods.getValueUsingId(QUERY_INPUT_ID);
 		RegExp regExp = RegExp.compile("^\\s*PREFIX\\s*(\\w*):\\s*<(.*)>\\s*$", "gm");
 		while (true) {
 			MatchResult matcher = regExp.exec(query);
-			if (matcher == null) break;
+			if (matcher == null)
+				break;
 			queryPrefixes.put(matcher.getGroup(2), new Prefix(matcher.getGroup(1), matcher.getGroup(2)));
-	    }
+		}
 	}
-	
+
 	public HashMap<String, Prefix> getQueryPrefixes() {
 		return this.queryPrefixes;
 	}
-	
+
 	public void onError(String error) {
 		onLoadingFinish();
 		final Window window = new Window();
@@ -160,7 +164,7 @@ public class View extends VLayout {
 		}
 		onError(st);
 	}
-	
+
 	private void initLoadingWidget() {
 		loading = new Label("Loading...");
 		loading.setIcon("loading.gif");
@@ -175,33 +179,42 @@ public class View extends VLayout {
 		loading.adjustForContent(false);
 		loading.hide();
 		loading.redraw();
-		
+
 	}
-	
+
 	public void onLoadingStart() {
 		loading.show();
 	}
-	
+
 	public void onLoadingFinish() {
 		loading.hide();
 	}
-	
 
 	public YasguiServiceAsync getRemoteService() {
 		return remoteService;
 	}
-	
+
 	public Logger getLogger() {
 		return this.logger;
 	}
-	
+
 	public Settings getSettings() {
 		return this.settings;
 	}
-	
+
 	public void updateSettings() {
-		settings = Helper.getSettings(); //Gets settings from all js objects
+		settings = Helper.getSettings(); // Gets settings from all js objects
 	}
-	
-	
+
+	public native void addViewJs() /*-{
+		var itself = this; 
+		$wnd.drawResultsInTable = function(jsonResult) {
+			itself.@com.data2semantics.yasgui.client.View::drawResultsInTable(Ljava/lang/String;)(jsonResult);
+		}
+    }-*/;
+
+	public void drawResultsInTable(String jsonResult) {
+		resultGrid.drawQueryResultsFromJson(jsonResult);
+	}
+
 }

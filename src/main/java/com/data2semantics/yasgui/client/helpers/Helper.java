@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.client.queryform;
+package com.data2semantics.yasgui.client.helpers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,6 +8,7 @@ import java.util.Set;
 
 import com.data2semantics.yasgui.client.JsMethods;
 import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.client.queryform.ToolBar;
 import com.data2semantics.yasgui.shared.Settings;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;

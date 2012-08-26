@@ -7,7 +7,7 @@ public class JsMethods {
 	 */
 	public static native void exportCallableJavaMethods() /*-{
 	    $wnd.storeSettingsInCookie =
-	       $entry(@com.data2semantics.yasgui.client.queryform.Helper::getAndStoreSettingsInCookie());
+	       $entry(@com.data2semantics.yasgui.client.helpers.Helper::getAndStoreSettingsInCookie());
 	 }-*/;
 	
 	public static native void attachCodeMirror(String queryInputId) /*-{
@@ -49,7 +49,7 @@ public class JsMethods {
 
 	
 	public static native void queryJson(String queryString, String endpoint) /*-{
-		$wnd.sparqlQueryJson(queryString, endpoint, function(result) {$wnd.storeJsonResults(result);});
+		$wnd.sparqlQueryJson(queryString, endpoint, function(jsonResult) {$wnd.drawResultsInTable(jsonResult);});
 	}-*/;
 	
 	public static native void saveCodeMirror() /*-{
@@ -74,11 +74,15 @@ public class JsMethods {
 	public static native String getValueUsingName(String name) /*-{
 		result = "";
 		var elements = $doc.getElementsByName(name);
-		// get the one with value 'yes'
 		for (var i=0, iLen=elements.length; i<iLen; i++) {
 		  result = elements[i].value;
 		  break;
 		}
 		return result;
+	}-*/;
+	
+
+	public static native String getQueryResult() /*-{
+		return jsonResults;
 	}-*/;
 }

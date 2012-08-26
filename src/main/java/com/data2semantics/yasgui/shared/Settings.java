@@ -14,7 +14,8 @@ public class Settings implements Serializable {
 			"SELECT * {<http://aers.data2semantics.org/resource/report/5578636> ?f ?g} LIMIT 50";
 //	"SELECT * {?d <http://aers.data2semantics.org/vocab/event_date> ?t} LIMIT 10";
 	
-	private static String DEFAULT_ENDPOINT = "http://eculture2.cs.vu.nl:5020/sparql/";
+//	private static String DEFAULT_ENDPOINT = "http://eculture2.cs.vu.nl:5020/sparql/";
+	private static String DEFAULT_ENDPOINT = "http://sws.ifi.uio.no/sparql/npd";//cors enabled
 
 	public Settings(){
 		setEndpoint(DEFAULT_ENDPOINT);

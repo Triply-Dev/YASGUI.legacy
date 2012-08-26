@@ -5,7 +5,7 @@ import java.io.File;
 import com.data2semantics.yasgui.client.YasguiService;
 import com.data2semantics.yasgui.server.fetchers.PrefixesFetcher;
 import com.data2semantics.yasgui.shared.Settings;
-import com.data2semantics.yasgui.shared.SparqlRuntimeException;
+import com.data2semantics.yasgui.shared.exceptions.SparqlException;
 import com.data2semantics.yasgui.shared.rdf.ResultSetContainer;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.hp.hpl.jena.query.ResultSet;
@@ -17,12 +17,12 @@ import com.hp.hpl.jena.query.ResultSet;
 public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiService {
 	public static String CACHE_DIR = "/cache";
 	
-	public String queryGetText(Settings settings) throws IllegalArgumentException, SparqlRuntimeException {
+	public String queryGetText(Settings settings) throws IllegalArgumentException, SparqlException {
 		ResultSet resultSet = SparqlService.query(settings.getEndpoint(), settings.getQueryString());
 		return SparqlService.getAsFormattedString(resultSet, settings.getOutputFormat());
 	}
 
-	public ResultSetContainer queryGetObject(Settings settings) throws IllegalArgumentException, SparqlRuntimeException {
+	public ResultSetContainer queryGetObject(Settings settings) throws IllegalArgumentException, SparqlException {
 		ResultSet resultSet = SparqlService.query(settings.getEndpoint(), settings.getQueryString());
 		return SparqlService.getAsResultSetContainer(resultSet);
 	}
