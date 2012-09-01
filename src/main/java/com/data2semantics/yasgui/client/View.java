@@ -27,51 +27,35 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.BlurEvent;
 import com.smartgwt.client.widgets.form.fields.events.BlurHandler;
+import com.smartgwt.client.widgets.form.fields.events.FocusEvent;
+import com.smartgwt.client.widgets.form.fields.events.FocusHandler;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 public class View extends VLayout {
 	private Logger logger = Logger.getLogger("");
 	private YasguiServiceAsync remoteService = YasguiServiceAsync.Util.getInstance();
-	public static String QUERY_INPUT_ID = "queryInput";
+	
 
-	public static String ENDPOINT_INPUT_NAME = "EndpointInput";
+	private EndpointInput endpointInput;
 	private Label loading;
-	private TextItem endpoint;
 	private ToolBar toolBar;
 	private VLayout queryResultContainer = new VLayout();
 	private HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
 	private Settings settings = new Settings();
-	private String jsonString;
 	private ResultGrid resultGrid;
 	public View() {
 		settings = Helper.getSettingsFromCookie();
-		addViewJs();
+		JsMethods.addViewMethods(this);
 		initLoadingWidget();
 		setMargin(10);
 		setWidth100();
 		this.toolBar = new ToolBar(this);
 		addMember(this.toolBar);
-		// Img img = new Img("xml.png");
-		// addMember(img);
-		HTMLPane queryInput = new HTMLPane();
-		queryInput.setHeight("350px");
-		queryInput.setContents(getTextArea());
-		addMember(queryInput);
-		DynamicForm endpointForm = new DynamicForm();
-		endpoint = new TextItem();
-		endpoint.setTitle("Endpoint");
-		endpoint.setWidth(250);
-		endpoint.setDefaultValue(settings.getEndpoint());
-		endpoint.setName(ENDPOINT_INPUT_NAME);
-		endpoint.addBlurHandler(new BlurHandler() {
-			@Override
-			public void onBlur(BlurEvent event) {
-				updateSettings();
-			}
-
-		});
-		endpointForm.setFields(endpoint);
-		addMember(endpointForm);
+		
+		addMember(new QueryTextArea(this));
+		endpointInput = new EndpointInput(this);
+		addMember(endpointInput);
+		
 		addMember(queryResultContainer);
 		setAutocompletePrefixes(false);
 		addKeyPressHandler(new KeyPressHandler() {
@@ -85,11 +69,6 @@ public class View extends VLayout {
 		});
 	}
 
-	private String getTextArea() {
-		String textArea = "" + "<textarea " + "id=\"" + QUERY_INPUT_ID + "\"" + ">" + settings.getQueryString() + "</textarea>";
-		return textArea;
-
-	}
 
 	public void setAutocompletePrefixes(boolean forceUpdate) {
 		onLoadingStart();
@@ -120,12 +99,8 @@ public class View extends VLayout {
 		queryResultContainer.addMember(resultGrid);
 	}
 
-	public String getEndpoint() {
-		return endpoint.getValueAsString();
-	}
-
 	public void storePrefixes() {
-		String query = JsMethods.getValueUsingId(QUERY_INPUT_ID);
+		String query = JsMethods.getValueUsingId(QueryTextArea.QUERY_INPUT_ID);
 		RegExp regExp = RegExp.compile("^\\s*PREFIX\\s*(\\w*):\\s*<(.*)>\\s*$", "gm");
 		while (true) {
 			MatchResult matcher = regExp.exec(query);
@@ -206,16 +181,10 @@ public class View extends VLayout {
 	public void updateSettings() {
 		settings = Helper.getSettings(); // Gets settings from all js objects
 	}
+	
 
-	public native void addViewJs() /*-{
-		var itself = this; 
-		$wnd.drawResultsInTable = function(jsonResult) {
-			itself.@com.data2semantics.yasgui.client.View::drawResultsInTable(Ljava/lang/String;)(jsonResult);
-		}
-    }-*/;
 
 	public void drawResultsInTable(String jsonResult) {
 		resultGrid.drawQueryResultsFromJson(jsonResult);
 	}
-
 }

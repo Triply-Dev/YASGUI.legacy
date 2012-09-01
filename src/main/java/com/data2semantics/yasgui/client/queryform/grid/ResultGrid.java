@@ -71,7 +71,6 @@ public class ResultGrid extends ListGrid {
 			JSONObject node = solution.get(varName).isObject();
 			String type = node.get("type").isString().stringValue();
 			if (type.equals("uri")) {
-				getView().getLogger().severe("uri");
 				final String uri = node.get("value").isString().stringValue();
 				Prefix prefix = getPrefixForUri(uri);
 				String text = uri;
@@ -85,7 +84,6 @@ public class ResultGrid extends ListGrid {
 				html.setWidth100();
 				return html;
 			} else if (type.equals("literal")) {
-				getView().getLogger().severe("literal");
 				String literal = node.get("value").isString().stringValue();
 				Label label = new Label(literal);
 				label.setHeight100();
@@ -95,7 +93,6 @@ public class ResultGrid extends ListGrid {
 				}
 				return label;
 			} else {
-				getView().getLogger().severe("bnode");
 				//is bnode
 				String uri = node.get("value").isString().stringValue();
 				Label label = new Label(uri);

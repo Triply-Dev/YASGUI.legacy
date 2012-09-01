@@ -1,5 +1,7 @@
 package com.data2semantics.yasgui.client.helpers;
 
+import com.data2semantics.yasgui.client.View;
+
 public class JsMethods {
 	
 	/**
@@ -85,4 +87,20 @@ public class JsMethods {
 	public static native String getQueryResult() /*-{
 		return jsonResults;
 	}-*/;
+	
+	public static native String checkCorsEnabled(String endpointUri) /*-{
+		$wnd.checkCorsEnabled(endpointUri);
+	}-*/;
+	
+	/**
+	 * Add view methods to JS, use this for situation where a non-static GWT method needs to be called
+	 * 
+	 * @param view
+	 */
+	public static native void addViewMethods(View view) /*-{
+		var view = view; 
+		$wnd.drawResultsInTable = function(jsonResult) {
+			view.@com.data2semantics.yasgui.client.View::drawResultsInTable(Ljava/lang/String;)(jsonResult);
+	}
+}-*/;
 }

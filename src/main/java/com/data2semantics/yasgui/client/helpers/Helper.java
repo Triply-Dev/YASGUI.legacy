@@ -6,7 +6,8 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.client.EndpointInput;
+import com.data2semantics.yasgui.client.QueryTextArea;
 import com.data2semantics.yasgui.client.queryform.ToolBar;
 import com.data2semantics.yasgui.shared.Settings;
 import com.google.gwt.json.client.JSONObject;
@@ -65,8 +66,8 @@ public class Helper {
 	public static Settings getSettings() {
 		Settings settings = new Settings();
 		JsMethods.saveCodeMirror();
-		settings.setQueryString(JsMethods.getValueUsingId(View.QUERY_INPUT_ID));
-		settings.setEndpoint(JsMethods.getValueUsingName(View.ENDPOINT_INPUT_NAME));
+		settings.setQueryString(JsMethods.getValueUsingId(QueryTextArea.QUERY_INPUT_ID));
+		settings.setEndpoint(JsMethods.getValueUsingName(EndpointInput.ENDPOINT_INPUT_NAME));
 		settings.setOutputFormat(JsMethods.getValueUsingId(ToolBar.QUERY_FORMAT_SELECTOR_ID));
 		return settings;
 	}

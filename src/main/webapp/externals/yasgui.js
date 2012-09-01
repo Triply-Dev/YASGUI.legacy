@@ -1,13 +1,4 @@
-/**
- * Author: Mark Wallace
- *
- * This function asynchronously issues a SPARQL query to a
- * SPARQL endpoint, and invokes the callback function with the JSON 
- * Format [1] results.
- *
- * Refs:
- * [1] http://www.w3.org/TR/sparql11-results-json/
- */
+var corsEnabled = {};
 function sparqlQueryJson(queryStr, endpoint, callback) {
 	$.ajax({
 		url : endpoint,
@@ -34,3 +25,23 @@ function sparqlQueryJson(queryStr, endpoint, callback) {
 		}
 	});
 };
+
+function checkCorsEnabled(endpoint) {
+	//Start off assuming it is not cors enabled
+	corsEnabled[endpoint] = false;
+	$.ajax({
+		url : endpoint,
+		method : 'get',
+		beforeSend : function (xhr) {
+//			$("#result").html("Trying to perform a cross-origin request to " + targetSite);
+	    },
+		complete : function(xhr) {
+			if(xhr.status != 0) { // CORS-enabled site
+				corsEnabled[endpoint] = true;
+			} else { 
+				corsEnabled[endpoint] = false;
+			}
+			console.log(corsEnabled);
+		}
+	});
+}

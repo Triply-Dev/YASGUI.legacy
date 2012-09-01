@@ -76,7 +76,7 @@ public class ToolBar extends ToolStrip {
 				Helper.storeSettingsInCookie(getView().getSettings());
 				getView().storePrefixes();
 				Settings settings = getView().getSettings();
-				if (getSelectedOutput().equals(Output.OUTPUT_TABLE)) {
+				if (settings.getOutputFormat().equals(Output.OUTPUT_TABLE)) {
 					final ResultGrid queryTable = new ResultGrid(getView());
 					getView().addQueryResult(queryTable);
 					getView().getRemoteService().queryGetObject(settings,
@@ -93,10 +93,9 @@ public class ToolBar extends ToolStrip {
 				} else {
 					//TODO: use request builder:
 					//http://google-web-toolkit.googlecode.com/svn/javadoc/2.3/com/google/gwt/http/client/package-summary.html
-					String endpoint = SafeHtmlUtils.htmlEscape(getView().getEndpoint());
-					JsMethods.saveCodeMirror();
-					String query = JsMethods.getValueUsingId(View.QUERY_INPUT_ID);
-					String format = getSelectedOutput();
+					String endpoint = SafeHtmlUtils.htmlEscape(getView().getSettings().getEndpoint());
+					String query = settings.getQueryString();
+					String format = settings.getOutputFormat();
 					String url = GWT.getModuleBaseURL() + "file?endpoint=" + endpoint + "&query=" + query + "&format=" + format;
 					Window.open(url, "YASGUI - " + format, "");
 				}
@@ -137,7 +136,4 @@ public class ToolBar extends ToolStrip {
 		return this.view;
 	}
 	
-	public String getSelectedOutput() {
-		return this.outputSelection.getValueAsString();
-	}
 }

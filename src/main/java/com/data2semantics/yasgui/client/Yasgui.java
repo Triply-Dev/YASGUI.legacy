@@ -31,7 +31,7 @@ public class Yasgui implements EntryPoint {
 	}
 
 	private void postProcess() {
-		JsMethods.attachCodeMirror(View.QUERY_INPUT_ID);
+		JsMethods.attachCodeMirror(QueryTextArea.QUERY_INPUT_ID);
 	}
 	
 	private Throwable unwrap(Throwable e) {   

@@ -46,8 +46,8 @@ SELECT DISTINCT *
 	<div id="bla">sdf</div>
 	<script type="text/javascript">
 	
-	sparqlQueryJson("SELECT * {?x ?F ?s} LIMIT 10", "http://dbpedia.org/sparql", function(result){alert(result);})
-//queryStr, endpoint, callback, isDebug
+	//sparqlQueryJson("SELECT * {?x ?F ?s} LIMIT 10", "http://dbpedia.org/sparql", function(result){alert(result);})
+	checkCorsEnabled("http://dbpedia.org/sparql");
 	</script>
 </body>
 </html>
