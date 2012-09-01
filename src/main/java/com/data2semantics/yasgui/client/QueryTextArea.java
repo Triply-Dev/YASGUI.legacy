@@ -1,5 +1,7 @@
 package com.data2semantics.yasgui.client;
 
+import com.data2semantics.yasgui.client.helpers.JsMethods;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.widgets.HTMLPane;
 
 public class QueryTextArea extends HTMLPane {
@@ -21,6 +23,22 @@ public class QueryTextArea extends HTMLPane {
 	
 	private View getView() {
 		return view;
+	}
+	
+	public void setAutocompletePrefixes(boolean forceUpdate) {
+		getView().onLoadingStart();
+		// get prefixes from server
+		getView().getRemoteService().fetchPrefixes(forceUpdate, new AsyncCallback<String>() {
+			public void onFailure(Throwable caught) {
+				getView().onError(caught.getMessage());
+			}
+
+			public void onSuccess(String prefixes) {
+				JsMethods.setAutocompletePrefixes(prefixes);
+				getView().onLoadingFinish();
+			}
+		});
+
 	}
 
 }

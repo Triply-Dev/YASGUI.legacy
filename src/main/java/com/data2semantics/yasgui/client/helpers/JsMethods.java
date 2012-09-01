@@ -54,6 +54,7 @@ public class JsMethods {
 		$wnd.sparqlQueryJson(queryString, endpoint, function(jsonResult) {$wnd.drawResultsInTable(jsonResult);});
 	}-*/;
 	
+	
 	public static native void saveCodeMirror() /*-{
 		$wnd.sparqlHighlight.save();
 	}-*/;
@@ -101,6 +102,10 @@ public class JsMethods {
 		var view = view; 
 		$wnd.drawResultsInTable = function(jsonResult) {
 			view.@com.data2semantics.yasgui.client.View::drawResultsInTable(Ljava/lang/String;)(jsonResult);
-	}
-}-*/;
+		}
+	}-*/;
+	public static native void setProxyUriInVar(String proxy) /*-{
+		$wnd.proxy = proxy;
+	}-*/;
+	
 }

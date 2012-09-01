@@ -9,6 +9,7 @@ import com.data2semantics.yasgui.client.queryform.ToolBar;
 import com.data2semantics.yasgui.client.queryform.grid.ResultGrid;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.Settings;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.regexp.shared.MatchResult;
@@ -35,7 +36,7 @@ public class View extends VLayout {
 	private Logger logger = Logger.getLogger("");
 	private YasguiServiceAsync remoteService = YasguiServiceAsync.Util.getInstance();
 	
-
+	private QueryTextArea queryTextArea;
 	private EndpointInput endpointInput;
 	private Label loading;
 	private ToolBar toolBar;
@@ -46,18 +47,22 @@ public class View extends VLayout {
 	public View() {
 		settings = Helper.getSettingsFromCookie();
 		JsMethods.addViewMethods(this);
+		JsMethods.setProxyUriInVar(GWT.getModuleBaseURL() + "sparql");
 		initLoadingWidget();
 		setMargin(10);
 		setWidth100();
 		this.toolBar = new ToolBar(this);
 		addMember(this.toolBar);
 		
-		addMember(new QueryTextArea(this));
+		queryTextArea = new QueryTextArea(this); 
+		addMember(queryTextArea);
+		queryTextArea.setAutocompletePrefixes(false);
+		
 		endpointInput = new EndpointInput(this);
 		addMember(endpointInput);
 		
 		addMember(queryResultContainer);
-		setAutocompletePrefixes(false);
+		
 		addKeyPressHandler(new KeyPressHandler() {
 			@Override
 			public void onKeyPress(KeyPressEvent event) {
@@ -70,21 +75,7 @@ public class View extends VLayout {
 	}
 
 
-	public void setAutocompletePrefixes(boolean forceUpdate) {
-		onLoadingStart();
-		// get prefixes from server
-		getRemoteService().fetchPrefixes(forceUpdate, new AsyncCallback<String>() {
-			public void onFailure(Throwable caught) {
-				onError(caught.getMessage());
-			}
-
-			public void onSuccess(String prefixes) {
-				JsMethods.setAutocompletePrefixes(prefixes);
-				onLoadingFinish();
-			}
-		});
-
-	}
+	
 
 	public void resetQueryResult() {
 		Canvas[] members = queryResultContainer.getMembers();
@@ -181,7 +172,9 @@ public class View extends VLayout {
 	public void updateSettings() {
 		settings = Helper.getSettings(); // Gets settings from all js objects
 	}
-	
+	public QueryTextArea getQueryTextArea() {
+		return this.queryTextArea;
+	}
 
 
 	public void drawResultsInTable(String jsonResult) {

@@ -86,7 +86,6 @@ public class ToolBar extends ToolStrip {
 								}
 								public void onSuccess(ResultSetContainer resultSet) {
 									getView().onError("Querying via server and jena not supported anymore");
-									//queryTable.drawQueryResults(resultSet);
 								}
 							});
 
@@ -109,7 +108,7 @@ public class ToolBar extends ToolStrip {
 		forcePrefixUpdate.setAlign(Alignment.CENTER);
 		forcePrefixUpdate.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				getView().setAutocompletePrefixes(true);
+				getView().getQueryTextArea().setAutocompletePrefixes(true);
 				
 			}
 		});
