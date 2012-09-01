@@ -12,10 +12,13 @@ function sparqlQueryJson(queryStr, endpoint, callback) {
 	$.ajax({
 		url : endpoint,
 		type : 'POST',
-		dataType : 'text',//get as text, let gwt parse it to gwt json object
+		headers: { 
+	        Accept : 'application/sparql-results+json'
+		},
+		dataType : 'text',//get as text, let gwt parse it to gwt json object. Want to retrieve json though, so use header setting above
 		data : {
 			query : queryStr,
-			format: 'application/sparql-results+json'
+			format: 'application/sparql-results+json' //some endpoints use the format parameter to set accept header
 		},
 		beforeSend : function(xhr) {
 			//nothing
