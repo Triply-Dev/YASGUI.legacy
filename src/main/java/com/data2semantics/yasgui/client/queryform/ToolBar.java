@@ -2,9 +2,9 @@ package com.data2semantics.yasgui.client.queryform;
 
 import java.util.LinkedHashMap;
 
-import com.data2semantics.yasgui.client.JsMethods;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
+import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.queryform.grid.ResultGrid;
 import com.data2semantics.yasgui.shared.Output;
 import com.data2semantics.yasgui.shared.Settings;

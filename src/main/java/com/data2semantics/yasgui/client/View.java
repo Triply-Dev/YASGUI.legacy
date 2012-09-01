@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.logging.Logger;
 
 import com.data2semantics.yasgui.client.helpers.Helper;
+import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.queryform.ToolBar;
 import com.data2semantics.yasgui.client.queryform.grid.ResultGrid;
 import com.data2semantics.yasgui.shared.Prefix;

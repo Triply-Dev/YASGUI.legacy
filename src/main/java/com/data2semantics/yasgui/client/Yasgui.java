@@ -2,6 +2,7 @@ package com.data2semantics.yasgui.client;
 
 import java.util.logging.Level;
 
+import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.UmbrellaException;

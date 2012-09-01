@@ -12,9 +12,6 @@ import com.data2semantics.yasgui.client.helpers.SparqlJsonHelper;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
 import com.data2semantics.yasgui.shared.exceptions.SparqlParseException;
-import com.data2semantics.yasgui.shared.rdf.RdfNodeContainer;
-import com.data2semantics.yasgui.shared.rdf.ResultSetContainer;
-import com.data2semantics.yasgui.shared.rdf.SolutionContainer;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.smartgwt.client.types.Autofit;
@@ -127,11 +124,9 @@ public class ResultGrid extends ListGrid {
 	private ArrayList<ListGridField> getVarsAsListGridFields(JSONArray resultVars) {
 		ArrayList<ListGridField> listGridFields = new ArrayList<ListGridField>();
 		for(int i = 0; i < resultVars.size(); i++){
-			getView().getLogger().severe("1");
 			String resultVar = results.getAsString(resultVars.get(i));
 			ListGridField field = new ListGridField(VARIABLE_PREFIX + resultVar, resultVar);
 			listGridFields.add(field);
-			getView().getLogger().severe("2");
 		}
 		return listGridFields;
 	}

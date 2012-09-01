@@ -3,6 +3,8 @@ package com.data2semantics.yasgui.server;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
@@ -15,5 +17,11 @@ public class Helper {
 		channel.close();
 		inputStream.close();
 		return new String(buffer.array());
+	}
+
+	public static String getExceptionStackTraceAsString(Exception exception) {
+		StringWriter sw = new StringWriter();
+		exception.printStackTrace(new PrintWriter(sw));
+		return sw.toString();
 	}
 }

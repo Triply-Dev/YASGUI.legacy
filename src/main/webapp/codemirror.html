@@ -4,18 +4,7 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
 <title>Codemirror Test</title>
-<script src="externals/codemirror/codemirror.js"></script>
-<script type="text/javascript">var sparqlHighlight;</script>
-<link rel="stylesheet" href="externals/codemirror/codemirror.css">
-<link rel="stylesheet" href="externals/codemirror/util/simple-hint.css">
-<link rel="stylesheet" href="externals/yasgui.css">
-<!-- <script src="js/codemirror/mode/sparql/sparql.js"></script>-->
-<script src="externals/codemirror/util/simple-hint.js"></script>
-<script src="externals/codemirror/util/searchcursor.js"></script>
-<script src="externals/codemirror/util/match-highlighter.js"></script>
-<script src="externals/addCommands.js"></script>
-<script src="externals/prefix-hint.js"></script>
-<script src="externals/flint/sparql.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
 <script src="externals/yasgui.js"></script>
   </head>
 
@@ -57,7 +46,7 @@ SELECT DISTINCT *
 	<div id="bla">sdf</div>
 	<script type="text/javascript">
 	
-	sparqlQueryJson("SELECT * {?x ?F ?s} LIMIT 10", "http://sws.ifi.uio.no/sparql/npd", function(result){alert(result);})
+	sparqlQueryJson("SELECT * {?x ?F ?s} LIMIT 10", "http://dbpedia.org/sparql", function(result){alert(result);})
 //queryStr, endpoint, callback, isDebug
 	</script>
 </body>

@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.client;
+package com.data2semantics.yasgui.client.helpers;
 
 public class JsMethods {
 	

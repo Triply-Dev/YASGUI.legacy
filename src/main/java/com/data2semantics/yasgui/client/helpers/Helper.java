@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.data2semantics.yasgui.client.JsMethods;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.queryform.ToolBar;
 import com.data2semantics.yasgui.shared.Settings;
