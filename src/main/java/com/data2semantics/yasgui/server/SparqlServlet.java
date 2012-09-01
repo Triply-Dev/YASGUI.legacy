@@ -25,14 +25,18 @@ public class SparqlServlet extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String query = request.getParameter("query");
 		String endpoint = request.getParameter("endpoint");
+		String contentType = "application/sparql-results+json";
 		if (query != null && query.length() > 0 && endpoint != null && endpoint.length() > 0) {
 			HttpClient client = new DefaultHttpClient();
 			HttpPost post = new HttpPost(endpoint);
 			PrintWriter out = response.getWriter();
 			try {
-
 				List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 				nameValuePairs.add(new BasicNameValuePair("query", query));
+				//Some endpoints (dbpedia?) use separate parameter for accept content type
+				nameValuePairs.add(new BasicNameValuePair("format", contentType));
+				
+				post.setHeader("Accept", contentType);
 
 				post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 				HttpResponse endpointResponse = client.execute(post);
@@ -46,7 +50,7 @@ public class SparqlServlet extends HttpServlet {
 			} catch (IOException e) {
 				onError(response, Helper.getExceptionStackTraceAsString(e));
 			}
-			response.setContentType("application/sparql-results+json");
+			response.setContentType(contentType);
 			out.close();
 		} else {
 			String errorMsg = "";
