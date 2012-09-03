@@ -14,28 +14,22 @@ import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.Canvas;
-import com.smartgwt.client.widgets.HTMLPane;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.CloseClickEvent;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.events.KeyPressEvent;
 import com.smartgwt.client.widgets.events.KeyPressHandler;
-import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.TextItem;
-import com.smartgwt.client.widgets.form.fields.events.BlurEvent;
-import com.smartgwt.client.widgets.form.fields.events.BlurHandler;
-import com.smartgwt.client.widgets.form.fields.events.FocusEvent;
-import com.smartgwt.client.widgets.form.fields.events.FocusHandler;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 public class View extends VLayout {
 	private Logger logger = Logger.getLogger("");
 	private YasguiServiceAsync remoteService = YasguiServiceAsync.Util.getInstance();
 	
+	public static String DEFAULT_LOADING_MESSAGE = "Loading...";
 	private QueryTextArea queryTextArea;
 	private EndpointInput endpointInput;
 	private Label loading;
@@ -46,7 +40,7 @@ public class View extends VLayout {
 	private ResultGrid resultGrid;
 	public View() {
 		settings = Helper.getSettingsFromCookie();
-		JsMethods.addViewMethods(this);
+		JsMethods.declareCallableViewMethods(this);
 		JsMethods.setProxyUriInVar(GWT.getModuleBaseURL() + "sparql");
 		initLoadingWidget();
 		setMargin(10);
@@ -133,7 +127,7 @@ public class View extends VLayout {
 	}
 
 	private void initLoadingWidget() {
-		loading = new Label("Loading...");
+		loading = new Label();
 		loading.setIcon("loading.gif");
 		loading.setBackgroundColor("#f0f0f0");
 		loading.setBorder("1px solid grey");
@@ -141,15 +135,24 @@ public class View extends VLayout {
 		loading.getElement().getStyle().setBottom(0, Unit.PX);
 		loading.getElement().getStyle().setLeft(0, Unit.PX);
 		loading.setHeight(30);
-		loading.setWidth(80);
+		loading.setAutoWidth();
+		loading.setOverflow(Overflow.VISIBLE);
+		loading.setWrap(false);
 		loading.setAlign(Alignment.CENTER);
 		loading.adjustForContent(false);
+		loading.setZIndex(999999999);
 		loading.hide();
 		loading.redraw();
 
 	}
 
 	public void onLoadingStart() {
+		onLoadingStart(DEFAULT_LOADING_MESSAGE);
+	}
+	
+	public void onLoadingStart(String message) {
+		//Add spaces to end of message, as we have autowidth enabled to this Label
+		loading.setContents(message + "&nbsp;&nbsp;");
 		loading.show();
 	}
 

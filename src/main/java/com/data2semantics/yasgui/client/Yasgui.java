@@ -17,7 +17,7 @@ public class Yasgui implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
-		JsMethods.exportCallableJavaMethods();
+		JsMethods.declareCallableStaticMethods();
 		view = new View();
 		GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
 			public void onUncaughtException(Throwable e) {

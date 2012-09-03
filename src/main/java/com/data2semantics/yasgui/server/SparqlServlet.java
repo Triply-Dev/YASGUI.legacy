@@ -20,8 +20,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 public class SparqlServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
-	
+
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String query = request.getParameter("query");
 		String endpoint = request.getParameter("endpoint");
@@ -30,29 +29,31 @@ public class SparqlServlet extends HttpServlet {
 			HttpClient client = new DefaultHttpClient();
 			HttpPost post = new HttpPost(endpoint);
 			PrintWriter out = response.getWriter();
-			try {
-				List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-				nameValuePairs.add(new BasicNameValuePair("query", query));
-				//Some endpoints (dbpedia?) use separate parameter for accept content type
-				nameValuePairs.add(new BasicNameValuePair("format", contentType));
-				
-				post.setHeader("Accept", contentType);
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+			nameValuePairs.add(new BasicNameValuePair("query", query));
+			// Some endpoints (dbpedia?) use separate parameter for accept content type
+			nameValuePairs.add(new BasicNameValuePair("format", contentType));
 
-				post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-				HttpResponse endpointResponse = client.execute(post);
+			post.setHeader("Accept", contentType);
+			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			HttpResponse endpointResponse = client.execute(post);
+			int endpointStatusCode = endpointResponse.getStatusLine().getStatusCode();
+			if (endpointStatusCode > 400) {
+				//only return this statuscode when it is an error. Redirection codes (e.g. 302) are allowed I guess
+				response.setStatus(endpointStatusCode);
+			} else {
 				BufferedReader rd = new BufferedReader(new InputStreamReader(endpointResponse.getEntity().getContent()));
-
+	
 				String line;
 				while ((line = rd.readLine()) != null) {
 					out.println(line);
 					System.out.println(line);
 				}
-			} catch (IOException e) {
-				onError(response, Helper.getExceptionStackTraceAsString(e));
+				response.setContentType(contentType);
+				out.close();
 			}
-			response.setContentType(contentType);
-			out.close();
 		} else {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			String errorMsg = "";
 			if (endpoint == null) {
 				errorMsg += "No endpoint provided as parameter\n";
@@ -64,14 +65,11 @@ public class SparqlServlet extends HttpServlet {
 			} else {
 				errorMsg += "Sparql query: '" + query + "'\n";
 			}
-			onError(response, "Invalid query parameters: \n" + errorMsg);
+			onError("Invalid query parameters: \n" + errorMsg);
 		}
 	}
-	
-	private void onError(HttpServletResponse response, String message) throws IOException {
-		PrintWriter out = response.getWriter();
-		response.setContentType("text/html");
-		out.println(message);
-		out.close();
+
+	private void onError(String message) throws IOException {
+		System.out.println("Invalid query parameters: \n" + message);
 	}
 }

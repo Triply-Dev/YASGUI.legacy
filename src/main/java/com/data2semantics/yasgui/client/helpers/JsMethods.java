@@ -7,7 +7,7 @@ public class JsMethods {
 	/**
 	 * This function registers the (static) java methods which should be callable from javascript
 	 */
-	public static native void exportCallableJavaMethods() /*-{
+	public static native void declareCallableStaticMethods() /*-{
 	    $wnd.storeSettingsInCookie =
 	       $entry(@com.data2semantics.yasgui.client.helpers.Helper::getAndStoreSettingsInCookie());
 	 }-*/;
@@ -98,12 +98,27 @@ public class JsMethods {
 	 * 
 	 * @param view
 	 */
-	public static native void addViewMethods(View view) /*-{
+	public static native void declareCallableViewMethods(View view) /*-{
 		var view = view; 
 		$wnd.drawResultsInTable = function(jsonResult) {
 			view.@com.data2semantics.yasgui.client.View::drawResultsInTable(Ljava/lang/String;)(jsonResult);
 		}
+		$wnd.onError = function(jsonResult) {
+			view.@com.data2semantics.yasgui.client.View::onError(Ljava/lang/String;)(jsonResult);
+		}
+		$wnd.onLoadingStart = function(message) {
+			if (message == undefined) {
+				view.@com.data2semantics.yasgui.client.View::onLoadingStart();
+			} else {
+				view.@com.data2semantics.yasgui.client.View::onLoadingStart(Ljava/lang/String;)(message);
+			}
+		}
+		$wnd.onLoadingFinish = function() {
+			view.@com.data2semantics.yasgui.client.View::onLoadingFinish();
+		}
 	}-*/;
+	
+	
 	public static native void setProxyUriInVar(String proxy) /*-{
 		$wnd.proxy = proxy;
 	}-*/;

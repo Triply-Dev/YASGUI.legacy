@@ -7,9 +7,11 @@ function sparqlQueryJson(queryStr, endpoint, callback) {
 	};
 	var uri;
 	if (corsEnabled[endpoint]) {
+		onLoadingStart("Executing Query");
 		console.log("query directly");
 		uri = endpoint;
 	} else {
+		onLoadingStart("Executing Query (proxy)");
 		console.log("query via servlet");
 		//query via proxy
 		ajaxData['endpoint'] = endpoint;
@@ -27,12 +29,12 @@ function sparqlQueryJson(queryStr, endpoint, callback) {
 			//nothing
 		},
 		success : function(data) {
+			onLoadingFinish();
 			callback(data);
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
-			alert(jqXHR);
-			alert(textStatus);
-			alert(errorThrown);
+			onLoadingFinish();
+			onError("Error " + jqXHR.status + ": " + errorThrown);
 		}
 	});
 };
@@ -52,7 +54,6 @@ function checkCorsEnabled(endpoint) {
 			} else { 
 				corsEnabled[endpoint] = false;
 			}
-			console.log(corsEnabled);
 		}
 	});
 }
