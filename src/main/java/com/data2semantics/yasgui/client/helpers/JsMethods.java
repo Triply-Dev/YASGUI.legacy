@@ -108,13 +108,13 @@ public class JsMethods {
 		}
 		$wnd.onLoadingStart = function(message) {
 			if (message == undefined) {
-				view.@com.data2semantics.yasgui.client.View::onLoadingStart();
+				view.@com.data2semantics.yasgui.client.View::onLoadingStart()();
 			} else {
 				view.@com.data2semantics.yasgui.client.View::onLoadingStart(Ljava/lang/String;)(message);
 			}
 		}
 		$wnd.onLoadingFinish = function() {
-			view.@com.data2semantics.yasgui.client.View::onLoadingFinish();
+			view.@com.data2semantics.yasgui.client.View::onLoadingFinish()();
 		}
 	}-*/;
 	
