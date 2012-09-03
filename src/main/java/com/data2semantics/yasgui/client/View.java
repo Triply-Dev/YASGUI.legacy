@@ -103,7 +103,7 @@ public class View extends VLayout {
 		onLoadingFinish();
 		final Window window = new Window();
 		window.setAutoSize(true);
-		window.setTitle("Error");
+		window.setMinWidth(400);
 		window.setShowMinimizeButton(false);
 		window.setIsModal(true);
 		window.setShowModalMask(true);
@@ -113,7 +113,11 @@ public class View extends VLayout {
 				window.destroy();
 			}
 		});
+		window.setShowTitle(false);
 		Label label = new Label(error);
+		label.setMargin(4);
+		label.setHeight100();
+		label.setWrap(false);
 		window.addItem(label);
 		window.draw();
 	}

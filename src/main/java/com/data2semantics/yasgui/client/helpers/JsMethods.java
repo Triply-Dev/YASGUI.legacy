@@ -116,6 +116,9 @@ public class JsMethods {
 		$wnd.onLoadingFinish = function() {
 			view.@com.data2semantics.yasgui.client.View::onLoadingFinish()();
 		}
+		$wnd.clearQueryResult = function() {
+			view.@com.data2semantics.yasgui.client.View::resetQueryResult()();
+		}
 	}-*/;
 	
 	
