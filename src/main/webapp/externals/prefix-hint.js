@@ -30,17 +30,21 @@
 			var punct = getTerminals().punct;
 			var keywords = getTerminals().keywords;
 			if (prevToken.string.match(punct) || prevToken.string.match(keywords)) {
-				token.start = prevToken.start
+				token.start = prevToken.start;
 				cur.ch = prevToken.start;
 				token.string = prevToken.string + token.string;
 				return includePreviousTokens(token, cur);//recursively, might have multiple tokens which it should include
 			} else {
 				return token;
 			}
-		}
+		};
 		
-		//First token of line needs to be PREFIX
+		//First token of line needs to be PREFIX, and there should be no trailing text (otherwise, text is wrongly inserted in between)
 		if (getToken(editor, {line : cur.line,ch : 1}).string != "PREFIX") return;
+		if (editor.getLine(cur.line).length > cur.ch) return;
+		//Dont show prefixes when - cursor is on first page, or there is text previously
+		
+		
 		
 		if (token.string == "PREFIX") {
 		
@@ -53,6 +57,7 @@
 					state : token.state
 				};
 		}
+		
 		
 		//If this is a whitespace, and token is just after PREFIX, proceed using empty string as token
 		if (/\s*/.test(token.string) && getToken(editor, {line : cur.line,ch : token.start}).string == "PREFIX") {
