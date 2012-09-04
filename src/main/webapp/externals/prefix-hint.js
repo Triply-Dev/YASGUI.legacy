@@ -20,7 +20,6 @@
 	function prefixHint(editor, prefixes, getToken) {
 		// Find the token at the cursor
 		var cur = editor.getCursor(), token = getToken(editor, cur), tprop = token;
-
 		//First token of line needs to be PREFIX
 		if (getToken(editor, {line : cur.line,ch : 1}).string != "PREFIX") return;
 		
@@ -44,7 +43,15 @@
 				string : "",
 				state : token.state
 			};
+		} else {
+			//We know we are in a PREFIX line. Now check whether the string starts with a punct or keyword
+			//Good example is 'a', which is a valid punct in our grammar. 
+			//This is parsed as separate token which messes up the token for autocompletion (the part after 'a' is used as separate token)
+			//If previous token is in keywords or keywords, prepend this token to current token
+			var prevToken = getToken(editor, {line : cur.line,ch : tprop.start});
+//			if (prevToken.string) 
 		}
+		
 		return {
 			list : getCompletions(token, prefixes),
 			from : {

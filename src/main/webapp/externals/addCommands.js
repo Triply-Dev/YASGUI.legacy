@@ -85,8 +85,9 @@ function checkSyntax(cm) {
 		clearError = null;
 	}
 	;
-	if (markerHandle != null)
+	if (markerHandle != null) {
 		cm.clearMarker(markerHandle);
+	}
 	for ( var l = 0; l < cm.lineCount(); ++l) {
 		var state = cm.getTokenAt({
 			line : l,
@@ -122,19 +123,9 @@ function checkSyntax(cm) {
 	}
 
 	if (queryValid) {
-		// submitItemCoolbar.enable();
-		// submitItemEndpointBar.enable();
-		// datasetMimeTypeItem.setDisableElements(state.queryType);
-		// endpointMimeTypeItem.setDisableElements(state.queryType);
-		// statusArea.setQueryValid(true);
-		// statusArea.updateStatus();
+		//do something
 	} else {
-		// submitItemCoolbar.disable();
-		// submitItemEndpointBar.disable();
-		// datasetMimeTypeItem.setDisableElements(state.queryType);
-		// endpointMimeTypeItem.setDisableElements(state.queryType);
-		// statusArea.setQueryValid(false);
-		//	statusArea.updateStatus();
+		//do something
 	}
 }
 

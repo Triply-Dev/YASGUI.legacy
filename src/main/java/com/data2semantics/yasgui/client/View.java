@@ -114,6 +114,9 @@ public class View extends VLayout {
 			}
 		});
 		window.setShowTitle(false);
+//		window.setShowCloseButton(false);
+//		window.setShowEdges(false);
+		
 		Label label = new Label(error);
 		label.setMargin(4);
 		label.setHeight100();
