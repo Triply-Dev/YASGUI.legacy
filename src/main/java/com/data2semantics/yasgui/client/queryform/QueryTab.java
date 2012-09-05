@@ -19,8 +19,8 @@ public class QueryTab extends Tab {
 	private VLayout vLayout = new VLayout();
 	private VLayout queryResultContainer = new VLayout();
 	private ResultGrid resultGrid;
-	public QueryTab(View view) {
-		super("Query");
+	public QueryTab(View view, String title) {
+		super(title);
 		this.view = view;
 		setCanClose(true);
 		

@@ -40,7 +40,7 @@ public class JsMethods {
 				}
 			});
 		} else {
-			$wnd.alert("no text area for input id: " + queryInputId);
+			onError("no text area for input id: " + queryInputId);
 		}
 	}-*/;
 
