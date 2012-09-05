@@ -27,13 +27,8 @@ public class Yasgui implements EntryPoint {
 			}
 		});
 		view.draw();
-		postProcess();
 	}
 
-	private void postProcess() {
-		JsMethods.attachCodeMirror(QueryTextArea.QUERY_INPUT_ID);
-	}
-	
 	private Throwable unwrap(Throwable e) {   
 	    if(e instanceof UmbrellaException) {   
 	      UmbrellaException ue = (UmbrellaException) e;  

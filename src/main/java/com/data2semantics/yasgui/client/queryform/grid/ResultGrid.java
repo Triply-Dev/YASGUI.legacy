@@ -6,14 +6,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.SparqlJsonHelper;
+import com.data2semantics.yasgui.client.queryform.QueryTab;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
 import com.data2semantics.yasgui.shared.exceptions.SparqlParseException;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 import com.smartgwt.client.types.Autofit;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLPane;
@@ -28,11 +31,12 @@ public class ResultGrid extends ListGrid {
 	private static String XSD_DATA_PREFIX = "http://www.w3.org/2001/XMLSchema#";
 	JSONObject queryResult = new JSONObject();
 	private View view;
-	private HashMap<String, Prefix> prefixes;
 	private SparqlJsonHelper results;
-	public ResultGrid(View view) {
+	private QueryTab tab;
+	private HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
+	public ResultGrid(View view, QueryTab tab) {
+		this.tab = tab;
 		this.view = view;
-		this.prefixes = getView().getQueryPrefixes();
 		setWidth100();
 		setHeight(350);
 		setShowRecordComponents(true);
@@ -42,9 +46,13 @@ public class ResultGrid extends ListGrid {
 		setAutoFitData(Autofit.VERTICAL);
 		setCanResizeFields(true);
 		setEmptyMessage("Executing query");
+		getPrefixesFromQuery();
 	}
 
 	public void drawQueryResultsFromJson(String jsonString) {
+		
+		
+		
 		try {
 			results = new SparqlJsonHelper(getView(), jsonString);
 		} catch (SparqlParseException e) {
@@ -136,7 +144,7 @@ public class ResultGrid extends ListGrid {
 	
 	private Prefix getPrefixForUri(String uri) {
 		Prefix prefix = null;
-		for (Map.Entry<String, Prefix> entry : prefixes.entrySet()) {
+		for (Map.Entry<String, Prefix> entry : queryPrefixes.entrySet()) {
 		    String prefixUri = entry.getKey();
 		    if (uri.startsWith(prefixUri)) {
 		    	prefix = entry.getValue();
@@ -148,5 +156,16 @@ public class ResultGrid extends ListGrid {
 
 	private View getView() {
 		return this.view;
+	}
+	
+	private void getPrefixesFromQuery() {
+		String query = JsMethods.getValueUsingId(tab.getQueryTextArea().getInputId());
+		RegExp regExp = RegExp.compile("^\\s*PREFIX\\s*(\\w*):\\s*<(.*)>\\s*$", "gm");
+		while (true) {
+			MatchResult matcher = regExp.exec(query);
+			if (matcher == null)
+				break;
+			queryPrefixes.put(matcher.getGroup(2), new Prefix(matcher.getGroup(1), matcher.getGroup(2)));
+		}
 	}
 }

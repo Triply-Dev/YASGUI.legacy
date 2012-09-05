@@ -7,12 +7,6 @@ import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.queryform.grid.ResultGrid;
 import com.data2semantics.yasgui.shared.Output;
-import com.data2semantics.yasgui.shared.Settings;
-import com.data2semantics.yasgui.shared.rdf.ResultSetContainer;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.TitleOrientation;
 import com.smartgwt.client.widgets.Button;
@@ -65,54 +59,29 @@ public class ToolBar extends ToolStrip {
 	
 	
 	private void addButtons() {
-		Button queryButton = new Button("Query via Jena");
-		queryButton.setHeight100();
-		queryButton.setWidth(130);
-		queryButton.setAlign(Alignment.CENTER);
-		queryButton.setID(QUERY_FORMAT_SELECTOR_ID);
-		queryButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				getView().updateSettings();
-				Helper.storeSettingsInCookie(getView().getSettings());
-				getView().storePrefixes();
-				Settings settings = getView().getSettings();
-				if (settings.getOutputFormat().equals(Output.OUTPUT_TABLE)) {
-					final ResultGrid queryTable = new ResultGrid(getView());
-					getView().addQueryResult(queryTable);
-					getView().getRemoteService().queryGetObject(settings,
-							new AsyncCallback<ResultSetContainer>() {
-								public void onFailure(Throwable caught) {
-									getView().onError(caught.getMessage());
-								}
-								public void onSuccess(ResultSetContainer resultSet) {
-									getView().onError("Querying via server and jena not supported anymore");
-								}
-							});
-
-				} else {
-					//TODO: use request builder:
-					//http://google-web-toolkit.googlecode.com/svn/javadoc/2.3/com/google/gwt/http/client/package-summary.html
-					String endpoint = SafeHtmlUtils.htmlEscape(getView().getSettings().getEndpoint());
-					String query = settings.getQueryString();
-					String format = settings.getOutputFormat();
-					String url = GWT.getModuleBaseURL() + "file?endpoint=" + endpoint + "&query=" + query + "&format=" + format;
-					Window.open(url, "YASGUI - " + format, "");
-				}
-			}
-		});
-		addMember(queryButton);
-		
 		Button forcePrefixUpdate = new Button("Force prefixes update");
 		forcePrefixUpdate.setHeight100();
 		forcePrefixUpdate.setWidth(200);
 		forcePrefixUpdate.setAlign(Alignment.CENTER);
 		forcePrefixUpdate.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				getView().getQueryTextArea().setAutocompletePrefixes(true);
+				getView().setAutocompletePrefixes(true);
 				
 			}
 		});
 		addMember(forcePrefixUpdate);
+		
+		Button addTabButton = new Button("Add tab");
+		addTabButton.setHeight100();
+		addTabButton.setWidth(200);
+		addTabButton.setAlign(Alignment.CENTER);
+		addTabButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				getView().getTabs().addNewTab();
+				
+			}
+		});
+		addMember(addTabButton);
 		
 		Button queryViaJs = new Button("Query via JS");
 		queryViaJs.setHeight100();
@@ -122,9 +91,9 @@ public class ToolBar extends ToolStrip {
 			public void onClick(ClickEvent event) {
 				getView().updateSettings();
 				Helper.storeSettingsInCookie(getView().getSettings());
-				getView().storePrefixes();
-				ResultGrid queryTable = new ResultGrid(getView());
-				getView().addQueryResult(queryTable);
+				QueryTab tab = getView().getSelectedTab();
+				ResultGrid queryTable = new ResultGrid(getView(), tab);
+				tab.addQueryResult(queryTable);
 				JsMethods.queryJson(getView().getSettings().getQueryString(), getView().getSettings().getEndpoint());
 				
 			}

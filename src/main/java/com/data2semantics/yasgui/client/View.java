@@ -1,22 +1,18 @@
 package com.data2semantics.yasgui.client;
 
-import java.util.HashMap;
 import java.util.logging.Logger;
-
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
+import com.data2semantics.yasgui.client.queryform.QueryTab;
+import com.data2semantics.yasgui.client.queryform.QueryTabs;
 import com.data2semantics.yasgui.client.queryform.ToolBar;
-import com.data2semantics.yasgui.client.queryform.grid.ResultGrid;
-import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.Settings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.regexp.shared.MatchResult;
-import com.google.gwt.regexp.shared.RegExp;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
-import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.CloseClickEvent;
@@ -30,14 +26,13 @@ public class View extends VLayout {
 	private YasguiServiceAsync remoteService = YasguiServiceAsync.Util.getInstance();
 	
 	public static String DEFAULT_LOADING_MESSAGE = "Loading...";
-	private QueryTextArea queryTextArea;
-	private EndpointInput endpointInput;
+
 	private Label loading;
 	private ToolBar toolBar;
-	private VLayout queryResultContainer = new VLayout();
-	private HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
+	private QueryTabs queryTabs;
+	
 	private Settings settings = new Settings();
-	private ResultGrid resultGrid;
+	
 	public View() {
 		settings = Helper.getSettingsFromCookie();
 		JsMethods.declareCallableViewMethods(this);
@@ -45,18 +40,12 @@ public class View extends VLayout {
 		initLoadingWidget();
 		setMargin(10);
 		setWidth100();
+		setHeight100();
 		this.toolBar = new ToolBar(this);
 		addMember(this.toolBar);
-		
-		queryTextArea = new QueryTextArea(this); 
-		addMember(queryTextArea);
-		queryTextArea.setAutocompletePrefixes(false);
-		
-		endpointInput = new EndpointInput(this);
-		addMember(endpointInput);
-		
-		addMember(queryResultContainer);
-		
+		setAutocompletePrefixes(false);
+		queryTabs = new QueryTabs(this);
+		addMember(queryTabs);
 		addKeyPressHandler(new KeyPressHandler() {
 			@Override
 			public void onKeyPress(KeyPressEvent event) {
@@ -68,36 +57,6 @@ public class View extends VLayout {
 		});
 	}
 
-
-	
-
-	public void resetQueryResult() {
-		Canvas[] members = queryResultContainer.getMembers();
-		for (Canvas member : members) {
-			queryResultContainer.removeMember(member);
-		}
-	}
-
-	public void addQueryResult(ResultGrid resultGrid) {
-		resetQueryResult();
-		this.resultGrid = resultGrid;
-		queryResultContainer.addMember(resultGrid);
-	}
-
-	public void storePrefixes() {
-		String query = JsMethods.getValueUsingId(QueryTextArea.QUERY_INPUT_ID);
-		RegExp regExp = RegExp.compile("^\\s*PREFIX\\s*(\\w*):\\s*<(.*)>\\s*$", "gm");
-		while (true) {
-			MatchResult matcher = regExp.exec(query);
-			if (matcher == null)
-				break;
-			queryPrefixes.put(matcher.getGroup(2), new Prefix(matcher.getGroup(1), matcher.getGroup(2)));
-		}
-	}
-
-	public HashMap<String, Prefix> getQueryPrefixes() {
-		return this.queryPrefixes;
-	}
 
 	public void onError(String error) {
 		onLoadingFinish();
@@ -182,12 +141,47 @@ public class View extends VLayout {
 	public void updateSettings() {
 		settings = Helper.getSettings(); // Gets settings from all js objects
 	}
-	public QueryTextArea getQueryTextArea() {
-		return this.queryTextArea;
+	
+	public QueryTab getSelectedTab() {
+		return (QueryTab) queryTabs.getSelectedTab();
 	}
-
-
+	
+	/**
+	 * Draw jsonresult in nice smartgwt table.
+	 * Keep this method in the view object, so that it is easily callable from js
+	 * 
+	 * @param jsonResult
+	 */
 	public void drawResultsInTable(String jsonResult) {
-		resultGrid.drawQueryResultsFromJson(jsonResult);
+		getSelectedTab().drawResultsInTable(jsonResult);
 	}
+	
+	/**
+	 * Clear current query result table 
+	 * Keep this method in the view object, so that it is easily callable from js
+	 */
+	public void resetQueryResult() {
+		getSelectedTab().resetQueryResult();
+	}
+	
+	public void setAutocompletePrefixes(boolean forceUpdate) {
+		onLoadingStart();
+		// get prefixes from server
+		getRemoteService().fetchPrefixes(forceUpdate, new AsyncCallback<String>() {
+			public void onFailure(Throwable caught) {
+				onError(caught.getMessage());
+			}
+
+			public void onSuccess(String prefixes) {
+				JsMethods.setAutocompletePrefixes(prefixes);
+				onLoadingFinish();
+			}
+		});
+
+	}
+	
+	public QueryTabs getTabs() {
+		return queryTabs;
+	}
+
 }

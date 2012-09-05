@@ -14,17 +14,14 @@ public class JsMethods {
 	
 	public static native void attachCodeMirror(String queryInputId) /*-{
 		if ($doc.getElementById(queryInputId)) {
-			$wnd.CodeMirror.commands.autocomplete = function(cm) {
-				$wnd.CodeMirror.simpleHint(cm, $wnd.CodeMirror.prefixHint);
-			}
-			$wnd.sparqlHighlight = $wnd.CodeMirror.fromTextArea($doc
+			$wnd.sparqlHighlight[queryInputId] = $wnd.CodeMirror.fromTextArea($doc
 					.getElementById(queryInputId), {
 				mode : "application/x-sparql-query",
 				tabMode : "indent",
 				lineNumbers : true,
 				matchBrackets : true,
 				onCursorActivity : function() {
-					$wnd.sparqlHighlight
+					$wnd.sparqlHighlight[queryInputId]
 							.matchHighlight("CodeMirror-matchhighlight");
 				},
 				onChange : function(cm) {
@@ -42,6 +39,8 @@ public class JsMethods {
 					$wnd.checkSyntax(cm);
 				}
 			});
+		} else {
+			$wnd.alert("no text area for input id: " + queryInputId);
 		}
 	}-*/;
 
@@ -55,8 +54,8 @@ public class JsMethods {
 	}-*/;
 	
 	
-	public static native void saveCodeMirror() /*-{
-		$wnd.sparqlHighlight.save();
+	public static native void saveCodeMirror(String id) /*-{
+		$wnd.sparqlHighlight[id].save();
 	}-*/;
 	
 	public static native String getValueUsingId(String id) /*-{
