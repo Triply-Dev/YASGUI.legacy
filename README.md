@@ -14,9 +14,7 @@ Libraries
  * Thanks to the people from [FLINT SPARQL editor][3] and the javascript SPARQL parser they created using [peg.js][4]
 
 
-Licence
--------
--------
+
 
 
 
