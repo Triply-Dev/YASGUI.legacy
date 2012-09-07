@@ -16,15 +16,6 @@
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>fileServlet</servlet-name>
-		<servlet-class>com.data2semantics.yasgui.server.FileServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>fileServlet</servlet-name>
-		<url-pattern>/Yasgui/file</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
 		<servlet-name>sparqlServlet</servlet-name>
 		<servlet-class>com.data2semantics.yasgui.server.SparqlServlet</servlet-class>
 	</servlet>

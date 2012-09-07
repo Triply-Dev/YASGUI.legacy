@@ -145,10 +145,6 @@ public class View extends VLayout {
 		return tabSettings;
 	}
 
-	public void updateSettings() {
-		settings = Helper.getSettings(); // Gets settings from all js objects
-	}
-	
 	public QueryTab getSelectedTab() {
 		return (QueryTab) queryTabs.getSelectedTab();
 	}

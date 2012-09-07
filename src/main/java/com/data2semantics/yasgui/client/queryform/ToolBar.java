@@ -52,7 +52,7 @@ public class ToolBar extends ToolStrip {
         outputSelection.addChangedHandler(new ChangedHandler() {
 			@Override
 			public void onChanged(ChangedEvent event) {
-				getView().updateSettings();
+				getView().getSettings().setOutputFormat(outputSelection.getValueAsString());
 			}
         });
         addFormItem(outputSelection);
@@ -92,8 +92,6 @@ public class ToolBar extends ToolStrip {
 		queryViaJs.setAlign(Alignment.CENTER);
 		queryViaJs.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				getView().updateSettings();
-				Helper.storeSettingsInCookie(getView().getSettings());
 				QueryTab tab = getView().getSelectedTab();
 				ResultGrid queryTable = new ResultGrid(getView(), tab);
 				tab.addQueryResult(queryTable);

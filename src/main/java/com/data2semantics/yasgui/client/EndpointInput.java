@@ -33,7 +33,6 @@ public class EndpointInput extends DynamicForm {
 		endpoint.addBlurHandler(new BlurHandler() {
 			@Override
 			public void onBlur(BlurEvent event) {
-				getView().updateSettings();
 				if (!latestEndpointValue.equals(getEndpoint())) {
 					JsMethods.checkCorsEnabled(getEndpoint());
 					getView().getSettings().getSelectedTabSettings().setEndpoint(getEndpoint());

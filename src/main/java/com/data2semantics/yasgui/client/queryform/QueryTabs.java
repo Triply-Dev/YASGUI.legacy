@@ -11,7 +11,6 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
 import com.smartgwt.client.types.Side;
 import com.smartgwt.client.types.TabTitleEditEvent;
-import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
