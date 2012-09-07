@@ -6,7 +6,9 @@ import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.queryform.QueryTab;
 import com.data2semantics.yasgui.client.queryform.QueryTabs;
 import com.data2semantics.yasgui.client.queryform.ToolBar;
-import com.data2semantics.yasgui.shared.Settings;
+import com.data2semantics.yasgui.client.settings.Settings;
+import com.data2semantics.yasgui.client.settings.TabSettings;
+import com.data2semantics.yasgui.shared.exceptions.SettingsException;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
@@ -17,8 +19,6 @@ import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.CloseClickEvent;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
-import com.smartgwt.client.widgets.events.KeyPressEvent;
-import com.smartgwt.client.widgets.events.KeyPressHandler;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 public class View extends VLayout {
@@ -35,6 +35,7 @@ public class View extends VLayout {
 	
 	public View() {
 		settings = Helper.getSettingsFromCookie();
+		JsMethods.setTabBarProperties(QueryTabs.INDENT_TABS);
 		JsMethods.declareCallableViewMethods(this);
 		JsMethods.setProxyUriInVar(GWT.getModuleBaseURL() + "sparql");
 		initLoadingWidget();
@@ -46,15 +47,6 @@ public class View extends VLayout {
 		setAutocompletePrefixes(false);
 		queryTabs = new QueryTabs(this);
 		addMember(queryTabs);
-		addKeyPressHandler(new KeyPressHandler() {
-			@Override
-			public void onKeyPress(KeyPressEvent event) {
-				if (event.isCtrlKeyDown() && event.getKeyName().equals("S")) {
-					// Save settings in cookie
-					Helper.getAndStoreSettingsInCookie();
-				}
-			}
-		});
 	}
 
 
@@ -79,7 +71,7 @@ public class View extends VLayout {
 		Label label = new Label(error);
 		label.setMargin(4);
 		label.setHeight100();
-		label.setWrap(false);
+//		label.setWrap(false);
 		window.addItem(label);
 		window.draw();
 	}
@@ -137,6 +129,21 @@ public class View extends VLayout {
 	public Settings getSettings() {
 		return this.settings;
 	}
+	
+	/**
+	 * This method is used relatively often, so for easier use put it here
+	 * 
+	 * @return
+	 */
+	public TabSettings getSelectedTabSettings() {
+		TabSettings tabSettings = new TabSettings();
+		try {
+			tabSettings = getSettings().getSelectedTabSettings();
+		} catch (SettingsException e) {
+			onError(e.getMessage());
+		}
+		return tabSettings;
+	}
 
 	public void updateSettings() {
 		settings = Helper.getSettings(); // Gets settings from all js objects
@@ -162,6 +169,12 @@ public class View extends VLayout {
 	 */
 	public void resetQueryResult() {
 		getSelectedTab().resetQueryResult();
+	}
+	
+	public void storeQueryInCookie() {
+		String query = getSelectedTab().getQueryTextArea().getQuery();
+		getSelectedTabSettings().setQueryString(query);
+		Helper.storeSettingsInCookie(getSettings());
 	}
 	
 	public void setAutocompletePrefixes(boolean forceUpdate) {

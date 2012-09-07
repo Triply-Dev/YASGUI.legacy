@@ -1,5 +1,6 @@
 package com.data2semantics.yasgui.client;
 
+import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.smartgwt.client.widgets.HTMLPane;
 
 public class QueryTextArea extends HTMLPane {
@@ -11,17 +12,18 @@ public class QueryTextArea extends HTMLPane {
 		this.view = view;
 		this.inputId = getID() + APPEND_INPUT_ID;
 		setHeight(Integer.toString(WIDTH) + "px");
-		
 		setContents(getTextArea());
-		
-		
 	}
 	
 
 	private String getTextArea() {
-		String textArea = "" + "<textarea " + "id=\"" + getInputId() + "\"" + ">" + getView().getSettings().getQueryString() + "</textarea>";
+		String textArea = "" + "<textarea " + "id=\"" + getInputId() + "\"" + ">" + getView().getSelectedTabSettings().getQueryString() + "</textarea>";
 		return textArea;
 
+	}
+	
+	public String getQuery() {
+		return JsMethods.getValueUsingId(inputId);
 	}
 	
 	private View getView() {

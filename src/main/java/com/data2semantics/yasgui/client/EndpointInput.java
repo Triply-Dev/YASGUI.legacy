@@ -1,5 +1,6 @@
 package com.data2semantics.yasgui.client;
 
+import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
@@ -18,9 +19,9 @@ public class EndpointInput extends DynamicForm {
 		endpoint = new TextItem();
 		endpoint.setTitle("Endpoint");
 		endpoint.setWidth(250);
-		endpoint.setDefaultValue(getView().getSettings().getEndpoint());
+		endpoint.setDefaultValue(getView().getSelectedTabSettings().getEndpoint());
 		//For this default value, also retrieve CORS setting
-		JsMethods.checkCorsEnabled(getView().getSettings().getEndpoint());
+		JsMethods.checkCorsEnabled(getView().getSelectedTabSettings().getEndpoint());
 		endpoint.setName(ENDPOINT_INPUT_NAME);
 		endpoint.addFocusHandler(new FocusHandler() {
 			@Override
@@ -35,6 +36,8 @@ public class EndpointInput extends DynamicForm {
 				getView().updateSettings();
 				if (!latestEndpointValue.equals(getEndpoint())) {
 					JsMethods.checkCorsEnabled(getEndpoint());
+					getView().getSettings().getSelectedTabSettings().setEndpoint(getEndpoint());
+					Helper.storeSettingsInCookie(getView().getSettings());
 				}
 			}
 

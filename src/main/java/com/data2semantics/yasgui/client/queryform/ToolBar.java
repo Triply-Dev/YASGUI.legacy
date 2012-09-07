@@ -6,6 +6,7 @@ import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.queryform.grid.ResultGrid;
+import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.shared.Output;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.TitleOrientation;
@@ -77,13 +78,15 @@ public class ToolBar extends ToolStrip {
 		addTabButton.setAlign(Alignment.CENTER);
 		addTabButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				getView().getTabs().addNewTab();
-				
+				TabSettings tabSettings = new TabSettings();
+				getView().getSettings().addTabSettings(tabSettings);
+				getView().getTabs().addTab(tabSettings, true);
+				Helper.storeSettingsInCookie(getView().getSettings());
 			}
 		});
 		addMember(addTabButton);
 		
-		Button queryViaJs = new Button("Query via JS");
+		Button queryViaJs = new Button("Query");
 		queryViaJs.setHeight100();
 		queryViaJs.setWidth(130);
 		queryViaJs.setAlign(Alignment.CENTER);
@@ -94,7 +97,7 @@ public class ToolBar extends ToolStrip {
 				QueryTab tab = getView().getSelectedTab();
 				ResultGrid queryTable = new ResultGrid(getView(), tab);
 				tab.addQueryResult(queryTable);
-				JsMethods.queryJson(getView().getSettings().getQueryString(), getView().getSettings().getEndpoint());
+				JsMethods.queryJson(getView().getSelectedTabSettings().getQueryString(), getView().getSelectedTabSettings().getEndpoint());
 				
 			}
 		});

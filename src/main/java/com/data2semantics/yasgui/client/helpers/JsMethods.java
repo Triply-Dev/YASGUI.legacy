@@ -4,43 +4,44 @@ import com.data2semantics.yasgui.client.View;
 
 public class JsMethods {
 	
-	/**
-	 * This function registers the (static) java methods which should be callable from javascript
-	 */
-	public static native void declareCallableStaticMethods() /*-{
-	    $wnd.storeSettingsInCookie =
-	       $entry(@com.data2semantics.yasgui.client.helpers.Helper::getAndStoreSettingsInCookie());
-	 }-*/;
+	public static native void destroyCodeMirror(String queryInputId) /*-{
+			if ($wnd.sparqlHighlight[queryInputId] != null) { 
+				$wnd.sparqlHighlight[queryInputId] = null;
+			}
+	}-*/;
 	
 	public static native void attachCodeMirror(String queryInputId) /*-{
 		if ($doc.getElementById(queryInputId)) {
-			$wnd.sparqlHighlight[queryInputId] = $wnd.CodeMirror.fromTextArea($doc
-					.getElementById(queryInputId), {
-				mode : "application/x-sparql-query",
-				tabMode : "indent",
-				lineNumbers : true,
-				matchBrackets : true,
-				onCursorActivity : function() {
-					$wnd.sparqlHighlight[queryInputId]
-							.matchHighlight("CodeMirror-matchhighlight");
-				},
-				onChange : function(cm) {
-					$wnd.CodeMirror.simpleHint(cm, $wnd.CodeMirror.prefixHint);
-				},
-				extraKeys : {
-					"Ctrl-Space" : "autocomplete",
-					"Ctrl-D" : "deleteLines",
-					"Ctrl-/" : "commentLines",
-					"Ctrl-Alt-Down" : "copyLineDown",
-					"Ctrl-Alt-Up" : "copyLineUp",
-					"Ctrl-S": "storeSettings"
-				},
-				onHighlightComplete : function(cm) {
-					$wnd.checkSyntax(cm);
-				}
-			});
+			if ($wnd.sparqlHighlight[queryInputId] == null) { 
+				//Only add if it hasnt been drawn yet
+				$wnd.sparqlHighlight[queryInputId] = $wnd.CodeMirror.fromTextArea($doc
+						.getElementById(queryInputId), {
+					mode : "application/x-sparql-query",
+					tabMode : "indent",
+					lineNumbers : true,
+					matchBrackets : true,
+					onCursorActivity : function() {
+						$wnd.sparqlHighlight[queryInputId]
+								.matchHighlight("CodeMirror-matchhighlight");
+					},
+					onChange : function(cm) {
+						$wnd.CodeMirror.simpleHint(cm, $wnd.CodeMirror.prefixHint);
+					},
+					extraKeys : {
+						"Ctrl-Space" : "autocomplete",
+						"Ctrl-D" : "deleteLines",
+						"Ctrl-/" : "commentLines",
+						"Ctrl-Alt-Down" : "copyLineDown",
+						"Ctrl-Alt-Up" : "copyLineUp",
+						"Ctrl-S": "storeSettings"
+					},
+					onHighlightComplete : function(cm) {
+						$wnd.checkSyntax(cm);
+					}
+				});
+			}
 		} else {
-			onError("no text area for input id: " + queryInputId);
+			$wnd.onError("no text area for input id: " + queryInputId);
 		}
 	}-*/;
 
@@ -118,11 +119,18 @@ public class JsMethods {
 		$wnd.clearQueryResult = function() {
 			view.@com.data2semantics.yasgui.client.View::resetQueryResult()();
 		}
+		$wnd.storeSettingsInCookie = function() {
+			view.@com.data2semantics.yasgui.client.View::storeQueryInCookie()();
+		}
+		
 	}-*/;
 	
 	
 	public static native void setProxyUriInVar(String proxy) /*-{
 		$wnd.proxy = proxy;
+	}-*/;
+	public static native void setTabBarProperties(int margin) /*-{
+		$wnd.isc.TabBar.addProperties({layoutStartMargin:margin});
 	}-*/;
 	
 }
