@@ -176,7 +176,7 @@ public class QueryTabs extends TabSet {
 
 	public void addTab(TabSettings tabSettings, boolean select) {
 		tabSettings.setTabTitle(createTabTitle(tabSettings.getTabTitle()));
-		final QueryTab tab = new QueryTab(getView(), tabSettings.getTabTitle());
+		QueryTab tab = new QueryTab(getView(), tabSettings);
 		addTab(tab);
 		if (select) {
 			selectTab(tab);

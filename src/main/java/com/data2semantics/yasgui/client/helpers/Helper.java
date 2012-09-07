@@ -5,6 +5,11 @@ import com.data2semantics.yasgui.client.settings.Settings;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Window;
+import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.widgets.Label;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
 
 public class Helper {
 	private static String COOKIE_SETTINGS = "yasgui_settings";
@@ -38,5 +43,29 @@ public class Helper {
 			}
 		}
 		return settings;
+	}
+	//You could also use an HTMLFlow element
+	public static Label getLink(String message, ClickHandler handler) {
+	   Label link = new Label();
+	   link = new Label(message);
+	   link.addStyleName("clickable");
+	   link.setHeight100();
+	   link.setWidth100();
+	   link.setAlign(Alignment.CENTER);
+
+	   //Set the width to the length of the text.
+	   link.setWidth(message.length()*6);
+
+	   link.addClickHandler(handler);
+	   return link;
+
+	}
+	public static Label getLinkNewWindow(String message, final String url) {
+		return getLink(message, new ClickHandler(){
+
+			@Override
+			public void onClick(ClickEvent event) {
+				Window.open(url, "_blank", null);
+			}});
 	}
 }

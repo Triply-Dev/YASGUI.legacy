@@ -2,6 +2,8 @@ package com.data2semantics.yasgui.client;
 
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
+import com.data2semantics.yasgui.client.queryform.QueryTab;
+import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.BlurEvent;
@@ -14,12 +16,18 @@ public class EndpointInput extends DynamicForm {
 	private TextItem endpoint;
 	public static String ENDPOINT_INPUT_NAME = "EndpointInput";
 	private String latestEndpointValue; //used to know when to check for cors enabled. Not just on blur, but only on blur and when value has changed
-	public EndpointInput(View view) {
+	private QueryTab queryTab;
+	public EndpointInput(View view, QueryTab queryTab) {
+		this.queryTab = queryTab;
 		this.view = view;
+		createTextInput();
+	}
+	
+	private void createTextInput() {
 		endpoint = new TextItem();
 		endpoint.setTitle("Endpoint");
 		endpoint.setWidth(250);
-		endpoint.setDefaultValue(getView().getSelectedTabSettings().getEndpoint());
+		endpoint.setDefaultValue(getQueryTab().getTabSettings().getEndpoint());
 		//For this default value, also retrieve CORS setting
 		JsMethods.checkCorsEnabled(getView().getSelectedTabSettings().getEndpoint());
 		endpoint.setName(ENDPOINT_INPUT_NAME);
@@ -50,5 +58,9 @@ public class EndpointInput extends DynamicForm {
 	
 	private View getView() {
 		return this.view;
+	}
+	
+	private QueryTab getQueryTab() {
+		return this.queryTab;
 	}
 }

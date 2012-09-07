@@ -21,18 +21,21 @@ public class QueryTab extends Tab {
 	private VLayout vLayout = new VLayout();
 	private VLayout queryResultContainer = new VLayout();
 	private ResultGrid resultGrid;
+	private TabSettings tabSettings;
 
-	public QueryTab(View view, String title) {
-		super(title);
+	public QueryTab(View view, TabSettings tabSettings) {
+		super(tabSettings.getTabTitle());
+		this.tabSettings = tabSettings;
 		this.view = view;
 		setCanClose(true);
-
-		queryTextArea = new QueryTextArea(getView(), getID());
-
+		
+		endpointInput = new EndpointInput(getView(), this);
+		vLayout.addMember(endpointInput);
+		
+		queryTextArea = new QueryTextArea(getView(), this);
 		vLayout.addMember(queryTextArea);
 
-		endpointInput = new EndpointInput(getView());
-		vLayout.addMember(endpointInput);
+		
 
 		vLayout.addMember(queryResultContainer);
 
@@ -128,5 +131,9 @@ public class QueryTab extends Tab {
 
 	public void drawResultsInTable(String jsonResult) {
 		resultGrid.drawQueryResultsFromJson(jsonResult);
+	}
+	
+	public TabSettings getTabSettings() {
+		return this.tabSettings;
 	}
 }

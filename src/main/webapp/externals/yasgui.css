@@ -8,3 +8,7 @@ span.CodeMirror-matchhighlight {
 	width: 37px;	
 }
 .cm-s-default span.cm-error { border-bottom:2px dotted red;}
+.clickable {
+  color: blue;
+  cursor: pointer;
+}

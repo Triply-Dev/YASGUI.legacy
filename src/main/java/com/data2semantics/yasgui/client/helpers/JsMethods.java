@@ -37,6 +37,9 @@ public class JsMethods {
 					},
 					onHighlightComplete : function(cm) {
 						$wnd.checkSyntax(cm);
+					},
+					onBlur: function() {
+						$wnd.storeQueryInCookie();
 					}
 				});
 			}
@@ -119,7 +122,7 @@ public class JsMethods {
 		$wnd.clearQueryResult = function() {
 			view.@com.data2semantics.yasgui.client.View::resetQueryResult()();
 		}
-		$wnd.storeSettingsInCookie = function() {
+		$wnd.storeQueryInCookie = function() {
 			view.@com.data2semantics.yasgui.client.View::storeQueryInCookie()();
 		}
 		

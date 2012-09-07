@@ -18,7 +18,9 @@ public class TabSettings extends JSONObject {
 	/**
 	 * DEFAULTS
 	 */
-	private static String DEFAULT_QUERY = "PREFIX aers: <http://aers.data2semantics.org/resource/> \n"
+	private static String DEFAULT_QUERY = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" + 
+			"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
+			"PREFIX aers: <http://aers.data2semantics.org/resource/> \n"
 			+ "SELECT * {<http://aers.data2semantics.org/resource/report/5578636> ?f ?g} LIMIT 50";
 
 	private static String DEFAULT_ENDPOINT = "http://sws.ifi.uio.no/sparql/npd";// cors

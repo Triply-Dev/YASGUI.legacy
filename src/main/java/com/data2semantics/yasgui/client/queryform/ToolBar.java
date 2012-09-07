@@ -72,20 +72,6 @@ public class ToolBar extends ToolStrip {
 		});
 		addMember(forcePrefixUpdate);
 		
-		Button addTabButton = new Button("Add tab");
-		addTabButton.setHeight100();
-		addTabButton.setWidth(200);
-		addTabButton.setAlign(Alignment.CENTER);
-		addTabButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				TabSettings tabSettings = new TabSettings();
-				getView().getSettings().addTabSettings(tabSettings);
-				getView().getTabs().addTab(tabSettings, true);
-				Helper.storeSettingsInCookie(getView().getSettings());
-			}
-		});
-		addMember(addTabButton);
-		
 		Button queryViaJs = new Button("Query");
 		queryViaJs.setHeight100();
 		queryViaJs.setWidth(130);

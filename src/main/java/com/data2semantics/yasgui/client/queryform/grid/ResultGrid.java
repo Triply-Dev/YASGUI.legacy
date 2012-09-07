@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.SparqlJsonHelper;
 import com.data2semantics.yasgui.client.queryform.QueryTab;
@@ -17,7 +18,9 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
+import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Autofit;
+import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLPane;
 import com.smartgwt.client.widgets.Label;
@@ -42,17 +45,15 @@ public class ResultGrid extends ListGrid {
 		setShowRecordComponents(true);
 		setShowRecordComponentsByCell(true);
 		setShowRowNumbers(true);
-//		setFixedRecordHeights(false);
-		setAutoFitData(Autofit.VERTICAL);
+		setFixedRecordHeights(false);
+		setWrapCells(true);
+//		setAutoFitData(Autofit.VERTICAL);
 		setCanResizeFields(true);
 		setEmptyMessage("Executing query");
 		getPrefixesFromQuery();
 	}
 
 	public void drawQueryResultsFromJson(String jsonString) {
-		
-		
-		
 		try {
 			results = new SparqlJsonHelper(getView(), jsonString);
 		} catch (SparqlParseException e) {
@@ -86,23 +87,26 @@ public class ResultGrid extends ListGrid {
 					text = prefix.getPrefix() + ":" + uri.substring(prefix.getUri().length());
 				}
 				
-				HTMLPane html = new HTMLPane();
-				html.setContents("<a href=\"" + uri + "\" target=\"_blank\">" + text + "</a>");
-				html.setHeight100();
-				html.setWidth100();
-				return html;
+//				HTMLPane html = new HTMLPane();
+//				html.setContents("<a href=\"" + uri + "\" target=\"_blank\">" + text + "</a>");
+//				html.setHeight100();
+//				html.setWidth100();
+//				return html;
+				return Helper.getLinkNewWindow(text, uri);
 			} else if (type.equals("literal")) {
-				String literal = node.get("value").isString().stringValue();
+				String literal = node.get("value").isString().stringValue() + "fffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffff fffffffffffffffffffffffffffff";
 				Label label = new Label(literal);
-				label.setHeight100();
+				label.setOverflow(Overflow.VISIBLE);
 				label.setWidth100();
+				label.setAutoHeight();
+				
 				if (node.get("datatype") != null) {
 					label.setPrompt("xsd:" + node.get("datatype").isString().stringValue().substring(XSD_DATA_PREFIX.length()));
 				}
 				return label;
 			} else {
 				//is bnode
-				String uri = node.get("value").isString().stringValue();
+				String uri = node.get("value").isString().stringValue() + "dddddddddddddddddddddddddddd ddddddddddddddddddddddddddddddd";
 				Label label = new Label(uri);
 				label.setHeight100();
 				label.setWidth100();
@@ -137,6 +141,9 @@ public class ResultGrid extends ListGrid {
 		for(int i = 0; i < resultVars.size(); i++){
 			String resultVar = results.getAsString(resultVars.get(i));
 			ListGridField field = new ListGridField(VARIABLE_PREFIX + resultVar, resultVar);
+			field.setCellAlign(Alignment.LEFT);
+			field.setAlign(Alignment.CENTER); //for header
+			
 			listGridFields.add(field);
 		}
 		return listGridFields;
