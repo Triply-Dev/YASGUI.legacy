@@ -22,7 +22,6 @@ public class QueryTab extends Tab {
 	private VLayout queryResultContainer = new VLayout();
 	private ResultGrid resultGrid;
 	private TabSettings tabSettings;
-
 	public QueryTab(View view, TabSettings tabSettings) {
 		super(tabSettings.getTabTitle());
 		this.tabSettings = tabSettings;
@@ -34,8 +33,7 @@ public class QueryTab extends Tab {
 		
 		queryTextArea = new QueryTextArea(getView(), this);
 		vLayout.addMember(queryTextArea);
-
-		
+		//queryResultContainer.addMember(testGrid);
 
 		vLayout.addMember(queryResultContainer);
 

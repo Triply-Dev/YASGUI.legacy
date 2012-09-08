@@ -6,6 +6,7 @@ import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.queryform.QueryTab;
 import com.data2semantics.yasgui.client.queryform.QueryTabs;
 import com.data2semantics.yasgui.client.queryform.ToolBar;
+import com.data2semantics.yasgui.client.queryform.grid.ResultGrid;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.shared.exceptions.SettingsException;
@@ -156,7 +157,11 @@ public class View extends VLayout {
 	 * @param jsonResult
 	 */
 	public void drawResultsInTable(String jsonResult) {
-		getSelectedTab().drawResultsInTable(jsonResult);
+		//Create grid and fill with data immediately. 
+		//Will have cell alignment issues (bug smartgwt i guess) when initiating resultgrid before query, and filling afterwards
+		QueryTab tab = getSelectedTab();
+		ResultGrid queryTable = new ResultGrid(this, tab, jsonResult);
+		tab.addQueryResult(queryTable);
 	}
 	
 	/**

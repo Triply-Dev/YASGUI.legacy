@@ -3,10 +3,7 @@ package com.data2semantics.yasgui.client.queryform;
 import java.util.LinkedHashMap;
 
 import com.data2semantics.yasgui.client.View;
-import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
-import com.data2semantics.yasgui.client.queryform.grid.ResultGrid;
-import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.shared.Output;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.TitleOrientation;
@@ -25,7 +22,7 @@ public class ToolBar extends ToolStrip {
 	public ToolBar(View view) {
 		this.view = view;
         setWidth100();
-        addOutputSelection();
+        //addOutputSelection();
         addButtons();
 	}
 
@@ -78,11 +75,7 @@ public class ToolBar extends ToolStrip {
 		queryViaJs.setAlign(Alignment.CENTER);
 		queryViaJs.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				QueryTab tab = getView().getSelectedTab();
-				ResultGrid queryTable = new ResultGrid(getView(), tab);
-				tab.addQueryResult(queryTable);
 				JsMethods.queryJson(getView().getSelectedTabSettings().getQueryString(), getView().getSelectedTabSettings().getEndpoint());
-				
 			}
 		});
 		addMember(queryViaJs);

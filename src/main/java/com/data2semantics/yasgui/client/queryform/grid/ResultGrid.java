@@ -2,10 +2,8 @@ package com.data2semantics.yasgui.client.queryform.grid;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
@@ -19,25 +17,22 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.types.Autofit;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.Canvas;
-import com.smartgwt.client.widgets.HTMLPane;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 public class ResultGrid extends ListGrid {
-	private static String SOLUTION_PREFIX = "yasgui___solution";
-	private static String VARIABLE_PREFIX = "yasgui___var";
+	private static String SOLUTION_ATTRIBUTE = "yasgui___solution";
 	private static String XSD_DATA_PREFIX = "http://www.w3.org/2001/XMLSchema#";
 	JSONObject queryResult = new JSONObject();
 	private View view;
 	private SparqlJsonHelper results;
 	private QueryTab tab;
 	private HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
-	public ResultGrid(View view, QueryTab tab) {
+	public ResultGrid(View view, QueryTab tab, String jsonString) {
 		this.tab = tab;
 		this.view = view;
 		setWidth100();
@@ -47,10 +42,10 @@ public class ResultGrid extends ListGrid {
 		setShowRowNumbers(true);
 		setFixedRecordHeights(false);
 		setWrapCells(true);
-//		setAutoFitData(Autofit.VERTICAL);
 		setCanResizeFields(true);
-		setEmptyMessage("Executing query");
+		setCanSelectText(true);
 		getPrefixesFromQuery();
+		drawQueryResultsFromJson(jsonString);
 	}
 
 	public void drawQueryResultsFromJson(String jsonString) {
@@ -74,10 +69,10 @@ public class ResultGrid extends ListGrid {
 		String colName = this.getFieldName(colNum);
 		
 		//the numbering field created by smartgwt has field name starting with $
-		if (colName.startsWith(VARIABLE_PREFIX)) { 
-			String varName = colName.substring(VARIABLE_PREFIX.length());
-			JSONObject solution = (JSONObject) row.getAttributeAsObject(SOLUTION_PREFIX);
-			JSONObject node = solution.get(varName).isObject();
+		if (!colName.startsWith("$")) { 
+//			if (colName.startsWith(VARIABLE_PREFIX)) { 
+			JSONObject solution = (JSONObject) row.getAttributeAsObject(SOLUTION_ATTRIBUTE);
+			JSONObject node = solution.get(colName).isObject();
 			String type = node.get("type").isString().stringValue();
 			if (type.equals("uri")) {
 				final String uri = node.get("value").isString().stringValue();
@@ -86,15 +81,9 @@ public class ResultGrid extends ListGrid {
 				if (prefix != null) {
 					text = prefix.getPrefix() + ":" + uri.substring(prefix.getUri().length());
 				}
-				
-//				HTMLPane html = new HTMLPane();
-//				html.setContents("<a href=\"" + uri + "\" target=\"_blank\">" + text + "</a>");
-//				html.setHeight100();
-//				html.setWidth100();
-//				return html;
 				return Helper.getLinkNewWindow(text, uri);
 			} else if (type.equals("literal")) {
-				String literal = node.get("value").isString().stringValue() + "fffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffff ffffffffffffffffffffffffffffffffffffffffffffffff fffffffffffffffffffffffffffff";
+				String literal = node.get("value").isString().stringValue();
 				Label label = new Label(literal);
 				label.setOverflow(Overflow.VISIBLE);
 				label.setWidth100();
@@ -106,7 +95,7 @@ public class ResultGrid extends ListGrid {
 				return label;
 			} else {
 				//is bnode
-				String uri = node.get("value").isString().stringValue() + "dddddddddddddddddddddddddddd ddddddddddddddddddddddddddddddd";
+				String uri = node.get("value").isString().stringValue();
 				Label label = new Label(uri);
 				label.setHeight100();
 				label.setWidth100();
@@ -121,15 +110,7 @@ public class ResultGrid extends ListGrid {
 		for (int i = 0; i < querySolutions.size(); i++) {
 			JSONObject solution = results.getAsObject(querySolutions.get(i));
 			ListGridRecord row = new ListGridRecord();
-			row.setAttribute(SOLUTION_PREFIX, solution);
-			
-		    Set<String> myIter = solution.keySet();
-		    Iterator<String> iterator = myIter.iterator();
-		    while(iterator.hasNext()){
-		    	String varName = iterator.next();
-		    	JSONObject varAttributes = solution.get(varName).isObject();
-		    	row.setAttribute(varName, varAttributes.get("value").isString().stringValue());
-		    }
+			row.setAttribute(SOLUTION_ATTRIBUTE, solution);
 			rows.add(row);
 		}
 		return rows;
@@ -140,7 +121,7 @@ public class ResultGrid extends ListGrid {
 		ArrayList<ListGridField> listGridFields = new ArrayList<ListGridField>();
 		for(int i = 0; i < resultVars.size(); i++){
 			String resultVar = results.getAsString(resultVars.get(i));
-			ListGridField field = new ListGridField(VARIABLE_PREFIX + resultVar, resultVar);
+			ListGridField field = new ListGridField(resultVar, resultVar);
 			field.setCellAlign(Alignment.LEFT);
 			field.setAlign(Alignment.CENTER); //for header
 			
