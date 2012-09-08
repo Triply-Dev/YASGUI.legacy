@@ -46,6 +46,7 @@ public class QueryTab extends Tab {
 		Menu menu = new Menu();
 		MenuItem copy = new MenuItem();
 		copy.setTitle("Create copy");
+		copy.setIcon("icons/fugue/document-copy.png");
 		copy.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(MenuItemClickEvent event) {
@@ -58,6 +59,7 @@ public class QueryTab extends Tab {
 		
 		MenuItem renameTab = new MenuItem();
 		renameTab.setTitle("Rename Tab");
+		renameTab.setIcon("icons/fugue/edit.png");
 		renameTab.addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -67,6 +69,7 @@ public class QueryTab extends Tab {
 		});
 		MenuItem closeTab = new MenuItem();
 		closeTab.setTitle("Close");
+		closeTab.setIcon("icons/custom/close-one.png");
 		closeTab.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -76,6 +79,7 @@ public class QueryTab extends Tab {
 		});
 		MenuItem closeOtherTabs = new MenuItem();
 		closeOtherTabs.setTitle("Close others");
+		closeOtherTabs.setIcon("icons/custom/close-others.png");
 		closeOtherTabs.addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -87,6 +91,7 @@ public class QueryTab extends Tab {
 		
 		MenuItem closeAll = new MenuItem();
 		closeAll.setTitle("Close all");
+		closeAll.setIcon("icons/custom/close-all.png");
 		closeAll.addClickHandler(new ClickHandler() {
 			
 			@Override

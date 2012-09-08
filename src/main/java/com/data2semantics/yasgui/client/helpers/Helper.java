@@ -50,7 +50,7 @@ public class Helper {
 	   link.addStyleName("clickable");
 	   link.setHeight100();
 	   link.setWidth100();
-
+	   link.setCanSelectText(true);
 	   link.addClickHandler(handler);
 	   return link;
 

@@ -29,7 +29,6 @@ public class QueryTabs extends TabSet {
 	public static int INDENT_TABS = 22;
 	public QueryTabs(View view) {
 		this.view = view;
-		
 		setTabBarPosition(Side.TOP);
 		setTabBarAlign(Side.LEFT);
 		setWidth100();
@@ -83,7 +82,7 @@ public class QueryTabs extends TabSet {
 		});
 		addChild(button);
 	}
-
+	
 	private View getView() {
 		return this.view;
 	}

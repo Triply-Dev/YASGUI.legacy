@@ -43,7 +43,8 @@ public class ResultGrid extends ListGrid {
 		setFixedRecordHeights(false);
 		setWrapCells(true);
 		setCanResizeFields(true);
-		setCanSelectText(true);
+//		setCanSelectText(true);
+		
 		getPrefixesFromQuery();
 		drawQueryResultsFromJson(jsonString);
 	}
@@ -70,7 +71,6 @@ public class ResultGrid extends ListGrid {
 		
 		//the numbering field created by smartgwt has field name starting with $
 		if (!colName.startsWith("$")) { 
-//			if (colName.startsWith(VARIABLE_PREFIX)) { 
 			JSONObject solution = (JSONObject) row.getAttributeAsObject(SOLUTION_ATTRIBUTE);
 			JSONObject node = solution.get(colName).isObject();
 			String type = node.get("type").isString().stringValue();
@@ -88,7 +88,7 @@ public class ResultGrid extends ListGrid {
 				label.setOverflow(Overflow.VISIBLE);
 				label.setWidth100();
 				label.setAutoHeight();
-				
+				label.setCanSelectText(true);
 				if (node.get("datatype") != null) {
 					label.setPrompt("xsd:" + node.get("datatype").isString().stringValue().substring(XSD_DATA_PREFIX.length()));
 				}
@@ -98,6 +98,7 @@ public class ResultGrid extends ListGrid {
 				String uri = node.get("value").isString().stringValue();
 				Label label = new Label(uri);
 				label.setHeight100();
+				label.setCanSelectText(true);
 				label.setWidth100();
 				return label;
 			}

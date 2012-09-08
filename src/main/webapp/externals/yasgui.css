@@ -12,3 +12,6 @@ span.CodeMirror-matchhighlight {
   color: blue;
   cursor: pointer;
 }
+.tabSetContainer {
+	border: 0px solid black;
+}

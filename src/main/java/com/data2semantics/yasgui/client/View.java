@@ -20,6 +20,7 @@ import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.CloseClickEvent;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
+import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 public class View extends VLayout {
@@ -45,6 +46,12 @@ public class View extends VLayout {
 		setHeight100();
 		this.toolBar = new ToolBar(this);
 		addMember(this.toolBar);
+		
+		//Setting margins on tabset or toolbar messes up layout. Therefore use spacer
+		LayoutSpacer spacer = new LayoutSpacer();
+		spacer.setHeight(6);
+		addMember(spacer);
+		
 		setAutocompletePrefixes(false);
 		queryTabs = new QueryTabs(this);
 		addMember(queryTabs);
