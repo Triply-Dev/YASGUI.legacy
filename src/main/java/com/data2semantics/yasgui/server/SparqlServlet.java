@@ -47,7 +47,6 @@ public class SparqlServlet extends HttpServlet {
 				String line;
 				while ((line = rd.readLine()) != null) {
 					out.println(line);
-					System.out.println(line);
 				}
 				response.setContentType(contentType);
 				out.close();

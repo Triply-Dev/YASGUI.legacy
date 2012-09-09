@@ -3,6 +3,7 @@ package com.data2semantics.yasgui.client;
 import java.util.logging.Logger;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
+import com.data2semantics.yasgui.client.helpers.ZIndexes;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.QueryTab;
@@ -45,7 +46,6 @@ public class View extends VLayout {
 		JsMethods.declareCallableViewMethods(this);
 		JsMethods.setProxyUriInVar(GWT.getModuleBaseURL() + "sparql");
 		initLoadingWidget();
-		setMargin(10);
 		setWidth100();
 		setHeight100();
 		
@@ -53,7 +53,7 @@ public class View extends VLayout {
 
 		//Setting margins on tabset messes up layout. Therefore use spacer
 		LayoutSpacer spacer = new LayoutSpacer();
-		spacer.setHeight(20);
+		spacer.setHeight(30);
 		addMember(spacer);
 		
 		setAutocompletePrefixes(false);
@@ -147,8 +147,8 @@ public class View extends VLayout {
 		loading.setBackgroundColor("#f0f0f0");
 		loading.setBorder("1px solid grey");
 		loading.getElement().getStyle().setPosition(Position.ABSOLUTE);
-		loading.getElement().getStyle().setBottom(0, Unit.PX);
-		loading.getElement().getStyle().setLeft(0, Unit.PX);
+		loading.getElement().getStyle().setTop(0, Unit.PX);
+		loading.getElement().getStyle().setRight(0, Unit.PX);
 		loading.setHeight(30);
 		loading.setAutoWidth();
 		loading.setOverflow(Overflow.VISIBLE);
@@ -158,7 +158,6 @@ public class View extends VLayout {
 		loading.setZIndex(999999999);
 		loading.hide();
 		loading.redraw();
-
 	}
 
 	public void onLoadingStart() {
@@ -172,7 +171,7 @@ public class View extends VLayout {
 	}
 
 	public void onLoadingFinish() {
-		loading.hide();
+//		loading.hide();
 	}
 
 	public YasguiServiceAsync getRemoteService() {

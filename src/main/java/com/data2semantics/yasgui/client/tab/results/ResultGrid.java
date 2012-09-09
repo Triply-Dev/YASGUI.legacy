@@ -62,10 +62,12 @@ public class ResultGrid extends ListGrid {
 			setEmptyMessage(e.getMessage());
 			redraw();
 		}
+		
 		List<ListGridField> listGridFields = getVarsAsListGridFields(results.getVariables());
 		setFields(listGridFields.toArray(new ListGridField[listGridFields.size()]));
 		List<ListGridRecord> rows = getSolutionsAsGridRecords(results.getQuerySolutions());
 		setData(rows.toArray(new ListGridRecord[rows.size()]));
+		getView().getLogger().severe("in resultgrid");
 	}
 	
 	/**

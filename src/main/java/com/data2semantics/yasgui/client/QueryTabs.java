@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
+import com.data2semantics.yasgui.client.helpers.ZIndexes;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.ConfigMenu;
@@ -30,7 +31,7 @@ import com.smartgwt.client.widgets.tab.events.TabTitleChangedHandler;
 public class QueryTabs extends TabSet {
 	private View view;
 	private static boolean STORE_SETTINGS_ON_CLOSE_DEFAULT = true;
-	public static int INDENT_TABS = 120;
+	public static int INDENT_TABS = 130;
 	public QueryTabs(View view) {
 		this.view = view;
 		setTabBarThickness(28); //this way the icon menu button alligns well with the tabbar
@@ -86,7 +87,7 @@ public class QueryTabs extends TabSet {
 		button.setShowRollOver(false);
 		button.setWidth(20);
 		button.setHeight(25);
-		button.setZIndex(55555555);//Otherwise the onclick of the tab bar is used..
+		button.setZIndex(ZIndexes.TAB_CONTROLS);//Otherwise the onclick of the tab bar is used..
 		button.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				TabSettings tabSettings = new TabSettings();
@@ -99,7 +100,7 @@ public class QueryTabs extends TabSet {
 		IconMenuButton config = new IconMenuButton("");
 		config.setIcon("icons/diagona/bolt.png");
 		config.setMenu(new ConfigMenu(getView()));
-		controls.setZIndex(55555555);
+		controls.setZIndex(ZIndexes.TAB_CONTROLS);
 		controls.addMember(config);
 		controls.addMember(button);
 		addChild(controls);

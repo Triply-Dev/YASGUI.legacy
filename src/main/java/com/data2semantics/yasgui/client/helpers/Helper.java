@@ -69,7 +69,7 @@ public class Helper {
 	public static Label getLink(String message, ClickHandler handler) {
 	   Label link = new Label();
 	   link = new Label(message);
-	   link.addStyleName("clickable");
+	   link.setStyleName("clickable");
 	   link.setHeight100();
 	   link.setWidth100();
 	   link.setCanSelectText(true);
