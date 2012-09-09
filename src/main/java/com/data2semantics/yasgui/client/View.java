@@ -3,7 +3,6 @@ package com.data2semantics.yasgui.client;
 import java.util.logging.Logger;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
-import com.data2semantics.yasgui.client.helpers.ZIndexes;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.QueryTab;
@@ -171,7 +170,7 @@ public class View extends VLayout {
 	}
 
 	public void onLoadingFinish() {
-//		loading.hide();
+		loading.hide();
 	}
 
 	public YasguiServiceAsync getRemoteService() {
@@ -251,7 +250,7 @@ public class View extends VLayout {
 	 * @param forceUpdate
 	 */
 	public void setAutocompletePrefixes(boolean forceUpdate) {
-		onLoadingStart();
+		onLoadingStart("Fetching prefixes");
 		// get prefixes from server
 		getRemoteService().fetchPrefixes(forceUpdate, new AsyncCallback<String>() {
 			public void onFailure(Throwable caught) {

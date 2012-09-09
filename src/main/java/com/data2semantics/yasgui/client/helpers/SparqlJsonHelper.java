@@ -1,5 +1,6 @@
 package com.data2semantics.yasgui.client.helpers;
 
+import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
 import com.data2semantics.yasgui.shared.exceptions.SparqlParseException;
 import com.google.gwt.json.client.JSONArray;
@@ -12,14 +13,18 @@ import com.google.gwt.json.client.JSONValue;
  * Object to parse (into JSONObject) and validate a sparql json string
  */
 public class SparqlJsonHelper {
-	private JSONObject queryResult;
-	public SparqlJsonHelper(String jsonString) throws SparqlParseException, SparqlEmptyException {
+	public JSONObject queryResult;
+	private View view;
+	public SparqlJsonHelper(String jsonString, View view) throws SparqlParseException, SparqlEmptyException {
+		this.view = view;
 		getAndValidateJsonObject(jsonString);
 		
 	}
 	
 	public JSONArray getVariables() throws SparqlParseException {
+		view.getLogger().severe("before");
 		JSONObject head = getAsObject(queryResult, "head");
+		view.getLogger().severe("after");
 		return getAsArray(head, "vars");
 	}
 	
@@ -66,7 +71,7 @@ public class SparqlJsonHelper {
 	 * @return
 	 * @throws SparqlParseException
 	 */
-	private JSONObject getAsObject(JSONObject jsonObject, String key) throws SparqlParseException {
+	public JSONObject getAsObject(JSONObject jsonObject, String key) throws SparqlParseException {
 		JSONValue jsonValue = jsonObject.get(key);
 		if (jsonValue == null) {
 			throw new SparqlParseException("Unable to get " + key + " as object");
@@ -103,7 +108,7 @@ public class SparqlJsonHelper {
 	 * @return
 	 * @throws SparqlParseException
 	 */
-	private JSONArray getAsArray(JSONObject jsonObject, String key) throws SparqlParseException {
+	public JSONArray getAsArray(JSONObject jsonObject, String key) throws SparqlParseException {
 		JSONValue jsonValue = jsonObject.get(key);
 		if (jsonValue == null) {
 			throw new SparqlParseException("Unable to get " + key + " as array");

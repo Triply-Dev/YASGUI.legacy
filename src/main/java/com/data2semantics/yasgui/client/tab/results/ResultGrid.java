@@ -55,19 +55,18 @@ public class ResultGrid extends ListGrid {
 	 */
 	public void drawQueryResultsFromJson(String jsonString) {
 		try {
-			results = new SparqlJsonHelper(jsonString);
+			results = new SparqlJsonHelper(jsonString, getView());
 		} catch (SparqlParseException e) {
 			getView().onError(e);
 		} catch (SparqlEmptyException e) {
 			setEmptyMessage(e.getMessage());
 			redraw();
+			return;
 		}
-		
 		List<ListGridField> listGridFields = getVarsAsListGridFields(results.getVariables());
 		setFields(listGridFields.toArray(new ListGridField[listGridFields.size()]));
 		List<ListGridRecord> rows = getSolutionsAsGridRecords(results.getQuerySolutions());
 		setData(rows.toArray(new ListGridRecord[rows.size()]));
-		getView().getLogger().severe("in resultgrid");
 	}
 	
 	/**
@@ -138,9 +137,13 @@ public class ResultGrid extends ListGrid {
 	 * @return
 	 */
 	private ArrayList<ListGridField> getVarsAsListGridFields(JSONArray resultVars) {
+		getView().getLogger().severe("in resultgrid2");
 		ArrayList<ListGridField> listGridFields = new ArrayList<ListGridField>();
+		getView().getLogger().severe("in resultgrid3");
 		for(int i = 0; i < resultVars.size(); i++){
+			getView().getLogger().severe("in resultgrid4");
 			String resultVar = results.getAsString(resultVars.get(i));
+			getView().getLogger().severe("in resultgrid5");
 			ListGridField field = new ListGridField(resultVar, resultVar);
 			field.setCellAlign(Alignment.LEFT);
 			field.setAlign(Alignment.CENTER); //for header
