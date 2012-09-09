@@ -237,6 +237,9 @@ public class View extends VLayout {
 		getSelectedTab().resetQueryResult();
 	}
 	
+	/**
+	 * Get query string from text area, set it in settings, and store in cookie
+	 */
 	public void storeQueryInCookie() {
 		String query = getSelectedTab().getQueryTextArea().getQuery();
 		getSelectedTabSettings().setQueryString(query);
