@@ -1,10 +1,9 @@
-package com.data2semantics.yasgui.client.queryform;
+package com.data2semantics.yasgui.client.tab;
 
-import com.data2semantics.yasgui.client.EndpointInput;
-import com.data2semantics.yasgui.client.QueryTextArea;
+import com.data2semantics.yasgui.client.QueryTabs;
 import com.data2semantics.yasgui.client.View;
-import com.data2semantics.yasgui.client.queryform.grid.ResultGrid;
 import com.data2semantics.yasgui.client.settings.TabSettings;
+import com.data2semantics.yasgui.client.tab.results.ResultGrid;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.Menu;

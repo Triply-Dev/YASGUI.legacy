@@ -1,7 +1,7 @@
-package com.data2semantics.yasgui.client;
+package com.data2semantics.yasgui.client.tab;
 
+import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
-import com.data2semantics.yasgui.client.queryform.QueryTab;
 import com.smartgwt.client.widgets.HTMLPane;
 
 public class QueryTextArea extends HTMLPane {

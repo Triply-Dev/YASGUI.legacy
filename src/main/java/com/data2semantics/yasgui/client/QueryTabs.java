@@ -1,12 +1,13 @@
-package com.data2semantics.yasgui.client.queryform;
+package com.data2semantics.yasgui.client;
 
 import java.util.ArrayList;
 
-import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
+import com.data2semantics.yasgui.client.tab.ConfigMenu;
+import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Command;

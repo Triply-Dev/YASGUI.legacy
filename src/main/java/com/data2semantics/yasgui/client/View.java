@@ -3,12 +3,10 @@ package com.data2semantics.yasgui.client;
 import java.util.logging.Logger;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
-import com.data2semantics.yasgui.client.queryform.QueryTab;
-import com.data2semantics.yasgui.client.queryform.QueryTabs;
-import com.data2semantics.yasgui.client.queryform.ToolBar;
-import com.data2semantics.yasgui.client.queryform.grid.ResultGrid;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
+import com.data2semantics.yasgui.client.tab.QueryTab;
+import com.data2semantics.yasgui.client.tab.results.ResultGrid;
 import com.data2semantics.yasgui.shared.exceptions.SettingsException;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Position;
@@ -37,7 +35,6 @@ public class View extends VLayout {
 	private static int QUERY_BUTTON_POS_TOP = 5;
 	private static int QUERY_BUTTON_POS_LEFT = 5;
 	private Label loading;
-	private ToolBar toolBar;
 	private QueryTabs queryTabs;
 	
 	private Settings settings = new Settings();
@@ -62,12 +59,12 @@ public class View extends VLayout {
 		setAutocompletePrefixes(false);
 		queryTabs = new QueryTabs(this);
 		addMember(queryTabs);
+		addMember(new Footer(this));
 	}
 	
 	private void addQueryButton() {
 		queryButton = new ImgButton();
 		queryButton.setSrc("icons/custom/start.png");
-//		query.setTooltip("Query");
 		queryButton.setHeight(48);
 		queryButton.setShowRollOver(false);
 		queryButton.setShowDown(false);
@@ -113,13 +110,10 @@ public class View extends VLayout {
 			}
 		});
 		window.setShowTitle(false);
-//		window.setShowCloseButton(false);
-//		window.setShowEdges(false);
 		
 		Label label = new Label(error);
 		label.setMargin(4);
 		label.setHeight100();
-//		label.setWrap(false);
 		window.addItem(label);
 		window.draw();
 	}

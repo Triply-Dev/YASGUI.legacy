@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.client.queryform;
+package com.data2semantics.yasgui.client.tab;
 
 import com.data2semantics.yasgui.client.View;
 import com.smartgwt.client.widgets.menu.Menu;

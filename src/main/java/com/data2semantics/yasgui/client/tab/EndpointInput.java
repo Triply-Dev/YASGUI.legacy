@@ -1,8 +1,8 @@
-package com.data2semantics.yasgui.client;
+package com.data2semantics.yasgui.client.tab;
 
+import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
-import com.data2semantics.yasgui.client.queryform.QueryTab;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
