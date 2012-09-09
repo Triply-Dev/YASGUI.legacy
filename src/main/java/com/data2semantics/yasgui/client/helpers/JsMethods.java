@@ -4,12 +4,22 @@ import com.data2semantics.yasgui.client.View;
 
 public class JsMethods {
 	
+	/**
+	 * Unset a tabmirror object. Used when closing a tab
+	 * 
+	 * @param queryInputId Id of the text area of this codemirror instance
+	 */
 	public static native void destroyCodeMirror(String queryInputId) /*-{
 			if ($wnd.sparqlHighlight[queryInputId] != null) { 
 				$wnd.sparqlHighlight[queryInputId] = null;
 			}
 	}-*/;
 	
+	/**
+	 * Initialize and atatch codemirror to a text area
+	 * 
+	 * @param queryInputId Id of text area to attach codemirror to
+	 */
 	public static native void attachCodeMirror(String queryInputId) /*-{
 		if ($doc.getElementById(queryInputId)) {
 			if ($wnd.sparqlHighlight[queryInputId] == null) { 
@@ -47,21 +57,37 @@ public class JsMethods {
 			$wnd.onError("no text area for input id: " + queryInputId);
 		}
 	}-*/;
-
+	
+	
 	public static native void setAutocompletePrefixes(String prefixes) /*-{
 		$wnd.prefixes = eval(prefixes);
 	}-*/;
 
-	
+	/**
+	 * Query an endpoint. Asynchronous. A callback function (drawResultsInTable) is used to process query result.
+	 * 
+	 * @param queryString
+	 * @param endpoint
+	 */
 	public static native void queryJson(String queryString, String endpoint) /*-{
 		$wnd.sparqlQueryJson(queryString, endpoint, function(jsonResult) {$wnd.drawResultsInTable(jsonResult);});
 	}-*/;
 	
-	
+	/**
+	 * Let codemirror save its content to the textarea it is attached to
+	 * 
+	 * @param id Id of codemirror instance
+	 */
 	public static native void saveCodeMirror(String id) /*-{
 		$wnd.sparqlHighlight[id].save();
 	}-*/;
 	
+	/**
+	 * Get value of element by Id
+	 * 
+	 * @param id
+	 * @return
+	 */
 	public static native String getValueUsingId(String id) /*-{
 		result = "";
 		if ($doc.getElementById(id)) {
@@ -74,6 +100,7 @@ public class JsMethods {
 	
 	/**
 	 * Takes value of first found element using this name
+	 * 
 	 * @param name of element to search for
 	 * @return String value, empty if name not found
 	 */
@@ -87,11 +114,12 @@ public class JsMethods {
 		return result;
 	}-*/;
 	
-
-	public static native String getQueryResult() /*-{
-		return jsonResults;
-	}-*/;
-	
+	/**
+	 * Check if a site is cors enabled. Stores results in a javascript array (global)
+	 * 
+	 * @param endpointUri
+	 * @return
+	 */
 	public static native String checkCorsEnabled(String endpointUri) /*-{
 		$wnd.checkCorsEnabled(endpointUri);
 	}-*/;
@@ -134,12 +162,21 @@ public class JsMethods {
 		
 	}-*/;
 	
-	
+	/**
+	 * Define the url of the sparql proxy servlet in javascript
+	 * 
+	 * @param proxy
+	 */
 	public static native void setProxyUriInVar(String proxy) /*-{
 		$wnd.proxy = proxy;
 	}-*/;
+	
+	/**
+	 * Cannot set all properties of tab bar after initialization. Therefore use this method to set properties beforehand
+	 * @param margin
+	 */
 	public static native void setTabBarProperties(int margin) /*-{
-		$wnd.isc.TabBar.addProperties({layoutStartMargin:margin, tabBarThickness: 35});
+		$wnd.isc.TabBar.addProperties({layoutStartMargin:margin});
 	}-*/;
 	
 }

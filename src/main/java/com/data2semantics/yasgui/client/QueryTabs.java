@@ -9,9 +9,7 @@ import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.ConfigMenu;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Command;
-import com.smartgwt.client.types.Orientation;
 import com.smartgwt.client.types.Side;
 import com.smartgwt.client.types.TabTitleEditEvent;
 import com.smartgwt.client.widgets.ImgButton;
@@ -31,7 +29,7 @@ import com.smartgwt.client.widgets.tab.events.TabTitleChangedHandler;
 
 public class QueryTabs extends TabSet {
 	private View view;
-	private static boolean DEFAULT_STORE_SETTINGS_ON_CLOSE = true;
+	private static boolean STORE_SETTINGS_ON_CLOSE_DEFAULT = true;
 	public static int INDENT_TABS = 120;
 	public QueryTabs(View view) {
 		this.view = view;
@@ -55,7 +53,10 @@ public class QueryTabs extends TabSet {
 		addHandlers();
 		addTabControls();
 	}
-
+	
+	/**
+	 * Load all tabs defined in our settings object, and load them
+	 */
 	private void setTabsFromSettings() {
 		ArrayList<TabSettings> tabArray = getView().getSettings().getTabArray();
 		if (tabArray.size() == 0) {
@@ -68,6 +69,9 @@ public class QueryTabs extends TabSet {
 		}
 	}
 
+	/**
+	 * Add controls (e.g. 'add new tab') to the tab bar
+	 */
 	private void addTabControls() {
 		HLayout controls = new HLayout();
 		LayoutSpacer spacer = new LayoutSpacer();
@@ -105,6 +109,9 @@ public class QueryTabs extends TabSet {
 		return this.view;
 	}
 
+	/**
+	 * Define all handlers of the tabs on the tab bar
+	 */
 	private void addHandlers() {
 		addTabSelectedHandler(new TabSelectedHandler() {
 			@Override
@@ -138,6 +145,10 @@ public class QueryTabs extends TabSet {
 		});
 	}
 	
+	/**
+	 * Remove all tabs except one
+	 * @param except QueryTab to keep
+	 */
 	public void removeAllExcept(QueryTab except) {
 		Tab[] tabs = getTabs();
 		for (Tab tab: tabs) {
@@ -148,6 +159,9 @@ public class QueryTabs extends TabSet {
 		Helper.storeSettingsInCookie(getView().getSettings());
 	}
 	
+	/**
+	 * Remove all tabs
+	 */
 	public void removeAllTabs() {
 		Tab[] tabs = getTabs();
 		for (Tab tab: tabs) {
@@ -156,12 +170,23 @@ public class QueryTabs extends TabSet {
 		Helper.storeSettingsInCookie(getView().getSettings());
 	}
 	
+	/**
+	 * Remove a single tab
+	 * @param tab Tab to remove
+	 * @param storeSettings Whether to save settings in cookie as well. 
+	 * Use this settings if this methods is called often, we want to store once instead of multiple times for performance reasons 
+	 */
 	public void removeTab(QueryTab tab, boolean storeSettings) {
 		closePreProcess(tab);
 		removeTab(tab);
-		closePostProcess(tab);
+		closePostProcess(tab, storeSettings);
 	}
 	
+	/**
+	 * Do code cleanup and updating of settings before tab is actually removed
+	 * 
+	 * @param queryTab
+	 */
 	public void closePreProcess(QueryTab queryTab) {
 		Settings settings = getView().getSettings();
 		settings.removeTabSettings(getTabNumber(queryTab.getID()));
@@ -171,8 +196,15 @@ public class QueryTabs extends TabSet {
 	}
 	
 	public void removeAndPostProcessTab(QueryTab tab) {
-		removeTab(tab, DEFAULT_STORE_SETTINGS_ON_CLOSE);
+		removeTab(tab, STORE_SETTINGS_ON_CLOSE_DEFAULT);
 	}
+	
+	/**
+	 * Postprocess for after removing of tab. Use this to update settings with the new selected tab number
+	 * 
+	 * @param queryTab
+	 * @param storeSettings Whether to store settings in cookie. We might not always want to do this (when removing multiple tabs we want to do it only once)
+	 */
 	public void closePostProcess(QueryTab queryTab, boolean storeSettings) {
 		Settings settings = getView().getSettings();
 		settings.setSelectedTabNumber(getSelectedTabNumber());
@@ -181,15 +213,30 @@ public class QueryTabs extends TabSet {
 		}
 	}
 	
+	/**
+	 * @see closePostProcess(QueryTab queryTab, boolean storeSettings)
+	 * @param queryTab
+	 */
 	public void closePostProcess(QueryTab queryTab) {
-		closePostProcess(queryTab, DEFAULT_STORE_SETTINGS_ON_CLOSE);
+		closePostProcess(queryTab, STORE_SETTINGS_ON_CLOSE_DEFAULT);
 	}
 	
+	/**
+	 * Caller for editing of tab title. Opens input area on tab bar
+	 * 
+	 * @param queryTab tab to edit title for
+	 */
 	public void editTabTitle(QueryTab queryTab) {
 		int tabNumber = getTabNumber(queryTab.getID());
 		editTabTitle(tabNumber);
 	}
 
+	/**
+	 * Add a new tab to this tabset
+	 * 
+	 * @param tabSettings Settings to fill the new tab with
+	 * @param select Select tab after loading
+	 */
 	public void addTab(TabSettings tabSettings, boolean select) {
 		tabSettings.setTabTitle(createTabTitle(tabSettings.getTabTitle()));
 		QueryTab tab = new QueryTab(getView(), tabSettings);
@@ -198,7 +245,11 @@ public class QueryTabs extends TabSet {
 			selectTab(tab);
 		}
 	}
-
+	
+	/**
+	 * @see addTab(TabSettings tabSettings, boolean select)
+	 * @param tabSettings
+	 */
 	public void addTab(TabSettings tabSettings) {
 		addTab(tabSettings, false);
 

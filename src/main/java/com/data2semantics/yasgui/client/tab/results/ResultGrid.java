@@ -43,15 +43,19 @@ public class ResultGrid extends ListGrid {
 		setFixedRecordHeights(false);
 		setWrapCells(true);
 		setCanResizeFields(true);
-//		setCanSelectText(true);
 		
 		getPrefixesFromQuery();
 		drawQueryResultsFromJson(jsonString);
 	}
-
+	
+	/**
+	 * Take json string from query results, parse it, and draw in this table
+	 * 
+	 * @param jsonString
+	 */
 	public void drawQueryResultsFromJson(String jsonString) {
 		try {
-			results = new SparqlJsonHelper(getView(), jsonString);
+			results = new SparqlJsonHelper(jsonString);
 		} catch (SparqlParseException e) {
 			getView().onError(e);
 		} catch (SparqlEmptyException e) {
@@ -64,6 +68,9 @@ public class ResultGrid extends ListGrid {
 		setData(rows.toArray(new ListGridRecord[rows.size()]));
 	}
 	
+	/**
+	 * Overridden method of ListGrid. Need to use this, because otherwise we cannot add different widgets to different cells
+	 */
 	protected Canvas createRecordComponent(ListGridRecord row, Integer colNum) {
 		// fieldname is the identifier of the column, in our case the same as
 		// the column header
@@ -105,7 +112,13 @@ public class ResultGrid extends ListGrid {
 		}
 		return null;
 	}
-
+	
+	/**
+	 * Get solutions from json object, and add as object to listgridrecords (i.e. table row)
+	 * 
+	 * @param querySolutions
+	 * @return
+	 */
 	private ArrayList<ListGridRecord> getSolutionsAsGridRecords(JSONArray querySolutions) {
 		ArrayList<ListGridRecord> rows = new ArrayList<ListGridRecord>();
 		for (int i = 0; i < querySolutions.size(); i++) {
@@ -117,7 +130,11 @@ public class ResultGrid extends ListGrid {
 		return rows;
 	}
 	
-	
+	/**
+	 * Get used vars from json object, and add them as variables (i.e. columns) to this listgrid 
+	 * @param resultVars
+	 * @return
+	 */
 	private ArrayList<ListGridField> getVarsAsListGridFields(JSONArray resultVars) {
 		ArrayList<ListGridField> listGridFields = new ArrayList<ListGridField>();
 		for(int i = 0; i < resultVars.size(); i++){
@@ -131,6 +148,11 @@ public class ResultGrid extends ListGrid {
 		return listGridFields;
 	}
 	
+	/**
+	 * Check for a uri whether there is a prefix defined in the query. Used to shorten uri's in the resultgrid
+	 * @param uri
+	 * @return null on no prefix found, or a string of the prefix
+	 */
 	private Prefix getPrefixForUri(String uri) {
 		Prefix prefix = null;
 		for (Map.Entry<String, Prefix> entry : queryPrefixes.entrySet()) {
@@ -147,6 +169,9 @@ public class ResultGrid extends ListGrid {
 		return this.view;
 	}
 	
+	/**
+	 * Checks to query string and retrieves/stores all defined prefixes in an object variable
+	 */
 	private void getPrefixesFromQuery() {
 		String query = JsMethods.getValueUsingId(tab.getQueryTextArea().getInputId());
 		RegExp regExp = RegExp.compile("^\\s*PREFIX\\s*(\\w*):\\s*<(.*)>\\s*$", "gm");

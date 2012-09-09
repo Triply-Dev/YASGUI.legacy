@@ -40,7 +40,10 @@ public class QueryTab extends Tab {
 
 		setContextMenu();
 	}
-
+	
+	/**
+	 * Create context menu used for the tab bar.
+	 */
 	private void setContextMenu() {
 		Menu menu = new Menu();
 		MenuItem copy = new MenuItem();
@@ -109,20 +112,28 @@ public class QueryTab extends Tab {
 	private QueryTab getTabObject() {
 		return this;
 	}
-
+	
+	/**
+	 * Empty query result area
+	 */
 	public void resetQueryResult() {
 		Canvas[] members = queryResultContainer.getMembers();
 		for (Canvas member : members) {
 			queryResultContainer.removeMember(member);
 		}
 	}
-
+	
+	/**
+	 * Add query result to query result area
+	 * 
+	 * @param resultGrid
+	 */
 	public void addQueryResult(ResultGrid resultGrid) {
 		resetQueryResult();
 		this.resultGrid = resultGrid;
 		queryResultContainer.addMember(resultGrid);
 	}
-
+	
 	public QueryTextArea getQueryTextArea() {
 		return this.queryTextArea;
 	}
@@ -130,10 +141,7 @@ public class QueryTab extends Tab {
 	private View getView() {
 		return this.view;
 	}
-
-	public void drawResultsInTable(String jsonResult) {
-		resultGrid.drawQueryResultsFromJson(jsonResult);
-	}
+	
 	
 	public TabSettings getTabSettings() {
 		return this.tabSettings;

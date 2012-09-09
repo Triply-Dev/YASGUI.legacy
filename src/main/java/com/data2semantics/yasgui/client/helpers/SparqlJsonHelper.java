@@ -1,6 +1,5 @@
 package com.data2semantics.yasgui.client.helpers;
 
-import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
 import com.data2semantics.yasgui.shared.exceptions.SparqlParseException;
 import com.google.gwt.json.client.JSONArray;
@@ -9,11 +8,12 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 
+/**
+ * Object to parse (into JSONObject) and validate a sparql json string
+ */
 public class SparqlJsonHelper {
-	private View view;
 	private JSONObject queryResult;
-	public SparqlJsonHelper(View view, String jsonString) throws SparqlParseException, SparqlEmptyException {
-		this.view = view;
+	public SparqlJsonHelper(String jsonString) throws SparqlParseException, SparqlEmptyException {
 		getAndValidateJsonObject(jsonString);
 		
 	}
@@ -29,7 +29,12 @@ public class SparqlJsonHelper {
 	}
 	
 	
-	
+	/**
+	 * Main parser method
+	 * @param jsonString Json string to parse
+	 * @throws SparqlParseException When json string is not valid
+	 * @throws SparqlEmptyException When json string is valid, but contains no results
+	 */
 	private void getAndValidateJsonObject(String jsonString) throws SparqlParseException, SparqlEmptyException {
 		if (jsonString == null || jsonString.length() == 0) {
 			throw new SparqlParseException("Unable to parse empty JSON string");
@@ -110,14 +115,19 @@ public class SparqlJsonHelper {
 		return result;
 	}
 	
+	/**
+	 * Gets JSON value as string, and throws exception when value is null
+	 * 
+	 * @param jsonValue
+	 * @param message
+	 * @return
+	 * @throws SparqlParseException
+	 */
 	public String getAsString(JSONValue jsonValue) throws SparqlParseException {
 		JSONString jsonString = jsonValue.isString();
 		if (jsonString == null) {
 			throw new SparqlParseException("Cannot format value as string");
 		}
 		return jsonString.stringValue();
-	}
-	private View getView() {
-		return this.view;
 	}
 }

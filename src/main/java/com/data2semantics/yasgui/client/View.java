@@ -62,6 +62,9 @@ public class View extends VLayout {
 		addMember(new Footer(this));
 	}
 	
+	/**
+	 * Add Query button. Position absolute, as it hovers slightly over the tabbar. Also adds a loading icon on the same place
+	 */
 	private void addQueryButton() {
 		queryButton = new ImgButton();
 		queryButton.setSrc("icons/custom/start.png");
@@ -94,7 +97,12 @@ public class View extends VLayout {
 		queryLoading.draw();
 	}
 
-
+	
+	/**
+	 * Modal popup window to show on error
+	 * 
+	 * @param error
+	 */
 	public void onError(String error) {
 		onLoadingFinish();
 		final Window window = new Window();
@@ -118,6 +126,10 @@ public class View extends VLayout {
 		window.draw();
 	}
 
+	/**
+	 * Show the error window for a trowable. Prints the complete stack trace
+	 * @param throwable
+	 */
 	public void onError(Throwable throwable) {
 		String st = throwable.getClass().getName() + ": " + throwable.getMessage();
 		for (StackTraceElement ste : throwable.getStackTrace()) {
@@ -126,6 +138,9 @@ public class View extends VLayout {
 		onError(st);
 	}
 
+	/**
+	 * initialize loading widget on left bottom corner
+	 */
 	private void initLoadingWidget() {
 		loading = new Label();
 		loading.setIcon("loading.gif");
@@ -228,6 +243,11 @@ public class View extends VLayout {
 		Helper.storeSettingsInCookie(getSettings());
 	}
 	
+	/**
+	 * Load prefixes from the server, and stores in javascript. Used for autocompletion of prefixes
+	 * 
+	 * @param forceUpdate
+	 */
 	public void setAutocompletePrefixes(boolean forceUpdate) {
 		onLoadingStart();
 		// get prefixes from server
