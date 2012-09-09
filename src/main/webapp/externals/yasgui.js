@@ -45,21 +45,24 @@ function sparqlQueryJson(queryStr, endpoint, callback) {
 	});
 };
 
+/**
+ * Perform check to see if endpoint is cors enabled. Use this to decide where to send a query: via the proxy or directly
+ * 
+ * @param endpoint
+ */
 function checkCorsEnabled(endpoint) {
-	//Start off assuming it is not cors enabled
-	corsEnabled[endpoint] = false;
-	$.ajax({
-		url : endpoint,
-		method : 'get',
-		beforeSend : function (xhr) {
-//			$("#result").html("Trying to perform a cross-origin request to " + targetSite);
-	    },
-		complete : function(xhr) {
-			if(xhr.status != 0) { // CORS-enabled site
-				corsEnabled[endpoint] = true;
-			} else { 
-				corsEnabled[endpoint] = false;
+	//Only perform check if it hasnt been done already
+	if (corsEnabled[endpoint] != null) {
+		//Start off assuming it is not cors enabled
+		corsEnabled[endpoint] = false;
+		$.ajax({
+			url : endpoint,
+			method : 'get',
+			complete : function(xhr) {
+				if(xhr.status != 0) { // CORS-enabled site
+					corsEnabled[endpoint] = true;
+				}
 			}
-		}
-	});
+		});
+	}
 }
