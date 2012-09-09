@@ -119,6 +119,12 @@ public class JsMethods {
 		$wnd.onLoadingFinish = function() {
 			view.@com.data2semantics.yasgui.client.View::onLoadingFinish()();
 		}
+		$wnd.onQueryStart = function() {
+			view.@com.data2semantics.yasgui.client.View::onQueryStart()();
+		}
+		$wnd.onQueryFinish = function() {
+			view.@com.data2semantics.yasgui.client.View::onQueryFinish()();
+		}
 		$wnd.clearQueryResult = function() {
 			view.@com.data2semantics.yasgui.client.View::resetQueryResult()();
 		}
@@ -133,7 +139,7 @@ public class JsMethods {
 		$wnd.proxy = proxy;
 	}-*/;
 	public static native void setTabBarProperties(int margin) /*-{
-		$wnd.isc.TabBar.addProperties({layoutStartMargin:margin});
+		$wnd.isc.TabBar.addProperties({layoutStartMargin:margin, tabBarThickness: 35});
 	}-*/;
 	
 }

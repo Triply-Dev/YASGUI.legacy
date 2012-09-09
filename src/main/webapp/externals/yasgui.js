@@ -9,6 +9,7 @@ function sparqlQueryJson(queryStr, endpoint, callback) {
 		format: 'application/sparql-results+json' //some endpoints use the format parameter to set accept header
 	};
 	var uri;
+	onQueryStart();
 	if (corsEnabled[endpoint]) {
 		onLoadingStart("Executing Query");
 		console.log("query directly");
@@ -33,9 +34,11 @@ function sparqlQueryJson(queryStr, endpoint, callback) {
 		},
 		success : function(data) {
 			onLoadingFinish();
+			onQueryFinish();
 			callback(data);
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
+			onQueryFinish();
 			clearQueryResult();
 			onError("Error querying endpoint: <br/>" + jqXHR.status + " - " + errorThrown);
 		}

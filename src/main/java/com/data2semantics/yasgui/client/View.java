@@ -16,8 +16,13 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
+import com.smartgwt.client.types.Positioning;
+import com.smartgwt.client.widgets.Img;
+import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.CloseClickEvent;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
@@ -26,9 +31,11 @@ import com.smartgwt.client.widgets.layout.VLayout;
 public class View extends VLayout {
 	private Logger logger = Logger.getLogger("");
 	private YasguiServiceAsync remoteService = YasguiServiceAsync.Util.getInstance();
-	
+	private ImgButton queryButton;
+	private Img queryLoading;
 	public static String DEFAULT_LOADING_MESSAGE = "Loading...";
-
+	private static int QUERY_BUTTON_POS_TOP = 5;
+	private static int QUERY_BUTTON_POS_LEFT = 5;
 	private Label loading;
 	private ToolBar toolBar;
 	private QueryTabs queryTabs;
@@ -44,17 +51,50 @@ public class View extends VLayout {
 		setMargin(10);
 		setWidth100();
 		setHeight100();
-		this.toolBar = new ToolBar(this);
-		addMember(this.toolBar);
 		
-		//Setting margins on tabset or toolbar messes up layout. Therefore use spacer
+		addQueryButton();
+
+		//Setting margins on tabset messes up layout. Therefore use spacer
 		LayoutSpacer spacer = new LayoutSpacer();
-		spacer.setHeight(6);
+		spacer.setHeight(20);
 		addMember(spacer);
 		
 		setAutocompletePrefixes(false);
 		queryTabs = new QueryTabs(this);
 		addMember(queryTabs);
+	}
+	
+	private void addQueryButton() {
+		queryButton = new ImgButton();
+		queryButton.setSrc("icons/custom/start.png");
+//		query.setTooltip("Query");
+		queryButton.setHeight(48);
+		queryButton.setShowRollOver(false);
+		queryButton.setShowDown(false);
+		queryButton.setWidth(48);
+		queryButton.setAlign(Alignment.CENTER);
+		queryButton.setZIndex(666666666);
+		queryButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				JsMethods.queryJson(getSelectedTabSettings().getQueryString(), getSelectedTabSettings().getEndpoint());
+				
+			}
+		});
+		queryButton.setPosition(Positioning.ABSOLUTE);
+		queryButton.setTop(QUERY_BUTTON_POS_TOP);
+		queryButton.setLeft(QUERY_BUTTON_POS_LEFT);
+		queryButton.draw();
+		
+		queryLoading = new Img();
+		queryLoading.setSrc("icons/custom/query_loader.gif");
+		queryLoading.setPosition(Positioning.ABSOLUTE);
+		queryLoading.setTop(QUERY_BUTTON_POS_TOP);
+		queryLoading.setLeft(QUERY_BUTTON_POS_LEFT);
+		queryLoading.hide();
+		queryLoading.setHeight(48);
+		queryLoading.setWidth(48);
+		queryLoading.draw();
 	}
 
 
@@ -138,6 +178,15 @@ public class View extends VLayout {
 		return this.settings;
 	}
 	
+	public void onQueryStart() {
+		queryButton.hide();
+		queryLoading.show();
+	}
+	
+	public void onQueryFinish() {
+		queryButton.show();
+		queryLoading.hide();
+	}
 	/**
 	 * This method is used relatively often, so for easier use put it here
 	 * 

@@ -8,12 +8,17 @@ import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Command;
+import com.smartgwt.client.types.Orientation;
 import com.smartgwt.client.types.Side;
 import com.smartgwt.client.types.TabTitleEditEvent;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
+import com.smartgwt.client.widgets.layout.HLayout;
+import com.smartgwt.client.widgets.layout.LayoutSpacer;
+import com.smartgwt.client.widgets.menu.IconMenuButton;
 import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
 import com.smartgwt.client.widgets.tab.events.CloseClickHandler;
@@ -26,9 +31,10 @@ import com.smartgwt.client.widgets.tab.events.TabTitleChangedHandler;
 public class QueryTabs extends TabSet {
 	private View view;
 	private static boolean DEFAULT_STORE_SETTINGS_ON_CLOSE = true;
-	public static int INDENT_TABS = 22;
+	public static int INDENT_TABS = 120;
 	public QueryTabs(View view) {
 		this.view = view;
+		setTabBarThickness(28); //this way the icon menu button alligns well with the tabbar
 		setTabBarPosition(Side.TOP);
 		setTabBarAlign(Side.LEFT);
 		setWidth100();
@@ -37,7 +43,7 @@ public class QueryTabs extends TabSet {
 		setTitleEditEvent(TabTitleEditEvent.DOUBLECLICK);
 		setTabsFromSettings();
 		selectTab(getView().getSettings().getSelectedTabNumber());
-
+		setTabBarThickness(50);
 		// Need to schedule attaching of codemirror. It uses doc.getElementById,
 		// which doesnt work if element hasnt been drawn yet
 		Scheduler.get().scheduleFinally(new Command() {
@@ -62,15 +68,19 @@ public class QueryTabs extends TabSet {
 	}
 
 	private void addTabControls() {
-		ImgButton button = new ImgButton();
-		//use modified logo. want a top/left margin, but gwt messes this up
-		button.setSrc("icons/fugue/plus-button_modified.png");
-		button.setWidth(20);
+		HLayout controls = new HLayout();
+		LayoutSpacer spacer = new LayoutSpacer();
+		spacer.setWidth100();
+		controls.addMember(spacer);
+		controls.setWidth(INDENT_TABS - 2);
 		
-		//For now, dont do animations on hover or click: need to create a different icon for that
+		
+		ImgButton button = new ImgButton();
+		button.setSrc("icons/fugue/plus-button_modified.png");
 		button.setShowDown(false);
 		button.setShowRollOver(false);
-		button.setHeight(20);
+		button.setWidth(20);
+		button.setHeight(25);
 		button.setZIndex(55555555);//Otherwise the onclick of the tab bar is used..
 		button.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -80,7 +90,14 @@ public class QueryTabs extends TabSet {
 				Helper.storeSettingsInCookie(getView().getSettings());
 			}
 		});
-		addChild(button);
+		
+		IconMenuButton config = new IconMenuButton("");
+		config.setIcon("icons/diagona/bolt.png");
+		config.setMenu(new ConfigMenu(getView()));
+		controls.setZIndex(55555555);
+		controls.addMember(config);
+		controls.addMember(button);
+		addChild(controls);
 	}
 	
 	private View getView() {
@@ -91,7 +108,6 @@ public class QueryTabs extends TabSet {
 		addTabSelectedHandler(new TabSelectedHandler() {
 			@Override
 			public void onTabSelected(TabSelectedEvent event) {
-//				getView().getLogger().severe("tabs in settings: " + Integer.toString(getView().getSettings().getTabArray().size()));
 				Settings settings = getView().getSettings();
 				settings.setSelectedTabNumber(event.getTabNum());
 				Helper.storeSettingsInCookie(settings);
