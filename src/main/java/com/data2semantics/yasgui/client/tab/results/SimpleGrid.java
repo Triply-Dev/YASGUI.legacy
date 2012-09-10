@@ -28,12 +28,12 @@ public class SimpleGrid extends HTMLPane {
 		this.view = view;
 		setWidth100();
 		setHeight100();
+		queryPrefixes = Helper.getPrefixesFromQuery(view.getSettings().getSelectedTabSettings().getQueryString());
 		variables = queryResults.getVariables();
 		querySolutions = queryResults.getQuerySolutions();
-		getView().getLogger().severe("before2");
 		drawTable();
 		setContents(html);
-		queryPrefixes = Helper.getPrefixesFromQuery(tab.getQueryTextArea().getInputId());
+		
 	}
 
 	private void drawTable() {
@@ -66,7 +66,6 @@ public class SimpleGrid extends HTMLPane {
 				} else {
 					if (binding.get("type").isString().stringValue().equals("uri")) {
 						String uri = binding.get("value").isString().stringValue();
-
 						html += "<a href=\"" + uri + "\" target=\"_blank\">" + StringUtil.asHTML(getShortUri(uri)) + "</a>";
 					} else {
 						html += StringUtil.asHTML(binding.get("value").isString().stringValue());
@@ -91,12 +90,11 @@ public class SimpleGrid extends HTMLPane {
 	 *         otherwise
 	 */
 	private String getShortUri(String uri) {
-
 		for (Map.Entry<String, Prefix> entry : queryPrefixes.entrySet()) {
 			String prefixUri = entry.getKey();
 			if (uri.startsWith(prefixUri)) {
 				uri = uri.substring(prefixUri.length());
-				uri = entry.getValue() + ":" + uri;
+				uri = entry.getValue().getPrefix() + ":" + uri;
 				break;
 			}
 		}

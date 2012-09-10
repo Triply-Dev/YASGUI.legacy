@@ -61,13 +61,13 @@ span.CodeMirror-matchhighlight {
 	font-weight: normal;
 	color: #039;
 	border-bottom: 2px solid #6678b1;
-	padding: 10px 8px;
+	padding: 7px 5px;
 }
 
 .simpleTable td {
 	border-bottom: 1px solid #ccc;
 	color: #669;
-	padding: 6px 8px;
+	padding: 4px 6px;
 	font-size: 12px;
 }
 

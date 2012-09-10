@@ -4,6 +4,7 @@ import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.settings.TabSettings;
+import com.smartgwt.client.types.TitleOrientation;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.BlurEvent;
@@ -25,6 +26,7 @@ public class EndpointInput extends DynamicForm {
 	
 	private void createTextInput() {
 		endpoint = new TextItem();
+		setTitleOrientation(TitleOrientation.TOP);
 		endpoint.setTitle("Endpoint");
 		endpoint.setWidth(250);
 		endpoint.setDefaultValue(getQueryTab().getTabSettings().getEndpoint());

@@ -19,6 +19,7 @@ public class OutputSelection extends DynamicForm {
 		this.view = view;
 		selectItem = new SelectItem();
 		selectItem.setTitle("Output");
+		selectItem.setTitleOrientation(TitleOrientation.TOP);
 		LinkedHashMap<String, String> valueMap = new LinkedHashMap<String, String>();
 		valueMap.put(Output.OUTPUT_TABLE, "Table");
 		valueMap.put(Output.OUTPUT_TABLE_SIMPLE, "Simple Table");
@@ -26,20 +27,20 @@ public class OutputSelection extends DynamicForm {
 		valueMap.put(Output.OUTPUT_JSON, "JSON");
 		
 		LinkedHashMap<String, String> valueIcons = new LinkedHashMap<String, String>();
-		valueIcons.put(Output.OUTPUT_TABLE, "table");
-		valueIcons.put(Output.OUTPUT_CSV, "csv");
-		valueIcons.put(Output.OUTPUT_JSON, "json");
-		valueIcons.put(Output.OUTPUT_TABLE_SIMPLE, "xml");
+		valueIcons.put(Output.OUTPUT_TABLE, Output.OUTPUT_TABLE);
+		valueIcons.put(Output.OUTPUT_TABLE_SIMPLE, Output.OUTPUT_TABLE_SIMPLE);
+		valueIcons.put(Output.OUTPUT_CSV, Output.OUTPUT_CSV);
+		valueIcons.put(Output.OUTPUT_JSON, Output.OUTPUT_JSON);
 		selectItem.setValueIcons(valueIcons);
 
 		selectItem.setValueMap(valueMap);
-		selectItem.setImageURLPrefix("logos/formats/");
+		selectItem.setImageURLPrefix("icons/formats/");
 		selectItem.setImageURLSuffix(".png");
 		selectItem.setDefaultValue(Output.OUTPUT_TABLE_SIMPLE);
 		selectItem.addChangedHandler(new ChangedHandler() {
 			@Override
 			public void onChanged(ChangedEvent event) {
-				getView().getSettings().setOutputFormat(selectItem.getValueAsString());
+				getView().getSelectedTabSettings().setOutputFormat(selectItem.getValueAsString());
 				Helper.storeSettingsInCookie(getView().getSettings());
 			}
 		});

@@ -4,8 +4,7 @@ import com.data2semantics.yasgui.client.QueryTabs;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.results.QueryResultContainer;
-import com.data2semantics.yasgui.client.tab.results.ResultGrid;
-import com.smartgwt.client.widgets.Canvas;
+import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
@@ -20,7 +19,6 @@ public class QueryTab extends Tab {
 	private EndpointInput endpointInput;
 	private VLayout vLayout = new VLayout();
 	private QueryResultContainer queryResultContainer;
-	private ResultGrid resultGrid;
 	private TabSettings tabSettings;
 	private OutputSelection outputSelection;
 	public QueryTab(View view, TabSettings tabSettings) {
@@ -29,15 +27,18 @@ public class QueryTab extends Tab {
 		this.view = view;
 		this.queryResultContainer = new QueryResultContainer(getView(), this);
 		setCanClose(true);
-		
+		HLayout queryOptions = new HLayout();
 		endpointInput = new EndpointInput(getView(), this);
-		vLayout.addMember(endpointInput);
+		queryOptions.addMember(endpointInput);
 		
 		outputSelection = new OutputSelection(getView());
-		vLayout.addMember(outputSelection);
+		queryOptions.addMember(outputSelection);
+		queryOptions.setHeight(50);
+		vLayout.addMember(queryOptions);
 		
 		queryTextArea = new QueryTextArea(getView(), this);
 		vLayout.addMember(queryTextArea);
+		
 		//queryResultContainer.addMember(testGrid);
 
 		vLayout.addMember(queryResultContainer);

@@ -2,6 +2,7 @@ package com.data2semantics.yasgui.client.settings;
 
 import java.util.Set;
 
+import com.data2semantics.yasgui.shared.Output;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
@@ -9,11 +10,12 @@ import com.google.gwt.json.client.JSONString;
 public class TabSettings extends JSONObject {
 
 	/**
-	 * HASHMAP KEYS
+	 * KEYS
 	 */
 	private static String ENDPOINT = "endpoint";
 	private static String QUERY_STRING = "queryFormat";
 	private static String TAB_TITLE = "tabTitle";
+	private static String OUTPUT_FORMAT = "outputFormat";
 
 	/**
 	 * DEFAULTS
@@ -22,14 +24,14 @@ public class TabSettings extends JSONObject {
 			"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
 			+ "SELECT * {?sub ?pred ?obj} LIMIT 10";
 
-	private static String DEFAULT_ENDPOINT = "http://dbpedia.org/sparql";// cors
-																				// enabled
+	private static String DEFAULT_ENDPOINT = "http://dbpedia.org/sparql";
 	private static String DEFAULT_TAB_TITLE = "Query";
-
+	
 	public TabSettings() {
 		setEndpoint(DEFAULT_ENDPOINT);
 		setQueryString(DEFAULT_QUERY);
 		setTabTitle(DEFAULT_TAB_TITLE);
+		setOutputFormat(Output.OUTPUT_TABLE_SIMPLE);
 	}
 
 	public TabSettings(JSONObject jsonObject) {
@@ -62,6 +64,13 @@ public class TabSettings extends JSONObject {
 
 	public String getTabTitle() {
 		return get(TAB_TITLE).isString().stringValue();
+	}
+	public void setOutputFormat(String outputFormat) {
+		put(OUTPUT_FORMAT, new JSONString(outputFormat));
+	}
+	
+	public String getOutputFormat() {
+		return get(OUTPUT_FORMAT).isString().stringValue();
 	}
 
 	public TabSettings clone() {

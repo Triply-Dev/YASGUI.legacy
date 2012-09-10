@@ -44,7 +44,7 @@ public class ResultGrid extends ListGrid {
 		setFixedRecordHeights(false);
 		setWrapCells(true);
 		setCanResizeFields(true);
-		queryPrefixes = Helper.getPrefixesFromQuery(tab.getQueryTextArea().getInputId());
+		queryPrefixes = Helper.getPrefixesFromQuery(getView().getSelectedTabSettings().getQueryString());
 		drawQueryResults();
 	}
 	

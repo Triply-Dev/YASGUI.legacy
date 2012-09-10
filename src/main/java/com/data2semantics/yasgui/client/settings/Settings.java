@@ -13,9 +13,8 @@ import com.google.gwt.json.client.JSONString;
 public class Settings extends JSONObject {
 	private ArrayList<TabSettings> tabArray = new ArrayList<TabSettings>();
 	/**
-	 * HASHMAP KEYS
+	 * KEYS
 	 */
-	private static String OUTPUT_FORMAT = "outputFormat";
 	private static String SELECTED_TAB_NUMBER = "selectedTabNumber";
 	public static String TAB_SETTINGS = "tabSettings";
 	
@@ -28,7 +27,6 @@ public class Settings extends JSONObject {
 	public Settings(){
 		addTabSettings(new TabSettings());
 		setSelectedTabNumber(DEFAULT_SELECTED_TAB);
-		setOutputFormat(Output.OUTPUT_TABLE_SIMPLE);
 	}
 	
 	public Settings(JSONObject jsonObject) {
@@ -47,15 +45,6 @@ public class Settings extends JSONObject {
 		
 	}
 	
-
-	public String getOutputFormat() {
-		return get(OUTPUT_FORMAT).isString().stringValue();
-	}
-
-	public void setOutputFormat(String outputFormat) {
-		put(OUTPUT_FORMAT, new JSONString(outputFormat));
-	}
-
 	public void setSelectedTabNumber(int selectedTabNumber) {
 		put(SELECTED_TAB_NUMBER, new JSONNumber(selectedTabNumber));
 	}

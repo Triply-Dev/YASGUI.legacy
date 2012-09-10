@@ -120,8 +120,7 @@ public class Helper {
 	/**
 	 * Checks to query string and retrieves/stores all defined prefixes in an object variable
 	 */
-	public static HashMap<String, Prefix> getPrefixesFromQuery(String queryInputId) {
-		String query = JsMethods.getValueUsingId(queryInputId);
+	public static HashMap<String, Prefix> getPrefixesFromQuery(String query) {
 		HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
 		RegExp regExp = RegExp.compile("^\\s*PREFIX\\s*(\\w*):\\s*<(.*)>\\s*$", "gm");
 		while (true) {
