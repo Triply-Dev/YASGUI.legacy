@@ -43,7 +43,6 @@ public class JsMethods {
 						"Ctrl-/" : "commentLines",
 						"Ctrl-Alt-Down" : "copyLineDown",
 						"Ctrl-Alt-Up" : "copyLineUp",
-						"Ctrl-S": "storeSettings"
 					},
 					onHighlightComplete : function(cm) {
 						$wnd.checkSyntax(cm);
@@ -181,5 +180,17 @@ public class JsMethods {
 	public static native void setTabBarProperties(int margin) /*-{
 		$wnd.isc.TabBar.addProperties({layoutStartMargin:margin});
 	}-*/;
+	
+	/*
+	 * Calls codemirror the check the querytype of one of our codemirror instances
+	 * @param queryInputId
+	 * @return
+	 */
+	public static native String getQueryType(String queryInputId) /*-{
+		var instance = $wnd.sparqlHighlight[queryInputId];
+		var lineCount = instance.lineCount();
+		return instance.getTokenAt({line : lineCount - 1, ch: instance.getLine(lineCount-1).length-1}).state.queryType;
+	}-*/;
+
 	
 }

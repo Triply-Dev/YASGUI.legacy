@@ -53,9 +53,6 @@ CodeMirror.commands.copyLineUp = function(cm) {
 	copyLinesBelow(cm);
 	
 };
-CodeMirror.commands.storeSettings = function(cm) {
-	storeSettingsInCookie();
-};
 CodeMirror.commands.copyLineDown = function(cm) {
 	copyLinesBelow(cm);
 	//Make sure cursor goes one down (we are copying downwards)
