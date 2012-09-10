@@ -10,6 +10,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -38,9 +40,10 @@ public class SparqlServlet extends HttpServlet {
 			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 			HttpResponse endpointResponse = client.execute(post);
 			int endpointStatusCode = endpointResponse.getStatusLine().getStatusCode();
-			if (endpointStatusCode > 400) {
+			if (endpointStatusCode >= 400) {
 				//only return this statuscode when it is an error. Redirection codes (e.g. 302) are allowed I guess
-				response.setStatus(endpointStatusCode);
+				System.out.println("sdf" + endpointResponse.getStatusLine().getReasonPhrase());
+				response.sendError(endpointStatusCode, endpointResponse.getStatusLine().getReasonPhrase());
 			} else {
 				BufferedReader rd = new BufferedReader(new InputStreamReader(endpointResponse.getEntity().getContent()));
 	

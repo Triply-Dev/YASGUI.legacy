@@ -9,44 +9,9 @@
   </head>
 
   <body>
-<!-- 
-	<textarea id="test" style="width:400px;height:300px;">PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
-PREFIX : &lt;http://aers.data2semantics.org/vocab/&gt; 
-SELECT DISTINCT *
-{
-?patient rdfs:comment ?comment.
-}
-</textarea>
 	<script type="text/javascript">
-	var prefixes = ["aers: <bwah>", "aebs: <sdf>"];
-    
-		
-		var myCodeMirror = CodeMirror.fromTextArea(document
-				.getElementById("test"), {
-			lineNumbers : true,
-			extraKeys : {
-				"Ctrl-Space" : "autocomplete",
-				"Ctrl-D" : "deleteLines",
-				"Ctrl-/" : "commentLines",
-				"Ctrl-Alt-Down" : "copyLineDown",
-				"Ctrl-Alt-Up" : "copyLineUp",
-				"Ctrl-S" : "doNothing"
-			},
-			onCursorActivity : function() {
-				myCodeMirror.matchHighlight("CodeMirror-matchhighlight");
-			},
-			onChange : function(cm) {
-				CodeMirror.simpleHint(cm, CodeMirror.prefixHint);
-			},
-			onHighlightComplete:  function(cm) {
-				checkSyntax(cm);
-			}
-		});
-	</script>-->
-	<div id="bla">sdf</div>
-	<script type="text/javascript">
-	
-	//sparqlQueryJson("SELECT * {?x ?F ?s} LIMIT 10", "http://dbpedia.org/sparql", function(result){alert(result);})
+	test();
+	//sparqlQueryJson("SELECT * {?x ?F ?s. ?s ?h ?y} LIMIT 10", "http://127.0.0.1:8888/Yasgui/sparql", function(result){alert(result);})
 	//checkCorsEnabled("http://dbpedia.org/sparql");
 	</script>
 </body>
