@@ -3,6 +3,7 @@ package com.data2semantics.yasgui.client.tab;
 import com.data2semantics.yasgui.client.QueryTabs;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.settings.TabSettings;
+import com.data2semantics.yasgui.client.tab.results.QueryResultContainer;
 import com.data2semantics.yasgui.client.tab.results.ResultGrid;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -18,17 +19,22 @@ public class QueryTab extends Tab {
 	private QueryTextArea queryTextArea;
 	private EndpointInput endpointInput;
 	private VLayout vLayout = new VLayout();
-	private VLayout queryResultContainer = new VLayout();
+	private QueryResultContainer queryResultContainer;
 	private ResultGrid resultGrid;
 	private TabSettings tabSettings;
+	private OutputSelection outputSelection;
 	public QueryTab(View view, TabSettings tabSettings) {
 		super(tabSettings.getTabTitle());
 		this.tabSettings = tabSettings;
 		this.view = view;
+		this.queryResultContainer = new QueryResultContainer(getView(), this);
 		setCanClose(true);
 		
 		endpointInput = new EndpointInput(getView(), this);
 		vLayout.addMember(endpointInput);
+		
+		outputSelection = new OutputSelection(getView());
+		vLayout.addMember(outputSelection);
 		
 		queryTextArea = new QueryTextArea(getView(), this);
 		vLayout.addMember(queryTextArea);
@@ -113,25 +119,11 @@ public class QueryTab extends Tab {
 		return this;
 	}
 	
-	/**
-	 * Empty query result area
-	 */
-	public void resetQueryResult() {
-		Canvas[] members = queryResultContainer.getMembers();
-		for (Canvas member : members) {
-			queryResultContainer.removeMember(member);
-		}
-	}
 	
-	/**
-	 * Add query result to query result area
-	 * 
-	 * @param resultGrid
-	 */
-	public void addQueryResult(ResultGrid resultGrid) {
-		resetQueryResult();
-		this.resultGrid = resultGrid;
-		queryResultContainer.addMember(resultGrid);
+	
+
+	public QueryResultContainer getResultContainer() {
+		return this.queryResultContainer;
 	}
 	
 	public QueryTextArea getQueryTextArea() {

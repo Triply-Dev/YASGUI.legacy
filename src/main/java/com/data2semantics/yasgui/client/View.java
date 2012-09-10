@@ -223,8 +223,7 @@ public class View extends VLayout {
 		//Create grid and fill with data immediately. 
 		//Will have cell alignment issues (bug smartgwt i guess) when initiating resultgrid before query, and filling afterwards
 		QueryTab tab = getSelectedTab();
-		ResultGrid queryTable = new ResultGrid(this, tab, jsonResult);
-		tab.addQueryResult(queryTable);
+		tab.getResultContainer().addQueryResult(jsonResult);
 	}
 	
 	/**
@@ -232,7 +231,7 @@ public class View extends VLayout {
 	 * Keep this method in the view object, so that it is easily callable from js
 	 */
 	public void resetQueryResult() {
-		getSelectedTab().resetQueryResult();
+		getSelectedTab().getResultContainer().reset();
 	}
 	
 	/**

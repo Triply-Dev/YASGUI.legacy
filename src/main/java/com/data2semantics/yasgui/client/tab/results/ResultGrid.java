@@ -29,12 +29,13 @@ public class ResultGrid extends ListGrid {
 	private static String XSD_DATA_PREFIX = "http://www.w3.org/2001/XMLSchema#";
 	JSONObject queryResult = new JSONObject();
 	private View view;
-	private SparqlJsonHelper results;
+	private SparqlJsonHelper queryResults;
 	private QueryTab tab;
 	private HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
-	public ResultGrid(View view, QueryTab tab, String jsonString) {
+	public ResultGrid(View view, QueryTab tab, SparqlJsonHelper queryResults) {
 		this.tab = tab;
 		this.view = view;
+		this.queryResults = queryResults;
 		setWidth100();
 		setHeight(350);
 		setShowRecordComponents(true);
@@ -43,9 +44,8 @@ public class ResultGrid extends ListGrid {
 		setFixedRecordHeights(false);
 		setWrapCells(true);
 		setCanResizeFields(true);
-		
-		getPrefixesFromQuery();
-		drawQueryResultsFromJson(jsonString);
+		queryPrefixes = Helper.getPrefixesFromQuery(tab.getQueryTextArea().getInputId());
+		drawQueryResults();
 	}
 	
 	/**
@@ -53,19 +53,10 @@ public class ResultGrid extends ListGrid {
 	 * 
 	 * @param jsonString
 	 */
-	public void drawQueryResultsFromJson(String jsonString) {
-		try {
-			results = new SparqlJsonHelper(jsonString, getView());
-		} catch (SparqlParseException e) {
-			getView().onError(e);
-		} catch (SparqlEmptyException e) {
-			setEmptyMessage(e.getMessage());
-			redraw();
-			return;
-		}
-		List<ListGridField> listGridFields = getVarsAsListGridFields(results.getVariables());
+	public void drawQueryResults() {
+		List<ListGridField> listGridFields = getVarsAsListGridFields(queryResults.getVariables());
 		setFields(listGridFields.toArray(new ListGridField[listGridFields.size()]));
-		List<ListGridRecord> rows = getSolutionsAsGridRecords(results.getQuerySolutions());
+		List<ListGridRecord> rows = getSolutionsAsGridRecords(queryResults.getQuerySolutions());
 		setData(rows.toArray(new ListGridRecord[rows.size()]));
 	}
 	
@@ -123,7 +114,7 @@ public class ResultGrid extends ListGrid {
 	private ArrayList<ListGridRecord> getSolutionsAsGridRecords(JSONArray querySolutions) {
 		ArrayList<ListGridRecord> rows = new ArrayList<ListGridRecord>();
 		for (int i = 0; i < querySolutions.size(); i++) {
-			JSONObject solution = results.getAsObject(querySolutions.get(i));
+			JSONObject solution = queryResults.getAsObject(querySolutions.get(i));
 			ListGridRecord row = new ListGridRecord();
 			row.setAttribute(SOLUTION_ATTRIBUTE, solution);
 			rows.add(row);
@@ -137,13 +128,9 @@ public class ResultGrid extends ListGrid {
 	 * @return
 	 */
 	private ArrayList<ListGridField> getVarsAsListGridFields(JSONArray resultVars) {
-		getView().getLogger().severe("in resultgrid2");
 		ArrayList<ListGridField> listGridFields = new ArrayList<ListGridField>();
-		getView().getLogger().severe("in resultgrid3");
 		for(int i = 0; i < resultVars.size(); i++){
-			getView().getLogger().severe("in resultgrid4");
-			String resultVar = results.getAsString(resultVars.get(i));
-			getView().getLogger().severe("in resultgrid5");
+			String resultVar = queryResults.getAsString(resultVars.get(i));
 			ListGridField field = new ListGridField(resultVar, resultVar);
 			field.setCellAlign(Alignment.LEFT);
 			field.setAlign(Alignment.CENTER); //for header
@@ -174,17 +161,4 @@ public class ResultGrid extends ListGrid {
 		return this.view;
 	}
 	
-	/**
-	 * Checks to query string and retrieves/stores all defined prefixes in an object variable
-	 */
-	private void getPrefixesFromQuery() {
-		String query = JsMethods.getValueUsingId(tab.getQueryTextArea().getInputId());
-		RegExp regExp = RegExp.compile("^\\s*PREFIX\\s*(\\w*):\\s*<(.*)>\\s*$", "gm");
-		while (true) {
-			MatchResult matcher = regExp.exec(query);
-			if (matcher == null)
-				break;
-			queryPrefixes.put(matcher.getGroup(2), new Prefix(matcher.getGroup(1), matcher.getGroup(2)));
-		}
-	}
 }

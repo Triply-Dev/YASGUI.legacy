@@ -7,6 +7,12 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.HashMap;
+
+import com.data2semantics.yasgui.client.helpers.JsMethods;
+import com.data2semantics.yasgui.shared.Prefix;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 
 public class Helper {
 	public final static String readFile(File file) throws IOException {
@@ -24,4 +30,6 @@ public class Helper {
 		exception.printStackTrace(new PrintWriter(sw));
 		return sw.toString();
 	}
+	
+
 }

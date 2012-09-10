@@ -3,6 +3,7 @@ package com.data2semantics.yasgui.client.settings;
 import java.util.ArrayList;
 import java.util.Set;
 
+import com.data2semantics.yasgui.shared.Output;
 import com.data2semantics.yasgui.shared.exceptions.SettingsException;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONNumber;
@@ -23,9 +24,11 @@ public class Settings extends JSONObject {
 	 * DEFAULTS
 	 */
 	public static int DEFAULT_SELECTED_TAB = 0;
+	
 	public Settings(){
 		addTabSettings(new TabSettings());
 		setSelectedTabNumber(DEFAULT_SELECTED_TAB);
+		setOutputFormat(Output.OUTPUT_TABLE_SIMPLE);
 	}
 	
 	public Settings(JSONObject jsonObject) {

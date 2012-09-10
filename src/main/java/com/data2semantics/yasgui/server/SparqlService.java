@@ -79,8 +79,6 @@ public class SparqlService {
 				result = baos.toString("UTF-8");
 			} catch (UnsupportedEncodingException e) {
 			}
-		} else if (format.equals(Output.OUTPUT_XML)) {
-			result = ResultSetFormatter.asXMLString(resultSet);
 		} else if (format.equals(Output.OUTPUT_CSV)) {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ResultSetFormatter.outputAsCSV(baos, resultSet);

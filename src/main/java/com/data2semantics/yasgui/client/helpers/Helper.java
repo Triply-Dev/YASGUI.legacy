@@ -1,9 +1,15 @@
 package com.data2semantics.yasgui.client.helpers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import com.data2semantics.yasgui.client.settings.Settings;
+import com.data2semantics.yasgui.shared.Prefix;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
+import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.smartgwt.client.widgets.Label;
@@ -32,21 +38,38 @@ public class Helper {
 	}
 
 	/**
-	 * Store settings as json string in cookie
+	 * Store settings as json string in cookie. If html5 local storage is possible, use that. 
+	 * html5 storage does not send cookie info on every request, which reduces network load
+	 * 
 	 * @param settings
 	 */
 	public static void storeSettingsInCookie(Settings settings) {
-		Cookies.removeCookie(COOKIE_SETTINGS); 
-		Cookies.setCookie(COOKIE_SETTINGS, settings.toString());
+		Storage html5Storage = Storage.getLocalStorageIfSupported();
+		if (html5Storage != null) {
+			html5Storage.setItem(COOKIE_SETTINGS, settings.toString());
+		} else {
+			//We are using a browser which does not support html5
+			Cookies.removeCookie(COOKIE_SETTINGS);
+			Cookies.setCookie(COOKIE_SETTINGS, settings.toString());
+		}
+		
 	}
 	
 	/**
-	 * Get settings from cookie. Settings is saved as a json string, so need to parse as json object
+	 * Get settings from cookie (or html local storage if supported). Settings is saved as a json string, so need to parse as json object
 	 * @return
 	 */
 	public static Settings getSettingsFromCookie() {
 		Settings settings = new Settings();
-		String jsonString = Cookies.getCookie(COOKIE_SETTINGS);
+		String jsonString;
+		Storage html5Storage = Storage.getLocalStorageIfSupported();
+		if (html5Storage != null) {
+			jsonString = html5Storage.getItem(COOKIE_SETTINGS);
+		} else {
+			//We are using a browser which does not support html5
+			jsonString = Cookies.getCookie(COOKIE_SETTINGS);
+		}
+		
 		if (jsonString != null && jsonString.length() > 0) {
 			JSONObject jsonObject = JSONParser.parseStrict(jsonString).isObject();
 			if (jsonObject == null) {
@@ -92,5 +115,21 @@ public class Helper {
 			public void onClick(ClickEvent event) {
 				Window.open(url, "_blank", null);
 			}});
+	}
+	
+	/**
+	 * Checks to query string and retrieves/stores all defined prefixes in an object variable
+	 */
+	public static HashMap<String, Prefix> getPrefixesFromQuery(String queryInputId) {
+		String query = JsMethods.getValueUsingId(queryInputId);
+		HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
+		RegExp regExp = RegExp.compile("^\\s*PREFIX\\s*(\\w*):\\s*<(.*)>\\s*$", "gm");
+		while (true) {
+			MatchResult matcher = regExp.exec(query);
+			if (matcher == null)
+				break;
+			queryPrefixes.put(matcher.getGroup(2), new Prefix(matcher.getGroup(1), matcher.getGroup(2)));
+		}
+		return queryPrefixes;
 	}
 }

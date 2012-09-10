@@ -22,9 +22,7 @@ public class SparqlJsonHelper {
 	}
 	
 	public JSONArray getVariables() throws SparqlParseException {
-		view.getLogger().severe("before");
 		JSONObject head = getAsObject(queryResult, "head");
-		view.getLogger().severe("after");
 		return getAsArray(head, "vars");
 	}
 	
