@@ -1,9 +1,11 @@
 package com.data2semantics.yasgui.client.helpers;
 
 import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.client.tab.results.QueryResultContainer;
 import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
 import com.data2semantics.yasgui.shared.exceptions.SparqlParseException;
 import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
@@ -15,8 +17,10 @@ import com.google.gwt.json.client.JSONValue;
 public class SparqlJsonHelper {
 	public JSONObject queryResult;
 	private View view;
-	public SparqlJsonHelper(String jsonString, View view) throws SparqlParseException, SparqlEmptyException {
+	private int queryMode;
+	public SparqlJsonHelper(String jsonString, View view, int queryMode) throws SparqlParseException, SparqlEmptyException {
 		this.view = view;
+		this.queryMode = queryMode;
 		getAndValidateJsonObject(jsonString);
 		
 	}
@@ -47,18 +51,22 @@ public class SparqlJsonHelper {
 		queryResult = jsonValue.isObject();
 		if (queryResult == null) throw new SparqlParseException("Unable to parse query json string");
 		
-		JSONObject resultsObject = getAsObject(queryResult, "results");
-		
-		JSONArray bindingsArray = getAsArray(resultsObject, "bindings");
-		if (bindingsArray.size() == 0) {
-			throw new SparqlEmptyException("No results");
-		}
-		
 		JSONObject head = getAsObject(queryResult, "head");
-		JSONArray vars = getAsArray(head, "vars");
-		if (vars.size() == 0) {
-			throw new SparqlEmptyException("Vars missing from json object");
+		
+		
+		if (queryMode == QueryResultContainer.RESULT_TYPE_TABLE) {
+			JSONObject resultsObject = getAsObject(queryResult, "results");
+			JSONArray bindingsArray = getAsArray(resultsObject, "bindings");
+			if (bindingsArray.size() == 0) {
+				throw new SparqlEmptyException("No results");
+			}
+			JSONArray vars = getAsArray(head, "vars");
+			if (vars.size() == 0) {
+				throw new SparqlEmptyException("Vars missing from json object");
+			}
 		}
+		
+		
 	}
 	
 	/**
@@ -132,5 +140,13 @@ public class SparqlJsonHelper {
 			throw new SparqlParseException("Cannot format value as string");
 		}
 		return jsonString.stringValue();
+	}
+	
+	public boolean getBooleanResult() {
+		JSONBoolean jsonBoolean = queryResult.get("boolean").isBoolean();
+		if (jsonBoolean == null) {
+			throw new SparqlParseException("Cannot format value as boolean");
+		}
+		return jsonBoolean.booleanValue();
 	}
 }

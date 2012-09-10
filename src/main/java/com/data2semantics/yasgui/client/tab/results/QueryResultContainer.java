@@ -27,9 +27,9 @@ import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 public class QueryResultContainer extends VLayout {
-	private static int RESULT_TYPE_TABLE = 1;
-	private static int RESULT_TYPE_BOOLEAN = 2;
-	private static int RESULT_TYPE_INSERT = 3;
+	public static int RESULT_TYPE_TABLE = 1;
+	public static int RESULT_TYPE_BOOLEAN = 2;
+	public static int RESULT_TYPE_INSERT = 3;
 	private View view;
 	private QueryTab queryTab;
 	SparqlJsonHelper queryResults;
@@ -76,16 +76,22 @@ public class QueryResultContainer extends VLayout {
 	
 	public void addQueryResult(String jsonString) {
 		reset();
+		getView().getLogger().severe(jsonString);
 		String queryType = JsMethods.getQueryType(getView().getSelectedTab().getQueryTextArea().getInputId());
 		int queryMode = queryTypes.get(queryType);
 		try {
 			
 			if (queryMode == RESULT_TYPE_INSERT) {
-				setDoneMessage();
+				setOkMessage("Done");
 			} else if (queryMode == RESULT_TYPE_BOOLEAN) {
-				queryResults = new SparqlJsonHelper(jsonString, getView());
+				queryResults = new SparqlJsonHelper(jsonString, getView(), queryMode);
+				if (queryResults.getBooleanResult()) {
+					setOkMessage("true");
+				} else {
+					setErrorResultMessage("false");
+				}
 			} else if (queryMode == RESULT_TYPE_TABLE) {
-				queryResults = new SparqlJsonHelper(jsonString, getView());
+				queryResults = new SparqlJsonHelper(jsonString, getView(), queryMode);
 				String outputFormat = getView().getSelectedTabSettings().getOutputFormat();
 				if (outputFormat.equals(Output.OUTPUT_TABLE)) {
 					addMember(new ResultGrid(getView(), queryTab, queryResults));
@@ -96,13 +102,13 @@ public class QueryResultContainer extends VLayout {
 		} catch (SparqlParseException e) {
 			getView().onError(e);
 		} catch (SparqlEmptyException e) {
-			setEmptyMessage(e.getMessage());
+			setErrorResultMessage(e.getMessage());
 		}
 		
 		
 	}
 	
-	public void setEmptyMessage(String message) {
+	public void setErrorResultMessage(String message) {
 		HLayout empty = new HLayout();
 		empty.setHeight(50);
 		LayoutSpacer spacer = new LayoutSpacer();
@@ -114,18 +120,18 @@ public class QueryResultContainer extends VLayout {
 		cross.setSize(16);
 		
 		
-		Label emptyMessage = new Label("No results");
-		emptyMessage.setAutoHeight();
-		emptyMessage.setWidth(70);
+		Label errorMessage = new Label("&nbsp;" + message);
+		errorMessage.setAutoHeight();
+		errorMessage.setWidth(70);
 		empty.addMember(spacer);
 		empty.addMember(cross);
-		empty.addMember(emptyMessage);
+		empty.addMember(errorMessage);
 		empty.addMember(spacer);
 		
 		addMember(empty);
 	}
 	
-	public void setDoneMessage() {
+	public void setOkMessage(String message) {
 		HLayout empty = new HLayout();
 		empty.setHeight(50);
 		LayoutSpacer spacer = new LayoutSpacer();
@@ -137,9 +143,9 @@ public class QueryResultContainer extends VLayout {
 		cross.setSize(16);
 		
 		
-		Label emptyMessage = new Label("Done");
+		Label emptyMessage = new Label("&nbsp;" + message);
 		emptyMessage.setAutoHeight();
-		emptyMessage.setWidth(50);
+		emptyMessage.setWidth(70);
 		empty.addMember(spacer);
 		empty.addMember(cross);
 		empty.addMember(emptyMessage);
@@ -147,4 +153,6 @@ public class QueryResultContainer extends VLayout {
 		
 		addMember(empty);
 	}
+	
+	
 }
