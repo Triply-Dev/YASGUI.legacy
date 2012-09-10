@@ -40,7 +40,7 @@ function sparqlQueryJson(queryStr, endpoint, callback) {
 		error : function(jqXHR, textStatus, errorThrown) {
 			onQueryFinish();
 			clearQueryResult();
-			onError("Error querying endpoint: <br/>" + jqXHR.status + " - " + errorThrown);
+			onQueryError("Error querying endpoint: " + jqXHR.status + " - " + errorThrown);
 		}
 	});
 };

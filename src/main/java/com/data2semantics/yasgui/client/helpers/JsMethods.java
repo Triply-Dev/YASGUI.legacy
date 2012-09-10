@@ -134,8 +134,8 @@ public class JsMethods {
 		$wnd.drawResultsInTable = function(jsonResult) {
 			view.@com.data2semantics.yasgui.client.View::drawResultsInTable(Ljava/lang/String;)(jsonResult);
 		}
-		$wnd.onError = function(jsonResult) {
-			view.@com.data2semantics.yasgui.client.View::onError(Ljava/lang/String;)(jsonResult);
+		$wnd.onError = function(errorMsg) {
+			view.@com.data2semantics.yasgui.client.View::onError(Ljava/lang/String;)(errorMsg);
 		}
 		$wnd.onLoadingStart = function(message) {
 			if (message == undefined) {
@@ -158,6 +158,9 @@ public class JsMethods {
 		}
 		$wnd.storeQueryInCookie = function() {
 			view.@com.data2semantics.yasgui.client.View::storeQueryInCookie()();
+		}
+		$wnd.onQueryError = function(errorMsg) {
+			view.@com.data2semantics.yasgui.client.View::onQueryError(Ljava/lang/String;)(errorMsg);
 		}
 		
 	}-*/;

@@ -12,6 +12,7 @@ import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.rdf.SolutionContainer;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
+import com.smartgwt.client.util.StringUtil;
 import com.smartgwt.client.widgets.HTMLPane;
 
 public class SimpleGrid extends HTMLPane {
@@ -44,12 +45,10 @@ public class SimpleGrid extends HTMLPane {
 	}
 
 	private void drawHeader() {
-
 		html += "<thead><tr class=\"simpleTable\">";
 		for (int i = 0; i < variables.size(); i++) {
-			html += "<th>" + variables.get(i) + "</th>";
+			html += "<th>" + StringUtil.asHTML(variables.get(i).isString().stringValue()) + "</th>";
 		}
-
 		html += "</tr></thead>";
 	}
 
@@ -68,9 +67,9 @@ public class SimpleGrid extends HTMLPane {
 					if (binding.get("type").isString().stringValue().equals("uri")) {
 						String uri = binding.get("value").isString().stringValue();
 
-						html += "<a href=\"" + uri + "\" target=\"_blank\">" + getShortUri(uri) + "</a>";
+						html += "<a href=\"" + uri + "\" target=\"_blank\">" + StringUtil.asHTML(getShortUri(uri)) + "</a>";
 					} else {
-						html += binding.get("value").isString().stringValue();
+						html += StringUtil.asHTML(binding.get("value").isString().stringValue());
 					}
 				}
 				html += "</td>";

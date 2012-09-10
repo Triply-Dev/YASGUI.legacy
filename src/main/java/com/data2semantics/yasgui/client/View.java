@@ -11,10 +11,14 @@ import com.data2semantics.yasgui.shared.exceptions.SettingsException;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.smartgwt.client.docs.Buttons;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Positioning;
+import com.smartgwt.client.util.StringUtil;
+import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Label;
@@ -23,6 +27,7 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.CloseClickEvent;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
+import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
 
@@ -104,6 +109,56 @@ public class View extends VLayout {
 	 */
 	public void onError(String error) {
 		onLoadingFinish();
+		Window window = getErrorWindow();
+		Label label = new Label(error);
+		label.setMargin(4);
+		label.setHeight100();
+		window.addItem(label);
+		window.draw();
+	}
+	
+	public void onQueryError(String error) {
+		onLoadingFinish();
+		final Window window = getErrorWindow();
+		VLayout vLayout = new VLayout();
+		vLayout.setWidth100();
+		Label label = new Label(error);
+		label.setMargin(4);
+		label.setHeight100();
+		label.setWidth100();
+		vLayout.addMember(label);
+		
+		HLayout buttons = new HLayout();
+		Button executeQuery = new Button("Open endpoint in new window");
+		executeQuery.addClickHandler(new ClickHandler(){
+			@Override
+			public void onClick(ClickEvent event) {
+				String endpoint = getSelectedTabSettings().getEndpoint();
+				String query = getSelectedTabSettings().getQueryString();
+				String url = endpoint + "?query=" + URL.encodeQueryString(query);
+				getLogger().severe(url);
+				com.google.gwt.user.client.Window.open(url, "_blank", null);
+			}});
+		executeQuery.setWidth(200);
+		Button closeWindow = new Button("Close window");
+		closeWindow.addClickHandler(new ClickHandler(){
+
+			@Override
+			public void onClick(ClickEvent event) {
+				window.destroy();
+			}});
+		
+		buttons.addMember(executeQuery);
+		buttons.addMember(closeWindow);
+		buttons.setWidth100();
+		buttons.setLayoutAlign(Alignment.CENTER);
+		vLayout.addMember(buttons);
+		window.addItem(vLayout);
+		window.setWidth(350);
+		window.draw();
+	}
+	
+	private Window getErrorWindow() {
 		final Window window = new Window();
 		window.setAutoSize(true);
 		window.setMinWidth(400);
@@ -117,12 +172,7 @@ public class View extends VLayout {
 			}
 		});
 		window.setShowTitle(false);
-		
-		Label label = new Label(error);
-		label.setMargin(4);
-		label.setHeight100();
-		window.addItem(label);
-		window.draw();
+		return window;
 	}
 
 	/**

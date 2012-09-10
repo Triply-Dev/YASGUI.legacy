@@ -53,6 +53,9 @@ span.CodeMirror-matchhighlight {
 	margin: 20px;
 }
 
+.simpleTable {
+	border: 0px solid black;
+}
 .simpleTable th {
 	font-size: 14px;
 	font-weight: normal;
