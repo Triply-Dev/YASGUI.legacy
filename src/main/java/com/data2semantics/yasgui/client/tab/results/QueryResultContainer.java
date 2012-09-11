@@ -15,9 +15,11 @@ import com.data2semantics.yasgui.shared.Output;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
 import com.data2semantics.yasgui.shared.exceptions.SparqlParseException;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
+import com.google.gwt.user.client.Command;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Img;
@@ -32,6 +34,7 @@ public class QueryResultContainer extends VLayout {
 	public static int RESULT_TYPE_INSERT = 3;
 	private View view;
 	private QueryTab queryTab;
+	private JsonOutput jsonOutput;
 	SparqlJsonHelper queryResults;
 	HashMap<String, Integer> queryTypes = new HashMap<String, Integer>();
 	public QueryResultContainer(View view, QueryTab queryTab) {
@@ -68,35 +71,43 @@ public class QueryResultContainer extends VLayout {
 	 * Empty query result area
 	 */
 	public void reset() {
-			Canvas[] members = getMembers();
-			for (Canvas member : members) {
-				removeMember(member);
-			}
+		if (jsonOutput != null) {
+			//We have an old codemirror object used for showing json results. Clean this up
+			JsMethods.destroyCodeMirrorJsonResult(jsonOutput.getInputId());
+			jsonOutput = null;
+		}
+		Canvas[] members = getMembers();
+		for (Canvas member : members) {
+			removeMember(member);
+		}
 	}
 	
 	public void addQueryResult(String jsonString) {
 		reset();
-		getView().getLogger().severe(jsonString);
 		String queryType = JsMethods.getQueryType(getView().getSelectedTab().getQueryTextArea().getInputId());
+		if (!queryTypes.containsKey(queryType)) {
+			getView().onError("No valid query type detected for this query");
+			return;
+		}
 		int queryMode = queryTypes.get(queryType);
+		
 		try {
-			
 			if (queryMode == RESULT_TYPE_INSERT) {
 				setOkMessage("Done");
-			} else if (queryMode == RESULT_TYPE_BOOLEAN) {
-				queryResults = new SparqlJsonHelper(jsonString, getView(), queryMode);
-				if (queryResults.getBooleanResult()) {
-					setOkMessage("true");
-				} else {
-					setErrorResultMessage("false");
-				}
-			} else if (queryMode == RESULT_TYPE_TABLE) {
-				queryResults = new SparqlJsonHelper(jsonString, getView(), queryMode);
+			} else if (queryMode == RESULT_TYPE_BOOLEAN || queryMode == RESULT_TYPE_TABLE) {
 				String outputFormat = getView().getSelectedTabSettings().getOutputFormat();
-				if (outputFormat.equals(Output.OUTPUT_TABLE)) {
-					addMember(new ResultGrid(getView(), queryTab, queryResults));
-				} else if (outputFormat.equals(Output.OUTPUT_TABLE_SIMPLE)) {
-					addMember(new SimpleGrid(getView(), queryTab, queryResults));
+				if (outputFormat.equals(Output.OUTPUT_JSON)) {
+					jsonOutput = new JsonOutput(getView(), queryTab, jsonString);
+					addMember(jsonOutput);
+					Scheduler.get().scheduleDeferred(new Command() {
+						public void execute() {
+							JsMethods.attachCodeMirrorToJsonResult(jsonOutput.getInputId());
+						}
+					});
+				} else if (queryMode == RESULT_TYPE_BOOLEAN){
+					drawResultsAsBoolean(new SparqlJsonHelper(jsonString, getView(), queryMode));
+				} else if (queryMode == RESULT_TYPE_TABLE) {
+					drawResultsInTable(new SparqlJsonHelper(jsonString, getView(), queryMode), outputFormat);
 				}
 			}
 		} catch (SparqlParseException e) {
@@ -153,6 +164,25 @@ public class QueryResultContainer extends VLayout {
 		
 		addMember(empty);
 	}
+	private void drawResultsAsBoolean(SparqlJsonHelper queryResults) {
+		if (queryResults.getBooleanResult()) {
+			setOkMessage("true");
+		} else {
+			setErrorResultMessage("false");
+		}
+	}
 	
+	private void drawResultsInTable(SparqlJsonHelper queryResults, String outputFormat) {
+		if (outputFormat.equals(Output.OUTPUT_TABLE)) {
+			addMember(new ResultGrid(getView(), queryTab, queryResults));
+		} else if (outputFormat.equals(Output.OUTPUT_TABLE_SIMPLE)) {
+			addMember(new SimpleGrid(getView(), queryTab, queryResults));
+		} else if (outputFormat.equals(Output.OUTPUT_CSV)) {
+			addMember(new CsvOutput(getView(), queryTab, queryResults));
+		}
+	}
+	public JsonOutput getJsonOutput() {
+		return this.jsonOutput;
+	}
 	
 }

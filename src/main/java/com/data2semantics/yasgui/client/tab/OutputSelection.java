@@ -15,7 +15,7 @@ public class OutputSelection extends DynamicForm {
 	private View view;
 	SelectItem selectItem;
 
-	public OutputSelection(View view) {
+	public OutputSelection(View view, QueryTab tab) {
 		this.view = view;
 		selectItem = new SelectItem();
 		selectItem.setTitle("Output");
@@ -36,7 +36,7 @@ public class OutputSelection extends DynamicForm {
 		selectItem.setValueMap(valueMap);
 		selectItem.setImageURLPrefix("icons/formats/");
 		selectItem.setImageURLSuffix(".png");
-		selectItem.setDefaultValue(Output.OUTPUT_TABLE_SIMPLE);
+		selectItem.setDefaultValue(tab.getTabSettings().getOutputFormat());
 		selectItem.addChangedHandler(new ChangedHandler() {
 			@Override
 			public void onChanged(ChangedEvent event) {

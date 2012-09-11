@@ -136,7 +136,6 @@ public class View extends VLayout {
 				String endpoint = getSelectedTabSettings().getEndpoint();
 				String query = getSelectedTabSettings().getQueryString();
 				String url = endpoint + "?query=" + URL.encodeQueryString(query);
-				getLogger().severe(url);
 				com.google.gwt.user.client.Window.open(url, "_blank", null);
 			}});
 		executeQuery.setWidth(200);

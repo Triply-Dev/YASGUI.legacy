@@ -4,6 +4,7 @@ import com.data2semantics.yasgui.client.QueryTabs;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.results.QueryResultContainer;
+import com.google.gwt.dom.client.Style.Overflow;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.Menu;
@@ -31,7 +32,7 @@ public class QueryTab extends Tab {
 		endpointInput = new EndpointInput(getView(), this);
 		queryOptions.addMember(endpointInput);
 		
-		outputSelection = new OutputSelection(getView());
+		outputSelection = new OutputSelection(getView(), this);
 		queryOptions.addMember(outputSelection);
 		queryOptions.setHeight(50);
 		vLayout.addMember(queryOptions);
@@ -42,9 +43,8 @@ public class QueryTab extends Tab {
 		//queryResultContainer.addMember(testGrid);
 
 		vLayout.addMember(queryResultContainer);
-
+//		vLayout.getElement().getStyle().setOverflowX(Overflow.HIDDEN);
 		setPane(vLayout);
-
 		setContextMenu();
 	}
 	

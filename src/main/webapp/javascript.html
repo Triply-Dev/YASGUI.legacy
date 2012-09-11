@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+<title>json Test</title>
+  </head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+<script src="externals/yasgui.js"></script>
+  </head>
+<script src="externals/codemirror/codemirror.js"></script>
+<link rel="stylesheet" href="externals/codemirror/codemirror.css">
+<!-- Autocompletion code -->
+<link rel="stylesheet" href="externals/codemirror/util/simple-hint.css">
+<script src="externals/codemirror/util/simple-hint.js"></script>
+<script src="externals/prefix-hint.js"></script>
+<!-- Highlight words onclick code -->
+<script src="externals/codemirror/util/searchcursor.js"></script>
+<script src="externals/codemirror/util/match-highlighter.js"></script>
+<link rel="stylesheet" href="externals/yasgui.css">
+<!-- Flint code for sparql mode -->
+<script src="externals/sparqlGrammar.js"></script>
+<script src="externals/flint/sparql.js"></script>
+<link rel="stylesheet" href="externals/flint/sparql.css">
+<!-- Code for adding custom keycombination/mouseclick commands to codemirror -->
+<script src="externals/addCommands.js"></script>
+  <body>
+
+	<textarea id="test" style="width:400px;height:300px;">{
+  "head": { "vars": [ "book" , "title" ]
+  } ,
+  "results": { 
+    "bindings": [
+      {
+        "book": { "type": "uri" , "value": "http://example.org/book/book6" } ,
+        "title": { "type": "literal" , "value": "Harry Potter and the Half-Blood Prince" }
+      } ,
+      {
+        "book": { "type": "uri" , "value": "http://example.org/book/book7" } ,
+        "title": { "type": "literal" , "value": "Harry Potter and the Deathly Hallows" }
+      } ,
+      {
+        "book": { "type": "uri" , "value": "http://example.org/book/book5" } ,
+        "title": { "type": "literal" , "value": "Harry Potter and the Order of the Phoenix" }
+      } ,
+      {
+        "book": { "type": "uri" , "value": "http://example.org/book/book4" } ,
+        "title": { "type": "literal" , "value": "Harry Potter and the Goblet of Fire" }
+      } ,
+      {
+        "book": { "type": "uri" , "value": "http://example.org/book/book2" } ,
+        "title": { "type": "literal" , "value": "Harry Potter and the Chamber of Secrets" }
+      } ,
+      {
+        "book": { "type": "uri" , "value": "http://example.org/book/book3" } ,
+        "title": { "type": "literal" , "value": "Harry Potter and the Prisoner Of Azkaban" }
+      } ,
+      {
+        "book": { "type": "uri" , "value": "http://example.org/book/book1" } ,
+        "title": { "type": "literal" , "value": "Harry Potter and the Philosopher's Stone" }
+      }
+    ]
+  }
+}
+</textarea>
+	<script type="text/javascript">
+		var myCodeMirror = CodeMirror.fromTextArea(document
+				.getElementById("test"), {
+			lineNumbers : true,
+			matchBrackets: true,
+			readOnly: true;
+		});
+			
+	</script>
+</body>
+</html>

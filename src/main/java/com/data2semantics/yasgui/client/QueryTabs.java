@@ -9,6 +9,7 @@ import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.ConfigMenu;
 import com.data2semantics.yasgui.client.tab.QueryTab;
+import com.data2semantics.yasgui.client.tab.results.JsonOutput;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
 import com.smartgwt.client.types.Side;
@@ -48,7 +49,7 @@ public class QueryTabs extends TabSet {
 		// which doesnt work if element hasnt been drawn yet
 		Scheduler.get().scheduleFinally(new Command() {
 			public void execute() {
-				JsMethods.attachCodeMirror(((QueryTab) getSelectedTab()).getQueryTextArea().getInputId());
+				JsMethods.attachCodeMirrorToQueryInput(((QueryTab) getSelectedTab()).getQueryTextArea().getInputId());
 			}
 		});
 		addHandlers();
@@ -122,7 +123,7 @@ public class QueryTabs extends TabSet {
 				Helper.storeSettingsInCookie(settings);
 				Scheduler.get().scheduleDeferred(new Command() {
 					public void execute() {
-						JsMethods.attachCodeMirror(((QueryTab) getSelectedTab()).getQueryTextArea().getInputId());
+						JsMethods.attachCodeMirrorToQueryInput(((QueryTab) getSelectedTab()).getQueryTextArea().getInputId());
 					}
 				});
 			}
@@ -191,9 +192,15 @@ public class QueryTabs extends TabSet {
 	public void closePreProcess(QueryTab queryTab) {
 		Settings settings = getView().getSettings();
 		settings.removeTabSettings(getTabNumber(queryTab.getID()));
-		// To avoid codemirror js objects lying around, remove js object
+		// To avoid codemirror js objects lying around, remove js objects
 		// belonging to this tab
-		JsMethods.destroyCodeMirror(queryTab.getQueryTextArea().getInputId());
+		JsMethods.destroyCodeMirrorQueryInput(queryTab.getQueryTextArea().getInputId());
+		JsonOutput jsonOutput = queryTab.getResultContainer().getJsonOutput();
+		if (jsonOutput != null) {
+			//We have outputted query results as json string using the codemirror highlighter. Also cleanup this object
+			JsMethods.destroyCodeMirrorJsonResult(jsonOutput.getInputId());
+		}
+		
 	}
 	
 	public void removeAndPostProcessTab(QueryTab tab) {

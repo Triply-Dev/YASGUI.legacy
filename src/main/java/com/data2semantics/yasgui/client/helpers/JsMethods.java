@@ -9,9 +9,20 @@ public class JsMethods {
 	 * 
 	 * @param queryInputId Id of the text area of this codemirror instance
 	 */
-	public static native void destroyCodeMirror(String queryInputId) /*-{
+	public static native void destroyCodeMirrorQueryInput(String queryInputId) /*-{
 			if ($wnd.sparqlHighlight[queryInputId] != null) { 
 				$wnd.sparqlHighlight[queryInputId] = null;
+			}
+	}-*/;
+	
+	/**
+	 * Unset a tabmirror object. Used when closing a tab
+	 * 
+	 * @param queryInputId Id of the text area of this codemirror instance
+	 */
+	public static native void destroyCodeMirrorJsonResult(String queryInputId) /*-{
+			if ($wnd.jsonHighlight[queryInputId] != null) { 
+				$wnd.jsonHighlight[queryInputId] = null;
 			}
 	}-*/;
 	
@@ -20,7 +31,7 @@ public class JsMethods {
 	 * 
 	 * @param queryInputId Id of text area to attach codemirror to
 	 */
-	public static native void attachCodeMirror(String queryInputId) /*-{
+	public static native void attachCodeMirrorToQueryInput(String queryInputId) /*-{
 		if ($doc.getElementById(queryInputId)) {
 			if ($wnd.sparqlHighlight[queryInputId] == null) { 
 				//Only add if it hasnt been drawn yet
@@ -54,6 +65,31 @@ public class JsMethods {
 			}
 		} else {
 			$wnd.onError("no text area for input id: " + queryInputId);
+		}
+	}-*/;
+	/**
+	 * Initialize and atatch codemirror to a text area used for displaying json results of query
+	 * 
+	 * @param queryInputId Id of text area to attach codemirror to
+	 */
+	public static native void attachCodeMirrorToJsonResult(String queryInputId) /*-{
+		if ($doc.getElementById(queryInputId)) {
+			if ($wnd.jsonHighlight[queryInputId] == null) { 
+				//Only add if it hasnt been drawn yet
+				$wnd.jsonHighlight[queryInputId] = $wnd.CodeMirror.fromTextArea($doc
+						.getElementById(queryInputId), {
+					mode : {
+						name: "javascript",
+						json: true,
+					},
+					lineNumbers : true,
+					matchBrackets : true,
+					readOnly: true,
+				});
+				$wnd.jsonHighlight[queryInputId].setSize("100%", "100%");
+			}
+		} else {
+			$wnd.onError("no text area to create json highlight for input id: " + queryInputId);
 		}
 	}-*/;
 	

@@ -35,14 +35,14 @@ public class SparqlServlet extends HttpServlet {
 			nameValuePairs.add(new BasicNameValuePair("query", query));
 			// Some endpoints (dbpedia?) use separate parameter for accept content type
 			nameValuePairs.add(new BasicNameValuePair("format", contentType));
-
+			
 			post.setHeader("Accept", contentType);
 			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			post.setHeader("Content-Type", "application/x-www-form-urlencoded");
 			HttpResponse endpointResponse = client.execute(post);
 			int endpointStatusCode = endpointResponse.getStatusLine().getStatusCode();
 			if (endpointStatusCode >= 400) {
 				//only return this statuscode when it is an error. Redirection codes (e.g. 302) are allowed I guess
-				System.out.println("sdf" + endpointResponse.getStatusLine().getReasonPhrase());
 				response.sendError(endpointStatusCode, endpointResponse.getStatusLine().getReasonPhrase());
 			} else {
 				BufferedReader rd = new BufferedReader(new InputStreamReader(endpointResponse.getEntity().getContent()));
