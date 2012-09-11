@@ -72,7 +72,7 @@ public class JsMethods {
 	 * 
 	 * @param queryInputId Id of text area to attach codemirror to
 	 */
-	public static native void attachCodeMirrorToJsonResult(String queryInputId) /*-{
+	public static native void attachCodeMirrorToJsonResult(String queryInputId, int width) /*-{
 		if ($doc.getElementById(queryInputId)) {
 			if ($wnd.jsonHighlight[queryInputId] == null) { 
 				//Only add if it hasnt been drawn yet
@@ -86,7 +86,7 @@ public class JsMethods {
 					matchBrackets : true,
 					readOnly: true,
 				});
-				$wnd.jsonHighlight[queryInputId].setSize("100%", "100%");
+				$wnd.jsonHighlight[queryInputId].setSize(width, "100%");
 			}
 		} else {
 			$wnd.onError("no text area to create json highlight for input id: " + queryInputId);
@@ -227,6 +227,13 @@ public class JsMethods {
 		var lineCount = instance.lineCount();
 		return instance.getTokenAt({line : lineCount - 1, ch: instance.getLine(lineCount-1).length-1}).state.queryType;
 	}-*/;
-
+	
+	/*
+	 * Calls codemirror the check the querytype of one of our codemirror instances
+	 * @param queryInputId
+	 * @return
+	 */
+	public static native String openDownDialogForCsv(String csv) /*-{
+	}-*/;
 	
 }

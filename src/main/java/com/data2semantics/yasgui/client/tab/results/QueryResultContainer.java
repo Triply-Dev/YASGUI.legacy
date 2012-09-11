@@ -1,26 +1,16 @@
 package com.data2semantics.yasgui.client.tab.results;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import com.data2semantics.yasgui.client.View;
-import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.SparqlJsonHelper;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.shared.Output;
-import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
 import com.data2semantics.yasgui.shared.exceptions.SparqlParseException;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.regexp.shared.MatchResult;
-import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Command;
-import com.smartgwt.client.types.Alignment;
+import com.google.gwt.user.client.Window;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.Label;
@@ -101,12 +91,13 @@ public class QueryResultContainer extends VLayout {
 					addMember(jsonOutput);
 					Scheduler.get().scheduleDeferred(new Command() {
 						public void execute() {
-							JsMethods.attachCodeMirrorToJsonResult(jsonOutput.getInputId());
+							JsMethods.attachCodeMirrorToJsonResult(jsonOutput.getInputId(), Window.getClientWidth()-10);
 						}
 					});
 				} else if (queryMode == RESULT_TYPE_BOOLEAN){
 					drawResultsAsBoolean(new SparqlJsonHelper(jsonString, getView(), queryMode));
 				} else if (queryMode == RESULT_TYPE_TABLE) {
+					
 					drawResultsInTable(new SparqlJsonHelper(jsonString, getView(), queryMode), outputFormat);
 				}
 			}
@@ -178,7 +169,8 @@ public class QueryResultContainer extends VLayout {
 		} else if (outputFormat.equals(Output.OUTPUT_TABLE_SIMPLE)) {
 			addMember(new SimpleGrid(getView(), queryTab, queryResults));
 		} else if (outputFormat.equals(Output.OUTPUT_CSV)) {
-			addMember(new CsvOutput(getView(), queryTab, queryResults));
+			CsvOutput output = new CsvOutput(getView(), queryTab, queryResults);
+			JsMethods.openDownDialogForCsv(output.getCsvString());
 		}
 	}
 	public JsonOutput getJsonOutput() {

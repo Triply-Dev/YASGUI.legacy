@@ -12,89 +12,72 @@ import com.smartgwt.client.util.StringUtil;
 import com.smartgwt.client.widgets.HTMLPane;
 
 public class CsvOutput extends HTMLPane {
+	private static String QUOTE = "\"";
+	private static String DELIMITER = ",";
+	private static String LINE_BREAK = "\n";
 	private View view;
 	private QueryTab tab;
-	private HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
 	private JSONArray variables;
 	private JSONArray querySolutions;
-	private String html;
-
+	private String csvString;
 	public CsvOutput(View view, QueryTab tab, SparqlJsonHelper queryResults) {
-		//escape delimiter
-		//escape quotes
-		//if string has spaces/linebreakes, use quotes
 		this.tab = tab;
 		this.view = view;
 		setWidth100();
 		setHeight100();
+		variables = queryResults.getVariables();
 		querySolutions = queryResults.getQuerySolutions();
-		drawTable();
-		setContents(html);
-		
 	}
-
-	private void drawTable() {
-		html = "<table class=\"simpleTable\">";
-		drawHeader();
-		drawRows();
-
-		html += "</table>";
+	
+	public String getCsvString() {
+		createCsvHeader();
+		createCsvBody();
+		return csvString;
 	}
-
-	private void drawHeader() {
-		html += "<thead><tr class=\"simpleTable\">";
+	
+	private void createCsvHeader() {
 		for (int i = 0; i < variables.size(); i++) {
-			html += "<th>" + StringUtil.asHTML(variables.get(i).isString().stringValue()) + "</th>";
+			addValueToString(variables.get(i).isString().stringValue());
 		}
-		html += "</tr></thead>";
+		csvString += LINE_BREAK;
 	}
-
-	private void drawRows() {
-		html += "<tbody>";
+	
+	private void createCsvBody() {
 		for (int solutionKey = 0; solutionKey < querySolutions.size(); solutionKey++) {
-			JSONObject querySolution = querySolutions.get(solutionKey).isObject();
-			html += "<tr>";
-			for (int variableKey = 0; variableKey < variables.size(); variableKey++) {
-				html += "<td>";
-				String variable = variables.get(variableKey).isString().stringValue();
-				JSONObject binding = querySolution.get(variable).isObject();
-				if (binding == null) {
-					html += "&nbsp;";
-				} else {
-					if (binding.get("type").isString().stringValue().equals("uri")) {
-						String uri = binding.get("value").isString().stringValue();
-						html += "<a href=\"" + uri + "\" target=\"_blank\">" + StringUtil.asHTML(getShortUri(uri)) + "</a>";
-					} else {
-						html += StringUtil.asHTML(binding.get("value").isString().stringValue());
-					}
-				}
-				html += "</td>";
-			}
-			html += "</tr>";
+			addQuerySolutionToString(querySolutions.get(solutionKey).isObject());
+			csvString += LINE_BREAK;
 		}
-		html += "</tbody>";
+	}
+	
+	private void addQuerySolutionToString(JSONObject querySolution) {
+		for (int bindingKey = 0; bindingKey < variables.size(); bindingKey++) {
+			String variable = variables.get(bindingKey).isString().toString();
+			if (querySolution.containsKey(variable)) {
+				addValueToString(querySolution.get(variable).isObject().get("value").isString().stringValue());
+			} else {
+				addValueToString("");
+			}
+		}
+	}
+	private void addValueToString(String value) {
+		//Quotes in the string need to be escaped
+		value.replace(QUOTE, QUOTE+QUOTE);
+		if (needToQuoteString(value)) {
+			value = QUOTE + value + QUOTE;
+		}
+	}
+	
+	private boolean needToQuoteString(String value) {
+		//quote when it contains whitespace or the delimiter
+		boolean quote = false;
+		if (value.matches("[\\w|"+ DELIMITER + "|" + QUOTE + "]")) {
+			quote = true;
+		}
+		return quote;
 	}
 
 	private View getView() {
 		return this.view;
 	}
 
-	/**
-	 * Check for a uri whether there is a prefix defined in the query.
-	 * 
-	 * @param uri
-	 * @return Short version of this uri if prefix is defined. Long version
-	 *         otherwise
-	 */
-	private String getShortUri(String uri) {
-		for (Map.Entry<String, Prefix> entry : queryPrefixes.entrySet()) {
-			String prefixUri = entry.getKey();
-			if (uri.startsWith(prefixUri)) {
-				uri = uri.substring(prefixUri.length());
-				uri = entry.getValue().getPrefix() + ":" + uri;
-				break;
-			}
-		}
-		return uri;
-	}
 }
