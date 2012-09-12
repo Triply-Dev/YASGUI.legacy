@@ -171,6 +171,7 @@ public class QueryResultContainer extends VLayout {
 		} else if (outputFormat.equals(Output.OUTPUT_CSV)) {
 			CsvOutput output = new CsvOutput(getView(), queryTab, queryResults);
 			JsMethods.openDownDialogForCsv(output.getCsvString());
+			getView().getLogger().severe(output.getCsvString());
 		}
 	}
 	public JsonOutput getJsonOutput() {

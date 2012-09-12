@@ -3,6 +3,7 @@ package com.data2semantics.yasgui.client.tab;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
+import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.smartgwt.client.types.TitleOrientation;
 import com.smartgwt.client.widgets.form.DynamicForm;
@@ -46,7 +47,7 @@ public class EndpointInput extends DynamicForm {
 				if (!latestEndpointValue.equals(getEndpoint())) {
 					JsMethods.checkCorsEnabled(getEndpoint());
 					getView().getSettings().getSelectedTabSettings().setEndpoint(getEndpoint());
-					Helper.storeSettingsInCookie(getView().getSettings());
+					LocalStorageHelper.storeSettingsInCookie(getView().getSettings());
 				}
 			}
 

@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
+import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.shared.Output;
 import com.smartgwt.client.types.TitleOrientation;
 import com.smartgwt.client.widgets.form.DynamicForm;
@@ -41,7 +42,7 @@ public class OutputSelection extends DynamicForm {
 			@Override
 			public void onChanged(ChangedEvent event) {
 				getView().getSelectedTabSettings().setOutputFormat(selectItem.getValueAsString());
-				Helper.storeSettingsInCookie(getView().getSettings());
+				LocalStorageHelper.storeSettingsInCookie(getView().getSettings());
 			}
 		});
 		setItems(selectItem);

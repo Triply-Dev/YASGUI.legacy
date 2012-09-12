@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
+import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.ZIndexes;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
@@ -94,7 +95,7 @@ public class QueryTabs extends TabSet {
 				TabSettings tabSettings = new TabSettings();
 				getView().getSettings().addTabSettings(tabSettings);
 				getView().getTabs().addTab(tabSettings, true);
-				Helper.storeSettingsInCookie(getView().getSettings());
+				LocalStorageHelper.storeSettingsInCookie(getView().getSettings());
 			}
 		});
 		
@@ -120,7 +121,7 @@ public class QueryTabs extends TabSet {
 			public void onTabSelected(TabSelectedEvent event) {
 				Settings settings = getView().getSettings();
 				settings.setSelectedTabNumber(event.getTabNum());
-				Helper.storeSettingsInCookie(settings);
+				LocalStorageHelper.storeSettingsInCookie(settings);
 				Scheduler.get().scheduleDeferred(new Command() {
 					public void execute() {
 						JsMethods.attachCodeMirrorToQueryInput(((QueryTab) getSelectedTab()).getQueryTextArea().getInputId());
@@ -135,7 +136,7 @@ public class QueryTabs extends TabSet {
 				int tabIndex = getTabNumber(event.getTab().getID());
 				//Don't use selected one. Title may change by context menu, when other tab is selected
 				settings.getTabArray().get(tabIndex).setTabTitle(event.getNewTitle());
-				Helper.storeSettingsInCookie(settings);
+				LocalStorageHelper.storeSettingsInCookie(settings);
 			}
 		});
 		addCloseClickHandler(new CloseClickHandler() {
@@ -158,7 +159,7 @@ public class QueryTabs extends TabSet {
 				removeTab((QueryTab)tab, false);
 			}
 		}
-		Helper.storeSettingsInCookie(getView().getSettings());
+		LocalStorageHelper.storeSettingsInCookie(getView().getSettings());
 	}
 	
 	/**
@@ -169,7 +170,7 @@ public class QueryTabs extends TabSet {
 		for (Tab tab: tabs) {
 			removeTab((QueryTab)tab, false);
 		}
-		Helper.storeSettingsInCookie(getView().getSettings());
+		LocalStorageHelper.storeSettingsInCookie(getView().getSettings());
 	}
 	
 	/**
@@ -217,7 +218,7 @@ public class QueryTabs extends TabSet {
 		Settings settings = getView().getSettings();
 		settings.setSelectedTabNumber(getSelectedTabNumber());
 		if (storeSettings) {
-			Helper.storeSettingsInCookie(settings);
+			LocalStorageHelper.storeSettingsInCookie(settings);
 		}
 	}
 	

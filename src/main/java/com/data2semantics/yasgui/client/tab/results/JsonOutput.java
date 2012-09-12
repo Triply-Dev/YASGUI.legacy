@@ -2,8 +2,7 @@ package com.data2semantics.yasgui.client.tab.results;
 
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.tab.QueryTab;
-import com.google.gwt.dom.client.Style.Overflow;
-import com.google.gwt.user.client.Window;
+import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.HTMLPane;
 
 public class JsonOutput extends HTMLPane {
@@ -13,13 +12,14 @@ public class JsonOutput extends HTMLPane {
 	private String jsonString;
 	private String inputId;
 	public JsonOutput(View view, QueryTab tab, String jsonString) {
-		jsonString = jsonString.replace("\n", "");
+		//jsonString = jsonString.replace("\n", "");
 		this.tab = tab;
 		this.view = view;
 		//Do this because otherwise the vertical scrollbar of codemirror causes an horizontal gwt scrollbar.
 //		setWidth(Window.getClientWidth() - 10);
-//		setWidth100();
+		setWidth100();
 		setHeight100();
+		setOverflow(Overflow.AUTO);
 		this.jsonString = jsonString;
 		this.inputId = tab.getID() + APPEND_INPUT_ID;
 		drawTextArea();

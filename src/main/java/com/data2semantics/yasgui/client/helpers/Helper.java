@@ -1,12 +1,14 @@
 package com.data2semantics.yasgui.client.helpers;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.storage.client.Storage;
@@ -17,7 +19,7 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 
 public class Helper {
-	private static String COOKIE_SETTINGS = "yasgui_settings";
+
 
 	/**
 	 * Implode arraylist into string
@@ -35,51 +37,6 @@ public class Helper {
 			result += stringItem;
 		}
 		return result;
-	}
-
-	/**
-	 * Store settings as json string in cookie. If html5 local storage is possible, use that. 
-	 * html5 storage does not send cookie info on every request, which reduces network load
-	 * 
-	 * @param settings
-	 */
-	public static void storeSettingsInCookie(Settings settings) {
-		Storage html5Storage = Storage.getLocalStorageIfSupported();
-		if (html5Storage != null) {
-			html5Storage.setItem(COOKIE_SETTINGS, settings.toString());
-		} else {
-			//We are using a browser which does not support html5
-			Cookies.removeCookie(COOKIE_SETTINGS);
-			Cookies.setCookie(COOKIE_SETTINGS, settings.toString());
-		}
-		
-	}
-	
-	/**
-	 * Get settings from cookie (or html local storage if supported). Settings is saved as a json string, so need to parse as json object
-	 * @return
-	 */
-	public static Settings getSettingsFromCookie() {
-		Settings settings = new Settings();
-		String jsonString;
-		Storage html5Storage = Storage.getLocalStorageIfSupported();
-		if (html5Storage != null) {
-			jsonString = html5Storage.getItem(COOKIE_SETTINGS);
-		} else {
-			//We are using a browser which does not support html5
-			jsonString = Cookies.getCookie(COOKIE_SETTINGS);
-		}
-		
-		if (jsonString != null && jsonString.length() > 0) {
-			JSONObject jsonObject = JSONParser.parseStrict(jsonString).isObject();
-			if (jsonObject == null) {
-				// Something went wrong. Just use original 'bare' settings
-				// objects
-			} else {
-				settings = new Settings(jsonObject);
-			}
-		}
-		return settings;
 	}
 	
 	/**

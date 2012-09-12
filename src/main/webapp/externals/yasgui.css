@@ -1,3 +1,6 @@
+body {
+	overflow: hidden;
+}
 span.CodeMirror-matchhighlight {
 	background: #e9e9e9
 }

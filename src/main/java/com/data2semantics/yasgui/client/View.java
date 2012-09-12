@@ -1,8 +1,10 @@
 package com.data2semantics.yasgui.client;
 
+import java.util.Date;
 import java.util.logging.Logger;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
+import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.QueryTab;
@@ -12,6 +14,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.docs.Buttons;
 import com.smartgwt.client.types.Alignment;
@@ -45,7 +48,7 @@ public class View extends VLayout {
 	private Settings settings = new Settings();
 	
 	public View() {
-		settings = Helper.getSettingsFromCookie();
+		settings = LocalStorageHelper.getSettingsFromCookie();
 		JsMethods.setTabBarProperties(QueryTabs.INDENT_TABS);
 		JsMethods.declareCallableViewMethods(this);
 		JsMethods.setProxyUriInVar(GWT.getModuleBaseURL() + "sparql");
@@ -289,7 +292,7 @@ public class View extends VLayout {
 	public void storeQueryInCookie() {
 		String query = getSelectedTab().getQueryTextArea().getQuery();
 		getSelectedTabSettings().setQueryString(query);
-		Helper.storeSettingsInCookie(getSettings());
+		LocalStorageHelper.storeSettingsInCookie(getSettings());
 	}
 	
 	/**
@@ -298,18 +301,24 @@ public class View extends VLayout {
 	 * @param forceUpdate
 	 */
 	public void setAutocompletePrefixes(boolean forceUpdate) {
-		onLoadingStart("Fetching prefixes");
-		// get prefixes from server
-		getRemoteService().fetchPrefixes(forceUpdate, new AsyncCallback<String>() {
-			public void onFailure(Throwable caught) {
-				onError(caught.getMessage());
-			}
-
-			public void onSuccess(String prefixes) {
-				JsMethods.setAutocompletePrefixes(prefixes);
-				onLoadingFinish();
-			}
-		});
+		
+		
+		String prefixes = LocalStorageHelper.getPrefixesFromLocalStorage();
+		if (forceUpdate || prefixes == null) {
+			// get prefixes from server
+			onLoadingStart("Fetching prefixes");
+			getRemoteService().fetchPrefixes(forceUpdate, new AsyncCallback<String>() {
+				public void onFailure(Throwable caught) {
+					onError(caught.getMessage());
+				}
+	
+				public void onSuccess(String prefixes) {
+					LocalStorageHelper.setPrefixes(prefixes);
+					JsMethods.setAutocompletePrefixes(prefixes);
+					onLoadingFinish();
+				}
+			});
+		}
 
 	}
 	

@@ -86,7 +86,7 @@ public class JsMethods {
 					matchBrackets : true,
 					readOnly: true,
 				});
-				$wnd.jsonHighlight[queryInputId].setSize(width, "100%");
+				$wnd.jsonHighlight[queryInputId].setSize("100%", "100%");
 			}
 		} else {
 			$wnd.onError("no text area to create json highlight for input id: " + queryInputId);
