@@ -53,7 +53,7 @@ function sparqlQueryJson(queryStr, endpoint, callback) {
  */
 function checkCorsEnabled(endpoint) {
 	//Only perform check if it hasnt been done already
-	if (corsEnabled[endpoint] != null) {
+	if (corsEnabled[endpoint] == null) {
 		//Start off assuming it is not cors enabled
 		$.ajax({
 			url : endpoint,
