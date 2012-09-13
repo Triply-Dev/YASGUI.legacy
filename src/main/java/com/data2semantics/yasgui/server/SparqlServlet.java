@@ -43,7 +43,17 @@ public class SparqlServlet extends HttpServlet {
 			int endpointStatusCode = endpointResponse.getStatusLine().getStatusCode();
 			if (endpointStatusCode >= 400) {
 				//only return this statuscode when it is an error. Redirection codes (e.g. 302) are allowed I guess
-				response.sendError(endpointStatusCode, endpointResponse.getStatusLine().getReasonPhrase());
+				String reason = endpointResponse.getStatusLine().getReasonPhrase();
+				
+				//reasonphrase is often not verbose enough, so append content of page (which often contains actual verbose error msg)
+				BufferedReader rd = new BufferedReader(new InputStreamReader(endpointResponse.getEntity().getContent()));
+				
+				String line;
+				while ((line = rd.readLine()) != null) {
+					reason += "<br/>" + line;
+				}
+				response.sendError(endpointStatusCode, reason);
+				
 			} else {
 				BufferedReader rd = new BufferedReader(new InputStreamReader(endpointResponse.getEntity().getContent()));
 	

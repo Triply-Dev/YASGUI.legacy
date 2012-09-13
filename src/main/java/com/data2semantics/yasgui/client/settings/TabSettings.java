@@ -31,7 +31,7 @@ public class TabSettings extends JSONObject {
 		setEndpoint(DEFAULT_ENDPOINT);
 		setQueryString(DEFAULT_QUERY);
 		setTabTitle(DEFAULT_TAB_TITLE);
-		setOutputFormat(Output.OUTPUT_CSV);
+		setOutputFormat(Output.OUTPUT_TABLE_SIMPLE);
 	}
 
 	public TabSettings(JSONObject jsonObject) {

@@ -21,6 +21,7 @@ public class SparqlJsonHelper {
 	public SparqlJsonHelper(String jsonString, View view, int queryMode) throws SparqlParseException, SparqlEmptyException {
 		this.view = view;
 		this.queryMode = queryMode;
+		view.getLogger().severe("24");
 		getAndValidateJsonObject(jsonString);
 		
 	}
@@ -47,12 +48,13 @@ public class SparqlJsonHelper {
 			throw new SparqlParseException("Unable to parse empty JSON string");
 		}
 		JSONValue jsonValue = JSONParser.parseStrict(jsonString);
-		
+		if (jsonValue == null) {
+			throw new SparqlParseException("Unable to parse query json string");
+		}
 		queryResult = jsonValue.isObject();
 		if (queryResult == null) throw new SparqlParseException("Unable to parse query json string");
 		
 		JSONObject head = getAsObject(queryResult, "head");
-		
 		
 		if (queryMode == QueryResultContainer.RESULT_TYPE_TABLE) {
 			JSONObject resultsObject = getAsObject(queryResult, "results");

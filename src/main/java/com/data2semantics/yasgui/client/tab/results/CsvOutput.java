@@ -1,14 +1,10 @@
 package com.data2semantics.yasgui.client.tab.results;
 
-import java.util.HashMap;
-import java.util.Map;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.SparqlJsonHelper;
 import com.data2semantics.yasgui.client.tab.QueryTab;
-import com.data2semantics.yasgui.shared.Prefix;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
-import com.smartgwt.client.util.StringUtil;
 import com.smartgwt.client.widgets.HTMLPane;
 
 public class CsvOutput extends HTMLPane {

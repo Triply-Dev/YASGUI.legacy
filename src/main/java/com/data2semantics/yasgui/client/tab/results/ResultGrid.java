@@ -14,6 +14,7 @@ import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
 import com.data2semantics.yasgui.shared.exceptions.SparqlParseException;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.smartgwt.client.types.Alignment;
@@ -71,10 +72,12 @@ public class ResultGrid extends ListGrid {
 		//the numbering field created by smartgwt has field name starting with $
 		if (!colName.startsWith("$")) { 
 			JSONObject solution = (JSONObject) row.getAttributeAsObject(SOLUTION_ATTRIBUTE);
-			JSONObject node = solution.get(colName).isObject();
-			String type = node.get("type").isString().stringValue();
+			JSONValue bindingJsonValue = solution.get(colName);
+			if (bindingJsonValue == null) return null;
+			JSONObject binding = bindingJsonValue.isObject();
+			String type = binding.get("type").isString().stringValue();
 			if (type.equals("uri")) {
-				final String uri = node.get("value").isString().stringValue();
+				final String uri = binding.get("value").isString().stringValue();
 				Prefix prefix = getPrefixForUri(uri);
 				String text = uri;
 				if (prefix != null) {
@@ -82,19 +85,19 @@ public class ResultGrid extends ListGrid {
 				}
 				return Helper.getLinkNewWindow(text, uri);
 			} else if (type.equals("literal")) {
-				String literal = node.get("value").isString().stringValue();
+				String literal = binding.get("value").isString().stringValue();
 				Label label = new Label(literal);
 				label.setOverflow(Overflow.VISIBLE);
 				label.setWidth100();
 				label.setAutoHeight();
 				label.setCanSelectText(true);
-				if (node.get("datatype") != null) {
-					label.setPrompt("xsd:" + node.get("datatype").isString().stringValue().substring(XSD_DATA_PREFIX.length()));
+				if (binding.get("datatype") != null) {
+					label.setPrompt("xsd:" + binding.get("datatype").isString().stringValue().substring(XSD_DATA_PREFIX.length()));
 				}
 				return label;
 			} else {
 				//is bnode
-				String uri = node.get("value").isString().stringValue();
+				String uri = binding.get("value").isString().stringValue();
 				Label label = new Label(uri);
 				label.setHeight100();
 				label.setCanSelectText(true);

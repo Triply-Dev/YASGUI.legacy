@@ -318,6 +318,8 @@ public class View extends VLayout {
 					onLoadingFinish();
 				}
 			});
+		} else {
+			JsMethods.setAutocompletePrefixes(prefixes);
 		}
 
 	}

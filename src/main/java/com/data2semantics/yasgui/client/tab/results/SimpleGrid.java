@@ -12,6 +12,7 @@ import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.rdf.SolutionContainer;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONValue;
 import com.smartgwt.client.util.StringUtil;
 import com.smartgwt.client.widgets.HTMLPane;
 
@@ -60,10 +61,11 @@ public class SimpleGrid extends HTMLPane {
 			for (int variableKey = 0; variableKey < variables.size(); variableKey++) {
 				html += "<td>";
 				String variable = variables.get(variableKey).isString().stringValue();
-				JSONObject binding = querySolution.get(variable).isObject();
-				if (binding == null) {
+				JSONValue bindingJsonValue = querySolution.get(variable);
+				if (bindingJsonValue == null) {
 					html += "&nbsp;";
 				} else {
+					JSONObject binding = querySolution.get(variable).isObject();
 					if (binding.get("type").isString().stringValue().equals("uri")) {
 						String uri = binding.get("value").isString().stringValue();
 						html += "<a href=\"" + uri + "\" target=\"_blank\">" + StringUtil.asHTML(getShortUri(uri)) + "</a>";

@@ -48,7 +48,7 @@ public class LocalStorageHelper {
 		Storage html5Storage = Storage.getLocalStorageIfSupported();
 		if (html5Storage != null) {
 			String storageString = html5Storage.getItem(key);
-			if (storageString != null) {
+			if (storageString != null && storageString.length() > 0) {
 				int separatorIndex = storageString.indexOf(LOCAL_STORAGE_EXPIRE_SEPARATOR);
 				try {
 					long expire = Long.parseLong(storageString.substring(0, separatorIndex));
