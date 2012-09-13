@@ -27,8 +27,12 @@ public class PrefixesFetcher {
 	public static int CACHE_EXPIRES_DAYS = 1;//cache expires after 1 day
 	public static String fetch(boolean forceUpdate, File cacheDir) throws URISyntaxException, MalformedURLException, IOException, JSONException {
 		String result = "";
-		File file = new File(cacheDir + "/" + CACHE_FILENAME);
+		if (!cacheDir.exists()) {
+			cacheDir.mkdir();
+		}
 		
+		File file = new File(cacheDir + "/" + CACHE_FILENAME);
+		file.createNewFile();
 		if (needUpdating(forceUpdate, file)) {
 			JSONObject jsonObject = getJsonObject();
 			JSONArray prefixes = convertToSortedJsonArray(jsonObject);

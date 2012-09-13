@@ -37,7 +37,7 @@ public class ResultGrid extends ListGrid {
 		this.view = view;
 		this.queryResults = queryResults;
 		setWidth100();
-		setHeight(350);
+		setHeight100();
 		setShowRecordComponents(true);
 		setShowRecordComponentsByCell(true);
 		setShowRowNumbers(true);
