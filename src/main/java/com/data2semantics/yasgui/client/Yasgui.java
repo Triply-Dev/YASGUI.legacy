@@ -2,6 +2,7 @@ package com.data2semantics.yasgui.client;
 
 import java.util.logging.Level;
 
+import com.data2semantics.yasgui.client.tab.EndpointInput;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.UmbrellaException;
@@ -25,6 +26,8 @@ public class Yasgui implements EntryPoint {
 			}
 		});
 		view.draw();
+//		EndpointInput test = new EndpointInput();
+//		test.draw();
 	}
 
 	private Throwable unwrap(Throwable e) {   

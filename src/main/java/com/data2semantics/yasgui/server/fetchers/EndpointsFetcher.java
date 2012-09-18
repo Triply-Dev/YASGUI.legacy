@@ -1,6 +1,7 @@
 package com.data2semantics.yasgui.server.fetchers;
 
 public class EndpointsFetcher {
+	//can also use http://labs.mondeca.com/sparqlEndpointsStatus/endpoint/endpoint.html to check for availability
 //	PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 //		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 //		PREFIX dcat: <http://www.w3.org/ns/dcat#>

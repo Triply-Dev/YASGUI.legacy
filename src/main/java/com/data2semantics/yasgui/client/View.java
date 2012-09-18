@@ -1,26 +1,20 @@
 package com.data2semantics.yasgui.client;
 
-import java.util.Date;
 import java.util.logging.Logger;
-import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.QueryTab;
-import com.data2semantics.yasgui.client.tab.results.ResultGrid;
 import com.data2semantics.yasgui.shared.exceptions.SettingsException;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.http.client.URL;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.smartgwt.client.docs.Buttons;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Positioning;
-import com.smartgwt.client.util.StringUtil;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
