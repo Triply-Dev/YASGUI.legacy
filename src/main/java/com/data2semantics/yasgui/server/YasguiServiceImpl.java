@@ -1,8 +1,10 @@
 package com.data2semantics.yasgui.server;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import com.data2semantics.yasgui.client.YasguiService;
+import com.data2semantics.yasgui.server.fetchers.EndpointsFetcher;
 import com.data2semantics.yasgui.server.fetchers.PrefixesFetcher;
 import com.data2semantics.yasgui.shared.exceptions.PrefixFetchException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -25,4 +27,31 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 		return prefixes;
 	}
 	
+	
+	public ArrayList<String> fetchEndpointsAsArrayList(boolean forceUpdate) {
+		int chunkSize = 60000;
+		String endpointString = fetchEndpoints(forceUpdate);
+		ArrayList<String> endpointArray = new ArrayList<String>();
+		while (endpointString.length() > chunkSize) {
+			endpointArray.add(endpointString.substring(0, chunkSize));
+			endpointString = endpointString.substring(chunkSize+1);
+		}
+		return endpointArray;
+	}
+	
+	public String fetchEndpoints(boolean forceUpdate) throws IllegalArgumentException, PrefixFetchException {
+		String endpoints = "";
+		try {
+			endpoints = EndpointsFetcher.fetch(forceUpdate, new File(getServletContext().getRealPath(CACHE_DIR))); 
+		} catch (Exception e) {
+			throw new PrefixFetchException("Unable to fetch endpoints", e);
+		}
+//		System.out.println(Integer.toString(endpoints.length()) + endpoints);
+//		endpoints = "";
+//		for (int i = 0; i < 221561; i++) {
+//		for (int i = 0; i < 71561; i++) {
+//			endpoints += "b";
+//		}
+		return endpoints;
+	}
 }

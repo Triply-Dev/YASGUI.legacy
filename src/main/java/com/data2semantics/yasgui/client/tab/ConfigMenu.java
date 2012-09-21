@@ -19,8 +19,14 @@ public class ConfigMenu extends Menu {
 			public void onClick(MenuItemClickEvent event) {
 				getView().setAutocompletePrefixes(true);
 			}});
-		
-		setItems(prefixUpdate);
+		MenuItem endpointsUpdate = new MenuItem("Force endpoints update");
+		endpointsUpdate.setIcon("icons/diagona/reload.png");
+		endpointsUpdate.addClickHandler(new ClickHandler(){
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				getView().initEndpointDataSource(true);
+			}});
+		setItems(prefixUpdate, endpointsUpdate);
 	}
 	
 	private View getView() {

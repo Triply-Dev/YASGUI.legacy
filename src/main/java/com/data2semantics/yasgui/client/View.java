@@ -1,6 +1,7 @@
 package com.data2semantics.yasgui.client;
 
 import java.util.logging.Logger;
+import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.settings.Settings;
@@ -33,6 +34,7 @@ public class View extends VLayout {
 	private YasguiServiceAsync remoteService = YasguiServiceAsync.Util.getInstance();
 	private ImgButton queryButton;
 	private Img queryLoading;
+	private EndpointDataSource endpointDataSource;
 	public static String DEFAULT_LOADING_MESSAGE = "Loading...";
 	private static int QUERY_BUTTON_POS_TOP = 5;
 	private static int QUERY_BUTTON_POS_LEFT = 5;
@@ -42,11 +44,13 @@ public class View extends VLayout {
 	private Settings settings = new Settings();
 	
 	public View() {
+		endpointDataSource = new EndpointDataSource(this);
 		settings = LocalStorageHelper.getSettingsFromCookie();
 		JsMethods.setTabBarProperties(QueryTabs.INDENT_TABS);
 		JsMethods.declareCallableViewMethods(this);
 		JsMethods.setProxyUriInVar(GWT.getModuleBaseURL() + "sparql");
 		initLoadingWidget();
+		initEndpointDataSource(false);
 		setWidth100();
 		setHeight100();
 		
@@ -175,12 +179,10 @@ public class View extends VLayout {
 	 * Show the error window for a trowable. Prints the complete stack trace
 	 * @param throwable
 	 */
-	public void onError(Throwable throwable) {
-		String st = throwable.getClass().getName() + ": " + throwable.getMessage();
-		for (StackTraceElement ste : throwable.getStackTrace()) {
-			st += "\n" + ste.toString();
-		}
-		onError(st);
+	public void onError(Throwable e) {
+		String stackTraceString = Helper.getStackTraceAsString(e);
+		stackTraceString += Helper.getCausesStackTraceAsString(e);
+		onError(stackTraceString);
 	}
 
 	/**
@@ -295,8 +297,6 @@ public class View extends VLayout {
 	 * @param forceUpdate
 	 */
 	public void setAutocompletePrefixes(boolean forceUpdate) {
-		
-		
 		String prefixes = LocalStorageHelper.getPrefixesFromLocalStorage();
 		if (forceUpdate || prefixes == null) {
 			// get prefixes from server
@@ -316,6 +316,38 @@ public class View extends VLayout {
 			JsMethods.setAutocompletePrefixes(prefixes);
 		}
 
+	}
+	
+	public void initEndpointDataSource(boolean forceUpdate) {
+		String endpoints = LocalStorageHelper.getEndpointsFromLocalStorage();
+		if (forceUpdate || endpoints == null) {
+			// get endpoint data from server
+			onLoadingStart("Fetching endpoint data");
+			getRemoteService().fetchEndpoints(forceUpdate, new AsyncCallback<String>() {
+				public void onFailure(Throwable caught) {
+					onError(caught);
+				}
+				public void onSuccess(String endpoints) {
+					LocalStorageHelper.setEndpoints(endpoints);
+					try {
+						endpointDataSource.addEndpointsFromJson(endpoints);
+					} catch (Exception e) {
+						onError(e.getMessage());
+					}
+					onLoadingFinish();
+				}
+			});
+		} else {
+			try {
+				endpointDataSource.addEndpointsFromJson(endpoints);
+			} catch (Exception e) {
+				onError(e.getMessage());
+			}
+		}
+	}
+	
+	public EndpointDataSource getEndpointDataSource() {
+		return this.endpointDataSource;
 	}
 	
 	public QueryTabs getTabs() {

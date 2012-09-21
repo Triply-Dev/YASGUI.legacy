@@ -11,9 +11,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Iterator;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,7 +22,7 @@ import com.data2semantics.yasgui.server.Helper;
 public class PrefixesFetcher {
 	public static String CACHE_FILENAME = "prefixes.json";
 	public static String PREFIX_CC_URL = "http://prefix.cc/popular/all.file.json";
-	public static int CACHE_EXPIRES_DAYS = 1;//cache expires after 1 day
+	private static int CACHE_EXPIRES_DAYS = 1;//cache expires after 1 day
 	public static String fetch(boolean forceUpdate, File cacheDir) throws URISyntaxException, MalformedURLException, IOException, JSONException {
 		String result = "";
 		if (!cacheDir.exists()) {
@@ -33,20 +31,16 @@ public class PrefixesFetcher {
 		
 		File file = new File(cacheDir + "/" + CACHE_FILENAME);
 		file.createNewFile();
-		if (needUpdating(forceUpdate, file)) {
+		if (forceUpdate || Helper.needUpdating(file, CACHE_EXPIRES_DAYS)) {
 			JSONObject jsonObject = getJsonObject();
 			JSONArray prefixes = convertToSortedJsonArray(jsonObject);
 			
 			result = prefixes.toString();
-			// Write to file on server
-			BufferedWriter out = new BufferedWriter(new FileWriter(file));
-			out.write(result);
-			out.close();
+			Helper.writeFile(file, result);
 		} else {
 			try {
 				result = Helper.readFile(file);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -54,26 +48,6 @@ public class PrefixesFetcher {
 		return result;
 	}
 	
-	/**
-	 * Checks whether we need to update the prefixes. 
-	 * @param updateFile
-	 * @param file
-	 * @return
-	 */
-	private static boolean needUpdating(boolean updateFile, File file) {
-		if (!updateFile) {
-			if (!file.exists()) {
-				updateFile = true;
-			} else {
-				Long now = new Date().getTime();
-				Long lastModified = file.lastModified();
-				if ((now - lastModified) > 1000 * 60 * 60 * 24 * 1) {
-					updateFile = true;
-				}
-			}
-		}
-		return updateFile;
-	}
 	
 	/**
 	 * Get JSON object by fetching the prefix.cc prefix page

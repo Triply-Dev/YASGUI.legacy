@@ -11,8 +11,11 @@ import com.google.gwt.user.client.Cookies;
 public class LocalStorageHelper {
 	private static String COOKIE_SETTINGS = "yasgui_settings";
 	private static String COOKIE_PREFIXES = "yasgui_prefixes";
+	private static String COOKIE_ENDPOINTS = "yasgui_endpoints";
 	private static String LOCAL_STORAGE_EXPIRE_SEPARATOR = "_"; //used to separate content and long value containing timestamp of insertion
 	private static int PREFIXES_EXPIRE_DAYS = 5;
+	private static int ENDPOINTS_EXPIRE_DAYS = 5;
+	
 	
 
 	/**
@@ -138,6 +141,18 @@ public class LocalStorageHelper {
 	 */
 	public static String getPrefixesFromLocalStorage() {
 		return getFromLocalStorage(COOKIE_PREFIXES, PREFIXES_EXPIRE_DAYS);
+	}
+	/**
+	 * Return prefixes json array string from local html5 storage. Returns null if not found, or if html5 is not supported
+	 * 
+	 * @return
+	 */
+	public static String getEndpointsFromLocalStorage() {
+		return getFromLocalStorage(COOKIE_ENDPOINTS, ENDPOINTS_EXPIRE_DAYS);
+	}
+	
+	public static void setEndpoints(String endpoints) {
+		setInLocalStorage(COOKIE_ENDPOINTS, endpoints, true);
 	}
 	
 

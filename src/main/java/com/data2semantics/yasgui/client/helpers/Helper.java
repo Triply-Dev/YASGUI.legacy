@@ -1,18 +1,10 @@
 package com.data2semantics.yasgui.client.helpers;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-
-import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.shared.Prefix;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
-import com.google.gwt.storage.client.Storage;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -87,5 +79,23 @@ public class Helper {
 			queryPrefixes.put(matcher.getGroup(2), new Prefix(matcher.getGroup(1), matcher.getGroup(2)));
 		}
 		return queryPrefixes;
+	}
+	
+	public static String getStackTraceAsString(Throwable e) {
+		String stackTraceString = e.getClass().getName() + ": " + e.getMessage();
+		for (StackTraceElement ste : e.getStackTrace()) {
+			stackTraceString += "\n" + ste.toString();
+		}
+		return stackTraceString;
+	}
+	
+	public static String getCausesStackTraceAsString(Throwable e) {
+		String stackTraceString = "";
+		Throwable cause = e.getCause();
+		if (cause != null) {
+			stackTraceString += "\ncause: " + Helper.getStackTraceAsString(cause);
+			stackTraceString += getCausesStackTraceAsString(e.getCause());
+		}
+		return stackTraceString;
 	}
 }
