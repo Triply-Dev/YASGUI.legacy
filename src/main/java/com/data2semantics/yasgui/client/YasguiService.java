@@ -1,6 +1,6 @@
 package com.data2semantics.yasgui.client;
 
-import com.data2semantics.yasgui.shared.exceptions.PrefixFetchException;
+import com.data2semantics.yasgui.shared.exceptions.FetchException;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -9,6 +9,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("YasguiService")
 public interface YasguiService extends RemoteService {
-	String fetchPrefixes(boolean forceUpdate) throws IllegalArgumentException, PrefixFetchException;
-	String fetchEndpoints(boolean forceUpdate) throws IllegalArgumentException, PrefixFetchException;
+	String fetchPrefixes(boolean forceUpdate) throws IllegalArgumentException, FetchException;
+	String fetchEndpoints(boolean forceUpdate) throws IllegalArgumentException, FetchException;
 }

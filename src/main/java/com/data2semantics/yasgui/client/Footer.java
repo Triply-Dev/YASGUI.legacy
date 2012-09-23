@@ -31,13 +31,14 @@ public class Footer extends HLayout {
 		addMember(label);
 	}
 
+	@SuppressWarnings("unused")
 	private View getView() {
 		return this.view;
 	}
 
 	private Label getFooterLink(String message, final String url) {
 		Label link = new Label(message);
-		link.addStyleName("footerlink");
+		link.setStyleName("footerlink");
 		link.setAlign(Alignment.CENTER);
 //		link.setMargin(3);
 //		link = new Label(message);

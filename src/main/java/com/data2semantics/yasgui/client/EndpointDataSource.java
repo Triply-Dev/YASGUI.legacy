@@ -2,6 +2,8 @@ package com.data2semantics.yasgui.client;
 
 import java.util.ArrayList;
 import java.util.Set;
+
+import com.data2semantics.yasgui.shared.Endpoints;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
@@ -22,10 +24,10 @@ public class EndpointDataSource extends DataSource {
 	private ArrayList<ListGridRecord> records = new ArrayList<ListGridRecord>();
 	public EndpointDataSource(View view) {
 		this.view = view;
-		DataSourceTextField userId = new DataSourceTextField("endpointUri", "User ID", 128, true);
-		userId.setPrimaryKey(true);
-
-		setFields(userId);
+		DataSourceTextField endpointUri = new DataSourceTextField(Endpoints.KEY_ENDPOINT, "User ID");
+		DataSourceTextField description = new DataSourceTextField(Endpoints.KEY_DESCRIPTION, "User ID");
+		DataSourceTextField title = new DataSourceTextField(Endpoints.KEY_TITLE, "User ID");
+		setFields(endpointUri, description, title);
 		
 		//init with empty record
 		ListGridRecord record = new ListGridRecord();

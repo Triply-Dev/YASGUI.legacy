@@ -10,6 +10,7 @@ import com.data2semantics.yasgui.shared.Endpoints;
 import com.smartgwt.client.types.Autofit;
 import com.smartgwt.client.types.TextMatchStyle;
 import com.smartgwt.client.types.TitleOrientation;
+import com.smartgwt.client.util.StringUtil;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ComboBoxItem;
 import com.smartgwt.client.widgets.form.fields.events.BlurEvent;
@@ -60,50 +61,8 @@ public class EndpointInput extends DynamicForm {
 		//For this default value, also retrieve CORS setting
 		JsMethods.checkCorsEnabled(getView().getSelectedTabSettings().getEndpoint());
 
+		initPickList();
 		
-		pickListProperties = new ListGrid();
-		pickListProperties.setAutoFitData(Autofit.VERTICAL);
-		pickListProperties.setHoverWidth(300);
-		ArrayList<ListGridField> fields = new ArrayList<ListGridField>();
-		ListGridField datasetTitle = new ListGridField(Endpoints.KEY_TITLE, "Dataset", COL_WIDTH_DATASET_TITLE);
-		
-		fields.add(datasetTitle);
-		fields.add(new ListGridField(Endpoints.KEY_ENDPOINT, "Endpoint"));
-		fields.add(new ListGridField(Endpoints.KEY_DATASETURI, " ", COL_WIDTH_MORE_INFO));
-		
-		setPickListFieldsForComboBox(fields);
-		pickListProperties.setShowHeaderContextMenu(false);
-		
-        pickListProperties.setCanHover(true);  
-        pickListProperties.setShowHover(true);
-        pickListProperties.setCellFormatter(new CellFormatter() {
-			@Override
-			public String format(Object value, ListGridRecord record, int rowNum, int colNum) {
-				if (rowNum == 0 && colNum == 0 && Helper.recordIsEmpty(record)) {
-					return "Empty";
-				}
-				String colName = cols.get(colNum);
-				String cellValue = record.getAttribute(colName);
-				
-				if (cellValue != null) {
-					if (colName.equals(Endpoints.KEY_TITLE)) {
-//						return "<div style=\"width: " + COL_WIDTH_DATASET_TITLE + "\">" + cellValue + "</div>";
-						return cellValue;
-					} else if (colName.equals(Endpoints.KEY_ENDPOINT)) {
-						return "<a href=\"" + cellValue + "\" target=\"_blank\">" + cellValue + "</a>";
-					} else if (colName.equals(Endpoints.KEY_DATASETURI) && cellValue.length() > 0) {
-						return "<a href=\"" + cellValue + "\" target=\"_blank\"><img src=\"images/icons/fugue/information.png\"/ width=\"16\" height=\"16\"></a>";
-					}
-				}
-                return null;
-            }  
-        });  
-        pickListProperties.setHoverCustomizer(new HoverCustomizer() {  
-            @Override  
-            public String hoverHTML(Object value, ListGridRecord record, int rowNum, int colNum) {  
-                return record.getAttribute(Endpoints.KEY_DESCRIPTION); 
-            }  
-        });  
         endpoint.setPickListProperties(pickListProperties);
         
         setFields(endpoint);
@@ -157,7 +116,53 @@ public class EndpointInput extends DynamicForm {
 		return this.queryTab;
 	}
 	
-	
+	private void initPickList() {
+		pickListProperties = new ListGrid();
+		pickListProperties.setAutoFitData(Autofit.VERTICAL);
+		pickListProperties.setHoverWidth(300);
+		ArrayList<ListGridField> fields = new ArrayList<ListGridField>();
+		ListGridField datasetTitle = new ListGridField(Endpoints.KEY_TITLE, "Dataset", COL_WIDTH_DATASET_TITLE);
+		
+		fields.add(datasetTitle);
+		fields.add(new ListGridField(Endpoints.KEY_ENDPOINT, "Endpoint"));
+		fields.add(new ListGridField(Endpoints.KEY_DATASETURI, " ", COL_WIDTH_MORE_INFO));
+		
+		setPickListFieldsForComboBox(fields);
+		pickListProperties.setShowHeaderContextMenu(false);
+		pickListProperties.setFixedRecordHeights(false);
+		pickListProperties.setWrapCells(true);
+		pickListProperties.setAutoFetchAsFilter(true);
+        pickListProperties.setCanHover(true);  
+        pickListProperties.setShowHover(true);
+        pickListProperties.setCellFormatter(new CellFormatter() {
+			@Override
+			public String format(Object value, ListGridRecord record, int rowNum, int colNum) {
+				if (rowNum == 0 && colNum == 0 && Helper.recordIsEmpty(record)) {
+					return "Empty";
+				}
+				String colName = cols.get(colNum);
+				String cellValue = record.getAttribute(colName);
+				
+				if (cellValue != null) {
+					if (colName.equals(Endpoints.KEY_TITLE)) {
+//						return "<div style=\"width: " + COL_WIDTH_DATASET_TITLE + "\">" + cellValue + "</div>";
+						return cellValue;
+					} else if (colName.equals(Endpoints.KEY_ENDPOINT)) {
+						return "<a href=\"" + cellValue + "\" target=\"_blank\">" + cellValue + "</a>";
+					} else if (colName.equals(Endpoints.KEY_DATASETURI) && cellValue.length() > 0) {
+						return "<a href=\"" + cellValue + "\" target=\"_blank\"><img src=\"images/icons/fugue/information.png\"/ width=\"16\" height=\"16\"></a>";
+					}
+				}
+                return null;
+            }  
+        });  
+        pickListProperties.setHoverCustomizer(new HoverCustomizer() {  
+            @Override  
+            public String hoverHTML(Object value, ListGridRecord record, int rowNum, int colNum) {  
+                return StringUtil.asHTML(record.getAttribute(Endpoints.KEY_DESCRIPTION)); 
+            }  
+        });  
+	}
 	
 	
 }

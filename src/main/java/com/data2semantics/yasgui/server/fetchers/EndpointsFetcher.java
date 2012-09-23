@@ -53,6 +53,7 @@ public class EndpointsFetcher {
 	 */
 	private static String getEndpointsAsJsonArrayString() throws JSONException {
 		JSONArray endpoints = new JSONArray();
+		System.out.println(getQuery());
 		ResultSet resultSet = SparqlService.query(ENDPOINT, getQuery());
 		while (resultSet.hasNext()) {
 			JSONObject endpoint = new JSONObject();
@@ -93,6 +94,21 @@ public class EndpointsFetcher {
 				"		?distribution dcat:accessURL ?" + Endpoints.KEY_ENDPOINT + ".\n" + 
 				"		?" + Endpoints.KEY_DATASETURI +" dcterms:title ?" + Endpoints.KEY_TITLE + ";\n" + 
 				"			dcterms:description ?" + Endpoints.KEY_DESCRIPTION + ".\n" + 
-				"		} ORDER BY ?" + Endpoints.KEY_TITLE + "LIMIT 10";
+				"		} ORDER BY ?" + Endpoints.KEY_TITLE + " ";
+		/**
+		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+			PREFIX dcat: <http://www.w3.org/ns/dcat#>
+			PREFIX dcterms: <http://purl.org/dc/terms/>
+
+
+			SELECT DISTINCT ?dataset ?title ?description ?endpointUri  {
+			  ?dataset dcat:distribution ?distribution.
+			?distribution dcterms:format ?format.
+			?format rdf:value 'api/sparql'.
+			?distribution dcat:accessURL ?endpointUri.
+			?dataset dcterms:title ?title;
+				dcterms:description ?description.
+			} ORDER BY ?title LIMIT 10**/
+
 	}
 }

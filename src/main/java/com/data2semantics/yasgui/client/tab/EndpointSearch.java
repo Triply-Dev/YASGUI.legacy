@@ -1,8 +1,8 @@
 package com.data2semantics.yasgui.client.tab;
 
 import java.util.ArrayList;
-
 import com.smartgwt.client.types.Autofit;
+import com.smartgwt.client.util.StringUtil;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -18,7 +18,7 @@ import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.shared.Endpoints;
 public class EndpointSearch extends ImgButton {
-	private static int WINDOW_HEIGHT = 700;
+	private static int WINDOW_HEIGHT = 600;
 	private static int WINDOW_WIDTH = 1000;
 	private static int COL_WIDTH_DATASET_TITLE = 150;
 	private static int COL_WIDTH_MORE_INFO = 22;
@@ -78,7 +78,7 @@ public class EndpointSearch extends ImgButton {
 				
 				if (cellValue != null) {
 					if (colName.equals(Endpoints.KEY_TITLE) || colName.equals(Endpoints.KEY_DESCRIPTION)) {
-						return cellValue;
+						return StringUtil.asHTML(cellValue);
 					} else if (colName.equals(Endpoints.KEY_ENDPOINT)) {
 						return "<a href=\"" + cellValue + "\" target=\"_blank\">" + cellValue + "</a>";
 					} else if (colName.equals(Endpoints.KEY_DATASETURI) && cellValue.length() > 0) {
@@ -94,8 +94,9 @@ public class EndpointSearch extends ImgButton {
 				window.destroy();
 			}});
 		searchGrid.setFixedRecordHeights(false);
-		searchGrid.setHeight100();
+		searchGrid.setHeight(WINDOW_HEIGHT);
 		searchGrid.setWidth100();
+		searchGrid.setFilterButtonPrompt("");
 		searchGrid.setAutoFitData(Autofit.VERTICAL);
 		searchGrid.setWrapCells(true);
 		searchGrid.setShowFilterEditor(true);
@@ -107,7 +108,7 @@ public class EndpointSearch extends ImgButton {
 		dataUriField.setFilterEditorType(new SpacerItem());//don't want to be able to filter on datauri
 		fields.add(dataUriField);
 		searchGrid.setFields(fields.toArray(new ListGridField[fields.size()]));
-		searchGrid.getFilterOnKeypress();
+		searchGrid.setFilterOnKeypress(true);
 		searchGrid.setDataSource(getView().getEndpointDataSource());
 		searchGrid.setWrapCells(true);
 		searchGrid.setCanResizeFields(true);
