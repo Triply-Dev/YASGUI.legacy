@@ -7,12 +7,19 @@ import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.QueryTab;
+import com.data2semantics.yasgui.shared.Endpoints;
 import com.data2semantics.yasgui.shared.exceptions.SettingsException;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONString;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Positioning;
@@ -25,6 +32,7 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.CloseClickEvent;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
+import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -82,8 +90,9 @@ public class View extends VLayout {
 		queryButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				JsMethods.queryJson(getSelectedTabSettings().getQueryString(), getSelectedTabSettings().getEndpoint());
-				
+				String endpoint = getSelectedTabSettings().getEndpoint();
+				JsMethods.queryJson(getSelectedTabSettings().getQueryString(), endpoint);
+				checkAndAddEndpointToDs(endpoint);
 			}
 		});
 		
@@ -353,6 +362,54 @@ public class View extends VLayout {
 	
 	public QueryTabs getTabs() {
 		return queryTabs;
+	}
+	
+	/**
+	 * For a given endpoint, check whether it is defined in our endpoints datasource.
+	 * If it isnt, add it 
+	 * 
+	 * @param endpoint
+	 */
+	private void checkAndAddEndpointToDs(String endpoint) {
+		Record[] records = endpointDataSource.getCacheData();
+		boolean exists = false;
+		for (Record record:records) {
+			if (record.getAttribute(Endpoints.KEY_ENDPOINT).equals(endpoint)) {
+				exists = true;
+				break;
+			}
+		}
+		
+		if (!exists) {
+			//Ok, so endpoint is not in our datasource. let's add it
+			
+			
+			ListGridRecord listGridRecord = new ListGridRecord();
+			listGridRecord.setAttribute(Endpoints.KEY_ENDPOINT, endpoint);
+			Record[] newRecords = new Record[records.length+1];
+			newRecords[0] = listGridRecord;
+			System.arraycopy(records, 0, newRecords, 1, records.length);
+			endpointDataSource.setCacheData(newRecords);
+			
+			String endpointsJsonString = LocalStorageHelper.getEndpointsFromLocalStorage();
+			if (endpointsJsonString != null) {
+				//we have html5. add it to local storage as well so we keep it persistent between sessions
+				JSONValue jsonVal = JSONParser.parseStrict(endpointsJsonString);
+				if (jsonVal != null) {
+					JSONArray endpoints = jsonVal.isArray();
+					JSONArray newEndpointsArray = new JSONArray();
+					JSONObject newEndpointObject = new JSONObject();
+					newEndpointObject.put(Endpoints.KEY_ENDPOINT, new JSONString(endpoint));
+					newEndpointsArray.set(0, newEndpointObject);
+					if (endpoints != null) {
+						for (int i = 0; i < endpoints.size(); i++) {
+							newEndpointsArray.set(newEndpointsArray.size(), endpoints.get(i));
+						}
+					}
+					LocalStorageHelper.setEndpoints(newEndpointsArray.toString());
+				}
+			}
+		}
 	}
 
 }
