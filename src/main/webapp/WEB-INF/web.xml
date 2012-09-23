@@ -12,7 +12,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>yasguiService</servlet-name>
-		<url-pattern>/Yasgui/YasguiService</url-pattern>
+		<url-pattern>/YasguiService</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
@@ -21,7 +21,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>sparqlServlet</servlet-name>
-		<url-pattern>/Yasgui/sparql</url-pattern>
+		<url-pattern>/sparql</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
@@ -32,19 +32,15 @@
 		<servlet-name>jUnitHostImpl</servlet-name>
 		<url-pattern>/Yasgui/junithost/*</url-pattern>
 	</servlet-mapping>
+	
 	<servlet-mapping>
 		<servlet-name>jUnitHostImpl</servlet-name>
 		<url-pattern>/com.data2semantics.yasgui.YasguiJUnit/junithost/*</url-pattern>
 	</servlet-mapping>
 
-	<servlet-mapping>
-		<servlet-name>yasguiService</servlet-name>
-		<url-pattern>/com.data2semantics.yasgui.YasguiJUnit/Yasgui/YasguiService</url-pattern>
-	</servlet-mapping>
-
 	<!-- Default page to serve -->
 	<welcome-file-list>
-		<welcome-file>Yasgui.html</welcome-file>
+		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 
 </web-app>

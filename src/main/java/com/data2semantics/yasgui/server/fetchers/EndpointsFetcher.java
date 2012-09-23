@@ -93,6 +93,6 @@ public class EndpointsFetcher {
 				"		?distribution dcat:accessURL ?" + Endpoints.KEY_ENDPOINT + ".\n" + 
 				"		?" + Endpoints.KEY_DATASETURI +" dcterms:title ?" + Endpoints.KEY_TITLE + ";\n" + 
 				"			dcterms:description ?" + Endpoints.KEY_DESCRIPTION + ".\n" + 
-				"		} ORDER BY ?" + Endpoints.KEY_TITLE + "";
+				"		} ORDER BY ?" + Endpoints.KEY_TITLE + "LIMIT 10";
 	}
 }
