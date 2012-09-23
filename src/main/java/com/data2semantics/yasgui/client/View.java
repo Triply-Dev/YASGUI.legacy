@@ -86,6 +86,7 @@ public class View extends VLayout {
 				
 			}
 		});
+		
 		queryButton.setPosition(Positioning.ABSOLUTE);
 		queryButton.setTop(QUERY_BUTTON_POS_TOP);
 		queryButton.setLeft(QUERY_BUTTON_POS_LEFT);

@@ -69,6 +69,7 @@ public class EndpointDataSource extends DataSource {
 		
 		records.add(record);
 	}
+	@SuppressWarnings("unused")
 	private View getView() {
 		return this.view;
 	}

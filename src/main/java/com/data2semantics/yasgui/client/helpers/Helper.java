@@ -9,6 +9,7 @@ import com.google.gwt.user.client.Window;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
+import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 public class Helper {
 
@@ -97,5 +98,16 @@ public class Helper {
 			stackTraceString += getCausesStackTraceAsString(e.getCause());
 		}
 		return stackTraceString;
+	}
+	public static boolean recordIsEmpty(ListGridRecord record) {
+		boolean empty = true;
+		String[] attributes = record.getAttributes();
+		for (String attribute: attributes) {
+			if (record.getAttribute(attribute).length() > 0) {
+				empty = false;
+				break;
+			}
+		}
+		return empty;
 	}
 }

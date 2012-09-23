@@ -4,7 +4,7 @@ import com.data2semantics.yasgui.client.QueryTabs;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.results.QueryResultContainer;
-import com.google.gwt.dom.client.Style.Overflow;
+import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.Menu;
@@ -22,6 +22,7 @@ public class QueryTab extends Tab {
 	private QueryResultContainer queryResultContainer;
 	private TabSettings tabSettings;
 	private OutputSelection outputSelection;
+	
 	public QueryTab(View view, TabSettings tabSettings) {
 		super(tabSettings.getTabTitle());
 		this.tabSettings = tabSettings;
@@ -29,25 +30,28 @@ public class QueryTab extends Tab {
 		this.queryResultContainer = new QueryResultContainer(getView(), this);
 		setCanClose(true);
 		HLayout queryOptions = new HLayout();
+		queryOptions.setDefaultLayoutAlign(VerticalAlignment.BOTTOM);
+		queryOptions.setHeight(35);
 		endpointInput = new EndpointInput(getView(), this);
 		queryOptions.addMember(endpointInput);
 		
+		EndpointSearch searchIcon = new EndpointSearch(getView());
+		
+		queryOptions.addMember(searchIcon);
+
 		outputSelection = new OutputSelection(getView(), this);
 		queryOptions.addMember(outputSelection);
-		queryOptions.setHeight(50);
-		vLayout.addMember(queryOptions);
 		
+		vLayout.addMember(queryOptions);
+
 		queryTextArea = new QueryTextArea(getView(), this);
 		vLayout.addMember(queryTextArea);
-		
-		//queryResultContainer.addMember(testGrid);
 
 		vLayout.addMember(queryResultContainer);
-//		vLayout.getElement().getStyle().setOverflowX(Overflow.HIDDEN);
 		setPane(vLayout);
 		setContextMenu();
 	}
-	
+
 	/**
 	 * Create context menu used for the tab bar.
 	 */
@@ -59,21 +63,21 @@ public class QueryTab extends Tab {
 		copy.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(MenuItemClickEvent event) {
-				int tabNumber = ((QueryTabs)getTabSet()).getTabNumber(getTabObject().getID());
-				TabSettings settings = (TabSettings)getView().getSettings().getTabArray().get(tabNumber).clone();
+				int tabNumber = ((QueryTabs) getTabSet()).getTabNumber(getTabObject().getID());
+				TabSettings settings = (TabSettings) getView().getSettings().getTabArray().get(tabNumber).clone();
 				settings.setTabTitle("Copy of " + settings.getTabTitle());
-				((QueryTabs)getTabSet()).addTab(settings, true);
+				((QueryTabs) getTabSet()).addTab(settings, true);
 			}
 		});
-		
+
 		MenuItem renameTab = new MenuItem();
 		renameTab.setTitle("Rename Tab");
 		renameTab.setIcon("icons/fugue/edit.png");
 		renameTab.addClickHandler(new ClickHandler() {
-			
+
 			@Override
 			public void onClick(MenuItemClickEvent event) {
-				((QueryTabs)getTabSet()).editTabTitle(getTabObject());
+				((QueryTabs) getTabSet()).editTabTitle(getTabObject());
 			}
 		});
 		MenuItem closeTab = new MenuItem();
@@ -83,50 +87,47 @@ public class QueryTab extends Tab {
 
 			@Override
 			public void onClick(MenuItemClickEvent event) {
-				((QueryTabs)getTabSet()).removeAndPostProcessTab(getTabObject());
+				((QueryTabs) getTabSet()).removeAndPostProcessTab(getTabObject());
 			}
 		});
 		MenuItem closeOtherTabs = new MenuItem();
 		closeOtherTabs.setTitle("Close others");
 		closeOtherTabs.setIcon("icons/custom/close-others.png");
 		closeOtherTabs.addClickHandler(new ClickHandler() {
-			
+
 			@Override
 			public void onClick(MenuItemClickEvent event) {
-				((QueryTabs)getTabSet()).removeAllExcept(getTabObject());
-				
+				((QueryTabs) getTabSet()).removeAllExcept(getTabObject());
+
 			}
 		});
-		
+
 		MenuItem closeAll = new MenuItem();
 		closeAll.setTitle("Close all");
 		closeAll.setIcon("icons/custom/close-all.png");
 		closeAll.addClickHandler(new ClickHandler() {
-			
+
 			@Override
 			public void onClick(MenuItemClickEvent event) {
-				((QueryTabs)getTabSet()).removeAllTabs();
-				
+				((QueryTabs) getTabSet()).removeAllTabs();
+
 			}
 		});
-		
+
 		MenuItemSeparator separator = new MenuItemSeparator();
 		menu.setItems(renameTab, copy, separator, closeTab, closeOtherTabs, closeAll);
 		setContextMenu(menu);
 
 	}
-	
+
 	private QueryTab getTabObject() {
 		return this;
 	}
-	
-	
-	
 
 	public QueryResultContainer getResultContainer() {
 		return this.queryResultContainer;
 	}
-	
+
 	public QueryTextArea getQueryTextArea() {
 		return this.queryTextArea;
 	}
@@ -134,9 +135,12 @@ public class QueryTab extends Tab {
 	private View getView() {
 		return this.view;
 	}
-	
-	
+
 	public TabSettings getTabSettings() {
 		return this.tabSettings;
+	}
+	
+	public EndpointInput getEndpointInput() {
+		return this.endpointInput;
 	}
 }

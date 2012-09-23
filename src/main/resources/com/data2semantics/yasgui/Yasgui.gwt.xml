@@ -16,7 +16,7 @@
 	<!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/> -->
 	<inherits name="com.smartclient.theme.graphite.GraphiteResources" />
 	<!-- Other module inherits -->
-
+	<inherits name="com.smartgwt.tools.SmartGwtTools" />
 	<!-- Specify the app entry point class. -->
 	<entry-point class='com.data2semantics.yasgui.client.Yasgui' />
 

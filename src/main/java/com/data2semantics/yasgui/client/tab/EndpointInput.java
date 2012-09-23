@@ -3,6 +3,7 @@ package com.data2semantics.yasgui.client.tab;
 import java.util.ArrayList;
 
 import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.shared.Endpoints;
@@ -73,15 +74,12 @@ public class EndpointInput extends DynamicForm {
 		setPickListFieldsForComboBox(fields);
 		pickListProperties.setShowHeaderContextMenu(false);
 		
-		
-		
-//        pickListProperties.setCellHeight(40);  
         pickListProperties.setCanHover(true);  
         pickListProperties.setShowHover(true);
         pickListProperties.setCellFormatter(new CellFormatter() {
 			@Override
 			public String format(Object value, ListGridRecord record, int rowNum, int colNum) {
-				if (rowNum == 0 && colNum == 0 && recordIsEmpty(record)) {
+				if (rowNum == 0 && colNum == 0 && Helper.recordIsEmpty(record)) {
 					return "Empty";
 				}
 				String colName = cols.get(colNum);
@@ -92,7 +90,7 @@ public class EndpointInput extends DynamicForm {
 //						return "<div style=\"width: " + COL_WIDTH_DATASET_TITLE + "\">" + cellValue + "</div>";
 						return cellValue;
 					} else if (colName.equals(Endpoints.KEY_ENDPOINT)) {
-						return cellValue;
+						return "<a href=\"" + cellValue + "\" target=\"_blank\">" + cellValue + "</a>";
 					} else if (colName.equals(Endpoints.KEY_DATASETURI) && cellValue.length() > 0) {
 						return "<a href=\"" + cellValue + "\" target=\"_blank\"><img src=\"images/icons/fugue/information.png\"/ width=\"16\" height=\"16\"></a>";
 					}
@@ -145,6 +143,12 @@ public class EndpointInput extends DynamicForm {
 		return endpointString;
 	}
 	
+	public void setEndpoint(String endpointString) {
+		endpoint.setValue(endpointString);
+		getView().getSelectedTabSettings().setEndpoint(endpointString);
+		LocalStorageHelper.storeSettingsInCookie(getView().getSettings());
+	}
+	
 	private View getView() {
 		return this.view;
 	}
@@ -153,17 +157,7 @@ public class EndpointInput extends DynamicForm {
 		return this.queryTab;
 	}
 	
-	private boolean recordIsEmpty(ListGridRecord record) {
-		boolean empty = true;
-		String[] attributes = record.getAttributes();
-		for (String attribute: attributes) {
-			if (record.getAttribute(attribute).length() > 0) {
-				empty = false;
-				break;
-			}
-		}
-		return empty;
-	}
+	
 	
 	
 }

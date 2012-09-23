@@ -165,7 +165,7 @@ public class QueryResultContainer extends VLayout {
 	
 	private void drawResultsInTable(SparqlJsonHelper queryResults, String outputFormat) {
 		if (outputFormat.equals(Output.OUTPUT_TABLE)) {
-			addMember(new ResultGrid(getView(), queryTab, queryResults));
+			addMember(new ResultGrid(getView(), queryResults));
 		} else if (outputFormat.equals(Output.OUTPUT_TABLE_SIMPLE)) {
 			addMember(new SimpleGrid(getView(), queryTab, queryResults));
 		} else if (outputFormat.equals(Output.OUTPUT_CSV)) {

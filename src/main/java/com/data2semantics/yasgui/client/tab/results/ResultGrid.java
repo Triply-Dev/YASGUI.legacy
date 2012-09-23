@@ -6,17 +6,11 @@ import java.util.List;
 import java.util.Map;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
-import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.SparqlJsonHelper;
-import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.shared.Prefix;
-import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
-import com.data2semantics.yasgui.shared.exceptions.SparqlParseException;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.regexp.shared.MatchResult;
-import com.google.gwt.regexp.shared.RegExp;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.Canvas;
@@ -31,10 +25,8 @@ public class ResultGrid extends ListGrid {
 	JSONObject queryResult = new JSONObject();
 	private View view;
 	private SparqlJsonHelper queryResults;
-	private QueryTab tab;
 	private HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
-	public ResultGrid(View view, QueryTab tab, SparqlJsonHelper queryResults) {
-		this.tab = tab;
+	public ResultGrid(View view, SparqlJsonHelper queryResults) {
 		this.view = view;
 		this.queryResults = queryResults;
 		setWidth100();

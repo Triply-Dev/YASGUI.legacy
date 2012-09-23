@@ -1,11 +1,13 @@
 package com.data2semantics.yasgui.client;
 
 import java.util.logging.Level;
-
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.UmbrellaException;
-
+import com.smartgwt.client.core.KeyIdentifier;
+import com.smartgwt.client.util.KeyCallback;
+import com.smartgwt.client.util.Page;
+import com.smartgwt.client.util.SC;
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
@@ -16,6 +18,7 @@ public class Yasgui implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
+		
 		view = new View();
 		GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
 			public void onUncaughtException(Throwable e) {
@@ -24,6 +27,16 @@ public class Yasgui implements EntryPoint {
 				view.onError(unwrapped);
 			}
 		});
+		if (!GWT.isScript()) { 
+		    KeyIdentifier debugKey = new KeyIdentifier(); 
+		    debugKey.setCtrlKey(true); 
+		    debugKey.setKeyName("D"); 
+		    Page.registerKey(debugKey, new KeyCallback() { 
+		        public void execute(String keyName) { 
+		            SC.showConsole(); 
+		        }
+		    });
+		}
 		view.draw();
 	}
 
