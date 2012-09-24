@@ -12,7 +12,7 @@ Used services and libraries
  * [SMARTGWT][2]
  * Thanks to the people from [FLINT SPARQL editor][3] and the javascript SPARQL parser they created using [peg.js][4]
  * [CKAN][5] dataset catalogue
- * [prefix.cc][6]
+ * [prefix.cc][6] namespace lookup service
 
 
 
@@ -23,4 +23,4 @@ Used services and libraries
   [3]: https://github.com/TSO-Openup/FlintSparqlEditor
   [4]: http://pegjs.majda.cz/
   [5]: http://thedatahub.org/
-  [6]: http://prefix.cc
+  [6]: http://prefix.cc 
