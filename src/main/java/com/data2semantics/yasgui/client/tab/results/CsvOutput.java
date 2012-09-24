@@ -2,7 +2,6 @@ package com.data2semantics.yasgui.client.tab.results;
 
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.SparqlJsonHelper;
-import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.smartgwt.client.widgets.HTMLPane;
@@ -12,12 +11,10 @@ public class CsvOutput extends HTMLPane {
 	private static String DELIMITER = ",";
 	private static String LINE_BREAK = "\n";
 	private View view;
-	private QueryTab tab;
 	private JSONArray variables;
 	private JSONArray querySolutions;
 	private String csvString;
-	public CsvOutput(View view, QueryTab tab, SparqlJsonHelper queryResults) {
-		this.tab = tab;
+	public CsvOutput(View view, SparqlJsonHelper queryResults) {
 		this.view = view;
 		setWidth100();
 		setHeight100();
@@ -72,6 +69,7 @@ public class CsvOutput extends HTMLPane {
 		return quote;
 	}
 
+	@SuppressWarnings("unused")
 	private View getView() {
 		return this.view;
 	}

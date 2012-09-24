@@ -2,13 +2,10 @@ package com.data2semantics.yasgui.client.settings;
 
 import java.util.ArrayList;
 import java.util.Set;
-
-import com.data2semantics.yasgui.shared.Output;
 import com.data2semantics.yasgui.shared.exceptions.SettingsException;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONString;
 
 public class Settings extends JSONObject {
 	private ArrayList<TabSettings> tabArray = new ArrayList<TabSettings>();

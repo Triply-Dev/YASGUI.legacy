@@ -1,15 +1,11 @@
 package com.data2semantics.yasgui.client.tab.results;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.SparqlJsonHelper;
-import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.shared.Prefix;
-import com.data2semantics.yasgui.shared.rdf.SolutionContainer;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
@@ -18,14 +14,12 @@ import com.smartgwt.client.widgets.HTMLPane;
 
 public class SimpleGrid extends HTMLPane {
 	private View view;
-	private QueryTab tab;
 	private HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
 	private JSONArray variables;
 	private JSONArray querySolutions;
 	private String html;
 
-	public SimpleGrid(View view, QueryTab tab, SparqlJsonHelper queryResults) {
-		this.tab = tab;
+	public SimpleGrid(View view, SparqlJsonHelper queryResults) {
 		this.view = view;
 		setWidth100();
 		setHeight100();
@@ -80,6 +74,7 @@ public class SimpleGrid extends HTMLPane {
 		html += "</tbody>";
 	}
 
+	@SuppressWarnings("unused")
 	private View getView() {
 		return this.view;
 	}

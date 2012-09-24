@@ -1,8 +1,6 @@
 package com.data2semantics.yasgui.client;
 
 import java.util.ArrayList;
-
-import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.ZIndexes;

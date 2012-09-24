@@ -27,6 +27,7 @@ public class QueryTextArea extends HTMLPane {
 		return JsMethods.getValueUsingId(inputId);
 	}
 	
+	@SuppressWarnings("unused")
 	private View getView() {
 		return view;
 	}

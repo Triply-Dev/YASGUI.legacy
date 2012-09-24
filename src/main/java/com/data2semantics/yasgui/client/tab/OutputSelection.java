@@ -1,9 +1,7 @@
 package com.data2semantics.yasgui.client.tab;
 
 import java.util.LinkedHashMap;
-
 import com.data2semantics.yasgui.client.View;
-import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.shared.Output;
 import com.smartgwt.client.types.TitleOrientation;

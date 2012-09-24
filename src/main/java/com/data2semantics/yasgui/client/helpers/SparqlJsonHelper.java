@@ -151,4 +151,9 @@ public class SparqlJsonHelper {
 		}
 		return jsonBoolean.booleanValue();
 	}
+	
+	@SuppressWarnings("unused")
+	private View getView() {
+		return this.view;
+	}
 }

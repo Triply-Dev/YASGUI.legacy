@@ -167,9 +167,9 @@ public class QueryResultContainer extends VLayout {
 		if (outputFormat.equals(Output.OUTPUT_TABLE)) {
 			addMember(new ResultGrid(getView(), queryResults));
 		} else if (outputFormat.equals(Output.OUTPUT_TABLE_SIMPLE)) {
-			addMember(new SimpleGrid(getView(), queryTab, queryResults));
+			addMember(new SimpleGrid(getView(), queryResults));
 		} else if (outputFormat.equals(Output.OUTPUT_CSV)) {
-			CsvOutput output = new CsvOutput(getView(), queryTab, queryResults);
+			CsvOutput output = new CsvOutput(getView(), queryResults);
 			JsMethods.openDownDialogForCsv(output.getCsvString());
 			getView().getLogger().severe(output.getCsvString());
 		}
