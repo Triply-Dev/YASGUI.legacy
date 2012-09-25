@@ -24,12 +24,11 @@ public class QueryResultContainer extends VLayout {
 	public static int RESULT_TYPE_INSERT = 3;
 	private View view;
 	private QueryTab queryTab;
-	private JsonOutput jsonOutput;
+	private RawResponseOutput rawResponseOutput;
 	SparqlJsonHelper queryResults;
 	HashMap<String, Integer> queryTypes = new HashMap<String, Integer>();
 	public QueryResultContainer(View view, QueryTab queryTab) {
 		setPossibleQueryTypes();
-		
 		this.view = view;
 		this.queryTab = queryTab;
 	}
@@ -61,10 +60,10 @@ public class QueryResultContainer extends VLayout {
 	 * Empty query result area
 	 */
 	public void reset() {
-		if (jsonOutput != null) {
+		if (rawResponseOutput != null) {
 			//We have an old codemirror object used for showing json results. Clean this up
-			JsMethods.destroyCodeMirrorJsonResult(jsonOutput.getInputId());
-			jsonOutput = null;
+			JsMethods.destroyCodeMirrorQueryResponse(rawResponseOutput.getInputId());
+			rawResponseOutput = null;
 		}
 		Canvas[] members = getMembers();
 		for (Canvas member : members) {
@@ -72,7 +71,7 @@ public class QueryResultContainer extends VLayout {
 		}
 	}
 	
-	public void addQueryResult(String jsonString) {
+	public void addQueryResult(String responseString) {
 		reset();
 		String queryType = JsMethods.getQueryType(getView().getSelectedTab().getQueryTextArea().getInputId());
 		if (!queryTypes.containsKey(queryType)) {
@@ -86,19 +85,13 @@ public class QueryResultContainer extends VLayout {
 				setOkMessage("Done");
 			} else if (queryMode == RESULT_TYPE_BOOLEAN || queryMode == RESULT_TYPE_TABLE) {
 				String outputFormat = getView().getSelectedTabSettings().getOutputFormat();
-				if (outputFormat.equals(Output.OUTPUT_JSON)) {
-					jsonOutput = new JsonOutput(getView(), queryTab, jsonString);
-					addMember(jsonOutput);
-					Scheduler.get().scheduleDeferred(new Command() {
-						public void execute() {
-							JsMethods.attachCodeMirrorToJsonResult(jsonOutput.getInputId(), Window.getClientWidth()-10);
-						}
-					});
+				if (outputFormat.equals(Output.OUTPUT_RESPONSE)) {
+					drawRawResponse(responseString);
 				} else if (queryMode == RESULT_TYPE_BOOLEAN){
-					drawResultsAsBoolean(new SparqlJsonHelper(jsonString, getView(), queryMode));
+					drawResultsAsBoolean(new SparqlJsonHelper(responseString, getView(), queryMode));
 				} else if (queryMode == RESULT_TYPE_TABLE) {
 					
-					drawResultsInTable(new SparqlJsonHelper(jsonString, getView(), queryMode), outputFormat);
+					drawResultsInTable(new SparqlJsonHelper(responseString, getView(), queryMode), outputFormat);
 				}
 			}
 		} catch (SparqlParseException e) {
@@ -174,8 +167,18 @@ public class QueryResultContainer extends VLayout {
 			getView().getLogger().severe(output.getCsvString());
 		}
 	}
-	public JsonOutput getJsonOutput() {
-		return this.jsonOutput;
+	
+	private void drawRawResponse(String responseString) {
+		rawResponseOutput = new RawResponseOutput(getView(), queryTab, responseString);
+		addMember(rawResponseOutput);
+		Scheduler.get().scheduleDeferred(new Command() {
+			public void execute() {
+				JsMethods.attachCodeMirrorToQueryResult(rawResponseOutput.getInputId(), Window.getClientWidth()-10);
+			}
+		});
+	}
+	public RawResponseOutput getRawResponseOutput() {
+		return this.rawResponseOutput;
 	}
 	
 }

@@ -20,7 +20,7 @@ public class JsMethods {
 	 * 
 	 * @param queryInputId Id of the text area of this codemirror instance
 	 */
-	public static native void destroyCodeMirrorJsonResult(String queryInputId) /*-{
+	public static native void destroyCodeMirrorQueryResponse(String queryInputId) /*-{
 			if ($wnd.jsonHighlight[queryInputId] != null) { 
 				$wnd.jsonHighlight[queryInputId] = null;
 			}
@@ -68,11 +68,11 @@ public class JsMethods {
 		}
 	}-*/;
 	/**
-	 * Initialize and atatch codemirror to a text area used for displaying json results of query
+	 * Initialize and atatch codemirror to a text area used for displaying json/xml results of query
 	 * 
 	 * @param queryInputId Id of text area to attach codemirror to
 	 */
-	public static native void attachCodeMirrorToJsonResult(String queryInputId, int width) /*-{
+	public static native void attachCodeMirrorToQueryResult(String queryInputId, int width) /*-{
 		if ($doc.getElementById(queryInputId)) {
 			if ($wnd.jsonHighlight[queryInputId] == null) { 
 				//Only add if it hasnt been drawn yet

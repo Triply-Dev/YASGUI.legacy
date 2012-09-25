@@ -72,7 +72,7 @@ public class SparqlService {
 	
 	public static String getAsFormattedString(ResultSet resultSet, String format) throws IllegalArgumentException, SparqlException {
 		String result = "";
-		if (format.equals(Output.OUTPUT_JSON)) {
+		if (format.equals(Output.OUTPUT_RESPONSE)) {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ResultSetFormatter.outputAsJSON(baos, resultSet);
 			try {

@@ -16,6 +16,7 @@ import com.smartgwt.client.widgets.grid.events.RecordClickEvent;
 import com.smartgwt.client.widgets.grid.events.RecordClickHandler;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
+import com.data2semantics.yasgui.client.helpers.ZIndexes;
 import com.data2semantics.yasgui.shared.Endpoints;
 public class EndpointSearch extends ImgButton {
 	private static int WINDOW_HEIGHT = 600;
@@ -40,6 +41,7 @@ public class EndpointSearch extends ImgButton {
 			@Override
 			public void onClick(ClickEvent event) {
 				window = new Window();
+				window.setZIndex(ZIndexes.MODAL_WINDOWS);
 				window.setTitle("Search endpoints");
 				window.setIsModal(true);
 				window.setDismissOnOutsideClick(true);

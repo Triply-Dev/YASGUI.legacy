@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
+import com.data2semantics.yasgui.client.helpers.ZIndexes;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.QueryTab;
@@ -18,6 +19,7 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Alignment;
@@ -120,17 +122,21 @@ public class View extends VLayout {
 	 */
 	public void onError(String error) {
 		onLoadingFinish();
-		Window window = getErrorWindow();
-		Label label = new Label(error);
-		label.setMargin(4);
-		label.setHeight100();
-		window.addItem(label);
-		window.draw();
+		if (!isDrawn()) {
+			Window window = getErrorWindow();
+			window.setZIndex(ZIndexes.MODAL_WINDOWS);
+			Label label = new Label(error);
+			label.setMargin(4);
+			label.setHeight100();
+			window.addItem(label);
+			window.draw();
+		}
 	}
 	
 	public void onQueryError(String error) {
 		onLoadingFinish();
 		final Window window = getErrorWindow();
+		window.setZIndex(ZIndexes.MODAL_WINDOWS);
 		VLayout vLayout = new VLayout();
 		vLayout.setWidth100();
 		Label label = new Label(error);
@@ -170,11 +176,12 @@ public class View extends VLayout {
 	
 	private Window getErrorWindow() {
 		final Window window = new Window();
+		window.setIsModal(true);
+		window.setZIndex(ZIndexes.MODAL_WINDOWS);
 		window.setAutoSize(true);
 		window.setMinWidth(400);
 		window.setShowMinimizeButton(false);
-		window.setIsModal(true);
-		window.setShowModalMask(true);
+//		window.setShowModalMask(true);
 		window.setAutoCenter(true);
 		window.addCloseClickHandler(new CloseClickHandler() {
 			public void onCloseClick(CloseClickEvent event) {
@@ -338,11 +345,16 @@ public class View extends VLayout {
 					onError(caught);
 				}
 				public void onSuccess(String endpoints) {
-					LocalStorageHelper.setEndpoints(endpoints);
-					try {
-						endpointDataSource.addEndpointsFromJson(endpoints);
-					} catch (Exception e) {
-						onError(e.getMessage());
+					if (endpoints.length() > 0) {
+						LocalStorageHelper.setEndpoints(endpoints);
+						try {
+							endpointDataSource.addEndpointsFromJson(endpoints);
+						} catch (Exception e) {
+							onError(e.getMessage());
+						}
+						
+					} else {
+						onError("Failed to retrieve list of endpoints from server");
 					}
 					onLoadingFinish();
 				}
@@ -351,7 +363,7 @@ public class View extends VLayout {
 			try {
 				endpointDataSource.addEndpointsFromJson(endpoints);
 			} catch (Exception e) {
-				onError(e.getMessage());
+				onError(e);
 			}
 		}
 	}
@@ -374,7 +386,8 @@ public class View extends VLayout {
 		Record[] records = endpointDataSource.getCacheData();
 		boolean exists = false;
 		for (Record record:records) {
-			if (record.getAttribute(Endpoints.KEY_ENDPOINT).equals(endpoint)) {
+			String recordEndpoint = record.getAttribute(Endpoints.KEY_ENDPOINT);
+			if (recordEndpoint != null && recordEndpoint.equals(endpoint)) {
 				exists = true;
 				break;
 			}
@@ -382,8 +395,6 @@ public class View extends VLayout {
 		
 		if (!exists) {
 			//Ok, so endpoint is not in our datasource. let's add it
-			
-			
 			ListGridRecord listGridRecord = new ListGridRecord();
 			listGridRecord.setAttribute(Endpoints.KEY_ENDPOINT, endpoint);
 			Record[] newRecords = new Record[records.length+1];
@@ -391,22 +402,34 @@ public class View extends VLayout {
 			System.arraycopy(records, 0, newRecords, 1, records.length);
 			endpointDataSource.setCacheData(newRecords);
 			
-			String endpointsJsonString = LocalStorageHelper.getEndpointsFromLocalStorage();
-			if (endpointsJsonString != null) {
+			
+			if (Storage.isSupported()) {
 				//we have html5. add it to local storage as well so we keep it persistent between sessions
-				JSONValue jsonVal = JSONParser.parseStrict(endpointsJsonString);
-				if (jsonVal != null) {
-					JSONArray endpoints = jsonVal.isArray();
-					JSONArray newEndpointsArray = new JSONArray();
+				String endpointsJsonString = LocalStorageHelper.getEndpointsFromLocalStorage();
+				if (endpointsJsonString == null) {
+					//There are no endpoints in our storage. 
+					//This is kinda strange, but lets create a json array with this new endpoint anyway
+					JSONArray jsonArray = new JSONArray();
 					JSONObject newEndpointObject = new JSONObject();
 					newEndpointObject.put(Endpoints.KEY_ENDPOINT, new JSONString(endpoint));
-					newEndpointsArray.set(0, newEndpointObject);
-					if (endpoints != null) {
-						for (int i = 0; i < endpoints.size(); i++) {
-							newEndpointsArray.set(newEndpointsArray.size(), endpoints.get(i));
+					jsonArray.set(0, newEndpointObject);
+					LocalStorageHelper.setEndpoints(jsonArray.toString());
+				} else {
+					//Prepend the new endpoint to the array in our json object
+					JSONValue jsonVal = JSONParser.parseStrict(endpointsJsonString);
+					if (jsonVal != null) {
+						JSONArray endpoints = jsonVal.isArray();
+						JSONArray newEndpointsArray = new JSONArray();
+						JSONObject newEndpointObject = new JSONObject();
+						newEndpointObject.put(Endpoints.KEY_ENDPOINT, new JSONString(endpoint));
+						newEndpointsArray.set(0, newEndpointObject);
+						if (endpoints != null) {
+							for (int i = 0; i < endpoints.size(); i++) {
+								newEndpointsArray.set(newEndpointsArray.size(), endpoints.get(i));
+							}
 						}
+						LocalStorageHelper.setEndpoints(newEndpointsArray.toString());
 					}
-					LocalStorageHelper.setEndpoints(newEndpointsArray.toString());
 				}
 			}
 		}

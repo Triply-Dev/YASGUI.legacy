@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -25,7 +26,7 @@ public class SparqlServlet extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String query = request.getParameter("query");
 		String endpoint = request.getParameter("endpoint");
-		String contentType = "application/sparql-results+json";
+		String accept = "application/sparql-results+json";
 		if (query != null && query.length() > 0 && endpoint != null && endpoint.length() > 0) {
 			HttpClient client = new DefaultHttpClient();
 			HttpPost post = new HttpPost(endpoint);
@@ -33,9 +34,9 @@ public class SparqlServlet extends HttpServlet {
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 			nameValuePairs.add(new BasicNameValuePair("query", query));
 			// Some endpoints (dbpedia?) use separate parameter for accept content type
-			nameValuePairs.add(new BasicNameValuePair("format", contentType));
+			nameValuePairs.add(new BasicNameValuePair("format", accept));
 			
-			post.setHeader("Accept", contentType);
+			post.setHeader("Accept", accept);
 			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 			post.setHeader("Content-Type", "application/x-www-form-urlencoded");
 			HttpResponse endpointResponse = client.execute(post);
@@ -54,6 +55,14 @@ public class SparqlServlet extends HttpServlet {
 				response.sendError(endpointStatusCode, reason);
 				
 			} else {
+				//Header should be sparql json (we asked for that). It might be something else (sparql xml?)
+				//Copy response header to the new response
+				Header[] headers = endpointResponse.getHeaders("Content-Type");
+				String contentType = accept;
+				if (headers.length > 0) {
+					//Just get first defined content type
+					contentType = headers[0].getValue();
+				}
 				BufferedReader rd = new BufferedReader(new InputStreamReader(endpointResponse.getEntity().getContent()));
 	
 				String line;

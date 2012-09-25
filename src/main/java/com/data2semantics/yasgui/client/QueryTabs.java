@@ -8,7 +8,7 @@ import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.ConfigMenu;
 import com.data2semantics.yasgui.client.tab.QueryTab;
-import com.data2semantics.yasgui.client.tab.results.JsonOutput;
+import com.data2semantics.yasgui.client.tab.results.RawResponseOutput;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
 import com.smartgwt.client.types.Side;
@@ -31,7 +31,9 @@ import com.smartgwt.client.widgets.tab.events.TabTitleChangedHandler;
 public class QueryTabs extends TabSet {
 	private View view;
 	private static boolean STORE_SETTINGS_ON_CLOSE_DEFAULT = true;
-	public static int INDENT_TABS = 130;
+	private ImgButton addTabButton;
+	private IconMenuButton configButton;
+	public static int INDENT_TABS = 130; //space reserved for buttons on lhs
 	public QueryTabs(View view) {
 		this.view = view;
 		setTabBarThickness(28); //this way the icon menu button alligns well with the tabbar
@@ -81,14 +83,14 @@ public class QueryTabs extends TabSet {
 		controls.setWidth(INDENT_TABS - 2);
 		
 		
-		ImgButton button = new ImgButton();
-		button.setSrc("icons/fugue/plus-button_modified.png");
-		button.setShowDown(false);
-		button.setShowRollOver(false);
-		button.setWidth(20);
-		button.setHeight(25);
-		button.setZIndex(ZIndexes.TAB_CONTROLS);//Otherwise the onclick of the tab bar is used..
-		button.addClickHandler(new ClickHandler() {
+		addTabButton = new ImgButton();
+		addTabButton.setSrc("icons/fugue/plus-button_modified.png");
+		addTabButton.setShowDown(false);
+		addTabButton.setShowRollOver(false);
+		addTabButton.setWidth(20);
+		addTabButton.setHeight(25);
+		addTabButton.setZIndex(ZIndexes.TAB_CONTROLS);//Otherwise the onclick of the tab bar is used..
+		addTabButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				TabSettings tabSettings = new TabSettings();
 				getView().getSettings().addTabSettings(tabSettings);
@@ -97,12 +99,12 @@ public class QueryTabs extends TabSet {
 			}
 		});
 		
-		IconMenuButton config = new IconMenuButton("");
-		config.setIcon("icons/diagona/bolt.png");
-		config.setMenu(new ConfigMenu(getView()));
+		configButton = new IconMenuButton("");
+		configButton.setIcon("icons/diagona/bolt.png");
+		configButton.setMenu(new ConfigMenu(getView()));
 		controls.setZIndex(ZIndexes.TAB_CONTROLS);
-		controls.addMember(config);
-		controls.addMember(button);
+		controls.addMember(configButton);
+		controls.addMember(addTabButton);
 		addChild(controls);
 	}
 	
@@ -194,10 +196,10 @@ public class QueryTabs extends TabSet {
 		// To avoid codemirror js objects lying around, remove js objects
 		// belonging to this tab
 		JsMethods.destroyCodeMirrorQueryInput(queryTab.getQueryTextArea().getInputId());
-		JsonOutput jsonOutput = queryTab.getResultContainer().getJsonOutput();
+		RawResponseOutput jsonOutput = queryTab.getResultContainer().getRawResponseOutput();
 		if (jsonOutput != null) {
 			//We have outputted query results as json string using the codemirror highlighter. Also cleanup this object
-			JsMethods.destroyCodeMirrorJsonResult(jsonOutput.getInputId());
+			JsMethods.destroyCodeMirrorQueryResponse(jsonOutput.getInputId());
 		}
 		
 	}

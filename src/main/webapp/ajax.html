@@ -10,8 +10,16 @@
 
   <body>
 	<script type="text/javascript">
-	test();
-	//sparqlQueryJson("SELECT * {?x ?F ?s. ?s ?h ?y} LIMIT 10", "http://127.0.0.1:8888/Yasgui/sparql", function(result){alert(result);})
+	//test();
+	function onQueryStart() {};
+	function onLoadingStart() {};
+	function onQueryFinish() {};
+	function onLoadingFinish() {};
+	function clearQueryResult() {};
+	var corsEnabled = {};
+	corsEnabled["http://localhost:8080/openrdf-workbench/repositories/replica/query"] = false;
+	proxy = "http://localhost:8888/Yasgui/sparql";
+	sparqlQueryJson("SELECT * {?x ?F ?s. ?s ?h ?y} LIMIT 1", "http://localhost:8080/openrdf-workbench/repositories/replica/query", function(result){alert(result);})
 	//checkCorsEnabled("http://dbpedia.org/sparql");
 	</script>
 </body>

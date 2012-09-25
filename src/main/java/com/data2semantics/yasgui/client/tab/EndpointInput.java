@@ -131,7 +131,7 @@ public class EndpointInput extends DynamicForm {
 		pickListProperties.setShowHeaderContextMenu(false);
 		pickListProperties.setFixedRecordHeights(false);
 		pickListProperties.setWrapCells(true);
-		pickListProperties.setAutoFetchAsFilter(true);
+		pickListProperties.setAutoFetchTextMatchStyle(TextMatchStyle.SUBSTRING);
         pickListProperties.setCanHover(true);  
         pickListProperties.setShowHover(true);
         pickListProperties.setCellFormatter(new CellFormatter() {
