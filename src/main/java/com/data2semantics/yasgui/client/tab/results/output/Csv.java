@@ -1,9 +1,10 @@
 package com.data2semantics.yasgui.client.tab.results.output;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import com.data2semantics.yasgui.client.View;
-import com.data2semantics.yasgui.client.tab.results.input.SparqlJsonHelper;
-import com.google.gwt.json.client.JSONArray;
-import com.google.gwt.json.client.JSONObject;
+import com.data2semantics.yasgui.client.tab.results.input.SparqlResults;
 import com.smartgwt.client.widgets.HTMLPane;
 
 public class Csv extends HTMLPane {
@@ -11,15 +12,15 @@ public class Csv extends HTMLPane {
 	private static String DELIMITER = ",";
 	private static String LINE_BREAK = "\n";
 	private View view;
-	private JSONArray variables;
-	private JSONArray querySolutions;
+	private ArrayList<String> variables;
+	private ArrayList<HashMap<String, HashMap<String, String>>> querySolutions;
 	private String csvString;
-	public Csv(View view, SparqlJsonHelper queryResults) {
+	public Csv(View view, SparqlResults queryResults) {
 		this.view = view;
 		setWidth100();
 		setHeight100();
 		variables = queryResults.getVariables();
-		querySolutions = queryResults.getQuerySolutions();
+		querySolutions = queryResults.getBindings();
 	}
 	
 	public String getCsvString() {
@@ -29,24 +30,24 @@ public class Csv extends HTMLPane {
 	}
 	
 	private void createCsvHeader() {
-		for (int i = 0; i < variables.size(); i++) {
-			addValueToString(variables.get(i).isString().stringValue());
+		for (String variable: variables) {
+			addValueToString(variable);
 		}
 		csvString += LINE_BREAK;
 	}
 	
 	private void createCsvBody() {
-		for (int solutionKey = 0; solutionKey < querySolutions.size(); solutionKey++) {
-			addQuerySolutionToString(querySolutions.get(solutionKey).isObject());
+		for (HashMap<String, HashMap<String, String>> querySolution: querySolutions) {
+			addQuerySolutionToString(querySolution);
 			csvString += LINE_BREAK;
 		}
 	}
 	
-	private void addQuerySolutionToString(JSONObject querySolution) {
-		for (int bindingKey = 0; bindingKey < variables.size(); bindingKey++) {
-			String variable = variables.get(bindingKey).isString().toString();
+	private void addQuerySolutionToString(HashMap<String, HashMap<String, String>> querySolution) {
+		for (int variableKey = 0; variableKey < variables.size(); variableKey++) {
+			String variable = variables.get(variableKey);
 			if (querySolution.containsKey(variable)) {
-				addValueToString(querySolution.get(variable).isObject().get("value").isString().stringValue());
+				addValueToString(querySolution.get(variable).get("value"));
 			} else {
 				addValueToString("");
 			}

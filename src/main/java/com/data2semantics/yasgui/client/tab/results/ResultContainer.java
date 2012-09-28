@@ -5,13 +5,13 @@ import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.client.tab.results.input.Json;
-import com.data2semantics.yasgui.client.tab.results.input.SparqlJsonHelper;
 import com.data2semantics.yasgui.client.tab.results.input.SparqlResults;
+import com.data2semantics.yasgui.client.tab.results.output.Csv;
 import com.data2semantics.yasgui.client.tab.results.output.RawResponse;
 import com.data2semantics.yasgui.client.tab.results.output.ResultGrid;
+import com.data2semantics.yasgui.client.tab.results.output.SimpleGrid;
 import com.data2semantics.yasgui.shared.Output;
 import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
-import com.data2semantics.yasgui.shared.exceptions.SparqlParseException;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -32,7 +32,6 @@ public class ResultContainer extends VLayout {
 	private View view;
 	private QueryTab queryTab;
 	private RawResponse rawResponseOutput;
-	SparqlJsonHelper queryResults;
 	HashMap<String, Integer> queryTypes = new HashMap<String, Integer>();
 	public ResultContainer(View view, QueryTab queryTab) {
 		setPossibleQueryTypes();
@@ -95,7 +94,7 @@ public class ResultContainer extends VLayout {
 				if (outputFormat.equals(Output.OUTPUT_RESPONSE)) {
 					drawRawResponse(responseString);
 				} else if (queryMode == RESULT_TYPE_BOOLEAN){
-					drawResultsAsBoolean(new SparqlJsonHelper(responseString, getView(), queryMode));
+					drawResultsAsBoolean(new Json(responseString, getView(), queryMode));
 				} else if (queryMode == RESULT_TYPE_TABLE) {
 					drawResultsInTable(new Json(responseString, getView(), queryMode), outputFormat);
 				}
@@ -153,8 +152,8 @@ public class ResultContainer extends VLayout {
 		
 		addMember(empty);
 	}
-	private void drawResultsAsBoolean(SparqlJsonHelper queryResults) {
-		if (queryResults.getBooleanResult()) {
+	private void drawResultsAsBoolean(SparqlResults sparqlResults) {
+		if (sparqlResults.getBooleanResult()) {
 			setOkMessage("true");
 		} else {
 			setErrorResultMessage("false");
@@ -165,11 +164,11 @@ public class ResultContainer extends VLayout {
 		if (outputFormat.equals(Output.OUTPUT_TABLE)) {
 			addMember(new ResultGrid(getView(), sparqlResults));
 		} else if (outputFormat.equals(Output.OUTPUT_TABLE_SIMPLE)) {
-//			addMember(new SimpleGrid(getView(), sparqlResults));
+			addMember(new SimpleGrid(getView(), sparqlResults));
 		} else if (outputFormat.equals(Output.OUTPUT_CSV)) {
-//			Csv output = new Csv(getView(), sparqlResults);
-//			JsMethods.openDownDialogForCsv(output.getCsvString());
-//			getView().getLogger().severe(output.getCsvString());
+			Csv output = new Csv(getView(), sparqlResults);
+			JsMethods.openDownDialogForCsv(output.getCsvString());
+			getView().getLogger().severe(output.getCsvString());
 		}
 	}
 	

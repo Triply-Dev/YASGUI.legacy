@@ -1,31 +1,29 @@
 package com.data2semantics.yasgui.client.tab.results.output;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
-import com.data2semantics.yasgui.client.tab.results.input.SparqlJsonHelper;
+import com.data2semantics.yasgui.client.tab.results.input.SparqlResults;
 import com.data2semantics.yasgui.shared.Prefix;
-import com.google.gwt.json.client.JSONArray;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONValue;
 import com.smartgwt.client.util.StringUtil;
 import com.smartgwt.client.widgets.HTMLPane;
 
 public class SimpleGrid extends HTMLPane {
 	private View view;
 	private HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
-	private JSONArray variables;
-	private JSONArray querySolutions;
+	private ArrayList<String> variables;
+	private ArrayList<HashMap<String, HashMap<String, String>>> solutions;
 	private String html;
 
-	public SimpleGrid(View view, SparqlJsonHelper queryResults) {
+	public SimpleGrid(View view, SparqlResults sparqlResults) {
 		this.view = view;
 		setWidth100();
 		setHeight100();
 		queryPrefixes = Helper.getPrefixesFromQuery(view.getSettings().getSelectedTabSettings().getQueryString());
-		variables = queryResults.getVariables();
-		querySolutions = queryResults.getQuerySolutions();
+		variables = sparqlResults.getVariables();
+		solutions = sparqlResults.getBindings();
 		drawTable();
 		setContents(html);
 		
@@ -41,31 +39,28 @@ public class SimpleGrid extends HTMLPane {
 
 	private void drawHeader() {
 		html += "<thead><tr class=\"simpleTable\">";
-		for (int i = 0; i < variables.size(); i++) {
-			html += "<th>" + StringUtil.asHTML(variables.get(i).isString().stringValue()) + "</th>";
+		for (String variable: variables) {
+			html += "<th>" + StringUtil.asHTML(variable) + "</th>";
 		}
 		html += "</tr></thead>";
 	}
 
 	private void drawRows() {
 		html += "<tbody>";
-		for (int solutionKey = 0; solutionKey < querySolutions.size(); solutionKey++) {
-			JSONObject querySolution = querySolutions.get(solutionKey).isObject();
+		for (HashMap<String, HashMap<String, String>> bindings: solutions) {
 			html += "<tr>";
-			for (int variableKey = 0; variableKey < variables.size(); variableKey++) {
+			for (String variable: variables) {
 				html += "<td>";
-				String variable = variables.get(variableKey).isString().stringValue();
-				JSONValue bindingJsonValue = querySolution.get(variable);
-				if (bindingJsonValue == null) {
-					html += "&nbsp;";
-				} else {
-					JSONObject binding = querySolution.get(variable).isObject();
-					if (binding.get("type").isString().stringValue().equals("uri")) {
-						String uri = binding.get("value").isString().stringValue();
+				if (bindings.containsKey(variable)) {
+					HashMap<String, String> binding = bindings.get(variable);
+					if (binding.get("type").equals("uri")) {
+						String uri = binding.get("value");
 						html += "<a href=\"" + uri + "\" target=\"_blank\">" + StringUtil.asHTML(getShortUri(uri)) + "</a>";
 					} else {
-						html += StringUtil.asHTML(binding.get("value").isString().stringValue());
+						html += StringUtil.asHTML(binding.get("value"));
 					}
+				} else {
+					html += "&nbsp;";
 				}
 				html += "</td>";
 			}
