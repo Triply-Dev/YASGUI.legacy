@@ -1,10 +1,10 @@
-package com.data2semantics.yasgui.client.tab.results;
+package com.data2semantics.yasgui.client.tab.results.output;
 
 import java.util.HashMap;
 import java.util.Map;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
-import com.data2semantics.yasgui.client.helpers.SparqlJsonHelper;
+import com.data2semantics.yasgui.client.tab.results.input.SparqlJsonHelper;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;

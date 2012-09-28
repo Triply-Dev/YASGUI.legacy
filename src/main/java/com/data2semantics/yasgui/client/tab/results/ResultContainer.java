@@ -3,8 +3,12 @@ package com.data2semantics.yasgui.client.tab.results;
 import java.util.HashMap;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
-import com.data2semantics.yasgui.client.helpers.SparqlJsonHelper;
 import com.data2semantics.yasgui.client.tab.QueryTab;
+import com.data2semantics.yasgui.client.tab.results.input.Json;
+import com.data2semantics.yasgui.client.tab.results.input.SparqlJsonHelper;
+import com.data2semantics.yasgui.client.tab.results.input.SparqlResults;
+import com.data2semantics.yasgui.client.tab.results.output.RawResponse;
+import com.data2semantics.yasgui.client.tab.results.output.ResultGrid;
 import com.data2semantics.yasgui.shared.Output;
 import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
 import com.data2semantics.yasgui.shared.exceptions.SparqlParseException;
@@ -18,16 +22,19 @@ import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
 
-public class QueryResultContainer extends VLayout {
+public class ResultContainer extends VLayout {
 	public static int RESULT_TYPE_TABLE = 1;
 	public static int RESULT_TYPE_BOOLEAN = 2;
 	public static int RESULT_TYPE_INSERT = 3;
+	public static int RESULT_FORMAT_JSON = 1;
+	public static int RESULT_FORMAT_XML = 2;
+	
 	private View view;
 	private QueryTab queryTab;
-	private RawResponseOutput rawResponseOutput;
+	private RawResponse rawResponseOutput;
 	SparqlJsonHelper queryResults;
 	HashMap<String, Integer> queryTypes = new HashMap<String, Integer>();
-	public QueryResultContainer(View view, QueryTab queryTab) {
+	public ResultContainer(View view, QueryTab queryTab) {
 		setPossibleQueryTypes();
 		this.view = view;
 		this.queryTab = queryTab;
@@ -71,7 +78,7 @@ public class QueryResultContainer extends VLayout {
 		}
 	}
 	
-	public void addQueryResult(String responseString) {
+	public void addQueryResult(String responseString, int resultFormat) {
 		reset();
 		String queryType = JsMethods.getQueryType(getView().getSelectedTab().getQueryTextArea().getInputId());
 		if (!queryTypes.containsKey(queryType)) {
@@ -90,17 +97,15 @@ public class QueryResultContainer extends VLayout {
 				} else if (queryMode == RESULT_TYPE_BOOLEAN){
 					drawResultsAsBoolean(new SparqlJsonHelper(responseString, getView(), queryMode));
 				} else if (queryMode == RESULT_TYPE_TABLE) {
-					
-					drawResultsInTable(new SparqlJsonHelper(responseString, getView(), queryMode), outputFormat);
+					drawResultsInTable(new Json(responseString, getView(), queryMode), outputFormat);
 				}
 			}
-		} catch (SparqlParseException e) {
-			getView().onError(e);
 		} catch (SparqlEmptyException e) {
 			setErrorResultMessage(e.getMessage());
-		}
-		
-		
+		} catch (Exception e) {
+			getView().onError(e);
+			
+		} 
 	}
 	
 	public void setErrorResultMessage(String message) {
@@ -156,20 +161,20 @@ public class QueryResultContainer extends VLayout {
 		}
 	}
 	
-	private void drawResultsInTable(SparqlJsonHelper queryResults, String outputFormat) {
+	private void drawResultsInTable(SparqlResults sparqlResults, String outputFormat) {
 		if (outputFormat.equals(Output.OUTPUT_TABLE)) {
-			addMember(new ResultGrid(getView(), queryResults));
+			addMember(new ResultGrid(getView(), sparqlResults));
 		} else if (outputFormat.equals(Output.OUTPUT_TABLE_SIMPLE)) {
-			addMember(new SimpleGrid(getView(), queryResults));
+//			addMember(new SimpleGrid(getView(), sparqlResults));
 		} else if (outputFormat.equals(Output.OUTPUT_CSV)) {
-			CsvOutput output = new CsvOutput(getView(), queryResults);
-			JsMethods.openDownDialogForCsv(output.getCsvString());
-			getView().getLogger().severe(output.getCsvString());
+//			Csv output = new Csv(getView(), sparqlResults);
+//			JsMethods.openDownDialogForCsv(output.getCsvString());
+//			getView().getLogger().severe(output.getCsvString());
 		}
 	}
 	
 	private void drawRawResponse(String responseString) {
-		rawResponseOutput = new RawResponseOutput(getView(), queryTab, responseString);
+		rawResponseOutput = new RawResponse(getView(), queryTab, responseString);
 		addMember(rawResponseOutput);
 		Scheduler.get().scheduleDeferred(new Command() {
 			public void execute() {
@@ -177,7 +182,7 @@ public class QueryResultContainer extends VLayout {
 			}
 		});
 	}
-	public RawResponseOutput getRawResponseOutput() {
+	public RawResponse getRawResponseOutput() {
 		return this.rawResponseOutput;
 	}
 	

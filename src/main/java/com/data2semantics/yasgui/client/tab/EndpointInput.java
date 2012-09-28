@@ -15,6 +15,8 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ComboBoxItem;
 import com.smartgwt.client.widgets.form.fields.events.BlurEvent;
 import com.smartgwt.client.widgets.form.fields.events.BlurHandler;
+import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
+import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.form.fields.events.FocusEvent;
 import com.smartgwt.client.widgets.form.fields.events.FocusHandler;
 import com.smartgwt.client.widgets.grid.CellFormatter;
@@ -22,6 +24,8 @@ import com.smartgwt.client.widgets.grid.HoverCustomizer;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
+import com.smartgwt.client.widgets.grid.events.SelectionUpdatedEvent;
+import com.smartgwt.client.widgets.grid.events.SelectionUpdatedHandler;
 
 public class EndpointInput extends DynamicForm {
 	private View view;
@@ -31,6 +35,7 @@ public class EndpointInput extends DynamicForm {
 	private ListGrid pickListProperties;
 	private static int COL_WIDTH_DATASET_TITLE = 150;
 	private static int COL_WIDTH_MORE_INFO = 22;
+	private boolean pickListRecordSelected = false;
 	private ArrayList<String> cols = new ArrayList<String>();
 	
 	public EndpointInput(View view, QueryTab queryTab) {
@@ -75,14 +80,22 @@ public class EndpointInput extends DynamicForm {
 		endpoint.addBlurHandler(new BlurHandler() {
 			@Override
 			public void onBlur(BlurEvent event) {
-				if (!latestEndpointValue.equals(getEndpoint())) {
-					JsMethods.checkCorsEnabled(getEndpoint());
-					String endpoint = getEndpoint();
-					getView().getSettings().getSelectedTabSettings().setEndpoint(endpoint);
-					LocalStorageHelper.storeSettingsInCookie(getView().getSettings());
+				String endpoint = getEndpoint();
+				if (!latestEndpointValue.equals(endpoint)) {
+					storeEndpoint(endpoint);
 				}
 			}
 		});
+		endpoint.addChangedHandler(new ChangedHandler(){
+
+			@Override
+			public void onChanged(ChangedEvent event) {
+				if (pickListRecordSelected == true) {
+					//only perform when item from listgrid was selected. Otherwise on every keypress we'll do lots of processing
+					pickListRecordSelected = false;
+					storeEndpoint(getEndpoint());
+				}
+			}});
 	}
 	
 	private void setPickListFieldsForComboBox(ArrayList<ListGridField> fields) {
@@ -100,6 +113,12 @@ public class EndpointInput extends DynamicForm {
 			endpointString = "";
 		}
 		return endpointString;
+	}
+	
+	public void storeEndpoint(String endpoint) {
+		JsMethods.checkCorsEnabled(endpoint);
+		getView().getSettings().getSelectedTabSettings().setEndpoint(endpoint);
+		LocalStorageHelper.storeSettingsInCookie(getView().getSettings());
 	}
 	
 	public void setEndpoint(String endpointString) {
@@ -134,6 +153,16 @@ public class EndpointInput extends DynamicForm {
 		pickListProperties.setAutoFetchTextMatchStyle(TextMatchStyle.SUBSTRING);
         pickListProperties.setCanHover(true);  
         pickListProperties.setShowHover(true);
+        pickListProperties.addSelectionUpdatedHandler(new SelectionUpdatedHandler(){
+
+			@Override
+			public void onSelectionUpdated(SelectionUpdatedEvent event) {
+				//Thing is: the current value of the combobox is still the old one.
+				//The new value (selected record) is not retrievable (getting it from 'selectedRecord' explodes our stack size... (bug?)
+				//And we don't want to use the onchanged handler of the combobox itself (because then on every keypress we check for cors stuff)
+				//Therefor, set this flag. The onchanged handler of the combobox can then check and reset this flag and store the endpoint
+				pickListRecordSelected = true;
+			}});
         pickListProperties.setCellFormatter(new CellFormatter() {
 			@Override
 			public String format(Object value, ListGridRecord record, int rowNum, int colNum) {

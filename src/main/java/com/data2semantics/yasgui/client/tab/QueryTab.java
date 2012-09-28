@@ -3,7 +3,7 @@ package com.data2semantics.yasgui.client.tab;
 import com.data2semantics.yasgui.client.QueryTabs;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.settings.TabSettings;
-import com.data2semantics.yasgui.client.tab.results.QueryResultContainer;
+import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -19,7 +19,7 @@ public class QueryTab extends Tab {
 	private QueryTextArea queryTextArea;
 	private EndpointInput endpointInput;
 	private VLayout vLayout = new VLayout();
-	private QueryResultContainer queryResultContainer;
+	private ResultContainer queryResultContainer;
 	private TabSettings tabSettings;
 	private OutputSelection outputSelection;
 	
@@ -27,7 +27,7 @@ public class QueryTab extends Tab {
 		super(tabSettings.getTabTitle());
 		this.tabSettings = tabSettings;
 		this.view = view;
-		this.queryResultContainer = new QueryResultContainer(getView(), this);
+		this.queryResultContainer = new ResultContainer(getView(), this);
 		setCanClose(true);
 		HLayout queryOptions = new HLayout();
 		queryOptions.setDefaultLayoutAlign(VerticalAlignment.BOTTOM);
@@ -124,7 +124,7 @@ public class QueryTab extends Tab {
 		return this;
 	}
 
-	public QueryResultContainer getResultContainer() {
+	public ResultContainer getResultContainer() {
 		return this.queryResultContainer;
 	}
 

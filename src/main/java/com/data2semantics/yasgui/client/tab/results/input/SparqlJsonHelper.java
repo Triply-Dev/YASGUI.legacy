@@ -1,7 +1,7 @@
-package com.data2semantics.yasgui.client.helpers;
+package com.data2semantics.yasgui.client.tab.results.input;
 
 import com.data2semantics.yasgui.client.View;
-import com.data2semantics.yasgui.client.tab.results.QueryResultContainer;
+import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
 import com.data2semantics.yasgui.shared.exceptions.SparqlParseException;
 import com.google.gwt.json.client.JSONArray;
@@ -21,7 +21,6 @@ public class SparqlJsonHelper {
 	public SparqlJsonHelper(String jsonString, View view, int queryMode) throws SparqlParseException, SparqlEmptyException {
 		this.view = view;
 		this.queryMode = queryMode;
-		view.getLogger().severe("24");
 		getAndValidateJsonObject(jsonString);
 		
 	}
@@ -56,7 +55,7 @@ public class SparqlJsonHelper {
 		
 		JSONObject head = getAsObject(queryResult, "head");
 		
-		if (queryMode == QueryResultContainer.RESULT_TYPE_TABLE) {
+		if (queryMode == ResultContainer.RESULT_TYPE_TABLE) {
 			JSONObject resultsObject = getAsObject(queryResult, "results");
 			JSONArray bindingsArray = getAsArray(resultsObject, "bindings");
 			if (bindingsArray.size() == 0) {

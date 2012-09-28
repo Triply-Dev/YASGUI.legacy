@@ -7,7 +7,7 @@
 	<!-- We need the JUnit module in the main module, -->
 	<!-- otherwise eclipse complains (Google plugin bug?) -->
 	<inherits name='com.google.gwt.junit.JUnit' />
-
+	<inherits name="com.google.gwt.xml.XML" />
 	<!-- Inherit the default GWT style sheet. You can change -->
 	<!-- the theme of your GWT application by uncommenting -->
 	<!-- any one of the following lines. -->
@@ -19,7 +19,7 @@
 	<inherits name="com.smartgwt.tools.SmartGwtTools" />
 	<!-- Specify the app entry point class. -->
 	<entry-point class='com.data2semantics.yasgui.client.Yasgui' />
-
+	
 	<!-- Specify the paths for translatable code -->
 	<source path='client' />
 	<source path='shared' />

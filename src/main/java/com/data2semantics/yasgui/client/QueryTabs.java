@@ -8,7 +8,7 @@ import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.ConfigMenu;
 import com.data2semantics.yasgui.client.tab.QueryTab;
-import com.data2semantics.yasgui.client.tab.results.RawResponseOutput;
+import com.data2semantics.yasgui.client.tab.results.output.RawResponse;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
 import com.smartgwt.client.types.Side;
@@ -196,7 +196,7 @@ public class QueryTabs extends TabSet {
 		// To avoid codemirror js objects lying around, remove js objects
 		// belonging to this tab
 		JsMethods.destroyCodeMirrorQueryInput(queryTab.getQueryTextArea().getInputId());
-		RawResponseOutput jsonOutput = queryTab.getResultContainer().getRawResponseOutput();
+		RawResponse jsonOutput = queryTab.getResultContainer().getRawResponseOutput();
 		if (jsonOutput != null) {
 			//We have outputted query results as json string using the codemirror highlighter. Also cleanup this object
 			JsMethods.destroyCodeMirrorQueryResponse(jsonOutput.getInputId());

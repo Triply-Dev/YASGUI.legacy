@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.client.tab.results;
+package com.data2semantics.yasgui.client.tab.results.output;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
-import com.data2semantics.yasgui.client.helpers.SparqlJsonHelper;
+import com.data2semantics.yasgui.client.tab.results.input.SparqlJsonHelper;
+import com.data2semantics.yasgui.client.tab.results.input.SparqlResults;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -22,13 +23,13 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 public class ResultGrid extends ListGrid {
 	private static String SOLUTION_ATTRIBUTE = "yasgui___solution";
 	private static String XSD_DATA_PREFIX = "http://www.w3.org/2001/XMLSchema#";
-	JSONObject queryResult = new JSONObject();
+	private HashMap<Integer, HashMap<String, HashMap<String, String>>> solutions = new HashMap<Integer, HashMap<String, HashMap<String, String>>>();
 	private View view;
-	private SparqlJsonHelper queryResults;
+	private SparqlResults sparqlResults;
 	private HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
-	public ResultGrid(View view, SparqlJsonHelper queryResults) {
+	public ResultGrid(View view, SparqlResults sparqlResults) {
 		this.view = view;
-		this.queryResults = queryResults;
+		this.sparqlResults = sparqlResults;
 		setWidth100();
 		setHeight100();
 		setShowRecordComponents(true);
@@ -47,9 +48,9 @@ public class ResultGrid extends ListGrid {
 	 * @param jsonString
 	 */
 	public void drawQueryResults() {
-		List<ListGridField> listGridFields = getVarsAsListGridFields(queryResults.getVariables());
+		List<ListGridField> listGridFields = getVarsAsListGridFields(sparqlResults.getVariables());
 		setFields(listGridFields.toArray(new ListGridField[listGridFields.size()]));
-		List<ListGridRecord> rows = getSolutionsAsGridRecords(queryResults.getQuerySolutions());
+		List<ListGridRecord> rows = getSolutionsAsGridRecords(sparqlResults.getBindings());
 		setData(rows.toArray(new ListGridRecord[rows.size()]));
 	}
 	
@@ -63,13 +64,11 @@ public class ResultGrid extends ListGrid {
 		
 		//the numbering field created by smartgwt has field name starting with $
 		if (!colName.startsWith("$")) { 
-			JSONObject solution = (JSONObject) row.getAttributeAsObject(SOLUTION_ATTRIBUTE);
-			JSONValue bindingJsonValue = solution.get(colName);
-			if (bindingJsonValue == null) return null;
-			JSONObject binding = bindingJsonValue.isObject();
-			String type = binding.get("type").isString().stringValue();
+			HashMap<String, HashMap<String, String>> bindings = solutions.get(row.getAttributeAsInt(SOLUTION_ATTRIBUTE));
+			HashMap<String, String> binding = bindings.get(colName);
+			String type = binding.get("type");
 			if (type.equals("uri")) {
-				final String uri = binding.get("value").isString().stringValue();
+				final String uri = binding.get("value");
 				Prefix prefix = getPrefixForUri(uri);
 				String text = uri;
 				if (prefix != null) {
@@ -77,19 +76,19 @@ public class ResultGrid extends ListGrid {
 				}
 				return Helper.getLinkNewWindow(text, uri);
 			} else if (type.equals("literal")) {
-				String literal = binding.get("value").isString().stringValue();
+				String literal = binding.get("value");
 				Label label = new Label(literal);
 				label.setOverflow(Overflow.VISIBLE);
 				label.setWidth100();
 				label.setAutoHeight();
 				label.setCanSelectText(true);
-				if (binding.get("datatype") != null) {
-					label.setPrompt("xsd:" + binding.get("datatype").isString().stringValue().substring(XSD_DATA_PREFIX.length()));
+				if (binding.containsKey("datatype") && binding.get("datatype") != null) {
+					label.setPrompt("xsd:" + binding.get("datatype").substring(XSD_DATA_PREFIX.length()));
 				}
 				return label;
 			} else {
 				//is bnode
-				String uri = binding.get("value").isString().stringValue();
+				String uri = binding.get("value");
 				Label label = new Label(uri);
 				label.setHeight100();
 				label.setCanSelectText(true);
@@ -103,30 +102,36 @@ public class ResultGrid extends ListGrid {
 	/**
 	 * Get solutions from json object, and add as object to listgridrecords (i.e. table row)
 	 * 
-	 * @param querySolutions
+	 * @param solutions
 	 * @return
 	 */
-	private ArrayList<ListGridRecord> getSolutionsAsGridRecords(JSONArray querySolutions) {
+	private ArrayList<ListGridRecord> getSolutionsAsGridRecords(ArrayList<HashMap<String, HashMap<String, String>>> solutions) {
+		getView().getLogger().severe("Sdf");
 		ArrayList<ListGridRecord> rows = new ArrayList<ListGridRecord>();
-		for (int i = 0; i < querySolutions.size(); i++) {
-			JSONObject solution = queryResults.getAsObject(querySolutions.get(i));
+		for (HashMap<String, HashMap<String, String>> solution: solutions) {
+			getView().getLogger().severe("Sdfd");
+			getView().getLogger().severe(Integer.toString(solution.hashCode()));
+			this.solutions.put(solution.hashCode(), solution);
+			getView().getLogger().severe("Sdfs");
 			ListGridRecord row = new ListGridRecord();
-			row.setAttribute(SOLUTION_ATTRIBUTE, solution);
+			getView().getLogger().severe("Sdf2");
+			row.setAttribute(SOLUTION_ATTRIBUTE, solution.hashCode());
+			getView().getLogger().severe("Sdf7");
 			rows.add(row);
+			
 		}
 		return rows;
 	}
 	
 	/**
 	 * Get used vars from json object, and add them as variables (i.e. columns) to this listgrid 
-	 * @param resultVars
+	 * @param vars
 	 * @return
 	 */
-	private ArrayList<ListGridField> getVarsAsListGridFields(JSONArray resultVars) {
+	private ArrayList<ListGridField> getVarsAsListGridFields(ArrayList<String> vars) {
 		ArrayList<ListGridField> listGridFields = new ArrayList<ListGridField>();
-		for(int i = 0; i < resultVars.size(); i++){
-			String resultVar = queryResults.getAsString(resultVars.get(i));
-			ListGridField field = new ListGridField(resultVar, resultVar);
+		for(String var: vars){
+			ListGridField field = new ListGridField(var, var);
 			field.setCellAlign(Alignment.LEFT);
 			field.setAlign(Alignment.CENTER); //for header
 			

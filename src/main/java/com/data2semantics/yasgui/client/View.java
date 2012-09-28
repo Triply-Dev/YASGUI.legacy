@@ -8,6 +8,7 @@ import com.data2semantics.yasgui.client.helpers.ZIndexes;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.QueryTab;
+import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 import com.data2semantics.yasgui.shared.Endpoints;
 import com.data2semantics.yasgui.shared.exceptions.SettingsException;
 import com.google.gwt.core.client.GWT;
@@ -288,7 +289,7 @@ public class View extends VLayout {
 		//Create grid and fill with data immediately. 
 		//Will have cell alignment issues (bug smartgwt i guess) when initiating resultgrid before query, and filling afterwards
 		QueryTab tab = getSelectedTab();
-		tab.getResultContainer().addQueryResult(jsonResult);
+		tab.getResultContainer().addQueryResult(jsonResult, ResultContainer.RESULT_FORMAT_JSON);
 	}
 	
 	/**

@@ -1,12 +1,12 @@
-package com.data2semantics.yasgui.client.tab.results;
+package com.data2semantics.yasgui.client.tab.results.output;
 
 import com.data2semantics.yasgui.client.View;
-import com.data2semantics.yasgui.client.helpers.SparqlJsonHelper;
+import com.data2semantics.yasgui.client.tab.results.input.SparqlJsonHelper;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.smartgwt.client.widgets.HTMLPane;
 
-public class CsvOutput extends HTMLPane {
+public class Csv extends HTMLPane {
 	private static String QUOTE = "\"";
 	private static String DELIMITER = ",";
 	private static String LINE_BREAK = "\n";
@@ -14,7 +14,7 @@ public class CsvOutput extends HTMLPane {
 	private JSONArray variables;
 	private JSONArray querySolutions;
 	private String csvString;
-	public CsvOutput(View view, SparqlJsonHelper queryResults) {
+	public Csv(View view, SparqlJsonHelper queryResults) {
 		this.view = view;
 		setWidth100();
 		setHeight100();
