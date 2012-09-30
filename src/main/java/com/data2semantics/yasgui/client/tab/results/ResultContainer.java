@@ -4,8 +4,9 @@ import java.util.HashMap;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.tab.QueryTab;
-import com.data2semantics.yasgui.client.tab.results.input.Json;
+import com.data2semantics.yasgui.client.tab.results.input.JsonResults;
 import com.data2semantics.yasgui.client.tab.results.input.SparqlResults;
+import com.data2semantics.yasgui.client.tab.results.input.XmlResults;
 import com.data2semantics.yasgui.client.tab.results.output.Csv;
 import com.data2semantics.yasgui.client.tab.results.output.RawResponse;
 import com.data2semantics.yasgui.client.tab.results.output.ResultGrid;
@@ -91,12 +92,16 @@ public class ResultContainer extends VLayout {
 				setOkMessage("Done");
 			} else if (queryMode == RESULT_TYPE_BOOLEAN || queryMode == RESULT_TYPE_TABLE) {
 				String outputFormat = getView().getSelectedTabSettings().getOutputFormat();
-				if (outputFormat.equals(Output.OUTPUT_RESPONSE)) {
+				if (outputFormat.equals(Output.OUTPUT_RAW_RESPONSE)) {
 					drawRawResponse(responseString);
-				} else if (queryMode == RESULT_TYPE_BOOLEAN){
-					drawResultsAsBoolean(new Json(responseString, getView(), queryMode));
-				} else if (queryMode == RESULT_TYPE_TABLE) {
-					drawResultsInTable(new Json(responseString, getView(), queryMode), outputFormat);
+				} else {
+//					SparqlResults results = new JsonResults(responseString, getView(), queryMode);
+					SparqlResults results = new XmlResults(responseString, getView(), queryMode);
+					if (queryMode == RESULT_TYPE_BOOLEAN){
+						drawResultsAsBoolean(results);
+					} else if (queryMode == RESULT_TYPE_TABLE) {
+						drawResultsInTable(results, outputFormat);
+					}
 				}
 			}
 		} catch (SparqlEmptyException e) {
@@ -168,7 +173,7 @@ public class ResultContainer extends VLayout {
 		} else if (outputFormat.equals(Output.OUTPUT_CSV)) {
 			Csv output = new Csv(getView(), sparqlResults);
 			JsMethods.openDownDialogForCsv(output.getCsvString());
-			getView().getLogger().severe(output.getCsvString());
+//			getView().getLogger().severe(output.getCsvString());
 		}
 	}
 	

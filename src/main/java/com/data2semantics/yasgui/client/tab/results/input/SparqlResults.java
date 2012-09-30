@@ -11,6 +11,10 @@ import com.data2semantics.yasgui.shared.exceptions.SparqlParseException;
  * Interface for getting sparql or xml sparql result in a common object form
  */
 public interface SparqlResults {
+	//Solutions //array
+	//solution //collection of bindings
+	//binding //1 binding (variable)
+	
 	
 	ArrayList<String> getVariables();
 	ArrayList<HashMap<String, HashMap<String, String>>> getBindings();

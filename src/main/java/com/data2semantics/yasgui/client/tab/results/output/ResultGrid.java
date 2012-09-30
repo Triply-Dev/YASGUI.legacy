@@ -102,17 +102,11 @@ public class ResultGrid extends ListGrid {
 	 * @return
 	 */
 	private ArrayList<ListGridRecord> getSolutionsAsGridRecords(ArrayList<HashMap<String, HashMap<String, String>>> solutions) {
-		getView().getLogger().severe("Sdf");
 		ArrayList<ListGridRecord> rows = new ArrayList<ListGridRecord>();
 		for (HashMap<String, HashMap<String, String>> solution: solutions) {
-			getView().getLogger().severe("Sdfd");
-			getView().getLogger().severe(Integer.toString(solution.hashCode()));
 			this.solutions.put(solution.hashCode(), solution);
-			getView().getLogger().severe("Sdfs");
 			ListGridRecord row = new ListGridRecord();
-			getView().getLogger().severe("Sdf2");
 			row.setAttribute(SOLUTION_ATTRIBUTE, solution.hashCode());
-			getView().getLogger().severe("Sdf7");
 			rows.add(row);
 			
 		}

@@ -7,6 +7,7 @@ import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.ZIndexes;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
+import com.data2semantics.yasgui.client.tab.EndpointDataSource;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 import com.data2semantics.yasgui.shared.Endpoints;
@@ -123,15 +124,14 @@ public class View extends VLayout {
 	 */
 	public void onError(String error) {
 		onLoadingFinish();
-		if (!isDrawn()) {
-			Window window = getErrorWindow();
-			window.setZIndex(ZIndexes.MODAL_WINDOWS);
-			Label label = new Label(error);
-			label.setMargin(4);
-			label.setHeight100();
-			window.addItem(label);
-			window.draw();
-		}
+		Window window = getErrorWindow();
+		window.setZIndex(ZIndexes.MODAL_WINDOWS);
+		Label label = new Label(error);
+		label.setCanSelectText(true);
+		label.setMargin(4);
+		label.setHeight100();
+		window.addItem(label);
+		window.draw();
 	}
 	
 	public void onQueryError(String error) {
@@ -184,6 +184,8 @@ public class View extends VLayout {
 		window.setShowMinimizeButton(false);
 //		window.setShowModalMask(true);
 		window.setAutoCenter(true);
+//		window.setCanDrag(false);
+		window.setCanDragResize(true);
 		window.addCloseClickHandler(new CloseClickHandler() {
 			public void onCloseClick(CloseClickEvent event) {
 				window.destroy();
@@ -198,6 +200,7 @@ public class View extends VLayout {
 	 * @param throwable
 	 */
 	public void onError(Throwable e) {
+		
 		String stackTraceString = Helper.getStackTraceAsString(e);
 		stackTraceString += Helper.getCausesStackTraceAsString(e);
 		onError(stackTraceString);

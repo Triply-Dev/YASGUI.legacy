@@ -18,7 +18,7 @@ import java.util.Set;
 /**
  * Object to parse and validate a sparql json string
  */
-public class Json implements SparqlResults{
+public class JsonResults implements SparqlResults{
 	private View view;
 	private int queryMode;
 	private boolean booleanResult;
@@ -36,12 +36,38 @@ public class Json implements SparqlResults{
 	               }
 	             ]**/
 	private ArrayList<HashMap<String, HashMap<String, String>>> bindings = new ArrayList<HashMap<String, HashMap<String, String>>>();
-	public Json(String jsonString, View view, int queryMode) throws SparqlParseException, SparqlEmptyException {
+	public JsonResults(String jsonString, View view, int queryMode) throws SparqlParseException, SparqlEmptyException {
 		this.view = view;
 		this.queryMode = queryMode;
 		processResults(jsonString);
-		
 	}
+	
+	/**
+	 * Main parser method
+	 * @param jsonString Json string to parse
+	 * @throws SparqlParseException When json string is not valid
+	 * @throws SparqlEmptyException When json string is valid, but contains no results
+	 */
+	public void processResults(String jsonString) throws SparqlParseException, SparqlEmptyException {
+		if (jsonString == null || jsonString.length() == 0) {
+			throw new SparqlParseException("Unable to parse empty JSON string");
+		}
+		JSONValue jsonValue = JSONParser.parseStrict(jsonString);
+		//no need for this anymore, and it can be quite big. Fingers crossed and hope garbage collector deals witht this properly
+		jsonString = null; 
+		if (jsonValue == null) {
+			throw new SparqlParseException("Unable to parse query json string");
+		}
+		JSONObject queryResult = jsonValue.isObject();
+		if (queryResult == null) throw new SparqlParseException("Unable to parse query json string");
+		
+		if (queryMode == ResultContainer.RESULT_TYPE_TABLE) {
+			storeVariables(queryResult);
+			storeBindings(queryResult);
+		} else if (queryMode == ResultContainer.RESULT_TYPE_BOOLEAN) {
+			storeBooleanResult(queryResult);
+		}
+	}	
 	
 	public ArrayList<String> getVariables() {
 		return this.variables;
@@ -92,35 +118,6 @@ public class Json implements SparqlResults{
 		}
 	}
 	
-	
-	/**
-	 * Main parser method
-	 * @param jsonString Json string to parse
-	 * @throws SparqlParseException When json string is not valid
-	 * @throws SparqlEmptyException When json string is valid, but contains no results
-	 */
-	public void processResults(String jsonString) throws SparqlParseException, SparqlEmptyException {
-		if (jsonString == null || jsonString.length() == 0) {
-			throw new SparqlParseException("Unable to parse empty JSON string");
-		}
-		JSONValue jsonValue = JSONParser.parseStrict(jsonString);
-		//no need for this anymore, and it can be quite big. Fingers crossed and hope garbage collector deals witht this properly
-		jsonString = null; 
-		if (jsonValue == null) {
-			throw new SparqlParseException("Unable to parse query json string");
-		}
-		JSONObject queryResult = jsonValue.isObject();
-		if (queryResult == null) throw new SparqlParseException("Unable to parse query json string");
-		
-		if (queryMode == ResultContainer.RESULT_TYPE_TABLE) {
-			storeVariables(queryResult);
-			storeBindings(queryResult);
-		} else if (queryMode == ResultContainer.RESULT_TYPE_BOOLEAN) {
-			storeBooleanResult(queryResult);
-		}
-		
-		
-	}
 	
 	/**
 	 * Gets JSON value as object, and throws exception when value is null

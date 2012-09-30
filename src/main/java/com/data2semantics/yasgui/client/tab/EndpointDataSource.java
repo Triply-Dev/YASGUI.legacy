@@ -1,8 +1,9 @@
-package com.data2semantics.yasgui.client;
+package com.data2semantics.yasgui.client.tab;
 
 import java.util.ArrayList;
 import java.util.Set;
 
+import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.shared.Endpoints;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
