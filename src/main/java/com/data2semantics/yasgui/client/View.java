@@ -288,11 +288,17 @@ public class View extends VLayout {
 	 * 
 	 * @param jsonResult
 	 */
-	public void drawResultsInTable(String jsonResult) {
+	public void drawResultsInTable(String jsonResult, String contentType) {
 		//Create grid and fill with data immediately. 
 		//Will have cell alignment issues (bug smartgwt i guess) when initiating resultgrid before query, and filling afterwards
 		QueryTab tab = getSelectedTab();
-		tab.getResultContainer().addQueryResult(jsonResult, ResultContainer.RESULT_FORMAT_JSON);
+		int resultFormat;
+		if (contentType.contains("json")) {
+			resultFormat = ResultContainer.RESULT_FORMAT_JSON;
+		} else {
+			resultFormat = ResultContainer.RESULT_FORMAT_XML;
+		}
+		tab.getResultContainer().addQueryResult(jsonResult, resultFormat);
 	}
 	
 	/**

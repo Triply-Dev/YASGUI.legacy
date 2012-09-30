@@ -33,20 +33,16 @@ function sparqlQueryJson(queryStr, endpoint, callback) {
 		beforeSend : function(xhr) {
 			//nothing
 		},
-		success : function(data) {
+		success : function(data, textStatus, jqXHR) {
 			onLoadingFinish();
 			onQueryFinish();
-			callback(data);
+			callback(data, jqXHR.getResponseHeader('Content-Type'));
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			onQueryFinish();
 			clearQueryResult();
 			onQueryError("Error querying endpoint: " + jqXHR.status + " - " + errorThrown);
 		},
-		complete: function(jqXHR, textStatus) {
-//			var bla = 1;
-//			console.log(jqXHR.getAllResponseHeaders());
-		}
 	});
 };
 

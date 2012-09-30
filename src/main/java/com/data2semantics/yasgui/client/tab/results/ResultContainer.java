@@ -93,10 +93,16 @@ public class ResultContainer extends VLayout {
 			} else if (queryMode == RESULT_TYPE_BOOLEAN || queryMode == RESULT_TYPE_TABLE) {
 				String outputFormat = getView().getSelectedTabSettings().getOutputFormat();
 				if (outputFormat.equals(Output.OUTPUT_RAW_RESPONSE)) {
-					drawRawResponse(responseString);
+					drawRawResponse(responseString, resultFormat);
 				} else {
-//					SparqlResults results = new JsonResults(responseString, getView(), queryMode);
-					SparqlResults results = new XmlResults(responseString, getView(), queryMode);
+					SparqlResults results;
+					getView().getLogger().severe(Integer.toString(resultFormat));
+					if (resultFormat == RESULT_FORMAT_JSON) {
+						results = new JsonResults(responseString, getView(), queryMode);
+					} else {
+						//xml
+						results = new XmlResults(responseString, getView(), queryMode);
+					}
 					if (queryMode == RESULT_TYPE_BOOLEAN){
 						drawResultsAsBoolean(results);
 					} else if (queryMode == RESULT_TYPE_TABLE) {
@@ -177,12 +183,18 @@ public class ResultContainer extends VLayout {
 		}
 	}
 	
-	private void drawRawResponse(String responseString) {
+	private void drawRawResponse(String responseString, int resultFormat) {
 		rawResponseOutput = new RawResponse(getView(), queryTab, responseString);
 		addMember(rawResponseOutput);
+		final String mode;
+		if (resultFormat == RESULT_FORMAT_JSON) {
+			mode = "json";
+		} else {
+			mode = "xml";
+		}
 		Scheduler.get().scheduleDeferred(new Command() {
 			public void execute() {
-				JsMethods.attachCodeMirrorToQueryResult(rawResponseOutput.getInputId(), Window.getClientWidth()-10);
+				JsMethods.attachCodeMirrorToQueryResult(rawResponseOutput.getInputId(), Window.getClientWidth()-10, mode);
 			}
 		});
 	}

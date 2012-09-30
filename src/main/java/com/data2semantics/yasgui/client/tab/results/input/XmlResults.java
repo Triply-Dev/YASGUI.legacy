@@ -6,7 +6,6 @@ import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
 import com.data2semantics.yasgui.shared.exceptions.SparqlParseException;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
-import com.google.gwt.xml.client.NamedNodeMap;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.XMLParser;
@@ -36,7 +35,6 @@ public class XmlResults implements SparqlResults{
 	 * @throws SparqlEmptyException When json string is valid, but contains no results
 	 */
 	public void processResults(String xmlString) throws SparqlParseException, SparqlEmptyException {
-		getView().getLogger().severe(xmlString);
 		if (xmlString == null || xmlString.length() == 0) {
 			throw new SparqlParseException("Unable to parse empty xml string");
 		}
@@ -141,12 +139,17 @@ public class XmlResults implements SparqlResults{
 	}
 	
 	
-	private void storeBooleanResult(Document xmlDoc) {
-//		JSONBoolean jsonBoolean = queryResult.get("boolean").isBoolean();
-//		if (jsonBoolean == null) {
-//			throw new SparqlParseException("Cannot format value as boolean");
-//		}
-//		booleanResult = jsonBoolean.booleanValue();
+	private void storeBooleanResult(Document xmlDoc) throws SparqlParseException {
+		NodeList booleanNodeList = xmlDoc.getElementsByTagName("boolean");
+		if (booleanNodeList.getLength() == 0) {
+			throw new SparqlParseException("Missing boolean value in xml");
+		}
+		if (booleanNodeList.item(0).getFirstChild().getNodeValue().equals("true")) {
+			booleanResult = true;
+		} else {
+			booleanResult = false;
+		}
+		
 	}
 	
 	public View getView() {

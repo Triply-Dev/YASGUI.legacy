@@ -72,16 +72,22 @@ public class JsMethods {
 	 * 
 	 * @param queryInputId Id of text area to attach codemirror to
 	 */
-	public static native void attachCodeMirrorToQueryResult(String queryInputId, int width) /*-{
+	public static native void attachCodeMirrorToQueryResult(String queryInputId, int width, String mode) /*-{
 		if ($doc.getElementById(queryInputId)) {
-			if ($wnd.jsonHighlight[queryInputId] == null) { 
-				//Only add if it hasnt been drawn yet
-				$wnd.jsonHighlight[queryInputId] = $wnd.CodeMirror.fromTextArea($doc
-						.getElementById(queryInputId), {
-					mode : {
+			if ($wnd.jsonHighlight[queryInputId] == null) {
+				var mode;
+				if (mode == "javascript") {
+					mode = {
 						name: "javascript",
-						json: true,
-					},
+						json: true
+					};
+				} else {
+					mode = "xml";
+				}
+				
+				//Only add if it hasnt been drawn yet
+				$wnd.jsonHighlight[queryInputId] = $wnd.CodeMirror.fromTextArea($doc.getElementById(queryInputId), {
+					mode : mode,
 					lineNumbers : true,
 					matchBrackets : true,
 					readOnly: true,
@@ -105,7 +111,7 @@ public class JsMethods {
 	 * @param endpoint
 	 */
 	public static native void queryJson(String queryString, String endpoint) /*-{
-		$wnd.sparqlQueryJson(queryString, endpoint, function(jsonResult) {$wnd.drawResultsInTable(jsonResult);});
+		$wnd.sparqlQueryJson(queryString, endpoint, function(jsonResult, contentType) {$wnd.drawResultsInTable(jsonResult, contentType);});
 	}-*/;
 	
 	/**
@@ -166,8 +172,8 @@ public class JsMethods {
 	 */
 	public static native void declareCallableViewMethods(View view) /*-{
 		var view = view; 
-		$wnd.drawResultsInTable = function(jsonResult) {
-			view.@com.data2semantics.yasgui.client.View::drawResultsInTable(Ljava/lang/String;)(jsonResult);
+		$wnd.drawResultsInTable = function(jsonResult, contentType) {
+			view.@com.data2semantics.yasgui.client.View::drawResultsInTable(Ljava/lang/String;Ljava/lang/String;)(jsonResult, contentType);
 		}
 		$wnd.onError = function(errorMsg) {
 			view.@com.data2semantics.yasgui.client.View::onError(Ljava/lang/String;)(errorMsg);
