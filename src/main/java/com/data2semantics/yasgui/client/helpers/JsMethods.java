@@ -110,8 +110,8 @@ public class JsMethods {
 	 * @param queryString
 	 * @param endpoint
 	 */
-	public static native void queryJson(String queryString, String endpoint) /*-{
-		$wnd.sparqlQueryJson(queryString, endpoint, function(jsonResult, contentType) {$wnd.drawResultsInTable(jsonResult, contentType);});
+	public static native void queryJson(String tabId, String queryString, String endpoint) /*-{
+		$wnd.sparqlQueryJson(tabId, queryString, endpoint, function(tabId, jsonResult, contentType) {$wnd.drawResultsInTable(tabId, jsonResult, contentType);});
 	}-*/;
 	
 	/**
@@ -172,8 +172,8 @@ public class JsMethods {
 	 */
 	public static native void declareCallableViewMethods(View view) /*-{
 		var view = view; 
-		$wnd.drawResultsInTable = function(jsonResult, contentType) {
-			view.@com.data2semantics.yasgui.client.View::drawResultsInTable(Ljava/lang/String;Ljava/lang/String;)(jsonResult, contentType);
+		$wnd.drawResultsInTable = function(tabId, jsonResult, contentType) {
+			view.@com.data2semantics.yasgui.client.View::drawResultsInTable(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(tabId, jsonResult, contentType);
 		}
 		$wnd.onError = function(errorMsg) {
 			view.@com.data2semantics.yasgui.client.View::onError(Ljava/lang/String;)(errorMsg);

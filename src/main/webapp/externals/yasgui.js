@@ -4,7 +4,7 @@ var sparqlHighlight = {};
 var jsonHighlight = {};
 var prefixes;
 
-function sparqlQueryJson(queryStr, endpoint, callback) {
+function sparqlQueryJson(tabId, queryStr, endpoint, callback) {
 	var ajaxData = {
 		query : queryStr,
 		format: 'application/sparql-results+json' //some endpoints use the format parameter to set accept header
@@ -12,12 +12,10 @@ function sparqlQueryJson(queryStr, endpoint, callback) {
 	var uri;
 	onQueryStart();
 	if (corsEnabled[endpoint]) {
-		onLoadingStart("Executing Query");
 		console.log("query directly");
 		uri = endpoint;
 	} else {
 		onLoadingStart("Executing Query (proxy)");
-		console.log("query via servlet");
 		//query via proxy
 		ajaxData['endpoint'] = endpoint;
 		uri = proxy;
@@ -34,9 +32,9 @@ function sparqlQueryJson(queryStr, endpoint, callback) {
 			//nothing
 		},
 		success : function(data, textStatus, jqXHR) {
-			onLoadingFinish();
+			console.log(tabId);
 			onQueryFinish();
-			callback(data, jqXHR.getResponseHeader('Content-Type'));
+			callback(tabId, data, jqXHR.getResponseHeader('Content-Type'));
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			onQueryFinish();
