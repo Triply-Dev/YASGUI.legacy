@@ -2,7 +2,6 @@ package com.data2semantics.yasgui.client;
 
 import java.util.logging.Logger;
 
-import com.data2semantics.yasgui.client.helpers.Errors;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.settings.Settings;
@@ -13,8 +12,6 @@ import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 import com.data2semantics.yasgui.shared.Endpoints;
 import com.data2semantics.yasgui.shared.exceptions.SettingsException;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
@@ -23,14 +20,6 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.data.Record;
-import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.types.Overflow;
-import com.smartgwt.client.types.Positioning;
-import com.smartgwt.client.widgets.Img;
-import com.smartgwt.client.widgets.ImgButton;
-import com.smartgwt.client.widgets.Label;
-import com.smartgwt.client.widgets.events.ClickEvent;
-import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -38,14 +27,9 @@ import com.smartgwt.client.widgets.layout.VLayout;
 public class View extends VLayout {
 	private Logger logger = Logger.getLogger("");
 	private YasguiServiceAsync remoteService = YasguiServiceAsync.Util.getInstance();
-	private ImgButton queryButton;
-	private Img queryLoading;
 	private EndpointDataSource endpointDataSource;
-	public static String DEFAULT_LOADING_MESSAGE = "Loading...";
-	private static int QUERY_BUTTON_POS_TOP = 5;
-	private static int QUERY_BUTTON_POS_LEFT = 5;
-	private Label loading;
 	private QueryTabs queryTabs;
+	private ViewElements viewElements;
 	
 	private Settings settings = new Settings();
 	
@@ -55,12 +39,13 @@ public class View extends VLayout {
 		JsMethods.setTabBarProperties(QueryTabs.INDENT_TABS);
 		JsMethods.declareCallableViewMethods(this);
 		JsMethods.setProxyUriInVar(GWT.getModuleBaseURL() + "sparql");
-		initLoadingWidget();
+		viewElements = new ViewElements(this);
+		getElements().initLoadingWidget();
 		initEndpointDataSource(false);
 		setWidth100();
 		setHeight100();
 		
-		addQueryButton();
+		getElements().addQueryButton();
 
 		//Setting margins on tabset messes up layout. Therefore use spacer
 		LayoutSpacer spacer = new LayoutSpacer();
@@ -73,103 +58,9 @@ public class View extends VLayout {
 		addMember(new Footer(this));
 	}
 	
-	/**
-	 * Add Query button. Position absolute, as it hovers slightly over the tabbar. Also adds a loading icon on the same place
-	 */
-	private void addQueryButton() {
-		queryButton = new ImgButton();
-		queryButton.setSrc("icons/custom/start.png");
-		queryButton.setHeight(48);
-		queryButton.setShowRollOver(false);
-		queryButton.setShowDown(false);
-		queryButton.setWidth(48);
-		queryButton.setAlign(Alignment.CENTER);
-		queryButton.setZIndex(666666666);
-		queryButton.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				String tabId = getSelectedTab().getID();
-				String endpoint = getSelectedTabSettings().getEndpoint();
-				JsMethods.queryJson(tabId, getSelectedTabSettings().getQueryString(), endpoint);
-				checkAndAddEndpointToDs(endpoint);
-			}
-		});
-		
-		queryButton.setPosition(Positioning.ABSOLUTE);
-		queryButton.setTop(QUERY_BUTTON_POS_TOP);
-		queryButton.setLeft(QUERY_BUTTON_POS_LEFT);
-		queryButton.draw();
-		
-		queryLoading = new Img();
-		queryLoading.setSrc("icons/custom/query_loader.gif");
-		queryLoading.setPosition(Positioning.ABSOLUTE);
-		queryLoading.setTop(QUERY_BUTTON_POS_TOP);
-		queryLoading.setLeft(QUERY_BUTTON_POS_LEFT);
-		queryLoading.hide();
-		queryLoading.setHeight(48);
-		queryLoading.setWidth(48);
-		queryLoading.draw();
-	}
-
 	
-	/**
-	 * Modal popup window to show on error
-	 * 
-	 * @param error
-	 */
-	public void onError(String error) {
-		onLoadingFinish();
-		Errors.onError(error);
-	}
-	
-	public void onQueryError(String error) {
-		onLoadingFinish();
-		Errors.onQueryError(error, getSelectedTabSettings().getEndpoint(), getSelectedTabSettings().getQueryString());
-	}
-	
-	/**
-	 * Show the error window for a trowable. Prints the complete stack trace
-	 * @param throwable
-	 */
-	public void onError(Throwable e) {
-		onLoadingFinish();
-		Errors.onError(e);
-	}
-
-	/**
-	 * initialize loading widget on left bottom corner
-	 */
-	private void initLoadingWidget() {
-		loading = new Label();
-		loading.setIcon("loading.gif");
-		loading.setBackgroundColor("#f0f0f0");
-		loading.setBorder("1px solid grey");
-		loading.getElement().getStyle().setPosition(Position.ABSOLUTE);
-		loading.getElement().getStyle().setTop(0, Unit.PX);
-		loading.getElement().getStyle().setRight(0, Unit.PX);
-		loading.setHeight(30);
-		loading.setAutoWidth();
-		loading.setOverflow(Overflow.VISIBLE);
-		loading.setWrap(false);
-		loading.setAlign(Alignment.CENTER);
-		loading.adjustForContent(false);
-		loading.setZIndex(999999999);
-		loading.hide();
-		loading.redraw();
-	}
-
-	public void onLoadingStart() {
-		onLoadingStart(DEFAULT_LOADING_MESSAGE);
-	}
-	
-	public void onLoadingStart(String message) {
-		//Add spaces to end of message, as we have autowidth enabled to this Label
-		loading.setContents(message + "&nbsp;&nbsp;");
-		loading.show();
-	}
-
-	public void onLoadingFinish() {
-		loading.hide();
+	public ViewElements getElements() {
+		return this.viewElements;
 	}
 
 	public YasguiServiceAsync getRemoteService() {
@@ -184,15 +75,7 @@ public class View extends VLayout {
 		return this.settings;
 	}
 	
-	public void onQueryStart() {
-		queryButton.hide();
-		queryLoading.show();
-	}
 	
-	public void onQueryFinish() {
-		queryButton.show();
-		queryLoading.hide();
-	}
 	/**
 	 * This method is used relatively often, so for easier use put it here
 	 * 
@@ -276,9 +159,13 @@ public class View extends VLayout {
 		} else {
 			JsMethods.setAutocompletePrefixes(prefixes);
 		}
-
 	}
 	
+	/**
+	 * Initialize datasource containing endpoint info. Used in autocompletion input, as well as endpoint search grid
+	 * 
+	 * @param forceUpdate
+	 */
 	public void initEndpointDataSource(boolean forceUpdate) {
 		String endpoints = LocalStorageHelper.getEndpointsFromLocalStorage();
 		if (forceUpdate || endpoints == null) {
@@ -326,7 +213,7 @@ public class View extends VLayout {
 	 * 
 	 * @param endpoint
 	 */
-	private void checkAndAddEndpointToDs(String endpoint) {
+	public void checkAndAddEndpointToDs(String endpoint) {
 		Record[] records = endpointDataSource.getCacheData();
 		boolean exists = false;
 		for (Record record:records) {
@@ -378,5 +265,52 @@ public class View extends VLayout {
 			}
 		}
 	}
+	/**
+	 * @see ViewElements#onLoadingStart()
+	 */
+	public void onLoadingStart(String message) {
+		getElements().onLoadingStart(message);
+	}
 
+	/**
+	 * @see ViewElements#onLoadingFinish()
+	 */
+	public void onLoadingFinish() {
+		getElements().onLoadingFinish();
+	}
+	
+	/**
+	 * @see ViewElements#onQueryStart()
+	 */
+	public void onQueryStart() {
+		getElements().onQueryStart();
+	}
+	
+	/**
+	 * @see ViewElements#onQueryFinish()
+	 */
+	public void onQueryFinish() {
+		getElements().onQueryFinish();
+	}
+	
+	/**
+	 * @see ViewElements#onError(String)
+	 */
+	public void onError(String error) {
+		getElements().onError(error);
+	}
+	
+	/**
+	 * @see ViewElements#onQueryError(String)
+	 */
+	public void onQueryError(String error) {
+		getElements().onQueryError(error);
+	}
+	
+	/**
+	 * @see ViewElements#onError()Throwable
+	 */
+	public void onError(Throwable e) {
+		getElements().onError(e);
+	}
 }

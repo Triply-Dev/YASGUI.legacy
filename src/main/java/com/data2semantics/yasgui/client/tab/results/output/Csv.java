@@ -11,6 +11,7 @@ public class Csv extends HTMLPane {
 	private static String QUOTE = "\"";
 	private static String DELIMITER = ",";
 	private static String LINE_BREAK = "\n";
+	@SuppressWarnings("unused")
 	private View view;
 	private ArrayList<String> variables;
 	private ArrayList<HashMap<String, HashMap<String, String>>> querySolutions;
@@ -69,10 +70,4 @@ public class Csv extends HTMLPane {
 		}
 		return quote;
 	}
-
-	@SuppressWarnings("unused")
-	private View getView() {
-		return this.view;
-	}
-
 }

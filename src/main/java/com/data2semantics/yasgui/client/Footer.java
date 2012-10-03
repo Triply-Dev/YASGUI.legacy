@@ -9,6 +9,7 @@ import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
 
 public class Footer extends HLayout {
+	@SuppressWarnings("unused")
 	private View view;
 
 	public Footer(View view) {
@@ -29,11 +30,6 @@ public class Footer extends HLayout {
 //		Label label = Helper.getLinkNewWindow("View src on GitHub", "http://github.com/LaurensRietveld/yasgui");
 		
 		addMember(label);
-	}
-
-	@SuppressWarnings("unused")
-	private View getView() {
-		return this.view;
 	}
 
 	private Label getFooterLink(String message, final String url) {

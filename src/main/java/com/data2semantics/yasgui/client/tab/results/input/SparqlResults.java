@@ -2,8 +2,6 @@ package com.data2semantics.yasgui.client.tab.results.input;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
 import com.data2semantics.yasgui.shared.exceptions.SparqlParseException;
 
@@ -20,5 +18,4 @@ public interface SparqlResults {
 	ArrayList<HashMap<String, HashMap<String, String>>> getBindings();
 	void processResults(String jsonString) throws SparqlParseException, SparqlEmptyException;
 	boolean getBooleanResult();
-	View getView();
 }

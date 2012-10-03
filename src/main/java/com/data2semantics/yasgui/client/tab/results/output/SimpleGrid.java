@@ -11,6 +11,7 @@ import com.smartgwt.client.util.StringUtil;
 import com.smartgwt.client.widgets.HTMLPane;
 
 public class SimpleGrid extends HTMLPane {
+	@SuppressWarnings("unused")
 	private View view;
 	private HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
 	private ArrayList<String> variables;
@@ -67,11 +68,6 @@ public class SimpleGrid extends HTMLPane {
 			html += "</tr>";
 		}
 		html += "</tbody>";
-	}
-
-	@SuppressWarnings("unused")
-	private View getView() {
-		return this.view;
 	}
 
 	/**

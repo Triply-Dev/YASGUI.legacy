@@ -58,10 +58,6 @@ public class EndpointSearch extends ImgButton {
 		
 	}
 	
-	private View getView() {
-		return this.view;
-	}
-	
 	/**
 	 * get listgrid to search endpoints in
 	 * 
@@ -92,7 +88,7 @@ public class EndpointSearch extends ImgButton {
 		searchGrid.addRecordClickHandler(new RecordClickHandler(){
 			@Override
 			public void onRecordClick(RecordClickEvent event) {
-				getView().getSelectedTab().getEndpointInput().storeEndpoint(event.getRecord().getAttributeAsString(Endpoints.KEY_ENDPOINT));
+				view.getSelectedTab().getEndpointInput().storeEndpoint(event.getRecord().getAttributeAsString(Endpoints.KEY_ENDPOINT));
 				window.destroy();
 			}});
 		searchGrid.setFixedRecordHeights(false);
@@ -111,7 +107,7 @@ public class EndpointSearch extends ImgButton {
 		fields.add(dataUriField);
 		searchGrid.setFields(fields.toArray(new ListGridField[fields.size()]));
 		searchGrid.setFilterOnKeypress(true);
-		searchGrid.setDataSource(getView().getEndpointDataSource());
+		searchGrid.setDataSource(view.getEndpointDataSource());
 		searchGrid.setWrapCells(true);
 		searchGrid.setCanResizeFields(true);
 		searchGrid.fetchData();//We are using a client-only datasource. need to manually fetch to fill grid

@@ -27,24 +27,24 @@ public class QueryTab extends Tab {
 		super(tabSettings.getTabTitle());
 		this.tabSettings = tabSettings;
 		this.view = view;
-		this.queryResultContainer = new ResultContainer(getView(), this);
+		this.queryResultContainer = new ResultContainer(view, this);
 		setCanClose(true);
 		HLayout queryOptions = new HLayout();
 		queryOptions.setDefaultLayoutAlign(VerticalAlignment.BOTTOM);
 		queryOptions.setHeight(35);
-		endpointInput = new EndpointInput(getView(), this);
+		endpointInput = new EndpointInput(view, this);
 		queryOptions.addMember(endpointInput);
 		
-		EndpointSearch searchIcon = new EndpointSearch(getView());
+		EndpointSearch searchIcon = new EndpointSearch(view);
 		
 		queryOptions.addMember(searchIcon);
 
-		outputSelection = new OutputSelection(getView(), this);
+		outputSelection = new OutputSelection(view, this);
 		queryOptions.addMember(outputSelection);
 		
 		vLayout.addMember(queryOptions);
 
-		queryTextArea = new QueryTextArea(getView(), this);
+		queryTextArea = new QueryTextArea(view, this);
 		vLayout.addMember(queryTextArea);
 
 		vLayout.addMember(queryResultContainer);
@@ -64,7 +64,7 @@ public class QueryTab extends Tab {
 			@Override
 			public void onClick(MenuItemClickEvent event) {
 				int tabNumber = ((QueryTabs) getTabSet()).getTabNumber(getTabObject().getID());
-				TabSettings settings = (TabSettings) getView().getSettings().getTabArray().get(tabNumber).clone();
+				TabSettings settings = (TabSettings) view.getSettings().getTabArray().get(tabNumber).clone();
 				settings.setTabTitle("Copy of " + settings.getTabTitle());
 				((QueryTabs) getTabSet()).addTab(settings, true);
 			}
@@ -130,10 +130,6 @@ public class QueryTab extends Tab {
 
 	public QueryTextArea getQueryTextArea() {
 		return this.queryTextArea;
-	}
-
-	private View getView() {
-		return this.view;
 	}
 
 	public TabSettings getTabSettings() {

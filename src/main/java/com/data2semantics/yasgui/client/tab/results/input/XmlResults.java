@@ -16,6 +16,7 @@ import java.util.HashMap;
  * Object to parse and validate a sparql json string
  */
 public class XmlResults implements SparqlResults{
+	@SuppressWarnings("unused")
 	private View view;
 	private int queryMode;
 	private boolean booleanResult;
@@ -96,7 +97,6 @@ public class XmlResults implements SparqlResults{
 		NodeList bindings = ((Element) node).getElementsByTagName("binding");
 		for (int i = 0; i < bindings.getLength(); i++) {
 			Node binding = bindings.item(i);
-			getView().getLogger().severe(((Element) binding).getAttribute("name"));
 			solution.put(((Element) binding).getAttribute("name"), getBindingFromNode(binding));
 		}
 		return solution;
@@ -149,11 +149,6 @@ public class XmlResults implements SparqlResults{
 		} else {
 			booleanResult = false;
 		}
-		
-	}
-	
-	public View getView() {
-		return this.view;
 	}
 
 }

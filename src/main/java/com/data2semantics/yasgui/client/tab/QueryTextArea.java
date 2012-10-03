@@ -5,6 +5,7 @@ import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.smartgwt.client.widgets.HTMLPane;
 
 public class QueryTextArea extends HTMLPane {
+	@SuppressWarnings("unused")
 	private View view;
 	private static String APPEND_INPUT_ID = "_queryInput";
 	private String inputId;
@@ -25,11 +26,6 @@ public class QueryTextArea extends HTMLPane {
 	public String getQuery() {
 		JsMethods.saveCodeMirror(getInputId());
 		return JsMethods.getValueUsingId(inputId);
-	}
-	
-	@SuppressWarnings("unused")
-	private View getView() {
-		return view;
 	}
 	
 	public String getInputId() {

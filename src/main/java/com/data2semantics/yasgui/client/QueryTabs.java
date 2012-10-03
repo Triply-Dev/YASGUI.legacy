@@ -44,7 +44,7 @@ public class QueryTabs extends TabSet {
 		setCanEditTabTitles(true);
 		setTitleEditEvent(TabTitleEditEvent.DOUBLECLICK);
 		setTabsFromSettings();
-		selectTab(getView().getSettings().getSelectedTabNumber());
+		selectTab(view.getSettings().getSelectedTabNumber());
 		setTabBarThickness(50);
 		// Need to schedule attaching of codemirror. It uses doc.getElementById,
 		// which doesnt work if element hasnt been drawn yet
@@ -61,7 +61,7 @@ public class QueryTabs extends TabSet {
 	 * Load all tabs defined in our settings object, and load them
 	 */
 	private void setTabsFromSettings() {
-		ArrayList<TabSettings> tabArray = getView().getSettings().getTabArray();
+		ArrayList<TabSettings> tabArray = view.getSettings().getTabArray();
 		if (tabArray.size() == 0) {
 			// Don't have anything yet. Just draw a new tab with default vals
 			addTab(new TabSettings());
@@ -93,25 +93,21 @@ public class QueryTabs extends TabSet {
 		addTabButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				TabSettings tabSettings = new TabSettings();
-				getView().getSettings().addTabSettings(tabSettings);
-				getView().getTabs().addTab(tabSettings, true);
-				LocalStorageHelper.storeSettingsInCookie(getView().getSettings());
+				view.getSettings().addTabSettings(tabSettings);
+				view.getTabs().addTab(tabSettings, true);
+				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
 			}
 		});
 		
 		configButton = new IconMenuButton("");
 		configButton.setIcon("icons/diagona/bolt.png");
-		configButton.setMenu(new ConfigMenu(getView()));
+		configButton.setMenu(new ConfigMenu(view));
 		controls.setZIndex(ZIndexes.TAB_CONTROLS);
 		controls.addMember(configButton);
 		controls.addMember(addTabButton);
 		addChild(controls);
 	}
 	
-	private View getView() {
-		return this.view;
-	}
-
 	/**
 	 * Define all handlers of the tabs on the tab bar
 	 */
@@ -119,7 +115,7 @@ public class QueryTabs extends TabSet {
 		addTabSelectedHandler(new TabSelectedHandler() {
 			@Override
 			public void onTabSelected(TabSelectedEvent event) {
-				Settings settings = getView().getSettings();
+				Settings settings = view.getSettings();
 				settings.setSelectedTabNumber(event.getTabNum());
 				LocalStorageHelper.storeSettingsInCookie(settings);
 				Scheduler.get().scheduleDeferred(new Command() {
@@ -132,7 +128,7 @@ public class QueryTabs extends TabSet {
 		addTabTitleChangedHandler(new TabTitleChangedHandler() {
 			@Override
 			public void onTabTitleChanged(TabTitleChangedEvent event) {
-				Settings settings = getView().getSettings();
+				Settings settings = view.getSettings();
 				int tabIndex = getTabNumber(event.getTab().getID());
 				//Don't use selected one. Title may change by context menu, when other tab is selected
 				settings.getTabArray().get(tabIndex).setTabTitle(event.getNewTitle());
@@ -159,7 +155,7 @@ public class QueryTabs extends TabSet {
 				removeTab((QueryTab)tab, false);
 			}
 		}
-		LocalStorageHelper.storeSettingsInCookie(getView().getSettings());
+		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
 	}
 	
 	/**
@@ -170,7 +166,7 @@ public class QueryTabs extends TabSet {
 		for (Tab tab: tabs) {
 			removeTab((QueryTab)tab, false);
 		}
-		LocalStorageHelper.storeSettingsInCookie(getView().getSettings());
+		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
 	}
 	
 	/**
@@ -191,7 +187,7 @@ public class QueryTabs extends TabSet {
 	 * @param queryTab
 	 */
 	public void closePreProcess(QueryTab queryTab) {
-		Settings settings = getView().getSettings();
+		Settings settings = view.getSettings();
 		settings.removeTabSettings(getTabNumber(queryTab.getID()));
 		// To avoid codemirror js objects lying around, remove js objects
 		// belonging to this tab
@@ -215,7 +211,7 @@ public class QueryTabs extends TabSet {
 	 * @param storeSettings Whether to store settings in cookie. We might not always want to do this (when removing multiple tabs we want to do it only once)
 	 */
 	public void closePostProcess(QueryTab queryTab, boolean storeSettings) {
-		Settings settings = getView().getSettings();
+		Settings settings = view.getSettings();
 		settings.setSelectedTabNumber(getSelectedTabNumber());
 		if (storeSettings) {
 			LocalStorageHelper.storeSettingsInCookie(settings);
@@ -248,7 +244,7 @@ public class QueryTabs extends TabSet {
 	 */
 	public void addTab(TabSettings tabSettings, boolean select) {
 		tabSettings.setTabTitle(createTabTitle(tabSettings.getTabTitle()));
-		QueryTab tab = new QueryTab(getView(), tabSettings);
+		QueryTab tab = new QueryTab(view, tabSettings);
 		addTab(tab);
 		if (select) {
 			selectTab(tab);

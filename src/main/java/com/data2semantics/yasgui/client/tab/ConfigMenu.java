@@ -7,8 +7,9 @@ import com.smartgwt.client.widgets.menu.events.ClickHandler;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 
 public class ConfigMenu extends Menu {
+	@SuppressWarnings("unused")
 	private View view;
-	public ConfigMenu(View view) {
+	public ConfigMenu(final View view) {
 		this.view = view;
 		
 		MenuItem prefixUpdate = new MenuItem("Force prefixes update");
@@ -17,19 +18,15 @@ public class ConfigMenu extends Menu {
 
 			@Override
 			public void onClick(MenuItemClickEvent event) {
-				getView().setAutocompletePrefixes(true);
+				view.setAutocompletePrefixes(true);
 			}});
 		MenuItem endpointsUpdate = new MenuItem("Force endpoints update");
 		endpointsUpdate.setIcon("icons/diagona/reload.png");
 		endpointsUpdate.addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(MenuItemClickEvent event) {
-				getView().initEndpointDataSource(true);
+				view.initEndpointDataSource(true);
 			}});
 		setItems(prefixUpdate, endpointsUpdate);
-	}
-	
-	private View getView() {
-		return this.view;
 	}
 }

@@ -21,8 +21,8 @@ public class JsMethods {
 	 * @param queryInputId Id of the text area of this codemirror instance
 	 */
 	public static native void destroyCodeMirrorQueryResponse(String queryInputId) /*-{
-			if ($wnd.jsonHighlight[queryInputId] != null) { 
-				$wnd.jsonHighlight[queryInputId] = null;
+			if ($wnd.sparqlResponseHighlight[queryInputId] != null) { 
+				$wnd.sparqlResponseHighlight[queryInputId] = null;
 			}
 	}-*/;
 	
@@ -74,25 +74,24 @@ public class JsMethods {
 	 */
 	public static native void attachCodeMirrorToQueryResult(String queryInputId, int width, String mode) /*-{
 		if ($doc.getElementById(queryInputId)) {
-			if ($wnd.jsonHighlight[queryInputId] == null) {
-				var mode;
-				if (mode == "javascript") {
-					mode = {
+			if ($wnd.sparqlResponseHighlight[queryInputId] == null) {
+				var cmMode;
+				if (mode == "json") {
+					cmMode = {
 						name: "javascript",
 						json: true
 					};
 				} else {
-					mode = "xml";
+					cmMode = "xml";
 				}
-				
 				//Only add if it hasnt been drawn yet
-				$wnd.jsonHighlight[queryInputId] = $wnd.CodeMirror.fromTextArea($doc.getElementById(queryInputId), {
-					mode : mode,
+				$wnd.sparqlResponseHighlight[queryInputId] = $wnd.CodeMirror.fromTextArea($doc.getElementById(queryInputId), {
+					mode : cmMode,
 					lineNumbers : true,
 					matchBrackets : true,
 					readOnly: true,
 				});
-				$wnd.jsonHighlight[queryInputId].setSize("100%", "100%");
+				$wnd.sparqlResponseHighlight[queryInputId].setSize("100%", "100%");
 			}
 		} else {
 			$wnd.onError("no text area to create json highlight for input id: " + queryInputId);
@@ -179,11 +178,7 @@ public class JsMethods {
 			view.@com.data2semantics.yasgui.client.View::onError(Ljava/lang/String;)(errorMsg);
 		}
 		$wnd.onLoadingStart = function(message) {
-			if (message == undefined) {
-				view.@com.data2semantics.yasgui.client.View::onLoadingStart()();
-			} else {
-				view.@com.data2semantics.yasgui.client.View::onLoadingStart(Ljava/lang/String;)(message);
-			}
+			view.@com.data2semantics.yasgui.client.View::onLoadingStart(Ljava/lang/String;)(message);
 		}
 		$wnd.onLoadingFinish = function() {
 			view.@com.data2semantics.yasgui.client.View::onLoadingFinish()();

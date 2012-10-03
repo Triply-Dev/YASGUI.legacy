@@ -60,11 +60,11 @@ public class EndpointInput extends DynamicForm {
 		endpoint.setAddUnknownValues(true);
 		endpoint.setCompleteOnTab(true);
 		endpoint.setWidth(420);
-		endpoint.setOptionDataSource(getView().getEndpointDataSource());
+		endpoint.setOptionDataSource(view.getEndpointDataSource());
 		endpoint.setHideEmptyPickList(true);
 		endpoint.setDefaultValue(getQueryTab().getTabSettings().getEndpoint());
 		//For this default value, also retrieve CORS setting
-		JsMethods.checkCorsEnabled(getView().getSelectedTabSettings().getEndpoint());
+		JsMethods.checkCorsEnabled(view.getSelectedTabSettings().getEndpoint());
 
 		initPickList();
 		
@@ -117,18 +117,14 @@ public class EndpointInput extends DynamicForm {
 	
 	public void storeEndpoint(String endpoint) {
 		JsMethods.checkCorsEnabled(endpoint);
-		getView().getSettings().getSelectedTabSettings().setEndpoint(endpoint);
-		LocalStorageHelper.storeSettingsInCookie(getView().getSettings());
+		view.getSettings().getSelectedTabSettings().setEndpoint(endpoint);
+		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
 	}
 	
 	public void setEndpoint(String endpointString) {
 		endpoint.setValue(endpointString);
-		getView().getSelectedTabSettings().setEndpoint(endpointString);
-		LocalStorageHelper.storeSettingsInCookie(getView().getSettings());
-	}
-	
-	private View getView() {
-		return this.view;
+		view.getSelectedTabSettings().setEndpoint(endpointString);
+		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
 	}
 	
 	private QueryTab getQueryTab() {

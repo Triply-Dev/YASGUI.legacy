@@ -20,6 +20,7 @@ public class ResultGrid extends ListGrid {
 	private static String SOLUTION_ATTRIBUTE = "yasgui___solution";
 	private static String XSD_DATA_PREFIX = "http://www.w3.org/2001/XMLSchema#";
 	private HashMap<Integer, HashMap<String, HashMap<String, String>>> solutions = new HashMap<Integer, HashMap<String, HashMap<String, String>>>();
+	@SuppressWarnings("unused")
 	private View view;
 	private SparqlResults sparqlResults;
 	private HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
@@ -34,7 +35,7 @@ public class ResultGrid extends ListGrid {
 		setFixedRecordHeights(false);
 		setWrapCells(true);
 		setCanResizeFields(true);
-		queryPrefixes = Helper.getPrefixesFromQuery(getView().getSelectedTabSettings().getQueryString());
+		queryPrefixes = Helper.getPrefixesFromQuery(view.getSelectedTabSettings().getQueryString());
 		drawQueryResults();
 	}
 	
@@ -146,9 +147,4 @@ public class ResultGrid extends ListGrid {
 		}
 		return prefix;
 	}
-
-	private View getView() {
-		return this.view;
-	}
-	
 }

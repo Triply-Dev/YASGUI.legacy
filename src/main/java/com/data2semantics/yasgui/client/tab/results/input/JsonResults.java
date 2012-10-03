@@ -19,6 +19,7 @@ import java.util.Set;
  * Object to parse and validate a sparql json string
  */
 public class JsonResults implements SparqlResults{
+	@SuppressWarnings("unused")
 	private View view;
 	private int queryMode;
 	private boolean booleanResult;
@@ -185,9 +186,4 @@ public class JsonResults implements SparqlResults{
 		}
 		booleanResult = jsonBoolean.booleanValue();
 	}
-	
-	public View getView() {
-		return this.view;
-	}
-
 }

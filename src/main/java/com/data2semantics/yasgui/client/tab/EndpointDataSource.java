@@ -21,6 +21,7 @@ public class EndpointDataSource extends DataSource {
 	 * Additionally, this would require multiple sparql queries being executed where one would suffice
 	 */
 	
+	@SuppressWarnings("unused")
 	private View view;
 	private ArrayList<ListGridRecord> records = new ArrayList<ListGridRecord>();
 	public EndpointDataSource(View view) {
@@ -71,9 +72,5 @@ public class EndpointDataSource extends DataSource {
 		}
 		
 		records.add(record);
-	}
-	@SuppressWarnings("unused")
-	private View getView() {
-		return this.view;
 	}
 }

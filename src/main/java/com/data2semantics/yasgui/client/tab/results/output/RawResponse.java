@@ -6,7 +6,8 @@ import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.HTMLPane;
 
 public class RawResponse extends HTMLPane {
-	private static String APPEND_INPUT_ID = "_jsonResults";
+	private static String APPEND_INPUT_ID = "_rawResponse";
+	@SuppressWarnings("unused")
 	private View view;
 	private String responseString;
 	private String inputId;
@@ -29,10 +30,4 @@ public class RawResponse extends HTMLPane {
 	public String getInputId() {
 		return this.inputId;
 	}
-	
-	@SuppressWarnings("unused")
-	private View getView() {
-		return this.view;
-	}
-
 }

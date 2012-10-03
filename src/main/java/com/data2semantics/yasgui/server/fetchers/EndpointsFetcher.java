@@ -94,7 +94,8 @@ public class EndpointsFetcher {
 				"		?distribution dcat:accessURL ?" + Endpoints.KEY_ENDPOINT + ".\n" + 
 				"		?" + Endpoints.KEY_DATASETURI +" dcterms:title ?" + Endpoints.KEY_TITLE + ";\n" + 
 				"			dcterms:description ?" + Endpoints.KEY_DESCRIPTION + ".\n" + 
-				"		} ORDER BY ?" + Endpoints.KEY_TITLE + " ";
+//				"		} ORDER BY ?" + Endpoints.KEY_TITLE + " LIMIT 10";
+				"		} ORDER BY ?" + Endpoints.KEY_TITLE;
 		/**
 		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 			PREFIX dcat: <http://www.w3.org/ns/dcat#>

@@ -40,11 +40,6 @@ public class ResultContainer extends VLayout {
 		this.queryTab = queryTab;
 	}
 	
-	private View getView() {
-		return this.view;
-	}
-	
-	
 	private void setPossibleQueryTypes() {
 		queryTypes.put("SELECT", RESULT_TYPE_TABLE);
 		queryTypes.put("ASK", RESULT_TYPE_BOOLEAN);
@@ -80,9 +75,9 @@ public class ResultContainer extends VLayout {
 	
 	public void addQueryResult(String responseString, int resultFormat) {
 		reset();
-		String queryType = JsMethods.getQueryType(getView().getSelectedTab().getQueryTextArea().getInputId());
+		String queryType = JsMethods.getQueryType(view.getSelectedTab().getQueryTextArea().getInputId());
 		if (!queryTypes.containsKey(queryType)) {
-			getView().onError("No valid query type detected for this query");
+			view.onError("No valid query type detected for this query");
 			return;
 		}
 		int queryMode = queryTypes.get(queryType);
@@ -91,17 +86,17 @@ public class ResultContainer extends VLayout {
 			if (queryMode == RESULT_TYPE_INSERT) {
 				setOkMessage("Done");
 			} else if (queryMode == RESULT_TYPE_BOOLEAN || queryMode == RESULT_TYPE_TABLE) {
-				String outputFormat = getView().getSelectedTabSettings().getOutputFormat();
+				String outputFormat = view.getSelectedTabSettings().getOutputFormat();
 				if (outputFormat.equals(Output.OUTPUT_RAW_RESPONSE)) {
 					drawRawResponse(responseString, resultFormat);
 				} else {
 					SparqlResults results;
-					getView().getLogger().severe(Integer.toString(resultFormat));
+					view.getLogger().severe(Integer.toString(resultFormat));
 					if (resultFormat == RESULT_FORMAT_JSON) {
-						results = new JsonResults(responseString, getView(), queryMode);
+						results = new JsonResults(responseString, view, queryMode);
 					} else {
 						//xml
-						results = new XmlResults(responseString, getView(), queryMode);
+						results = new XmlResults(responseString, view, queryMode);
 					}
 					if (queryMode == RESULT_TYPE_BOOLEAN){
 						drawResultsAsBoolean(results);
@@ -113,7 +108,7 @@ public class ResultContainer extends VLayout {
 		} catch (SparqlEmptyException e) {
 			setErrorResultMessage(e.getMessage());
 		} catch (Exception e) {
-			getView().onError(e);
+			view.onError(e);
 			
 		} 
 	}
@@ -173,18 +168,18 @@ public class ResultContainer extends VLayout {
 	
 	private void drawResultsInTable(SparqlResults sparqlResults, String outputFormat) {
 		if (outputFormat.equals(Output.OUTPUT_TABLE)) {
-			addMember(new ResultGrid(getView(), sparqlResults));
+			addMember(new ResultGrid(view, sparqlResults));
 		} else if (outputFormat.equals(Output.OUTPUT_TABLE_SIMPLE)) {
-			addMember(new SimpleGrid(getView(), sparqlResults));
+			addMember(new SimpleGrid(view, sparqlResults));
 		} else if (outputFormat.equals(Output.OUTPUT_CSV)) {
-			Csv output = new Csv(getView(), sparqlResults);
+			Csv output = new Csv(view, sparqlResults);
 			JsMethods.openDownDialogForCsv(output.getCsvString());
-//			getView().getLogger().severe(output.getCsvString());
+//			view.getLogger().severe(output.getCsvString());
 		}
 	}
 	
 	private void drawRawResponse(String responseString, int resultFormat) {
-		rawResponseOutput = new RawResponse(getView(), queryTab, responseString);
+		rawResponseOutput = new RawResponse(view, queryTab, responseString);
 		addMember(rawResponseOutput);
 		final String mode;
 		if (resultFormat == RESULT_FORMAT_JSON) {

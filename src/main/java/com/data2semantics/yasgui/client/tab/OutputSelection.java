@@ -11,10 +11,11 @@ import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 
 public class OutputSelection extends DynamicForm {
+	@SuppressWarnings("unused")
 	private View view;
 	SelectItem selectItem;
 
-	public OutputSelection(View view, QueryTab tab) {
+	public OutputSelection(final View view, QueryTab tab) {
 		this.view = view;
 		selectItem = new SelectItem();
 		selectItem.setTitle("Output");
@@ -39,14 +40,10 @@ public class OutputSelection extends DynamicForm {
 		selectItem.addChangedHandler(new ChangedHandler() {
 			@Override
 			public void onChanged(ChangedEvent event) {
-				getView().getSelectedTabSettings().setOutputFormat(selectItem.getValueAsString());
-				LocalStorageHelper.storeSettingsInCookie(getView().getSettings());
+				view.getSelectedTabSettings().setOutputFormat(selectItem.getValueAsString());
+				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
 			}
 		});
 		setItems(selectItem);
-	}
-
-	private View getView() {
-		return this.view;
 	}
 }

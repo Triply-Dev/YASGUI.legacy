@@ -1,7 +1,7 @@
 var corsEnabled = {};
 var proxy;
 var sparqlHighlight = {};
-var jsonHighlight = {};
+var sparqlResponseHighlight = {};
 var prefixes;
 
 function sparqlQueryJson(tabId, queryStr, endpoint, callback) {
