@@ -15,7 +15,6 @@ function sparqlQueryJson(tabId, queryStr, endpoint, callback) {
 		console.log("query directly");
 		uri = endpoint;
 	} else {
-		onLoadingStart("Executing Query (proxy)");
 		//query via proxy
 		ajaxData['endpoint'] = endpoint;
 		uri = proxy;

@@ -19,6 +19,8 @@ import com.google.gwt.user.client.Window;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.Label;
+import com.smartgwt.client.widgets.events.ResizedEvent;
+import com.smartgwt.client.widgets.events.ResizedHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -187,11 +189,18 @@ public class ResultContainer extends VLayout {
 		} else {
 			mode = "xml";
 		}
-		Scheduler.get().scheduleDeferred(new Command() {
-			public void execute() {
-				JsMethods.attachCodeMirrorToQueryResult(rawResponseOutput.getInputId(), Window.getClientWidth()-10, mode);
-			}
-		});
+		//on window resize, part of the page get redrawn. This means we have to attach to codemirror again
+		//this is also called on first load
+		rawResponseOutput.addResizedHandler(new ResizedHandler(){
+			@Override
+			public void onResized(ResizedEvent event) {
+				Scheduler.get().scheduleDeferred(new Command() {
+					public void execute() {
+						JsMethods.attachCodeMirrorToQueryResult(rawResponseOutput.getInputId(), Window.getClientWidth()-10, mode);
+					}
+				});
+		}});
+
 	}
 	public RawResponse getRawResponseOutput() {
 		return this.rawResponseOutput;

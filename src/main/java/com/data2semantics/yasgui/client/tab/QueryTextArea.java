@@ -10,12 +10,12 @@ public class QueryTextArea extends HTMLPane {
 	private static String APPEND_INPUT_ID = "_queryInput";
 	private String inputId;
 	private QueryTab tab;
-	public static int WIDTH = 350;
+	public static int HEIGHT = 350;
 	public QueryTextArea(View view, QueryTab tab) {
 		this.tab = tab;
 		this.view = view;
 		this.inputId = tab.getID() + APPEND_INPUT_ID;
-		setHeight(Integer.toString(WIDTH) + "px");
+		setHeight(Integer.toString(HEIGHT) + "px");
 		setTextArea();
 	}
 	

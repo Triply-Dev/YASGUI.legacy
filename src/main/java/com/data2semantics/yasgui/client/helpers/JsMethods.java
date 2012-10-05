@@ -41,6 +41,7 @@ public class JsMethods {
 					tabMode : "indent",
 					lineNumbers : true,
 					matchBrackets : true,
+					fixedGutter: true,
 					onCursorActivity : function() {
 						$wnd.sparqlHighlight[queryInputId]
 								.matchHighlight("CodeMirror-matchhighlight");
@@ -73,8 +74,16 @@ public class JsMethods {
 	 * @param queryInputId Id of text area to attach codemirror to
 	 */
 	public static native void attachCodeMirrorToQueryResult(String queryInputId, int width, String mode) /*-{
-		if ($doc.getElementById(queryInputId)) {
-			if ($wnd.sparqlResponseHighlight[queryInputId] == null) {
+		var qInput = $doc.getElementById(queryInputId);
+		if (qInput) {
+			var drawCodeMirror = false;
+			if ($wnd.sparqlResponseHighlight[queryInputId] == null) drawCodeMirror = true;
+			
+			//also check if it isnt drawn yet. Checking for just the javascript object in the sparqlResponseHighlight object is not enough
+			//The object can be there, while visually you see the text area. a goof that happens between codemirror and smartgwt I believe (having to do with the way smartgwt loads pages icw resizing pages)
+			if (qInput.nextSibling == null) drawCodeMirror = true;
+
+			if (drawCodeMirror) {
 				var cmMode;
 				if (mode == "json") {
 					cmMode = {
@@ -84,17 +93,24 @@ public class JsMethods {
 				} else {
 					cmMode = "xml";
 				}
-				//Only add if it hasnt been drawn yet
 				$wnd.sparqlResponseHighlight[queryInputId] = $wnd.CodeMirror.fromTextArea($doc.getElementById(queryInputId), {
 					mode : cmMode,
 					lineNumbers : true,
 					matchBrackets : true,
-					readOnly: true,
+					readOnly: false,
+					fixedGutter: true
 				});
-				$wnd.sparqlResponseHighlight[queryInputId].setSize("100%", "100%");
+				
+				//Append another classname to the codemirror div, so we can set width and height via css
+				if (qInput.nextSibling != null && qInput.nextSibling.className == "CodeMirror") {
+					qInput.nextSibling.className = "CodeMirror resultCm";
+					scrollElement = qInput.nextSibling.getElementsByClassName("CodeMirror-scroll");
+					//use jquery for this (a bit easier). for this element, find scroll class, and append another class
+					$wnd.$("#"+queryInputId).next().find($wnd.$(".CodeMirror-scroll")).addClass("scrollCm")
+				}
 			}
 		} else {
-			$wnd.onError("no text area to create json highlight for input id: " + queryInputId);
+			$wnd.onError("no text area to create sparql response highlight for. Input id: " + queryInputId);
 		}
 	}-*/;
 	

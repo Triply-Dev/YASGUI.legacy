@@ -20,6 +20,7 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -34,6 +35,7 @@ public class View extends VLayout {
 	private Settings settings = new Settings();
 	
 	public View() {
+		setOverflow(Overflow.HIDDEN);
 		endpointDataSource = new EndpointDataSource(this);
 		settings = LocalStorageHelper.getSettingsFromCookie();
 		JsMethods.setTabBarProperties(QueryTabs.INDENT_TABS);

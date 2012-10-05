@@ -11,6 +11,7 @@ import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.client.tab.results.output.RawResponse;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
+import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Side;
 import com.smartgwt.client.types.TabTitleEditEvent;
 import com.smartgwt.client.widgets.ImgButton;
@@ -39,9 +40,11 @@ public class QueryTabs extends TabSet {
 		setTabBarThickness(28); //this way the icon menu button alligns well with the tabbar
 		setTabBarPosition(Side.TOP);
 		setTabBarAlign(Side.LEFT);
+		setOverflow(Overflow.HIDDEN);
 		setWidth100();
 		setHeight100();
 		setCanEditTabTitles(true);
+		
 		setTitleEditEvent(TabTitleEditEvent.DOUBLECLICK);
 		setTabsFromSettings();
 		selectTab(view.getSettings().getSelectedTabNumber());

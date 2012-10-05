@@ -21,6 +21,15 @@ span.CodeMirror-matchhighlight {
 	border-bottom: 2px dotted red;
 }
 
+.resultCm {
+	height: 400px;
+}
+.scrollCm {
+	height: 400px;
+}
+
+
+
 .clickable {
 	color: blue;
 	cursor: pointer;
