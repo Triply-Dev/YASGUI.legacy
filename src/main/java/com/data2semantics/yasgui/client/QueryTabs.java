@@ -74,7 +74,7 @@ public class QueryTabs extends TabSet {
 		TooltipProperties tProp = new TooltipProperties();
 		tProp.setId(configButton.getDOM().getId());
 		tProp.setContent(TooltipText.CONFIG_MENU);
-		tProp.setMy(TooltipProperties.POS_LEFT_TOP);
+		tProp.setMy(TooltipProperties.POS_TOP_LEFT);
 		tProp.setAt(TooltipProperties.POS_BOTTOM_CENTER);
 		Helper.drawTooltip(tProp);
 	}
