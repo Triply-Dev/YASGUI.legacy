@@ -5,6 +5,7 @@ import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
 import com.data2semantics.yasgui.client.helpers.properties.TooltipText;
+import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.smartgwt.client.widgets.HTMLPane;
 
 public class QueryTextArea extends HTMLPane {
@@ -21,12 +22,12 @@ public class QueryTextArea extends HTMLPane {
 		setHeight(Integer.toString(HEIGHT) + "px");
 		setTextArea();
 	}
-	public void showTooltips() {
+	public void showTooltips() throws ElementIdException {
 		showPrefixTooltip();
 		showKeyShortcutsTooltip();
 	}
 	
-	private void showPrefixTooltip() {
+	private void showPrefixTooltip() throws ElementIdException {
 		TooltipProperties tProp = new TooltipProperties();
 		tProp.setId(getDOM().getId());
 		tProp.setContent(TooltipText.QUERY_PREFIXES_AUTOCOMPLETE);
@@ -37,14 +38,13 @@ public class QueryTextArea extends HTMLPane {
 		Helper.drawTooltip(tProp);
 	}
 	
-	private void showKeyShortcutsTooltip() {
+	private void showKeyShortcutsTooltip() throws ElementIdException {
 		TooltipProperties tProp = new TooltipProperties();
 		tProp.setId(getDOM().getId());
 		tProp.setContent(TooltipText.QUERY_KEYBOARD_SHORTCUTS);
 		tProp.setMy(TooltipProperties.POS_CENTER);
 		tProp.setAt(TooltipProperties.POS_LEFT_CENTER);
 		tProp.setXOffset(200);
-//		tProp.setYOffset(23);
 		Helper.drawTooltip(tProp);
 	}
 	
