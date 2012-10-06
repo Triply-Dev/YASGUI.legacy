@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.client.helpers;
+package com.data2semantics.yasgui.client.helpers.properties;
 
 public class ZIndexes {
 	public static int LOADING_WIDGET = 50000005;

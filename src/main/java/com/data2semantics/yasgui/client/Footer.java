@@ -2,6 +2,7 @@ package com.data2semantics.yasgui.client;
 
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
+import com.data2semantics.yasgui.client.helpers.properties.TooltipText;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.google.gwt.user.client.Window;
 import com.smartgwt.client.types.Alignment;
@@ -31,7 +32,7 @@ public class Footer extends HLayout {
 	public void showTooltips() throws ElementIdException {
 		TooltipProperties tProp = new TooltipProperties();
 		tProp.setId(tooltipButton.getDOM().getId());
-		tProp.setContent("Click this button to show these hints again");
+		tProp.setContent(TooltipText.TOOLTIP_BUTTON);
 		tProp.setMy(TooltipProperties.POS_BOTTOM_RIGHT);
 		tProp.setAt(TooltipProperties.POS_TOP_CENTER);
 		Helper.drawTooltip(tProp);

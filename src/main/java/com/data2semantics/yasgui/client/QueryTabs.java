@@ -6,7 +6,8 @@ import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
-import com.data2semantics.yasgui.client.helpers.ZIndexes;
+import com.data2semantics.yasgui.client.helpers.properties.TooltipText;
+import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.ConfigMenu;
@@ -72,7 +73,7 @@ public class QueryTabs extends TabSet {
 	private void showConfigMenuTooltip() throws ElementIdException {
 		TooltipProperties tProp = new TooltipProperties();
 		tProp.setId(configButton.getDOM().getId());
-		tProp.setContent("Update prefixes (e.g. after adding prefix to www.prefix.cc)<br>Update list of endpoints from CKAN");
+		tProp.setContent(TooltipText.CONFIG_MENU);
 		tProp.setMy(TooltipProperties.POS_LEFT_TOP);
 		tProp.setAt(TooltipProperties.POS_BOTTOM_CENTER);
 		Helper.drawTooltip(tProp);
@@ -80,7 +81,7 @@ public class QueryTabs extends TabSet {
 	private void showTabSelectionTooltip() throws ElementIdException {
 		TooltipProperties tProp = new TooltipProperties();
 		tProp.setId(getDOM().getId());
-		tProp.setContent("Double click to rename. Right click for tab options");
+		tProp.setContent(TooltipText.TAB_SELECTION);
 		tProp.setMy(TooltipProperties.POS_BOTTOM_CENTER);
 		tProp.setAt(TooltipProperties.POS_TOP_CENTER);
 		tProp.setXOffset(-475);

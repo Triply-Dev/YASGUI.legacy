@@ -16,7 +16,7 @@ import com.smartgwt.client.widgets.grid.events.RecordClickEvent;
 import com.smartgwt.client.widgets.grid.events.RecordClickHandler;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
-import com.data2semantics.yasgui.client.helpers.ZIndexes;
+import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
 import com.data2semantics.yasgui.shared.Endpoints;
 public class EndpointSearch extends ImgButton {
 	private static int WINDOW_HEIGHT = 600;

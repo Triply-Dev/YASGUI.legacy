@@ -2,7 +2,7 @@ package com.data2semantics.yasgui.client;
 
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
-import com.data2semantics.yasgui.client.helpers.ZIndexes;
+import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.http.client.URL;

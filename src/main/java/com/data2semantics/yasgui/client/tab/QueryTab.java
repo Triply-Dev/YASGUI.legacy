@@ -4,6 +4,7 @@ import com.data2semantics.yasgui.client.QueryTabs;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
+import com.data2semantics.yasgui.client.helpers.properties.TooltipText;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
@@ -124,9 +125,13 @@ public class QueryTab extends Tab {
 	}
 	public void showTooltips() throws ElementIdException {
 		queryTextArea.showTooltips();
+		showSearchIconTooltip();
+		
+	}
+	private void showSearchIconTooltip() {
 		TooltipProperties tProp = new TooltipProperties();
 		tProp.setId(searchIcon.getDOM().getId());
-		tProp.setContent("Search for endpoints");
+		tProp.setContent(TooltipText.ENDPOINT_SEARCH_ICON);
 		tProp.setMy(TooltipProperties.POS_BOTTOM_CENTER);
 		tProp.setAt(TooltipProperties.POS_TOP_CENTER);
 		tProp.setYOffset(-7);
