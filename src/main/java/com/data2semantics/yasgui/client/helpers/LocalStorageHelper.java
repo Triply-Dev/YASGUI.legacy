@@ -17,7 +17,6 @@ public class LocalStorageHelper {
 	private static int PREFIXES_EXPIRE_DAYS = 5;
 	private static int ENDPOINTS_EXPIRE_DAYS = 5;
 	private static int SETTINGS_EXPIRE_DAYS = 5000;
-	private static int TOOLTIPS_SHOWN_EXPIRE_DAYS = 5000;
 	
 	
 
@@ -102,12 +101,14 @@ public class LocalStorageHelper {
 	/**
 	 * Tries to set prefixes json string in local html5 storage. Will set nothing if html5 is not supported
 	 * 
-	 * @param value
+	 * @param value Needs to be non-empty. Will store nothing when string is empty
 	 * @oaram addTimeStamp whether to prepend string with timestamp
 	 */
 	public static void setInLocalStorage(String key, String value, boolean addTimeStamp) {
-		Date currentDate = new Date();
-		setInLocalStorage(key, Long.toString(currentDate.getTime()) + LOCAL_STORAGE_EXPIRE_SEPARATOR + value);
+		if (value.length() > 0) {
+			Date currentDate = new Date();
+			setInLocalStorage(key, Long.toString(currentDate.getTime()) + LOCAL_STORAGE_EXPIRE_SEPARATOR + value);
+		}
 	}
 	
 	
@@ -161,12 +162,12 @@ public class LocalStorageHelper {
 		setInLocalStorage(COOKIE_ENDPOINTS, endpoints, true);
 	}
 	
-	public static boolean showHelpToolTips() {
+	public static boolean showTooltips() {
 		return (Cookies.getCookie(COOKIE_TOOLTIPS_SHOWN) == null);
 	}
 	
-	public static void setTooltipShown() {
-		Cookies.setCookie(COOKIE_TOOLTIPS_SHOWN, "1", getExpireDate(TOOLTIPS_SHOWN_EXPIRE_DAYS));
+	public static void setTooltipsShown() {
+		Cookies.setCookie(COOKIE_TOOLTIPS_SHOWN, "1");
 	}
 	
 	private static Date getExpireDate(int days) {

@@ -59,15 +59,19 @@ public class View extends VLayout {
 		setAutocompletePrefixes(false);
 		queryTabs = new QueryTabs(this);
 		addMember(queryTabs);
-		Scheduler.get().scheduleFinally(new Command() {
-			public void execute() {
-				showTooltips();
-				getLogger().severe(queryTabs.getID());
-				getLogger().severe(Integer.toString(queryTabs.getAbsoluteTop()));
-			}
-		});
+		
 		footer = new Footer(this);
 		addMember(footer);
+		
+		//Schedule this all the way at the end, so we have no problems with absolute positions and undrawn elements
+		Scheduler.get().scheduleFinally(new Command() {
+			public void execute() {
+				if (LocalStorageHelper.showTooltips()) {
+					showTooltips();
+					LocalStorageHelper.setTooltipsShown();
+				}
+			}
+		});
 	}
 	
 	public void showTooltips() {
