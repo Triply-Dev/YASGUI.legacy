@@ -13,6 +13,7 @@ Used services and libraries
  * Thanks to the people from [FLINT SPARQL editor][3] and the javascript SPARQL parser they created using [peg.js][4]
  * [CKAN][5] dataset catalogue
  * [prefix.cc][6] namespace lookup service
+ * [jQuery][7] and the [jQuery qTip plugin][8]
 
 
 
@@ -24,3 +25,5 @@ Used services and libraries
   [4]: http://pegjs.majda.cz/
   [5]: http://thedatahub.org/
   [6]: http://prefix.cc 
+  [7]: http://jquery.com/
+  [8]: http://craigsworks.com/projects/qtip/
