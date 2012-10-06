@@ -1,6 +1,7 @@
 body {
 	overflow: hidden;
 }
+/*Codemirror CSS*/
 span.CodeMirror-matchhighlight {
 	background: #e9e9e9
 }
@@ -21,6 +22,7 @@ span.CodeMirror-matchhighlight {
 	border-bottom: 2px dotted red;
 }
 
+/*Custom stuff for the codemirror box used for displaying raw query results*/
 .resultCm {
 	height: 400px;
 }
@@ -29,16 +31,14 @@ span.CodeMirror-matchhighlight {
 }
 
 
-
-.clickable {
-	color: blue;
-	cursor: pointer;
-}
-
+/*Simple table css*/
 .tabSetContainer {
 	border: 0px solid black !important;
 }
 
+
+
+/*footer*/
 .footer {
 	margin-top: 3px;
 	border-top-style: solid;
@@ -55,6 +55,8 @@ span.CodeMirror-matchhighlight {
 	margin: 3px;
 }
 
+
+/*Simple table css*/
 #hor-minimalist-b {
 	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
 	font-size: 12px;
@@ -85,4 +87,8 @@ span.CodeMirror-matchhighlight {
 
 .simpleTable tbody tr:hover td {
 	color: #009;
+}
+.clickable {
+	color: blue;
+	cursor: pointer;
 }

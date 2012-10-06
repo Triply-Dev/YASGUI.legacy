@@ -44,7 +44,7 @@ public class ViewElements {
 		queryButton.setShowDown(false);
 		queryButton.setWidth(48);
 		queryButton.setAlign(Alignment.CENTER);
-		queryButton.setZIndex(666666666);
+		queryButton.setZIndex(ZIndexes.TAB_CONTROLS);
 		queryButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -207,4 +207,5 @@ public class ViewElements {
 		stackTraceString += Helper.getCausesStackTraceAsString(e);
 		onError(stackTraceString);
 	}
+	
 }

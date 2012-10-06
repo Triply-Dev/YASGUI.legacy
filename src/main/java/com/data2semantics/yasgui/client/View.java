@@ -4,20 +4,24 @@ import java.util.logging.Logger;
 
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
+import com.data2semantics.yasgui.client.helpers.ZIndexes;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.EndpointDataSource;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 import com.data2semantics.yasgui.shared.Endpoints;
+import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.data2semantics.yasgui.shared.exceptions.SettingsException;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.storage.client.Storage;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Overflow;
@@ -31,16 +35,14 @@ public class View extends VLayout {
 	private EndpointDataSource endpointDataSource;
 	private QueryTabs queryTabs;
 	private ViewElements viewElements;
-	
+	private Footer footer;
 	private Settings settings = new Settings();
 	
 	public View() {
 		setOverflow(Overflow.HIDDEN);
 		endpointDataSource = new EndpointDataSource(this);
 		settings = LocalStorageHelper.getSettingsFromCookie();
-		JsMethods.setTabBarProperties(QueryTabs.INDENT_TABS);
-		JsMethods.declareCallableViewMethods(this);
-		JsMethods.setProxyUriInVar(GWT.getModuleBaseURL() + "sparql");
+		initJs();
 		viewElements = new ViewElements(this);
 		getElements().initLoadingWidget();
 		initEndpointDataSource(false);
@@ -57,7 +59,32 @@ public class View extends VLayout {
 		setAutocompletePrefixes(false);
 		queryTabs = new QueryTabs(this);
 		addMember(queryTabs);
-		addMember(new Footer(this));
+		Scheduler.get().scheduleFinally(new Command() {
+			public void execute() {
+				showTooltips();
+				getLogger().severe(queryTabs.getID());
+				getLogger().severe(Integer.toString(queryTabs.getAbsoluteTop()));
+			}
+		});
+		footer = new Footer(this);
+		addMember(footer);
+	}
+	
+	public void showTooltips() {
+		try {
+			footer.showTooltips();
+			queryTabs.showTooltips();
+			getSelectedTab().showTooltips();
+		} catch (ElementIdException e) {
+			onError(e);
+		}
+	}
+	
+	private void initJs() {
+		JsMethods.setTabBarProperties(QueryTabs.INDENT_TABS);
+		JsMethods.declareCallableViewMethods(this);
+		JsMethods.setProxyUriInVar(GWT.getModuleBaseURL() + "sparql");
+		JsMethods.setQtipZIndex(ZIndexes.HELP_TOOLTIPS);
 	}
 	
 	

@@ -2,8 +2,11 @@ package com.data2semantics.yasgui.client.tab;
 
 import com.data2semantics.yasgui.client.QueryTabs;
 import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.client.helpers.Helper;
+import com.data2semantics.yasgui.client.helpers.TooltipProperties;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.results.ResultContainer;
+import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -22,7 +25,7 @@ public class QueryTab extends Tab {
 	private ResultContainer queryResultContainer;
 	private TabSettings tabSettings;
 	private OutputSelection outputSelection;
-	
+	private EndpointSearch searchIcon;
 	public QueryTab(View view, TabSettings tabSettings) {
 		super(tabSettings.getTabTitle());
 		this.tabSettings = tabSettings;
@@ -35,7 +38,7 @@ public class QueryTab extends Tab {
 		endpointInput = new EndpointInput(view, this);
 		queryOptions.addMember(endpointInput);
 		
-		EndpointSearch searchIcon = new EndpointSearch(view);
+		searchIcon = new EndpointSearch(view);
 		
 		queryOptions.addMember(searchIcon);
 
@@ -118,6 +121,17 @@ public class QueryTab extends Tab {
 		menu.setItems(renameTab, copy, separator, closeTab, closeOtherTabs, closeAll);
 		setContextMenu(menu);
 
+	}
+	public void showTooltips() throws ElementIdException {
+		queryTextArea.showTooltips();
+		TooltipProperties tProp = new TooltipProperties();
+		tProp.setId(searchIcon.getDOM().getId());
+		tProp.setContent("Search for endpoints");
+		tProp.setMy(TooltipProperties.POS_BOTTOM_CENTER);
+		tProp.setAt(TooltipProperties.POS_TOP_CENTER);
+		tProp.setYOffset(-7);
+		tProp.setXOffset(-1);
+		Helper.drawTooltip(tProp);
 	}
 
 	private QueryTab getTabObject() {

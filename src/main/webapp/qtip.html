@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+<title>Codemirror Test</title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+<!-- qtip lib -->
+<script src="externals/qtip/jquery.qtip.min.js"></script>
+<link rel="stylesheet" href="externals/qtip/jquery.qtip.css">
+<script src="externals/yasgui.js"></script>
+  </head>
+<script src="externals/codemirror/codemirror.js"></script>
+<link rel="stylesheet" href="externals/codemirror/codemirror.css">
+<!-- Autocompletion code -->
+<link rel="stylesheet" href="externals/codemirror/util/simple-hint.css">
+<script src="externals/codemirror/util/simple-hint.js"></script>
+<script src="externals/prefix-hint.js"></script>
+<!-- Highlight words onclick code -->
+<script src="externals/codemirror/util/searchcursor.js"></script>
+<script src="externals/codemirror/util/match-highlighter.js"></script>
+<link rel="stylesheet" href="externals/yasgui.css">
+<!-- Flint code for sparql mode -->
+<script src="externals/sparqlGrammar.js"></script>
+<script src="externals/flint/sparql.js"></script>
+<link rel="stylesheet" href="externals/flint/sparql.css">
+<!-- Code for adding custom keycombination/mouseclick commands to codemirror -->
+<script src="externals/addCommands.js"></script>
+  <body>
+	<div id="test2" style="background-color:red;width:30px; height: 30px;">&nbsp;</div>
+	<textarea id="test" style="width:400px;height:100px;">PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
+PREFIX : &lt;http://aers.data2semantics.org/vocab/&gt; 
+SELECT DISTINCT *
+{
+?patient rdfs:comment ?comment.
+}
+</textarea>
+	<script type="text/javascript">
+	var prefixes = ["aers: <bwah>", "aaebs: <sdf>", "aacbs: <sdf>", "whereeee: <sdf>", "whereeec: <sdf>"];
+				var modes;
+		var myCodeMirror = CodeMirror.fromTextArea(document
+				.getElementById("test"), {
+			lineNumbers : true,
+			extraKeys : {
+				"Ctrl-Space" : "autocomplete",
+				"Ctrl-D" : "deleteLines",
+				"Ctrl-/" : "commentLines",
+				"Ctrl-Alt-Down" : "copyLineDown",
+				"Ctrl-Alt-Up" : "copyLineUp",
+				"Ctrl-S" : "doNothing"
+			},
+			onCursorActivity : function() {
+				myCodeMirror.matchHighlight("CodeMirror-matchhighlight");
+			},
+			onChange : function(cm) {
+				CodeMirror.simpleHint(cm, CodeMirror.prefixHint);
+			}
+			//onHighlightComplete:  function(cm) {
+			//	checkSyntax(cm);
+			//}
+		});
+		myCodeMirror.setSize("200px", "200px");
+			
+	</script>
+	
+	<script type="text/javascript">
+	$('#test2').qtip({
+		content:'blaaaaat', 
+		show: {
+	        //when: false, // Don't specify a show event
+	        ready: true, // Show the tooltip when ready
+	        event: false,
+	        effect: function() { $(this).fadeIn(250); }
+	    },
+	    position: {
+			my: 'left center',
+			at: 'center right',
+			target: $('#test2'), // my target
+			adjust: {
+				x: 10
+			}
+		},
+	    //hide: false,
+	    hide: {
+			event: 'click unfocus',
+	        effect: function() { $(this).fadeOut(250); }
+		},
+		style: { 
+	  		classes: 'ui-tooltip-tipped'
+		},
+		
+	});
+	//$('.qtip').qtip('show');
+	//$('.qtip').qtip('hide');
+	
+	</script>
+</body>
+</html>

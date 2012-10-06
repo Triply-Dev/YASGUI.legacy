@@ -3,6 +3,7 @@ package com.data2semantics.yasgui.client.helpers;
 import java.util.ArrayList;
 import java.util.HashMap;
 import com.data2semantics.yasgui.shared.Prefix;
+import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Window;
@@ -109,5 +110,15 @@ public class Helper {
 			}
 		}
 		return empty;
+	}
+	
+	public static void drawTooltip(TooltipProperties tProp) throws ElementIdException {
+		if (tProp.getId() == null || tProp.getId().length() == 0) {
+			throw new ElementIdException("No Id provided to draw tooltip for");
+		}
+		if (!JsMethods.elementExists(tProp.getId())) {
+			throw new ElementIdException("id '" + tProp.getId() + "' not found on page. Unable to draw tooltip");
+		}
+		JsMethods.drawTooltip(tProp.getId(), tProp.getContent(), tProp.getMy(), tProp.getAt(), tProp.getXOffset(), tProp.getYOffset());
 	}
 }

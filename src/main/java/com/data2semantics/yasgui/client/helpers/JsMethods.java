@@ -227,6 +227,15 @@ public class JsMethods {
 	}-*/;
 	
 	/**
+	 * Set the proper z-index for the q-tip tooltips
+	 * 
+	 * @param z-index
+	 */
+	public static native void setQtipZIndex(int zIndex) /*-{
+		$wnd.jQuery.fn.qtip.zindex = zIndex;
+	}-*/;
+	
+	/**
 	 * Cannot set all properties of tab bar after initialization. Therefore use this method to set properties beforehand
 	 * @param margin
 	 */
@@ -252,5 +261,44 @@ public class JsMethods {
 	 */
 	public static native String openDownDialogForCsv(String csv) /*-{
 	}-*/;
+
+	public static native boolean elementExists(String id) /*-{
+		if ($doc.getElementById(id)) {
+			return true;
+		} else {
+			return false;
+		}
+	}-*/;
+	
+	
+	
+	public static native String drawTooltip(String id, String content, String my, String at, int xOffset, int yOffset) /*-{
+		$wnd.$('#' + id).qtip({
+			content: content, 
+			show: {
+		        ready: true, // Show the tooltip when ready
+		        event: false,
+		        effect: function() { $wnd.$(this).fadeIn(250); }
+		    },
+		    position: {
+				my: my,
+				at: at,
+				target: $wnd.$('#' + id), // my target
+				adjust: {
+					x: xOffset,
+					y: yOffset
+				}
+			},
+		    //hide: false,
+		    hide: {
+				event: 'click unfocus', //hide when anything is clicked: elsewhere (unfocus) or on the element itself (click)
+				effect: function() { $wnd.$(this).fadeOut(250); }
+			},
+			style: { 
+		  		classes: 'ui-tooltip-tipped'
+			}
+		});
+	}-*/;
+	
 	
 }
