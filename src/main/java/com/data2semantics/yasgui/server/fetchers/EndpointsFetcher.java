@@ -78,7 +78,6 @@ public class EndpointsFetcher {
 	 */
 	private static String getEndpointsAsJsonArrayString() throws JSONException {
 		JSONArray endpoints = new JSONArray();
-		System.out.println(getQuery());
 		ResultSet resultSet = SparqlService.query(ENDPOINT, getQuery());
 		while (resultSet.hasNext()) {
 			JSONObject endpoint = new JSONObject();

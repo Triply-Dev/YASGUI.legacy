@@ -64,8 +64,8 @@ public class View extends VLayout {
 	public static String VERSION = "12.10"; //also defined in pom.xml
 	
 	public View() {
-		GoogleAnalytics.init(GoogleAnalytics.UID);
 		LocalStorageHelper.setVersion(VERSION);
+		GoogleAnalytics.init(GoogleAnalytics.UID);
 		setOverflow(Overflow.HIDDEN);
 		endpointDataSource = new EndpointDataSource(this);
 		settings = LocalStorageHelper.getSettingsFromCookie();
