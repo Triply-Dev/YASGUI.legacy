@@ -51,6 +51,7 @@ public class EndpointsFetcher {
 		String result = "";
 		if (!cacheDir.exists()) {
 			cacheDir.mkdir();
+			forceUpdate = true;
 		}
 		
 		File file = new File(cacheDir + "/" + CACHE_FILENAME);

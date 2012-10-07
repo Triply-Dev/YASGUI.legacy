@@ -49,6 +49,7 @@ public class PrefixesFetcher {
 		String result = "";
 		if (!cacheDir.exists()) {
 			cacheDir.mkdir();
+			forceUpdate = true;
 		}
 		
 		File file = new File(cacheDir + "/" + CACHE_FILENAME);
