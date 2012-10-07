@@ -2,6 +2,7 @@ package com.data2semantics.yasgui.client;
 
 import java.util.logging.Logger;
 
+import com.data2semantics.yasgui.client.helpers.GoogleAnalytics;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
@@ -39,6 +40,7 @@ public class View extends VLayout {
 	private Settings settings = new Settings();
 	
 	public View() {
+		GoogleAnalytics.init(GoogleAnalytics.UID);
 		setOverflow(Overflow.HIDDEN);
 		endpointDataSource = new EndpointDataSource(this);
 		settings = LocalStorageHelper.getSettingsFromCookie();

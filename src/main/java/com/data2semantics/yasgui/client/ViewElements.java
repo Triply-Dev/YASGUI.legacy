@@ -1,5 +1,6 @@
 package com.data2semantics.yasgui.client;
 
+import com.data2semantics.yasgui.client.helpers.GoogleAnalytics;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
@@ -52,6 +53,7 @@ public class ViewElements {
 				String endpoint = view.getSelectedTabSettings().getEndpoint();
 				JsMethods.queryJson(tabId, view.getSelectedTabSettings().getQueryString(), endpoint);
 				view.checkAndAddEndpointToDs(endpoint);
+				GoogleAnalytics.trackEvent("interaction", "query", endpoint);
 			}
 		});
 		
@@ -158,6 +160,13 @@ public class ViewElements {
 		return window;
 	}
 	
+	/**
+	 * Display error when querying endpoint failed. Has buttons for opening query result page of endpoint itself on new page
+	 * 
+	 * @param error Html error msg
+	 * @param endpoint Used endpoint
+	 * @param query Used query
+	 */
 	public void onQueryError(String error, final String endpoint, final String query) {
 		final Window window = getErrorWindow();
 		window.setZIndex(ZIndexes.MODAL_WINDOWS);
@@ -170,6 +179,7 @@ public class ViewElements {
 		vLayout.addMember(label);
 		
 		HLayout buttons = new HLayout();
+		buttons.setAlign(Alignment.CENTER);
 		Button executeQuery = new Button("Open endpoint in new window");
 		executeQuery.addClickHandler(new ClickHandler(){
 			@Override
