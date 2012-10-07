@@ -47,12 +47,9 @@ span.CodeMirror-matchhighlight {
 	color: #D9D9D9;
 }
 
-.footerlink {
+.footerText {
 	font-weight: bold;
-	position: static;
-	cursor: pointer;
 	color: #686772;
-	margin: 3px;
 }
 
 

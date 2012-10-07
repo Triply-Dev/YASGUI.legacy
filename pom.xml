@@ -9,11 +9,12 @@
   <groupId>com.data2semantics.yasgui</groupId>
   <artifactId>yasgui</artifactId>
   <packaging>war</packaging>
-  <version>12.10</version>
+  <version>12.10</version><!-- also defined in view.java -->
 
   <properties>
     <!-- Convenience property to set the GWT version -->
     <gwtVersion>2.5.0-rc1</gwtVersion>
+    <yasguiVersion>${version}</yasguiVersion>
     <!-- GWT needs at least java 1.5 -->
     <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

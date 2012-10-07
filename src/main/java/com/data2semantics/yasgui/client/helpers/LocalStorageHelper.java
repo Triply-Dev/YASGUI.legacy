@@ -31,16 +31,21 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.datepicker.client.CalendarUtil;
 
 public class LocalStorageHelper {
 	private static String COOKIE_SETTINGS = "settings";
 	private static String COOKIE_TOOLTIPS_SHOWN = "tooltipsShown";
 	private static String COOKIE_PREFIXES = "prefixes";
 	private static String COOKIE_ENDPOINTS = "endpoints";
+	private static String COOKIE_VERSION = "version";
+	
 	private static String LOCAL_STORAGE_EXPIRE_SEPARATOR = "_"; //used to separate content and long value containing timestamp of insertion
 	private static int PREFIXES_EXPIRE_DAYS = 5;
 	private static int ENDPOINTS_EXPIRE_DAYS = 5;
 	private static int SETTINGS_EXPIRE_DAYS = 5000;
+	private static int VERSION_EXPIRE_DAYS = 5000;
+	private static int TOOLTIPS_EXPIRE_DAYS = 5000;
 	
 	
 
@@ -61,8 +66,6 @@ public class LocalStorageHelper {
 		}
 		
 	}
-	
-
 	
 
 	/**
@@ -191,14 +194,20 @@ public class LocalStorageHelper {
 	}
 	
 	public static void setTooltipsShown() {
-		Cookies.setCookie(COOKIE_TOOLTIPS_SHOWN, "1");
+		Cookies.setCookie(COOKIE_TOOLTIPS_SHOWN, "1", getExpireDate(TOOLTIPS_EXPIRE_DAYS));
+	}
+	
+	public static void setVersion(String version) {
+		Cookies.setCookie(COOKIE_VERSION, version, getExpireDate(VERSION_EXPIRE_DAYS));
+	}
+	
+	public static String getVersion() {
+		return Cookies.getCookie(COOKIE_VERSION);
 	}
 	
 	private static Date getExpireDate(int days) {
 		Date date = new Date();
-		long dateLong = date.getTime();
-		dateLong = dateLong + (1000 * 60 * 60 * 24 * days);
-		date.setTime(dateLong);
+		CalendarUtil.addDaysToDate(date, days);
 		return date;
 	}
 

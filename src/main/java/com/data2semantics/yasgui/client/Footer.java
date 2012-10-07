@@ -46,6 +46,7 @@ public class Footer extends HLayout {
 		setHeight(30);
 		setStyleName("footer");
 		setDefaultLayoutAlign(Alignment.CENTER);
+		addYasguiVersion();
 		LayoutSpacer spacer = new LayoutSpacer();
 		spacer.setWidth100();
 		addMember(spacer);
@@ -84,23 +85,19 @@ public class Footer extends HLayout {
 		});
 		addMember(tooltipButton);
 	}
+	
+	private void addYasguiVersion() {
+		Label yasguiVersion = new Label("Yasgui " + View.VERSION);
+		yasguiVersion.setAlign(Alignment.CENTER);
+		yasguiVersion.setMargin(3);
+		yasguiVersion.setStyleName("footerText");
+		yasguiVersion.setWrap(false);
+		yasguiVersion.setCanSelectText(true);
+		addMember(yasguiVersion);
+	}
 
 	private void addGitHub() {
-//		Label link = new Label("View src on GitHub");
-//		link.setStyleName("footerlink");
-//		link.setAlign(Alignment.CENTER);
-//		link.setMargin(3);
-////		link = new Label(message);
-//		link.setWrap(false);
-//		link.setCanSelectText(true);
-//		link.addClickHandler(new ClickHandler() {
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				Window.open("http://github.com/LaurensRietveld/yasgui", "_blank", null);
-//			}
-//		});
-//		
-//		addMember(link);
+
 		ImgButton githubButton = new ImgButton();
 		githubButton.setSrc("github.png");
 		githubButton.setMargin(1);
