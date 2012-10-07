@@ -3,6 +3,7 @@ var proxy;
 var sparqlHighlight = {};
 var sparqlResponseHighlight = {};
 var prefixes;
+var queryRequest;
 
 function sparqlQueryJson(tabId, queryStr, endpoint, callback) {
 	var ajaxData = {
@@ -19,7 +20,7 @@ function sparqlQueryJson(tabId, queryStr, endpoint, callback) {
 		ajaxData['endpoint'] = endpoint;
 		uri = proxy;
 	}
-	$.ajax({
+	queryRequest = $.ajax({
 		url : uri,
 		type : 'POST',
 		headers: { 
@@ -36,9 +37,12 @@ function sparqlQueryJson(tabId, queryStr, endpoint, callback) {
 			callback(tabId, data, jqXHR.getResponseHeader('Content-Type'));
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
-			onQueryFinish();
-			clearQueryResult();
-			onQueryError("Error querying endpoint: " + jqXHR.status + " - " + errorThrown);
+			if (textStatus != "abort") {
+				//if user cancels query, textStatus will be 'abort'. No need to show error window than
+				onQueryFinish();
+				clearQueryResult();
+				onQueryError("Error querying endpoint: " + jqXHR.status + " - " + errorThrown);
+			}
 		},
 	});
 };

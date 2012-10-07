@@ -35,7 +35,6 @@ import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Positioning;
 import com.smartgwt.client.widgets.Button;
-import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
@@ -49,7 +48,7 @@ import com.smartgwt.client.widgets.layout.VLayout;
 public class ViewElements {
 	private View view;
 	private ImgButton queryButton;
-	private Img queryLoading;
+	private ImgButton queryLoading;
 	public static String DEFAULT_LOADING_MESSAGE = "Loading...";
 	private static int QUERY_BUTTON_POS_TOP = 5;
 	private static int QUERY_BUTTON_POS_LEFT = 5;
@@ -86,7 +85,7 @@ public class ViewElements {
 		queryButton.setLeft(QUERY_BUTTON_POS_LEFT);
 		queryButton.draw();
 		
-		queryLoading = new Img();
+		queryLoading = new ImgButton();
 		queryLoading.setSrc("icons/custom/query_loader.gif");
 		queryLoading.setPosition(Positioning.ABSOLUTE);
 		queryLoading.setTop(QUERY_BUTTON_POS_TOP);
@@ -94,6 +93,16 @@ public class ViewElements {
 		queryLoading.hide();
 		queryLoading.setHeight(48);
 		queryLoading.setWidth(48);
+		queryLoading.setZIndex(ZIndexes.TAB_CONTROLS);
+		queryLoading.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				JsMethods.cancelQuery();
+				onQueryFinish();
+			}
+		});
+		queryLoading.setShowRollOver(false);
+		queryLoading.setShowDown(false);
 		queryLoading.draw();
 	}
 	
@@ -145,7 +154,7 @@ public class ViewElements {
 	}
 	
 	public void onQueryError(String error) {
-		onLoadingFinish();
+		onQueryFinish();
 		onQueryError(error, view.getSelectedTabSettings().getEndpoint(), view.getSelectedTabSettings().getQueryString());
 	}
 	

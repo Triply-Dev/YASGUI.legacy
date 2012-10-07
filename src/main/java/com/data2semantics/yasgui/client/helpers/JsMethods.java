@@ -294,6 +294,10 @@ public class JsMethods {
 		}
 	}-*/;
 	
+	public static native void cancelQuery() /*-{
+		$wnd.queryRequest.abort();
+	}-*/;
+	
 	
 	
 	public static native String drawTooltip(String id, String content, String my, String at, int xOffset, int yOffset) /*-{
