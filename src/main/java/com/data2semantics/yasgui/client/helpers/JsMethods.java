@@ -97,7 +97,7 @@ public class JsMethods {
 	 * 
 	 * @param queryInputId Id of text area to attach codemirror to
 	 */
-	public static native void attachCodeMirrorToQueryResult(String queryInputId, int width, String mode) /*-{
+	public static native void attachCodeMirrorToQueryResult(String queryInputId, String mode) /*-{
 		var qInput = $doc.getElementById(queryInputId);
 		if (qInput) {
 			var drawCodeMirror = false;
@@ -121,7 +121,7 @@ public class JsMethods {
 					mode : cmMode,
 					lineNumbers : true,
 					matchBrackets : true,
-					readOnly: false,
+					readOnly: true,
 					fixedGutter: true
 				});
 				
@@ -130,7 +130,7 @@ public class JsMethods {
 					qInput.nextSibling.className = "CodeMirror resultCm";
 					scrollElement = qInput.nextSibling.getElementsByClassName("CodeMirror-scroll");
 					//use jquery for this (a bit easier). for this element, find scroll class, and append another class
-					$wnd.$("#"+queryInputId).next().find($wnd.$(".CodeMirror-scroll")).addClass("scrollCm")
+					$wnd.$("#"+queryInputId).next().find($wnd.$(".CodeMirror-scroll")).addClass("scrollCm");
 				}
 			}
 		} else {

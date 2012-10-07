@@ -219,7 +219,7 @@ public class ResultContainer extends VLayout {
 			public void onResized(ResizedEvent event) {
 				Scheduler.get().scheduleDeferred(new Command() {
 					public void execute() {
-						JsMethods.attachCodeMirrorToQueryResult(rawResponseOutput.getInputId(), Window.getClientWidth()-10, mode);
+						JsMethods.attachCodeMirrorToQueryResult(rawResponseOutput.getInputId(), mode);
 					}
 				});
 		}});

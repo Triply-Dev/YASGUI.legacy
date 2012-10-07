@@ -72,7 +72,6 @@ public class View extends VLayout {
 		initJs();
 		viewElements = new ViewElements(this);
 		getElements().initLoadingWidget();
-		initEndpointDataSource(false);
 		setWidth100();
 		setHeight100();
 		
@@ -94,6 +93,7 @@ public class View extends VLayout {
 		Scheduler.get().scheduleFinally(new Command() {
 			public void execute() {
 				if (LocalStorageHelper.showTooltips()) {
+					initEndpointDataSource(false);
 					showTooltips();
 					LocalStorageHelper.setTooltipsShown();
 				}
@@ -229,7 +229,7 @@ public class View extends VLayout {
 	 */
 	public void initEndpointDataSource(boolean forceUpdate) {
 		String endpoints = LocalStorageHelper.getEndpointsFromLocalStorage();
-		if (forceUpdate || endpoints == null) {
+		if (forceUpdate || endpoints == null || endpoints.length() == 0) {
 			// get endpoint data from server
 			onLoadingStart("Fetching endpoint data");
 			getRemoteService().fetchEndpoints(forceUpdate, new AsyncCallback<String>() {
