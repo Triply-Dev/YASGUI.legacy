@@ -53,8 +53,9 @@ public class PrefixesFetcher {
 		}
 		
 		File file = new File(cacheDir + "/" + CACHE_FILENAME);
-		file.createNewFile();
+		
 		if (forceUpdate || Helper.needUpdating(file, CACHE_EXPIRES_DAYS)) {
+			file.createNewFile();
 			JSONObject jsonObject = getJsonObject();
 			JSONArray prefixes = convertToSortedJsonArray(jsonObject);
 			

@@ -55,8 +55,9 @@ public class EndpointsFetcher {
 		}
 		
 		File file = new File(cacheDir + "/" + CACHE_FILENAME);
-		file.createNewFile();
+		
 		if (forceUpdate || Helper.needUpdating(file, CACHE_EXPIRES_DAYS)) {
+			file.createNewFile();
 			result = getEndpointsAsJsonArrayString();
 			Helper.writeFile(file, result);
 		} else {
