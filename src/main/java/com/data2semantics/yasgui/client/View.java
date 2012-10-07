@@ -99,6 +99,7 @@ public class View extends VLayout {
 				}
 			}
 		});
+		getElements().checkHtml5();
 	}
 	
 	public void showTooltips() {

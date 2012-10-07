@@ -39,6 +39,7 @@ public class LocalStorageHelper {
 	private static String COOKIE_PREFIXES = "prefixes";
 	private static String COOKIE_ENDPOINTS = "endpoints";
 	private static String COOKIE_VERSION = "version";
+	private static String COOKIE_HTML5_CHECKED = "html5Checked";
 	
 	private static String LOCAL_STORAGE_EXPIRE_SEPARATOR = "_"; //used to separate content and long value containing timestamp of insertion
 	private static int PREFIXES_EXPIRE_DAYS = 5;
@@ -46,6 +47,8 @@ public class LocalStorageHelper {
 	private static int SETTINGS_EXPIRE_DAYS = 5000;
 	private static int VERSION_EXPIRE_DAYS = 5000;
 	private static int TOOLTIPS_EXPIRE_DAYS = 5000;
+	private static int HTML5_CHECKED_EXPIRE_DAYS = 5000;
+	
 	
 	
 
@@ -205,10 +208,20 @@ public class LocalStorageHelper {
 		return Cookies.getCookie(COOKIE_VERSION);
 	}
 	
+	public static void setHtml5Checked() {
+		Cookies.setCookie(COOKIE_HTML5_CHECKED, "1", getExpireDate(HTML5_CHECKED_EXPIRE_DAYS));
+	}
+	
+	public static boolean checkHtml5() {
+		return (Cookies.getCookie(COOKIE_HTML5_CHECKED) == null);
+	}
+	
 	private static Date getExpireDate(int days) {
 		Date date = new Date();
 		CalendarUtil.addDaysToDate(date, days);
 		return date;
 	}
+	
+	
 
 }

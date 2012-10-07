@@ -27,10 +27,12 @@ package com.data2semantics.yasgui.client;
 import com.data2semantics.yasgui.client.helpers.GoogleAnalytics;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
+import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.storage.client.Storage;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Positioning;
@@ -249,6 +251,17 @@ public class ViewElements {
 		String stackTraceString = Helper.getStackTraceAsString(e);
 		stackTraceString += Helper.getCausesStackTraceAsString(e);
 		onError(stackTraceString);
+	}
+	
+	public void checkHtml5() {
+		if (LocalStorageHelper.checkHtml5()) {
+			LocalStorageHelper.setHtml5Checked();
+			boolean html5 = Storage.isSupported();
+			if (!html5) {
+				onError("Your browser does not support html5. This website will function slower without html5.<br><br> Try browsers such as Chrome 4+, Firefox 4+, Safari 4+ and Internet Explorer 8+ for better performance");
+			}
+			GoogleAnalytics.trackEvent("browser", "html5", (html5? "1": "0"));
+		}
 	}
 	
 }
