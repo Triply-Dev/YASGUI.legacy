@@ -47,13 +47,13 @@ public class OutputSelection extends DynamicForm {
 		LinkedHashMap<String, String> valueMap = new LinkedHashMap<String, String>();
 		valueMap.put(Output.OUTPUT_TABLE, "Table");
 		valueMap.put(Output.OUTPUT_TABLE_SIMPLE, "Simple Table");
-		valueMap.put(Output.OUTPUT_CSV, "CSV");
+//		valueMap.put(Output.OUTPUT_CSV, "CSV");
 		valueMap.put(Output.OUTPUT_RAW_RESPONSE, "Query Response");
 		
 		LinkedHashMap<String, String> valueIcons = new LinkedHashMap<String, String>();
 		valueIcons.put(Output.OUTPUT_TABLE, Output.OUTPUT_TABLE);
 		valueIcons.put(Output.OUTPUT_TABLE_SIMPLE, Output.OUTPUT_TABLE_SIMPLE);
-		valueIcons.put(Output.OUTPUT_CSV, Output.OUTPUT_CSV);
+//		valueIcons.put(Output.OUTPUT_CSV, Output.OUTPUT_CSV);
 		valueIcons.put(Output.OUTPUT_RAW_RESPONSE, Output.OUTPUT_RAW_RESPONSE);
 		selectItem.setValueIcons(valueIcons);
 
