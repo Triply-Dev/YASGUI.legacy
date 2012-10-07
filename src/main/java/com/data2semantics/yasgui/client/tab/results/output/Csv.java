@@ -39,7 +39,7 @@ public class Csv extends HTMLPane {
 	private View view;
 	private ArrayList<String> variables;
 	private ArrayList<HashMap<String, HashMap<String, String>>> querySolutions;
-	private String csvString;
+	private String csvString = "";
 	public Csv(View view, SparqlResults queryResults) {
 		this.view = view;
 		setWidth100();
@@ -84,6 +84,7 @@ public class Csv extends HTMLPane {
 		if (needToQuoteString(value)) {
 			value = QUOTE + value + QUOTE;
 		}
+		csvString += " " + value + " " + DELIMITER;
 	}
 	
 	private boolean needToQuoteString(String value) {

@@ -199,8 +199,7 @@ public class ResultContainer extends VLayout {
 			addMember(new SimpleGrid(view, sparqlResults));
 		} else if (outputFormat.equals(Output.OUTPUT_CSV)) {
 			Csv output = new Csv(view, sparqlResults);
-			JsMethods.openDownDialogForCsv(output.getCsvString());
-//			view.getLogger().severe(output.getCsvString());
+			view.getLogger().severe(output.getCsvString());
 		}
 	}
 	
