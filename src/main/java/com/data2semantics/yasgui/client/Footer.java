@@ -50,7 +50,13 @@ public class Footer extends HLayout {
 		spacer.setWidth100();
 		addMember(spacer);
 		addGitHub();
+		LayoutSpacer smallSpacer = new LayoutSpacer();
+		smallSpacer.setWidth(15);
+		addMember(smallSpacer);
 		addTooltipToggler();
+		LayoutSpacer extraSmallSpacer = new LayoutSpacer();
+		extraSmallSpacer.setWidth(5);
+		addMember(extraSmallSpacer);
 	}
 	
 	public void showTooltips() throws ElementIdException {
@@ -80,21 +86,36 @@ public class Footer extends HLayout {
 	}
 
 	private void addGitHub() {
-		Label link = new Label("View src on GitHub");
-		link.setStyleName("footerlink");
-		link.setAlign(Alignment.CENTER);
-		link.setMargin(3);
-//		link = new Label(message);
-		link.setWrap(false);
-		link.setCanSelectText(true);
-		link.addClickHandler(new ClickHandler() {
+//		Label link = new Label("View src on GitHub");
+//		link.setStyleName("footerlink");
+//		link.setAlign(Alignment.CENTER);
+//		link.setMargin(3);
+////		link = new Label(message);
+//		link.setWrap(false);
+//		link.setCanSelectText(true);
+//		link.addClickHandler(new ClickHandler() {
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				Window.open("http://github.com/LaurensRietveld/yasgui", "_blank", null);
+//			}
+//		});
+//		
+//		addMember(link);
+		ImgButton githubButton = new ImgButton();
+		githubButton.setSrc("github.png");
+		githubButton.setMargin(1);
+		githubButton.setHeight(20);
+		githubButton.setShowRollOver(false);
+		githubButton.setShowDown(false);
+		githubButton.setWidth(45);
+		githubButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				Window.open("http://github.com/LaurensRietveld/yasgui", "_blank", null);
 			}
 		});
+		addMember(githubButton);
 		
-		addMember(link);
 	}
 
 	
