@@ -107,8 +107,8 @@ public class QueryTabs extends TabSet {
 		tProp.setId(getDOM().getId());
 		tProp.setContent(TooltipText.TAB_SELECTION);
 		tProp.setMy(TooltipProperties.POS_BOTTOM_CENTER);
-		tProp.setAt(TooltipProperties.POS_TOP_CENTER);
-		tProp.setXOffset(-475);
+		tProp.setAt(TooltipProperties.POS_TOP_LEFT);
+		tProp.setXOffset(169);
 		tProp.setYOffset(10);
 		Helper.drawTooltip(tProp);
 	}
