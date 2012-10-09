@@ -137,7 +137,10 @@ public class LocalStorageHelper {
 	public static void setInLocalStorage(String key, String value, boolean addTimeStamp) {
 		if (value.length() > 0) {
 			Date currentDate = new Date();
-			setInLocalStorage(key, Long.toString(currentDate.getTime()) + LOCAL_STORAGE_EXPIRE_SEPARATOR + value);
+			if (addTimeStamp) {
+				value = Long.toString(currentDate.getTime()) + LOCAL_STORAGE_EXPIRE_SEPARATOR + value;
+			}
+			setInLocalStorage(key, value);
 		}
 	}
 	
