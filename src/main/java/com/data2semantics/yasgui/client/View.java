@@ -170,10 +170,17 @@ public class View extends VLayout {
 			onError("No tab to draw results in");
 		}
 		int resultFormat;
-		if (contentType.contains("json")) {
+		if (contentType == null) {
+			onQueryError("No content type returned");
+			return;
+		} else if (contentType.contains("sparql-results+json")) {
+			getLogger().severe(contentType);
 			resultFormat = ResultContainer.RESULT_FORMAT_JSON;
-		} else {
+		} else if (contentType.contains("sparql-results+xml")) {
 			resultFormat = ResultContainer.RESULT_FORMAT_XML;
+		} else {
+			onQueryError("Invalid content type returned: " + contentType);
+			return;
 		}
 		tab.getResultContainer().addQueryResult(resultString, resultFormat);
 	}
