@@ -88,12 +88,11 @@ public class View extends VLayout {
 		
 		footer = new Footer(this);
 		addMember(footer);
-		
+		initEndpointDataSource(false);
 		//Schedule this all the way at the end, so we have no problems with absolute positions and undrawn elements
 		Scheduler.get().scheduleFinally(new Command() {
 			public void execute() {
 				if (LocalStorageHelper.showTooltips()) {
-					initEndpointDataSource(false);
 					showTooltips();
 					LocalStorageHelper.setTooltipsShown();
 				}
