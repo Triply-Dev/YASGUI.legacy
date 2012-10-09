@@ -33,6 +33,7 @@ import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.optionbar.EndpointInput;
 import com.data2semantics.yasgui.client.tab.optionbar.EndpointSearch;
 import com.data2semantics.yasgui.client.tab.optionbar.OutputSelection;
+import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
 import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.smartgwt.client.types.VerticalAlignment;
@@ -85,7 +86,7 @@ public class QueryTab extends Tab {
 		outputSelection = new OutputSelection(view, this);
 		queryOptions.addMember(outputSelection);
 		
-		
+		//queryOptions.addMember(new QueryConfigMenu(view));
 		
 		return queryOptions;
 	}

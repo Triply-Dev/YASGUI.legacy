@@ -24,9 +24,11 @@
  ******************************************************************************/
 package com.data2semantics.yasgui.client.settings;
 
+import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.Set;
-
 import com.data2semantics.yasgui.shared.Output;
+import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
@@ -52,11 +54,13 @@ public class TabSettings extends JSONObject {
 
 	private static String DEFAULT_ENDPOINT = "http://dbpedia.org/sparql";
 	private static String DEFAULT_TAB_TITLE = "Query";
+	private static String DEFAULT_CONTENT_TYPE = "application/sparql-results+xml";
 	
 	public TabSettings() {
 		setEndpoint(DEFAULT_ENDPOINT);
 		setQueryString(DEFAULT_QUERY);
 		setTabTitle(DEFAULT_TAB_TITLE);
+		setContentType(DEFAULT_CONTENT_TYPE);
 		setOutputFormat(Output.OUTPUT_TABLE);
 	}
 
@@ -97,6 +101,57 @@ public class TabSettings extends JSONObject {
 	
 	public String getOutputFormat() {
 		return get(OUTPUT_FORMAT).isString().stringValue();
+	}
+	
+	public void setContentType(String contentType) {
+		put(CONTENT_TYPE, new JSONString(contentType));
+	}
+	public String getContentType() {
+		String contentType = "";
+		if (containsKey(CONTENT_TYPE)) {
+			 contentType = get(CONTENT_TYPE).isString().stringValue();
+		}
+		return contentType;
+	}
+	
+	public HashMap<String, String> getQueryArgs(String contentType) {
+		HashMap<String, String> args = new HashMap<String, String>();
+		if (containsKey(EXTRA_QUERY_ARGS)) {
+			JSONArray argsArray = get(EXTRA_QUERY_ARGS).isArray();
+			if (argsArray != null) {
+				for (int i = 0; i < argsArray.size(); i++) {
+					JSONObject argObject = argsArray.get(i).isObject();
+					String key = argObject.get("key").isString().stringValue();
+					String value = argObject.get("value").isString().stringValue();
+					args.put(key, value);
+				}
+			}
+		}
+		return args;
+	}
+	public void addQueryArg(String key, String value) {
+		JSONArray argsArray;
+		if (!containsKey(EXTRA_QUERY_ARGS)) {
+			argsArray = new JSONArray();
+		} else {
+			argsArray = get(EXTRA_QUERY_ARGS).isArray();
+		}
+		JSONObject argObject = new JSONObject();
+		argObject.put("key", new JSONString(key));
+		argObject.put("value", new JSONString(value));
+		argsArray.set(argsArray.size(), argObject);
+		put(EXTRA_QUERY_ARGS, argsArray);
+	}
+	public void resetAndaddQueryArgs(HashMap<String, String> args) {
+		JSONArray argsArray = new JSONArray();
+		for (Entry<String, String> arg: args.entrySet()) {
+			JSONObject argObject = new JSONObject();
+			argObject.put("key", new JSONString(arg.getKey()));
+			argObject.put("value", new JSONString(arg.getValue()));
+			argsArray.set(argsArray.size(), argObject);
+		}
+		put(EXTRA_QUERY_ARGS, argsArray);
+
 	}
 
 	public TabSettings clone() {
