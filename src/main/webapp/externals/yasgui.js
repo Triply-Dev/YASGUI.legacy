@@ -5,6 +5,39 @@ var sparqlResponseHighlight = {};
 var prefixes;
 var queryRequest;
 
+/*
+ * CORS ajax calls and firefox are not a good match: firefox is buggy in this respect.
+ * Use patch below to be able to get the content type
+ * http://bugs.jquery.com/ticket/10338
+ */
+var _super = $.ajaxSettings.xhr;
+$.ajaxSetup( {
+    xhr: function ()
+    {
+        var xhr = _super();
+        var getAllResponseHeaders = xhr.getAllResponseHeaders;
+
+        xhr.getAllResponseHeaders = function ()
+        {
+            var allHeaders = getAllResponseHeaders.call( xhr );
+            if( allHeaders )
+            {
+                return allHeaders;
+            }
+            allHeaders = "";
+            $( ["Cache-Control", "Content-Language", "Content-Type",
+                "Expires", "Last-Modified", "Pragma"] ).each( function ( i, header_name )
+                    {
+                        if( xhr.getResponseHeader( header_name ) )
+                        {
+                            allHeaders += header_name + ": " + xhr.getResponseHeader( header_name ) + "\n";
+                        }
+                    } );
+            return allHeaders;
+        };
+        return xhr;
+    }
+} );
 function sparqlQueryJson(tabId, queryStr, endpoint, callback) {
 	var ajaxData = {
 		query : queryStr,

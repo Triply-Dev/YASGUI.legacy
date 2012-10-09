@@ -156,15 +156,15 @@ public class View extends VLayout {
 	}
 	
 	/**
-	 * Draw jsonresult in nice smartgwt table.
+	 * Draw json or xml results
 	 * Keep this method in the view object, so that it is easily callable from js
 	 * 
 	 * @param tabId Tab id to draw results in. 
 	 * Pass this, so when you switch tabs just after clicking the query button, the results still gets drawn in the proper tab
-	 * @param jsonResult
+	 * @param resultString
 	 * @param contentType Content type of query result
 	 */
-	public void drawResultsInTable(String tabId, String jsonResult, String contentType) {
+	public void drawResults(String tabId, String resultString, String contentType) {
 		QueryTab tab = (QueryTab)queryTabs.getTab(tabId);
 		if (tab == null) {
 			onError("No tab to draw results in");
@@ -175,7 +175,7 @@ public class View extends VLayout {
 		} else {
 			resultFormat = ResultContainer.RESULT_FORMAT_XML;
 		}
-		tab.getResultContainer().addQueryResult(jsonResult, resultFormat);
+		tab.getResultContainer().addQueryResult(resultString, resultFormat);
 	}
 	
 	/**

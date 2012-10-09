@@ -4,6 +4,7 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
 <title>Codemirror Test</title>
+
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
 <script src="externals/yasgui.js"></script>
   </head>
@@ -16,11 +17,14 @@
 	function onQueryFinish() {};
 	function onLoadingFinish() {};
 	function clearQueryResult() {};
+	function onQueryError(error) {alert(error)};
 	var corsEnabled = {};
-	corsEnabled["http://localhost:8080/openrdf-workbench/repositories/replica/query"] = false;
+	var endpoint = "http://gov.tso.co.uk/tso-gazette-index-wwi/sparql";
+	corsEnabled[endpoint] = true;
 	proxy = "http://localhost:8888/Yasgui/sparql";
-	sparqlQueryJson("SELECT * {?x ?F ?s. ?s ?h ?y} LIMIT 1", "http://localhost:8080/openrdf-workbench/repositories/replica/query", function(result){alert(result);})
+	
 	//checkCorsEnabled("http://dbpedia.org/sparql");
 	</script>
+	<button onclick='sparqlQueryJson("tabId", "SELECT * {?x ?F ?s. ?s ?h ?y} LIMIT 1", endpoint, function(tabId, result, contentType){alert(result);})'>execute</button>
 </body>
 </html>
