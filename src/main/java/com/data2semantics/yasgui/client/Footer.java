@@ -38,6 +38,8 @@ import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
 
 public class Footer extends HLayout {
+	
+	private static String GITHUB_LINK = "http://github.com/LaurensRietveld/yasgui";
 	private View view;
 	private ImgButton tooltipButton;
 	public Footer(View view) {
@@ -93,6 +95,13 @@ public class Footer extends HLayout {
 		yasguiVersion.setStyleName("footerText");
 		yasguiVersion.setWrap(false);
 		yasguiVersion.setCanSelectText(true);
+		yasguiVersion.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				Window.open(GITHUB_LINK, "_blank", null);
+				
+			}});
 		addMember(yasguiVersion);
 	}
 
@@ -108,7 +117,7 @@ public class Footer extends HLayout {
 		githubButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				Window.open("http://github.com/LaurensRietveld/yasgui", "_blank", null);
+				Window.open(GITHUB_LINK, "_blank", null);
 			}
 		});
 		addMember(githubButton);

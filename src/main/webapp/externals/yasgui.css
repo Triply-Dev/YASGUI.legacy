@@ -50,6 +50,7 @@ span.CodeMirror-matchhighlight {
 .footerText {
 	font-weight: bold;
 	color: #686772;
+	cursor: pointer;
 }
 
 
