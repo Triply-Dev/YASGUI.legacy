@@ -30,6 +30,9 @@ import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
 import com.data2semantics.yasgui.client.helpers.properties.TooltipText;
 import com.data2semantics.yasgui.client.settings.TabSettings;
+import com.data2semantics.yasgui.client.tab.optionbar.EndpointInput;
+import com.data2semantics.yasgui.client.tab.optionbar.EndpointSearch;
+import com.data2semantics.yasgui.client.tab.optionbar.OutputSelection;
 import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.smartgwt.client.types.VerticalAlignment;
@@ -57,6 +60,18 @@ public class QueryTab extends Tab {
 		this.view = view;
 		this.queryResultContainer = new ResultContainer(view, this);
 		setCanClose(true);
+		
+		vLayout.addMember(getQueryOptionBar());
+		
+		queryTextArea = new QueryTextArea(view, this);
+		vLayout.addMember(queryTextArea);
+
+		vLayout.addMember(queryResultContainer);
+		setPane(vLayout);
+		setContextMenu();
+	}
+	
+	private HLayout getQueryOptionBar() {
 		HLayout queryOptions = new HLayout();
 		queryOptions.setDefaultLayoutAlign(VerticalAlignment.BOTTOM);
 		queryOptions.setHeight(35);
@@ -70,14 +85,9 @@ public class QueryTab extends Tab {
 		outputSelection = new OutputSelection(view, this);
 		queryOptions.addMember(outputSelection);
 		
-		vLayout.addMember(queryOptions);
-
-		queryTextArea = new QueryTextArea(view, this);
-		vLayout.addMember(queryTextArea);
-
-		vLayout.addMember(queryResultContainer);
-		setPane(vLayout);
-		setContextMenu();
+		
+		
+		return queryOptions;
 	}
 
 	/**

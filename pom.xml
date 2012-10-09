@@ -9,7 +9,7 @@
   <groupId>com.data2semantics.yasgui</groupId>
   <artifactId>yasgui</artifactId>
   <packaging>war</packaging>
-  <version>12.10</version><!-- also defined in view.java -->
+  <version>12.10</version><!-- also defined in view.java and index.html-->
 
   <properties>
     <!-- Convenience property to set the GWT version -->

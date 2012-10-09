@@ -40,6 +40,8 @@ public class TabSettings extends JSONObject {
 	private static String QUERY_STRING = "queryFormat";
 	private static String TAB_TITLE = "tabTitle";
 	private static String OUTPUT_FORMAT = "outputFormat";
+	private static String CONTENT_TYPE = "contentType";
+	private static String EXTRA_QUERY_ARGS = "extraArgs";
 
 	/**
 	 * DEFAULTS

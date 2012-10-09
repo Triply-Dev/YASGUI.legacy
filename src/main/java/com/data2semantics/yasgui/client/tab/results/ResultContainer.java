@@ -39,6 +39,7 @@ import com.data2semantics.yasgui.shared.Output;
 import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
+import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.Label;
@@ -54,7 +55,8 @@ public class ResultContainer extends VLayout {
 	public static int RESULT_TYPE_INSERT = 3;
 	public static int RESULT_FORMAT_JSON = 1;
 	public static int RESULT_FORMAT_XML = 2;
-	
+	private static String ICON_OK = "icons/fugue/tick.png";
+	private static String ICON_WRONG = "icons/fugue/cross.png";
 	private View view;
 	private QueryTab queryTab;
 	private RawResponse rawResponseOutput;
@@ -109,7 +111,7 @@ public class ResultContainer extends VLayout {
 		
 		try {
 			if (queryMode == RESULT_TYPE_INSERT) {
-				setOkMessage("Done");
+				setResultMessage(ICON_OK, "Done");
 			} else if (queryMode == RESULT_TYPE_BOOLEAN || queryMode == RESULT_TYPE_TABLE) {
 				String outputFormat = view.getSelectedTabSettings().getOutputFormat();
 				if (outputFormat.equals(Output.OUTPUT_RAW_RESPONSE)) {
@@ -131,50 +133,29 @@ public class ResultContainer extends VLayout {
 				}
 			}
 		} catch (SparqlEmptyException e) {
-			setErrorResultMessage(e.getMessage());
+			setResultMessage(ICON_WRONG, e.getMessage());
 		} catch (Exception e) {
 			view.onError(e);
 			
 		} 
 	}
 	
-	public void setErrorResultMessage(String message) {
+	public void setResultMessage(String iconSrc, String message) {
 		HLayout empty = new HLayout();
+		empty.setDefaultLayoutAlign(VerticalAlignment.CENTER);
 		empty.setHeight(50);
 		LayoutSpacer spacer = new LayoutSpacer();
 		spacer.setWidth100();
 		empty.setWidth100();
 		
 		Img cross = new Img();
-		cross.setSrc("icons/fugue/cross.png");
-		cross.setSize(16);
-		
-		
-		Label errorMessage = new Label("&nbsp;" + message);
-		errorMessage.setAutoHeight();
-		errorMessage.setWidth(70);
-		empty.addMember(spacer);
-		empty.addMember(cross);
-		empty.addMember(errorMessage);
-		empty.addMember(spacer);
-		
-		addMember(empty);
-	}
-	
-	public void setOkMessage(String message) {
-		HLayout empty = new HLayout();
-		empty.setHeight(50);
-		LayoutSpacer spacer = new LayoutSpacer();
-		spacer.setWidth100();
-		empty.setWidth100();
-		
-		Img cross = new Img();
-		cross.setSrc("icons/fugue/tick.png");
+		cross.setSrc(iconSrc);
 		cross.setSize(16);
 		
 		
 		Label emptyMessage = new Label("&nbsp;" + message);
 		emptyMessage.setAutoHeight();
+		emptyMessage.setStyleName("queryResultText");
 		emptyMessage.setWidth(70);
 		empty.addMember(spacer);
 		empty.addMember(cross);
@@ -185,9 +166,9 @@ public class ResultContainer extends VLayout {
 	}
 	private void drawResultsAsBoolean(SparqlResults sparqlResults) {
 		if (sparqlResults.getBooleanResult()) {
-			setOkMessage("true");
+			setResultMessage(ICON_OK, "true");
 		} else {
-			setErrorResultMessage("false");
+			setResultMessage(ICON_WRONG, "false");
 		}
 	}
 	

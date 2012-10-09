@@ -31,8 +31,8 @@ import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
-import com.data2semantics.yasgui.client.tab.EndpointDataSource;
 import com.data2semantics.yasgui.client.tab.QueryTab;
+import com.data2semantics.yasgui.client.tab.optionbar.EndpointDataSource;
 import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 import com.data2semantics.yasgui.shared.Endpoints;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
@@ -61,7 +61,7 @@ public class View extends VLayout {
 	private ViewElements viewElements;
 	private Footer footer;
 	private Settings settings = new Settings();
-	public static String VERSION = "12.10"; //also defined in pom.xml
+	public static String VERSION = "12.10a"; //also defined in pom.xml and index.html
 	
 	public View() {
 		LocalStorageHelper.setVersion(VERSION);
