@@ -86,7 +86,7 @@ public class QueryTab extends Tab {
 		outputSelection = new OutputSelection(view, this);
 		queryOptions.addMember(outputSelection);
 		
-		//queryOptions.addMember(new QueryConfigMenu(view));
+		queryOptions.addMember(new QueryConfigMenu(view));
 		
 		return queryOptions;
 	}

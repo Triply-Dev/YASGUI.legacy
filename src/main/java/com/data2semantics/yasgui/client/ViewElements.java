@@ -76,7 +76,7 @@ public class ViewElements {
 			public void onClick(ClickEvent event) {
 				String tabId = view.getSelectedTab().getID();
 				String endpoint = view.getSelectedTabSettings().getEndpoint();
-				JsMethods.queryJson(tabId, view.getSelectedTabSettings().getQueryString(), endpoint);
+				JsMethods.queryJson(tabId, view.getSelectedTabSettings().getQueryString(), endpoint, view.getSelectedTabSettings().getContentType());
 				view.checkAndAddEndpointToDs(endpoint);
 				GoogleAnalytics.trackEvent("interaction", "query", endpoint);
 			}

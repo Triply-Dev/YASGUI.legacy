@@ -25,6 +25,6 @@
 	
 	//checkCorsEnabled("http://dbpedia.org/sparql");
 	</script>
-	<button onclick='sparqlQueryJson("tabId", "SELECT * {?x ?F ?s. ?s ?h ?y} LIMIT 1", endpoint, function(tabId, result, contentType){alert(result);})'>execute</button>
+	<button onclick='sparqlQueryJson("tabId", "SELECT * {?x ?F ?s. ?s ?h ?y} LIMIT 1", endpoint, function(tabId, result, contentType){alert(contentType + result);})'>execute</button>
 </body>
 </html>

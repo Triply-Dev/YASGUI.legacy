@@ -33,6 +33,7 @@ import com.data2semantics.yasgui.client.tab.ConfigMenu;
 import com.data2semantics.yasgui.shared.Endpoints;
 import com.smartgwt.client.types.Autofit;
 import com.smartgwt.client.util.StringUtil;
+import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.form.fields.SpacerItem;
 import com.smartgwt.client.widgets.grid.CellFormatter;
@@ -44,6 +45,7 @@ import com.smartgwt.client.widgets.grid.events.RecordClickHandler;
 import com.smartgwt.client.widgets.menu.IconMenuButton;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
+import com.smartgwt.client.widgets.menu.MenuItemIfFunction;
 import com.smartgwt.client.widgets.menu.events.ClickHandler;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 
@@ -56,8 +58,8 @@ public class QueryConfigMenu extends IconMenuButton {
 	private ListGrid parametersGrid;
 	private static int WINDOW_HEIGHT = 600;
 	private static int WINDOW_WIDTH = 1000;
-	private static String CONTENT_TYPE_JSON = "application/sparql-results+json";
-	private static String CONTENT_TYPE_XML = "application/sparql-results+xml";
+	public static String CONTENT_TYPE_JSON = "application/sparql-results+json";
+	public static String CONTENT_TYPE_XML = "application/sparql-results+xml";
 
 	public QueryConfigMenu(final View view) {
 		this.view = view;
@@ -72,34 +74,32 @@ public class QueryConfigMenu extends IconMenuButton {
 
 		Menu acceptHeadersSubMenu = new Menu();
 		json = new MenuItem("JSON");
-//		json.setIcon("icons/formats/json.png");
 		xml = new MenuItem("XML");
-//		json.setIcon("icons/formats/xml.png");
 		
-		if (view.getSelectedTabSettings().getContentType().equals(CONTENT_TYPE_JSON)) {
-			json.setChecked(true);
-		} else {
-			xml.setChecked(true);
-			//in case no content type was found in settings, set it just in case (this way we have something at least)
-			view.getSelectedTabSettings().setContentType(CONTENT_TYPE_XML);
-		}
+		json.setCheckIfCondition(new MenuItemIfFunction(){
+			@Override
+			public boolean execute(Canvas target, Menu menu, MenuItem item) {
+				return view.getSelectedTabSettings().getContentType().equals(CONTENT_TYPE_JSON);
+			}});
+		xml.setCheckIfCondition(new MenuItemIfFunction(){
+			@Override
+			public boolean execute(Canvas target, Menu menu, MenuItem item) {
+				return view.getSelectedTabSettings().getContentType().equals(CONTENT_TYPE_XML);
+			}});
+		
 		json.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(MenuItemClickEvent event) {
 				view.getSelectedTabSettings().setContentType(CONTENT_TYPE_JSON);
-				json.setChecked(true);
-				xml.setChecked(false);
 			}
 		});
-		json.addClickHandler(new ClickHandler() {
+		xml.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(MenuItemClickEvent event) {
 				view.getSelectedTabSettings().setContentType(CONTENT_TYPE_XML);
-				xml.setChecked(true);
-				json.setChecked(false);
 			}
 		});
-		acceptHeadersSubMenu.setItems(json, xml);
+		acceptHeadersSubMenu.setItems(xml, json);
 		acceptHeaders.setSubmenu(acceptHeadersSubMenu);
 		return acceptHeaders;
 	}

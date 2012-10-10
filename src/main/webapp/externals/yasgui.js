@@ -38,15 +38,13 @@ $.ajaxSetup( {
         return xhr;
     }
 } );
-function sparqlQueryJson(tabId, queryStr, endpoint, callback) {
+function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader, callback) {
 	var ajaxData = {
 		query : queryStr,
-		format: 'application/sparql-results+json' //some endpoints use the format parameter to set accept header
 	};
 	var uri;
 	onQueryStart();
 	if (corsEnabled[endpoint]) {
-		console.log("query directly");
 		uri = endpoint;
 	} else {
 		//query via proxy
@@ -57,7 +55,7 @@ function sparqlQueryJson(tabId, queryStr, endpoint, callback) {
 		url : uri,
 		type : 'POST',
 		headers: { 
-	        Accept : 'application/sparql-results+json'
+	        Accept : acceptHeader
 		},
 		dataType : 'text',//get as text, let gwt parse it to gwt json object. Want to retrieve json though, so use header setting above
 		data: ajaxData,

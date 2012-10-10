@@ -27,6 +27,8 @@ package com.data2semantics.yasgui.client.settings;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
 import com.data2semantics.yasgui.shared.Output;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -54,14 +56,10 @@ public class TabSettings extends JSONObject {
 
 	private static String DEFAULT_ENDPOINT = "http://dbpedia.org/sparql";
 	private static String DEFAULT_TAB_TITLE = "Query";
-	private static String DEFAULT_CONTENT_TYPE = "application/sparql-results+xml";
+	private static String DEFAULT_CONTENT_TYPE = QueryConfigMenu.CONTENT_TYPE_XML;
 	
 	public TabSettings() {
-		setEndpoint(DEFAULT_ENDPOINT);
-		setQueryString(DEFAULT_QUERY);
-		setTabTitle(DEFAULT_TAB_TITLE);
-		setContentType(DEFAULT_CONTENT_TYPE);
-		setOutputFormat(Output.OUTPUT_TABLE);
+		setDefaultsIfUnset();
 	}
 
 	public TabSettings(JSONObject jsonObject) {
@@ -69,11 +67,33 @@ public class TabSettings extends JSONObject {
 		for (String key : keys) {
 			put(key, jsonObject.get(key));
 		}
-
+		setDefaultsIfUnset();
+	}
+	
+	private void setDefaultsIfUnset() {
+		if (getEndpoint() == null) {
+			setEndpoint(DEFAULT_ENDPOINT);
+		}
+		if (getQueryString() == null) {
+			setQueryString(DEFAULT_QUERY);
+		}
+		if (getTabTitle() == null) {
+			setTabTitle(DEFAULT_TAB_TITLE);
+		}
+		if (getContentType() == null) {
+			setContentType(DEFAULT_CONTENT_TYPE);
+		}
+		if (getOutputFormat() == null) {
+			setOutputFormat(Output.OUTPUT_TABLE);
+		}
 	}
 
 	public String getEndpoint() {
-		return get(ENDPOINT).isString().stringValue();
+		String endpoint = null;
+		if (containsKey(ENDPOINT)) {
+			endpoint = get(ENDPOINT).isString().stringValue();
+		}
+		return endpoint;
 	}
 
 	public void setEndpoint(String endpoint) {
@@ -81,7 +101,11 @@ public class TabSettings extends JSONObject {
 	}
 
 	public String getQueryString() {
-		return get(QUERY_STRING).isString().stringValue();
+		String queryString = null;
+		if (containsKey(QUERY_STRING)) {
+			queryString = get(QUERY_STRING).isString().stringValue();
+		}
+		return queryString;
 	}
 
 	public void setQueryString(String queryString) {
@@ -93,19 +117,28 @@ public class TabSettings extends JSONObject {
 	}
 
 	public String getTabTitle() {
-		return get(TAB_TITLE).isString().stringValue();
+		String title = null;
+		if (containsKey(TAB_TITLE)) {
+			title = get(TAB_TITLE).isString().stringValue();
+		}
+		return title;
 	}
 	public void setOutputFormat(String outputFormat) {
 		put(OUTPUT_FORMAT, new JSONString(outputFormat));
 	}
 	
 	public String getOutputFormat() {
-		return get(OUTPUT_FORMAT).isString().stringValue();
+		String format = null;
+		if (containsKey(OUTPUT_FORMAT)) {
+			format = get(OUTPUT_FORMAT).isString().stringValue();
+		}
+		return format;
 	}
 	
 	public void setContentType(String contentType) {
 		put(CONTENT_TYPE, new JSONString(contentType));
 	}
+	
 	public String getContentType() {
 		String contentType = "";
 		if (containsKey(CONTENT_TYPE)) {
