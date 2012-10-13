@@ -25,7 +25,6 @@
 package com.data2semantics.yasgui.client.helpers;
 
 import com.data2semantics.yasgui.client.View;
-import com.google.gwt.json.client.JSONObject;
 
 public class JsMethods {
 	

@@ -47,6 +47,7 @@ public class ParametersListGrid extends ListGrid {
 		setWrapCells(true);
 		setCanResizeFields(true);
 		setAlwaysShowEditors(true);
+		setCanRemoveRecords(true);
 		setParamFields();
 		setParamData();
 	}
@@ -54,21 +55,24 @@ public class ParametersListGrid extends ListGrid {
 	
 	public void setArgsInSettings() {
 		saveAllEdits();
-		HashMap<String, String> records = new HashMap<String, String>();
+		HashMap<String, String> args = new HashMap<String, String>();
 		getTotalRows();
 		
 		Record[] gridRecords = getRecords();
 		for (Record record: gridRecords) {
-			if (record.getAttribute(KEY_KEY) != null && record.getAttribute(KEY_VALUE) != null) {
-				records.put(record.getAttribute(KEY_KEY), record.getAttribute(KEY_VALUE));
+			if (record != null && record.getAttribute(KEY_KEY) != null && record.getAttribute(KEY_VALUE) != null) {
+				args.put(record.getAttribute(KEY_KEY), record.getAttribute(KEY_VALUE));
 			}
 		}
+		view.getSelectedTabSettings().resetAndaddQueryArgs(args);
 		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
 	}
 	
 	private void setParamFields() {
 		ListGridField keyField = new ListGridField(KEY_KEY, "?key");
+//		keyField.setAlign(Alignment.CENTER);
 		ListGridField valueField = new ListGridField(KEY_VALUE, "=value");
+//		valueField.setAlign(Alignment.CENTER);
 		setFields(keyField, valueField);
 	}
 	

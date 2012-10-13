@@ -158,6 +158,15 @@ public class QueryTabs extends TabSet {
 		configButton = new IconMenuButton("");
 		configButton.setIcon("icons/diagona/bolt.png");
 		configButton.setMenu(new ConfigMenu(view));
+		configButton.setCanFocus(false);
+		configButton.addClickHandler(new ClickHandler(){
+
+			@Override
+			public void onClick(ClickEvent event) {
+				configButton.showMenu();
+			}
+			
+		});
 		controls.setZIndex(ZIndexes.TAB_CONTROLS);
 		controls.addMember(configButton);
 		controls.addMember(addTabButton);

@@ -55,6 +55,7 @@ public class QueryTab extends Tab {
 	private TabSettings tabSettings;
 	private OutputSelection outputSelection;
 	private EndpointSearch searchIcon;
+	private QueryConfigMenu queryConfigMenu;
 	public QueryTab(View view, TabSettings tabSettings) {
 		super(tabSettings.getTabTitle());
 		this.tabSettings = tabSettings;
@@ -86,7 +87,8 @@ public class QueryTab extends Tab {
 		outputSelection = new OutputSelection(view, this);
 		queryOptions.addMember(outputSelection);
 		
-		queryOptions.addMember(new QueryConfigMenu(view));
+		queryConfigMenu = new QueryConfigMenu(view);
+		queryOptions.addMember(queryConfigMenu);
 		
 		return queryOptions;
 	}
@@ -193,4 +195,5 @@ public class QueryTab extends Tab {
 	public EndpointInput getEndpointInput() {
 		return this.endpointInput;
 	}
+	
 }
