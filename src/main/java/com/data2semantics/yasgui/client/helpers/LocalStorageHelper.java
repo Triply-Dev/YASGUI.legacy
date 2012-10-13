@@ -29,6 +29,7 @@ import java.util.Date;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.datepicker.client.CalendarUtil;
@@ -151,7 +152,7 @@ public class LocalStorageHelper {
 	 * @return
 	 */
 	public static Settings getSettingsFromCookie() {
-		Settings settings = new Settings();
+		Settings settings = new Settings(); //if parsing fails, we always have the default settings
 		String jsonString = getFromLocalStorage(COOKIE_SETTINGS);
 		if (jsonString == null) {
 			//We are using a browser which does not support html5
@@ -159,12 +160,12 @@ public class LocalStorageHelper {
 		}
 		
 		if (jsonString != null && jsonString.length() > 0) {
-			JSONObject jsonObject = JSONParser.parseStrict(jsonString).isObject();
-			if (jsonObject == null) {
-				// Something went wrong. Just use original 'bare' settings
-				// objects
-			} else {
-				settings = new Settings(jsonObject);
+			JSONValue jsonVal = JSONParser.parseStrict(jsonString);
+			if (jsonVal != null) {
+				JSONObject jsonObject = jsonVal.isObject();
+				if (jsonObject != null) {
+					settings = new Settings(jsonObject);
+				}
 			}
 		}
 		return settings;

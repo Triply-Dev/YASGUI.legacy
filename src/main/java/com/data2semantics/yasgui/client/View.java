@@ -68,7 +68,11 @@ public class View extends VLayout {
 		GoogleAnalytics.init(GoogleAnalytics.UID);
 		setOverflow(Overflow.HIDDEN);
 		endpointDataSource = new EndpointDataSource(this);
-		settings = LocalStorageHelper.getSettingsFromCookie();
+		try {
+			settings = LocalStorageHelper.getSettingsFromCookie();
+		} catch (Exception e) {
+			settings = new Settings();
+		}
 		initJs();
 		viewElements = new ViewElements(this);
 		getElements().initLoadingWidget();

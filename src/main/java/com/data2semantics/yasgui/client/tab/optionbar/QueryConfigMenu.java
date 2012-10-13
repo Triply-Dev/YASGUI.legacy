@@ -24,24 +24,21 @@
  ******************************************************************************/
 package com.data2semantics.yasgui.client.tab.optionbar;
 
-import java.util.ArrayList;
 
 import com.data2semantics.yasgui.client.View;
-import com.data2semantics.yasgui.client.helpers.Helper;
+import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
-import com.data2semantics.yasgui.client.tab.ConfigMenu;
-import com.data2semantics.yasgui.shared.Endpoints;
-import com.smartgwt.client.types.Autofit;
-import com.smartgwt.client.util.StringUtil;
+import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.Canvas;
+import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Window;
-import com.smartgwt.client.widgets.form.fields.SpacerItem;
-import com.smartgwt.client.widgets.grid.CellFormatter;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.CloseClickEvent;
+import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.grid.ListGrid;
-import com.smartgwt.client.widgets.grid.ListGridField;
-import com.smartgwt.client.widgets.grid.ListGridRecord;
-import com.smartgwt.client.widgets.grid.events.RecordClickEvent;
-import com.smartgwt.client.widgets.grid.events.RecordClickHandler;
+import com.smartgwt.client.widgets.layout.HLayout;
+import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.IconMenuButton;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
@@ -55,9 +52,9 @@ public class QueryConfigMenu extends IconMenuButton {
 	private Menu mainMenu = new Menu();
 	private MenuItem json;
 	private MenuItem xml;
-	private ListGrid parametersGrid;
-	private static int WINDOW_HEIGHT = 600;
-	private static int WINDOW_WIDTH = 1000;
+	private static int WINDOW_HEIGHT = 300;
+	private static int WINDOW_WIDTH = 500;
+	private ParametersListGrid paramListGrid;
 	public static String CONTENT_TYPE_JSON = "application/sparql-results+json";
 	public static String CONTENT_TYPE_XML = "application/sparql-results+xml";
 
@@ -91,12 +88,14 @@ public class QueryConfigMenu extends IconMenuButton {
 			@Override
 			public void onClick(MenuItemClickEvent event) {
 				view.getSelectedTabSettings().setContentType(CONTENT_TYPE_JSON);
+				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
 			}
 		});
 		xml.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(MenuItemClickEvent event) {
 				view.getSelectedTabSettings().setContentType(CONTENT_TYPE_XML);
+				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
 			}
 		});
 		acceptHeadersSubMenu.setItems(xml, json);
@@ -106,7 +105,6 @@ public class QueryConfigMenu extends IconMenuButton {
 
 	private MenuItem getQueryParamMenuItem() {
 		MenuItem queryParam = new MenuItem("Add query parameters");
-		// prefixUpdate.setIcon("icons/diagona/reload.png");
 		queryParam.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -120,66 +118,37 @@ public class QueryConfigMenu extends IconMenuButton {
 				window.setHeight(WINDOW_HEIGHT);
 				window.setShowMinimizeButton(false);
 				window.setAutoCenter(true);
-				window.addItem(getParametersListGrid());
+				window.addCloseClickHandler(new CloseClickHandler(){
+
+					@Override
+					public void onCloseClick(CloseClickEvent event) {
+						paramListGrid.setArgsInSettings();
+						LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+						window.destroy();
+						
+					}});
+				paramListGrid = new ParametersListGrid(view);
+				VLayout layout = new VLayout();
+				layout.setAlign(Alignment.CENTER);
+				layout.setWidth100();
+				layout.setHeight100();
+			    IButton addButton = new IButton("Add Parameter");  
+			    addButton.setWidth(120);  
+			    addButton.setIcon("icons/fugue/plus-button.png");
+			    addButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler(){
+					@Override
+					public void onClick(ClickEvent event) {
+						paramListGrid.startEditingNew();
+						
+					}});
+				layout.addMember(addButton);
+				
+				layout.addMember(paramListGrid);
+				window.addItem(layout);
 				window.draw();
 			}
 		});
 		return queryParam;
 	}
 
-	/**
-	 * get listgrid to search endpoints in
-	 * 
-	 * @return
-	 */
-	private ListGrid getParametersListGrid() {
-		parametersGrid = new ListGrid();
-		parametersGrid.setCellFormatter(new CellFormatter() {
-			@Override
-			public String format(Object value, ListGridRecord record, int rowNum, int colNum) {
-				if (rowNum == 0 && colNum == 0 && Helper.recordIsEmpty(record)) {
-					return "Empty";
-				}
-				String colName = parametersGrid.getFieldName(colNum);
-				String cellValue = record.getAttribute(colName);
-
-				if (cellValue != null) {
-					if (colName.equals(Endpoints.KEY_TITLE) || colName.equals(Endpoints.KEY_DESCRIPTION)) {
-						return StringUtil.asHTML(cellValue);
-					} else if (colName.equals(Endpoints.KEY_ENDPOINT)) {
-						return "<a href=\"" + cellValue + "\" target=\"_blank\">" + cellValue + "</a>";
-					} else if (colName.equals(Endpoints.KEY_DATASETURI) && cellValue.length() > 0) {
-						return "<a href=\"" + cellValue
-								+ "\" target=\"_blank\"><img src=\"images/icons/fugue/information.png\"/ width=\"16\" height=\"16\"></a>";
-					}
-				}
-				return null;
-			}
-		});
-		parametersGrid.addRecordClickHandler(new RecordClickHandler() {
-			@Override
-			public void onRecordClick(RecordClickEvent event) {
-				view.getSelectedTab().getEndpointInput().storeEndpoint(event.getRecord().getAttributeAsString(Endpoints.KEY_ENDPOINT));
-				window.destroy();
-			}
-		});
-		parametersGrid.setFixedRecordHeights(false);
-		parametersGrid.setHeight(WINDOW_HEIGHT);
-		parametersGrid.setWidth100();
-		parametersGrid.setFilterButtonPrompt("");
-		parametersGrid.setAutoFitData(Autofit.VERTICAL);
-		parametersGrid.setWrapCells(true);
-		parametersGrid.setShowFilterEditor(true);
-		ArrayList<ListGridField> fields = new ArrayList<ListGridField>();
-		fields.add(new ListGridField(Endpoints.KEY_TITLE, "Dataset"));
-		fields.add(new ListGridField(Endpoints.KEY_ENDPOINT, "Endpoint"));
-		fields.add(new ListGridField(Endpoints.KEY_DESCRIPTION, "Description"));
-		parametersGrid.setFields(fields.toArray(new ListGridField[fields.size()]));
-		parametersGrid.setFilterOnKeypress(true);
-		parametersGrid.setDataSource(view.getEndpointDataSource());
-		parametersGrid.setWrapCells(true);
-		parametersGrid.setCanResizeFields(true);
-		parametersGrid.fetchData();// We are using a client-only datasource. need to manually fetch to fill grid
-		return parametersGrid;
-	}
 }

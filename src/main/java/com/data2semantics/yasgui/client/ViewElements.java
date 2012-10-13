@@ -25,6 +25,7 @@
 package com.data2semantics.yasgui.client;
 
 import com.data2semantics.yasgui.client.helpers.GoogleAnalytics;
+import com.data2semantics.yasgui.client.helpers.GoogleAnalyticsEvent;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
@@ -76,9 +77,17 @@ public class ViewElements {
 			public void onClick(ClickEvent event) {
 				String tabId = view.getSelectedTab().getID();
 				String endpoint = view.getSelectedTabSettings().getEndpoint();
-				JsMethods.queryJson(tabId, view.getSelectedTabSettings().getQueryString(), endpoint, view.getSelectedTabSettings().getContentType());
+				String queryString = view.getSelectedTabSettings().getQueryString();
+				JsMethods.queryJson(tabId, queryString, endpoint, view.getSelectedTabSettings().getContentType(), view.getSelectedTabSettings().getQueryArgsAsJsonString());
 				view.checkAndAddEndpointToDs(endpoint);
-				GoogleAnalytics.trackEvent("interaction", "query", endpoint);
+//				GoogleAnalytics.trackEvent("query", "endpoint", endpoint);
+//				GoogleAnalytics.trackEvent("query", "query", queryString);
+//				GoogleAnalytics.trackEvents(new String[]{"query", "query"}, new String[]{"endpoint", "query"}, new String[]{endpoint,queryString});
+				GoogleAnalyticsEvent endpointEvent = new GoogleAnalyticsEvent("sparql", "endpoint");
+				endpointEvent.setOptLabel(endpoint);
+				GoogleAnalyticsEvent queryEvent = new GoogleAnalyticsEvent("sparql", "query");
+				queryEvent.setOptLabel(queryString);
+				GoogleAnalytics.trackEvents(endpointEvent, queryEvent);
 			}
 		});
 		
@@ -260,7 +269,8 @@ public class ViewElements {
 			if (!html5) {
 				onError("Your browser does not support html5. This website will function slower without html5.<br><br> Try browsers such as Chrome 4+, Firefox 4+, Safari 4+ and Internet Explorer 8+ for better performance");
 			}
-			GoogleAnalytics.trackEvent("browser", "html5", (html5? "1": "0"));
+			GoogleAnalyticsEvent event = new GoogleAnalyticsEvent("html5", (html5? "1": "0"));
+			GoogleAnalytics.trackEvents(event);
 		}
 	}
 	

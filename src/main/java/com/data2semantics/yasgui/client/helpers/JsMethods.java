@@ -25,6 +25,7 @@
 package com.data2semantics.yasgui.client.helpers;
 
 import com.data2semantics.yasgui.client.View;
+import com.google.gwt.json.client.JSONObject;
 
 public class JsMethods {
 	
@@ -149,8 +150,8 @@ public class JsMethods {
 	 * @param queryString
 	 * @param endpoint
 	 */
-	public static native void queryJson(String tabId, String queryString, String endpoint, String acceptHeader) /*-{
-		$wnd.sparqlQueryJson(tabId, queryString, endpoint, acceptHeader, function(tabId, jsonResult, contentType) {$wnd.drawResults(tabId, jsonResult, contentType);});
+	public static native void queryJson(String tabId, String queryString, String endpoint, String acceptHeader, String argsJsonString) /*-{
+		$wnd.sparqlQueryJson(tabId, queryString, endpoint, acceptHeader, argsJsonString, function(tabId, jsonResult, contentType) {$wnd.drawResults(tabId, jsonResult, contentType);});
 	}-*/;
 	
 	/**

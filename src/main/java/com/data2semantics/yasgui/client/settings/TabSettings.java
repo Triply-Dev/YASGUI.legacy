@@ -71,19 +71,19 @@ public class TabSettings extends JSONObject {
 	}
 	
 	private void setDefaultsIfUnset() {
-		if (getEndpoint() == null) {
+		if (getEndpoint() == null || getEndpoint().length() == 0) {
 			setEndpoint(DEFAULT_ENDPOINT);
 		}
-		if (getQueryString() == null) {
+		if (getQueryString() == null || getQueryString().length() == 0) {
 			setQueryString(DEFAULT_QUERY);
 		}
-		if (getTabTitle() == null) {
+		if (getTabTitle() == null || getTabTitle().length() == 0) {
 			setTabTitle(DEFAULT_TAB_TITLE);
 		}
-		if (getContentType() == null) {
+		if (getContentType() == null || getContentType().length() == 0) {
 			setContentType(DEFAULT_CONTENT_TYPE);
 		}
-		if (getOutputFormat() == null) {
+		if (getOutputFormat() == null || getOutputFormat().length() == 0) {
 			setOutputFormat(Output.OUTPUT_TABLE);
 		}
 	}
@@ -147,7 +147,7 @@ public class TabSettings extends JSONObject {
 		return contentType;
 	}
 	
-	public HashMap<String, String> getQueryArgs(String contentType) {
+	public HashMap<String, String> getQueryArgs() {
 		HashMap<String, String> args = new HashMap<String, String>();
 		if (containsKey(EXTRA_QUERY_ARGS)) {
 			JSONArray argsArray = get(EXTRA_QUERY_ARGS).isArray();
@@ -161,6 +161,15 @@ public class TabSettings extends JSONObject {
 			}
 		}
 		return args;
+	}
+	
+	public String getQueryArgsAsJsonString() {
+		HashMap<String, String> args = getQueryArgs();
+		JSONObject argsObject = new JSONObject();
+		for (Entry<String, String> arg: args.entrySet()) {
+			argsObject.put(arg.getKey(), new JSONString(arg.getValue()));
+		}
+		return argsObject.toString();
 	}
 	public void addQueryArg(String key, String value) {
 		JSONArray argsArray;

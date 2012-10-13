@@ -16,6 +16,8 @@
 
 package com.data2semantics.yasgui.client.helpers;
 
+import java.util.ArrayList;
+
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.ScriptElement;
@@ -73,39 +75,82 @@ public class GoogleAnalytics {
 
 		$wnd._gaq.push([ '" + trackerName + "._trackPageview', pageName ]);
 	}-*/;
+	
+	public static void trackEvents(GoogleAnalyticsEvent... events) throws IllegalArgumentException {
+		if (events.length > 0) {
+			ArrayList<String> categories = new ArrayList<String>();
+			ArrayList<String> actions = new ArrayList<String>();
+			ArrayList<String> optLabels = new ArrayList<String>();
+			ArrayList<Integer> optValues = new ArrayList<Integer>();
+			for (GoogleAnalyticsEvent event: events) {
+				if (event.getCategory() == null || event.getAction() == null) {
+					//at least require this
+					throw new IllegalArgumentException("No category or action passed for google analytics event");
+				}
+				categories.add(event.getCategory());
+				actions.add(event.getAction());
+				optLabels.add(event.getOptLabel());
+				optValues.add(event.getOptValue());
+			}
+			trackEvents(categories.toArray(new String[categories.size()]), actions.toArray(new String[actions.size()]), optLabels.toArray(new String[optLabels.size()]), optValues.toArray(new Integer[optValues.size()]));
+		}
+	}
 
-	public static native void trackEvent(String category, String action) /*-{
+	private static native void trackEvent(String category, String action) /*-{
 		$wnd._gaq.push([ '_trackEvent', category, action ]);
 	}-*/;
 
-	public static native void trackEvent(String category, String action, String optLabel) /*-{
+	private static native void trackEvent(String category, String action, String optLabel) /*-{
 		$wnd._gaq.push([ '_trackEvent', category, action, optLabel ]);
 	}-*/;
 
-	public static native void trackEvent(String category, String action, String optLabel, int optValue) /*-{
+	private static native void trackEvent(String category, String action, String optLabel, int optValue) /*-{
+		
 		$wnd._gaq.push([ '_trackEvent', category, action, optLabel, optValue ]);
 	}-*/;
 
-	public static native void trackEvent(String category, String action, String optLabel, int optValue, boolean optNonInteraction) /*-{
+	private static native void trackEvent(String category, String action, String optLabel, int optValue, boolean optNonInteraction) /*-{
 		$wnd._gaq.push([ '_trackEvent', category, action, optLabel, optValue,
 				optNonInteraction ]);
 	}-*/;
+	
+	
+	private static native void trackEvents(String[] category, String[] action, String[] optLabel, Integer[] optValue) /*-{
+		if (category.length == action.length && action.length == optLabel.length && optLabel.length == optValue.length) {
+			commands = [];
+			for (i = 0; i < category.length; i++) {
+				if (optValue != undefined) {
+					commands.push([ '_trackEvent', category[i], action[i], optLabel[i], optValue[i] ]);
+				} else if (optLabel != undefined) {
+					commands.push([ '_trackEvent', category[i], action[i], optLabel[i] ]);
+				} else {
+					commands.push([ '_trackEvent', category[i], action[i] ]);
+				}
+				commands.push([ '_trackEvent', category[i], action[i], optLabel[i], optValue[i] ]);
+			}
+//			$wnd._gaq.push.apply(this||$wnd.window,commands);
+			$wnd._gaq.push.apply($wnd._gaq.push, commands);
+		} else {
+			throw new Error("Unequal set of arguments for tracking events: " + category.length + " - " + action.length + " - " + optLabel.length + " - " + optValue.length);
+		}
+	}-*/;
+	
 
-	public static native void trackEventWithTracker(String trackerName, String category, String action) /*-{
+	private static native void trackEventWithTracker(String trackerName, String category, String action) /*-{
 		$wnd._gaq.push([ '" + trackerName + "._trackEvent', category, action ]);
 	}-*/;
 
-	public static native void trackEventWithTracker(String trackerName, String category, String action, String optLabel) /*-{
+	private static native void trackEventWithTracker(String trackerName, String category, String action, String optLabel) /*-{
 		$wnd._gaq.push([ '" + trackerName + "._trackEvent', category, action,
 				optLabel ]);
 	}-*/;
 
-	public static native void trackEventWithTracker(String trackerName, String category, String action, String optLabel, int optValue) /*-{
+	private static native void trackEventWithTracker(String trackerName, String category, String action, String optLabel, int optValue) /*-{
 		$wnd._gaq.push([ '" + trackerName + "._trackEvent', category, action,
 				optLabel, optValue ]);
 	}-*/;
 
-	public static native void trackEventWithTracker(String trackerName, String category, String action, String optLabel, int optValue,
+	private static native void trackEventWithTracker(String trackerName, String category, String action, String optLabel, int optValue,
 			boolean optNonInteraction) /*-{
 										$wnd._gaq.push([ '" + trackerName + "._trackEvent', category, action, optLabel, optValue, optNonInteraction ]);
 										}-*/;

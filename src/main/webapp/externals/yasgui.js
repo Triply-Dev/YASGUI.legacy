@@ -38,7 +38,7 @@ $.ajaxSetup( {
         return xhr;
     }
 } );
-function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader, callback) {
+function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader, argsJsonString, callback) {
 	var ajaxData = {
 		query : queryStr,
 	};
@@ -50,6 +50,14 @@ function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader, callback) {
 		//query via proxy
 		ajaxData['endpoint'] = endpoint;
 		uri = proxy;
+	}
+	args = jQuery.parseJSON( argsJsonString );
+	if (args != null) {
+		for (var key in args) {
+		  if (args.hasOwnProperty(key)) {
+			  ajaxData[key] = args[key];
+		  }
+		}
 	}
 	queryRequest = $.ajax({
 		url : uri,
