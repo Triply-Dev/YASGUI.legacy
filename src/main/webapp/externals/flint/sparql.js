@@ -269,10 +269,8 @@ CodeMirror
 								complete : acceptEmpty,
 								errorStartPos : null,
 								errorEndPos : null,
-								possibleCurrent : getPossibles("query").concat(
-										getPossibles("update")),
-								possibleNext : getPossibles("query").concat(
-										getPossibles("update")),
+								possibleCurrent : getPossibles("update").concat(getPossibles("query")),
+								possibleNext : getPossibles("update").concat(getPossibles("query")),
 								allowVars : true,
 								allowBnodes : true,
 								storeProperty : false,
