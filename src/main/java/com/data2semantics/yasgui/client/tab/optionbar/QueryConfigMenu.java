@@ -47,19 +47,21 @@ public class QueryConfigMenu extends IconMenuButton {
 	private View view;
 	private Window window;
 	private Menu mainMenu = new Menu();
-	private MenuItem json;
-	private MenuItem xml;
+	private MenuItem post;
+	private MenuItem get;
 	private static int WINDOW_HEIGHT = 200;
 	private static int WINDOW_WIDTH = 400;
 	private ParametersListGrid paramListGrid;
 	public static String CONTENT_TYPE_JSON = "application/sparql-results+json";
 	public static String CONTENT_TYPE_XML = "application/sparql-results+xml";
+	public static String REQUEST_POST = "POST";
+	public static String REQUEST_GET = "GET";
 
 	public QueryConfigMenu(final View view) {
 		this.view = view;
 		setIcon("icons/diagona/bolt.png");
 		
-		mainMenu.setItems(getQueryParamMenuItem(), getAcceptHeaderMenuItem());
+		mainMenu.setItems(getQueryParamMenuItem(), getAcceptHeaderMenuItem(), getRequestMethodMenuItem());
 		setMenu(mainMenu);
 		setTitle("Configure request");
 		setCanFocus(false);
@@ -73,39 +75,76 @@ public class QueryConfigMenu extends IconMenuButton {
 		});
 	}
 
+	private MenuItem getRequestMethodMenuItem() {
+		MenuItem acceptHeaders = new MenuItem("Request Method");
+
+		Menu acceptHeadersSubMenu = new Menu();
+		post = new MenuItem("POST");
+		get = new MenuItem("GET");
+		
+		post.setCheckIfCondition(new MenuItemIfFunction(){
+			@Override
+			public boolean execute(Canvas target, Menu menu, MenuItem item) {
+				return view.getSelectedTabSettings().getRequestMethod().equals(REQUEST_POST);
+			}});
+		get.setCheckIfCondition(new MenuItemIfFunction(){
+			@Override
+			public boolean execute(Canvas target, Menu menu, MenuItem item) {
+				return view.getSelectedTabSettings().getRequestMethod().equals(REQUEST_GET);
+			}});
+		
+		post.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				view.getSelectedTabSettings().setRequestMethod(REQUEST_POST);
+				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+			}
+		});
+		get.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				view.getSelectedTabSettings().setRequestMethod(REQUEST_GET);
+				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+			}
+		});
+		acceptHeadersSubMenu.setItems(post, get);
+		acceptHeaders.setSubmenu(acceptHeadersSubMenu);
+		return acceptHeaders;
+	}
+
 	private MenuItem getAcceptHeaderMenuItem() {
 		MenuItem acceptHeaders = new MenuItem("Query accept headers");
 
 		Menu acceptHeadersSubMenu = new Menu();
-		json = new MenuItem("JSON");
-		xml = new MenuItem("XML");
+		post = new MenuItem("JSON");
+		get = new MenuItem("XML");
 		
-		json.setCheckIfCondition(new MenuItemIfFunction(){
+		post.setCheckIfCondition(new MenuItemIfFunction(){
 			@Override
 			public boolean execute(Canvas target, Menu menu, MenuItem item) {
 				return view.getSelectedTabSettings().getContentType().equals(CONTENT_TYPE_JSON);
 			}});
-		xml.setCheckIfCondition(new MenuItemIfFunction(){
+		get.setCheckIfCondition(new MenuItemIfFunction(){
 			@Override
 			public boolean execute(Canvas target, Menu menu, MenuItem item) {
 				return view.getSelectedTabSettings().getContentType().equals(CONTENT_TYPE_XML);
 			}});
 		
-		json.addClickHandler(new ClickHandler() {
+		post.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(MenuItemClickEvent event) {
 				view.getSelectedTabSettings().setContentType(CONTENT_TYPE_JSON);
 				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
 			}
 		});
-		xml.addClickHandler(new ClickHandler() {
+		get.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(MenuItemClickEvent event) {
 				view.getSelectedTabSettings().setContentType(CONTENT_TYPE_XML);
 				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
 			}
 		});
-		acceptHeadersSubMenu.setItems(xml, json);
+		acceptHeadersSubMenu.setItems(get, post);
 		acceptHeaders.setSubmenu(acceptHeadersSubMenu);
 		return acceptHeaders;
 	}

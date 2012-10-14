@@ -78,7 +78,10 @@ public class ViewElements {
 				String tabId = view.getSelectedTab().getID();
 				String endpoint = view.getSelectedTabSettings().getEndpoint();
 				String queryString = view.getSelectedTabSettings().getQueryString();
-				JsMethods.queryJson(tabId, queryString, endpoint, view.getSelectedTabSettings().getContentType(), view.getSelectedTabSettings().getQueryArgsAsJsonString());
+				String contentType = view.getSelectedTabSettings().getContentType();
+				String argsString = view.getSelectedTabSettings().getQueryArgsAsJsonString();
+				String requestMethod = view.getSelectedTabSettings().getRequestMethod();
+				JsMethods.queryJson(tabId, queryString, endpoint, contentType, argsString, requestMethod);
 				view.checkAndAddEndpointToDs(endpoint);
 //				GoogleAnalytics.trackEvent("query", "endpoint", endpoint);
 //				GoogleAnalytics.trackEvent("query", "query", queryString);

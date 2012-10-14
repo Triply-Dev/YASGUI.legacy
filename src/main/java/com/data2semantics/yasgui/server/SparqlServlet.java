@@ -41,9 +41,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -55,16 +58,17 @@ public class SparqlServlet extends HttpServlet {
 		String query = request.getParameter("query");
 		String endpoint = request.getParameter("endpoint");
 		String accept = "application/sparql-results+json";
+		String requestMethod = request.getParameter("requestMethod");
 		if (query != null && query.length() > 0 && endpoint != null && endpoint.length() > 0) {
 			HttpClient client = new DefaultHttpClient();
-			HttpPost post = new HttpPost(endpoint);
 			PrintWriter out = response.getWriter();
+			HttpResponse endpointResponse;
+			if (requestMethod.equals("GET")) {
+				endpointResponse = executeGet(endpoint, accept, client, getNameValuePairs(request.getParameterMap()));
+			} else {
+				endpointResponse = executePost(endpoint, accept, client, getNameValuePairs(request.getParameterMap()));
+			}
 			
-			
-			post.setHeader("Accept", accept);
-			post.setEntity(new UrlEncodedFormEntity(getNameValuePairs(request.getParameterMap())));
-			post.setHeader("Content-Type", "application/x-www-form-urlencoded");
-			HttpResponse endpointResponse = client.execute(post);
 			int endpointStatusCode = endpointResponse.getStatusLine().getStatusCode();
 			if (endpointStatusCode >= 400) {
 				//only return this statuscode when it is an error. Redirection codes (e.g. 302) are allowed I guess
@@ -114,18 +118,39 @@ public class SparqlServlet extends HttpServlet {
 		}
 	}
 
+	private HttpResponse executeGet(String endpoint, String accept, HttpClient client, List<NameValuePair> nameValuePairs) throws ClientProtocolException, IOException {
+		if(!endpoint.endsWith("?")) {
+	        endpoint += "?";
+		}
+		endpoint += URLEncodedUtils.format(nameValuePairs, "utf-8");
+		HttpGet get = new HttpGet(endpoint);
+		get.setHeader("Accept", accept);
+		get.setHeader("Content-Type", "application/x-www-form-urlencoded");
+		return client.execute(get);
+	}
+
+	private HttpResponse executePost(String endpoint, String accept, HttpClient client, List<NameValuePair> nameValuePairs) throws ClientProtocolException, IOException {
+		HttpPost post = new HttpPost(endpoint);
+		
+		post.setHeader("Accept", accept);
+		
+		post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+		post.setHeader("Content-Type", "application/x-www-form-urlencoded");
+		return client.execute(post);
+	}
+
 	private void onError(String message) throws IOException {
 		System.out.println("Invalid query parameters: \n" + message);
 	}
 	
 	/**
-	 * Use the original request to this servlet, copy all parameters (except 'endpoint'), and use those for new sparql resuest
+	 * Use the original request to this servlet, copy all parameters (except the ones used by this servlet), and use those for new sparql resuest
 	 */
 	private List<NameValuePair> getNameValuePairs(Map<String, String[]> requestParams) {
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 		for (Entry<String, String[]> requestParam: requestParams.entrySet()) {
-			if (!requestParam.getKey().equals("endpoint")) { //only used by this proxy servlet, so don't copy this one
-				String key = requestParam.getKey();
+			String key = requestParam.getKey();
+			if (!key.equals("endpoint") && !key.equals("requestMethod")) { //only used by this proxy servlet, so don't copy these
 				String[] values = requestParam.getValue();
 				if (values.length > 0) {
 					nameValuePairs.add(new BasicNameValuePair(key, values[0]));

@@ -46,6 +46,7 @@ public class TabSettings extends JSONObject {
 	private static String OUTPUT_FORMAT = "outputFormat";
 	private static String CONTENT_TYPE = "contentType";
 	private static String EXTRA_QUERY_ARGS = "extraArgs";
+	private static String REQUEST_METHOD = "requestMethod";
 
 	/**
 	 * DEFAULTS
@@ -57,6 +58,8 @@ public class TabSettings extends JSONObject {
 	private static String DEFAULT_ENDPOINT = "http://dbpedia.org/sparql";
 	private static String DEFAULT_TAB_TITLE = "Query";
 	private static String DEFAULT_CONTENT_TYPE = QueryConfigMenu.CONTENT_TYPE_XML;
+	private static String DEFAULT_REQUEST_METHOD = QueryConfigMenu.REQUEST_POST;
+	private static String DEFAULT_OUTPUT = Output.OUTPUT_TABLE;
 	
 	public TabSettings() {
 		setDefaultsIfUnset();
@@ -84,8 +87,24 @@ public class TabSettings extends JSONObject {
 			setContentType(DEFAULT_CONTENT_TYPE);
 		}
 		if (getOutputFormat() == null || getOutputFormat().length() == 0) {
-			setOutputFormat(Output.OUTPUT_TABLE);
+			setOutputFormat(DEFAULT_OUTPUT);
 		}
+		if (getRequestMethod() == null || getRequestMethod().length() == 0) {
+			setRequestMethod(DEFAULT_REQUEST_METHOD);
+		}
+	}
+
+	public void setRequestMethod(String requestMethod) {
+		put(REQUEST_METHOD, new JSONString(requestMethod));
+		
+	}
+
+	public String getRequestMethod() {
+		String requestMethod = null;
+		if (containsKey(REQUEST_METHOD)) {
+			requestMethod = get(REQUEST_METHOD).isString().stringValue();
+		}
+		return requestMethod;
 	}
 
 	public String getEndpoint() {
