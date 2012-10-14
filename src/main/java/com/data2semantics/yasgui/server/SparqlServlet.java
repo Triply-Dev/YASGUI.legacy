@@ -30,6 +30,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -47,6 +50,7 @@ import org.apache.http.message.BasicNameValuePair;
 public class SparqlServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	@SuppressWarnings("unchecked")
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String query = request.getParameter("query");
 		String endpoint = request.getParameter("endpoint");
@@ -55,13 +59,10 @@ public class SparqlServlet extends HttpServlet {
 			HttpClient client = new DefaultHttpClient();
 			HttpPost post = new HttpPost(endpoint);
 			PrintWriter out = response.getWriter();
-			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-			nameValuePairs.add(new BasicNameValuePair("query", query));
-			// Some endpoints (dbpedia?) use separate parameter for accept content type
-			nameValuePairs.add(new BasicNameValuePair("format", accept));
+			
 			
 			post.setHeader("Accept", accept);
-			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			post.setEntity(new UrlEncodedFormEntity(getNameValuePairs(request.getParameterMap())));
 			post.setHeader("Content-Type", "application/x-www-form-urlencoded");
 			HttpResponse endpointResponse = client.execute(post);
 			int endpointStatusCode = endpointResponse.getStatusLine().getStatusCode();
@@ -115,5 +116,22 @@ public class SparqlServlet extends HttpServlet {
 
 	private void onError(String message) throws IOException {
 		System.out.println("Invalid query parameters: \n" + message);
+	}
+	
+	/**
+	 * Use the original request to this servlet, copy all parameters (except 'endpoint'), and use those for new sparql resuest
+	 */
+	private List<NameValuePair> getNameValuePairs(Map<String, String[]> requestParams) {
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+		for (Entry<String, String[]> requestParam: requestParams.entrySet()) {
+			if (!requestParam.getKey().equals("endpoint")) { //only used by this proxy servlet, so don't copy this one
+				String key = requestParam.getKey();
+				String[] values = requestParam.getValue();
+				if (values.length > 0) {
+					nameValuePairs.add(new BasicNameValuePair(key, values[0]));
+				}
+			}
+		}
+		return nameValuePairs;
 	}
 }
