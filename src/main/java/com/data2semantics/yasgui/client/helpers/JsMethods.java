@@ -122,7 +122,8 @@ public class JsMethods {
 					lineNumbers : true,
 					matchBrackets : true,
 					readOnly: true,
-					fixedGutter: true
+					fixedGutter: true,
+					hideVScroll: true
 				});
 				
 				//Append another classname to the codemirror div, so we can set width and height via css

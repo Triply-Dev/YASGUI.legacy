@@ -61,10 +61,10 @@ public class View extends VLayout {
 	private ViewElements viewElements;
 	private Footer footer;
 	private Settings settings = new Settings();
-	public static String VERSION = "12.10a"; //also defined in pom.xml and index.html
+	public static String VERSION = "12.10b"; //also defined in pom.xml and index.html
 	
 	public View() {
-		LocalStorageHelper.setVersion(VERSION);
+		processVersionChanges();
 		GoogleAnalytics.init(GoogleAnalytics.UID);
 		setOverflow(Overflow.HIDDEN);
 		endpointDataSource = new EndpointDataSource(this);
@@ -103,6 +103,18 @@ public class View extends VLayout {
 			}
 		});
 		getElements().checkHtml5();
+	}
+	
+	private void processVersionChanges() {
+		if (!LocalStorageHelper.getVersion().equals(VERSION)) {
+			LocalStorageHelper.setVersion(VERSION);
+			Scheduler.get().scheduleFinally(new Command() {
+				public void execute() {
+					showTooltips();
+					LocalStorageHelper.setTooltipsShown();
+				}
+			});
+		}
 	}
 	
 	public void showTooltips() {

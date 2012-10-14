@@ -27,6 +27,7 @@ package com.data2semantics.yasgui.client.tab.results;
 import java.util.HashMap;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
+import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.client.tab.results.input.JsonResults;
 import com.data2semantics.yasgui.client.tab.results.input.SparqlResults;
@@ -200,10 +201,10 @@ public class ResultContainer extends VLayout {
 				Scheduler.get().scheduleDeferred(new Command() {
 					public void execute() {
 						JsMethods.attachCodeMirrorToQueryResult(rawResponseOutput.getInputId(), mode);
+						rawResponseOutput.adjustForContent(true);
 					}
 				});
 		}});
-
 	}
 	public RawResponse getRawResponseOutput() {
 		return this.rawResponseOutput;

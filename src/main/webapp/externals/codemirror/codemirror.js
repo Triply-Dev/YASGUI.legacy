@@ -866,8 +866,12 @@ var CodeMirror = (function() {
     }
 
     function needsScrollbar() {
-      var realHeight = doc.height * textHeight() + 2 * paddingTop();
-      return realHeight - 1 > scroller.offsetHeight ? realHeight : false;
+    	if (options.hideVScroll) {
+	      var realHeight = doc.height * textHeight() + 2 * paddingTop();
+	      return realHeight - 1 > scroller.offsetHeight ? realHeight : false;
+    	} else {
+    		return false;
+    	}
     }
 
     function updateVerticalScroll(scrollTop) {
