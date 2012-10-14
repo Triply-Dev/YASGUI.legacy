@@ -144,7 +144,6 @@ CodeMirror
 						while (state.stack.length > 0 && token && state.OK
 								&& !finished) {
 							topSymbol = state.stack.pop();
-
 							if (!ll1_table[topSymbol]) {
 								// Top symbol is a terminal
 								if (topSymbol == token) {
@@ -259,7 +258,7 @@ CodeMirror
 						return n * config.indentUnit;
 					}
 					;
-
+					
 					return {
 						token : tokenBase,
 						startState : function(base) {
@@ -269,13 +268,15 @@ CodeMirror
 								complete : acceptEmpty,
 								errorStartPos : null,
 								errorEndPos : null,
+//								possibleCurrent : getPossibles("update"),
+//								possibleNext : getPossibles("update"),
 								possibleCurrent : getPossibles("update").concat(getPossibles("query")),
 								possibleNext : getPossibles("update").concat(getPossibles("query")),
 								allowVars : true,
 								allowBnodes : true,
 								storeProperty : false,
 								lastProperty : "",
-								stack : ["update", "query"]
+								stack : ["query"]
 							};
 						},
 						indent : indent,

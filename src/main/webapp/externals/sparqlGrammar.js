@@ -3243,7 +3243,7 @@ var ll1_table=
   "prologue" : {
      "PREFIX": ["?baseDecl","*prefixDecl"], 
      "BASE": ["?baseDecl","*prefixDecl"], 
-"CONSTRUCT": ["?baseDecl","*prefixDecl"], 
+     "CONSTRUCT": ["?baseDecl","*prefixDecl"], 
      "DESCRIBE": ["?baseDecl","*prefixDecl"], 
      "ASK": ["?baseDecl","*prefixDecl"], 
      "SELECT": ["?baseDecl","*prefixDecl"], 
