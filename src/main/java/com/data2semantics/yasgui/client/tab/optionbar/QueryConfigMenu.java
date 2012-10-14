@@ -26,7 +26,10 @@ package com.data2semantics.yasgui.client.tab.optionbar;
 
 
 import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
+import com.data2semantics.yasgui.client.helpers.TooltipProperties;
+import com.data2semantics.yasgui.client.helpers.properties.TooltipText;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.Canvas;
@@ -198,5 +201,16 @@ public class QueryConfigMenu extends IconMenuButton {
 		layout.addMember(paramListGrid);
 		window.addItem(layout);
 		window.draw();
+	}
+
+	public void showTooltips() {
+		TooltipProperties tProp = new TooltipProperties();
+		tProp.setId(getDOM().getId());
+		tProp.setContent(TooltipText.QUERY_CONFIG_MENU);
+		tProp.setMy(TooltipProperties.POS_BOTTOM_CENTER);
+		tProp.setAt(TooltipProperties.POS_TOP_CENTER);
+		tProp.setYOffset(8);
+		Helper.drawTooltip(tProp);
+		
 	}
 }

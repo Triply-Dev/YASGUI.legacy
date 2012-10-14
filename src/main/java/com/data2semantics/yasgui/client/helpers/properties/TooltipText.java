@@ -40,4 +40,10 @@ public class TooltipText {
 				"<li><strong>CTRL-ALT-up</strong>: Copy line up</li>\n" + 
 				"<li><strong>CTRL-/</strong>: Comment line(s)</li>\n" + 
 			"</ul>";
+	public static String QUERY_CONFIG_MENU = "Advanced options which you normally wont need, including:" +
+			"<ul style=\"margin: 1px;\">\n" + 
+			"<li>Changing request method (POST or GET)</li>\n" + 
+			"<li>Adding additional query arguments</li>\n" + 
+			"<li>Changing requested content (XML or JSON)</li>\n" + 
+		"</ul>";
 }

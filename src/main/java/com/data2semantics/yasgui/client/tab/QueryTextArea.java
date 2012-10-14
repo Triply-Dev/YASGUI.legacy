@@ -57,8 +57,8 @@ public class QueryTextArea extends HTMLPane {
 		tProp.setContent(TooltipText.QUERY_PREFIXES_AUTOCOMPLETE);
 		tProp.setMy(TooltipProperties.POS_LEFT_CENTER);
 		tProp.setAt(TooltipProperties.POS_TOP_LEFT);
-		tProp.setXOffset(600);
-		tProp.setYOffset(23);
+		tProp.setXOffset(560);
+		tProp.setYOffset(24);
 		Helper.drawTooltip(tProp);
 	}
 	

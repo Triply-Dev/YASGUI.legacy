@@ -163,6 +163,7 @@ public class QueryTab extends Tab {
 	public void showTooltips() throws ElementIdException {
 		queryTextArea.showTooltips();
 		showSearchIconTooltip();
+		queryConfigMenu.showTooltips();
 		
 	}
 	private void showSearchIconTooltip() {
