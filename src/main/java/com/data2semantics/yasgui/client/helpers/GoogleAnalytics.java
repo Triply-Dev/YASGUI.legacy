@@ -30,8 +30,7 @@ import com.google.gwt.user.client.Window;
  */
 public class GoogleAnalytics {
 	
-	public static String UID = "UA-35382981-1";
-	
+	public static String UID = "UA-35569470-1";
 	public static void init(String userAccount) {
 
 		Element firstScript = Document.get().getElementsByTagName("script").getItem(0);
@@ -119,9 +118,9 @@ public class GoogleAnalytics {
 		if (category.length == action.length && action.length == optLabel.length && optLabel.length == optValue.length) {
 			commands = [];
 			for (i = 0; i < category.length; i++) {
-				if (optValue != undefined) {
+				if (optValue[i] != null && optValue[i] != 0) {
 					commands.push([ '_trackEvent', category[i], action[i], optLabel[i], optValue[i] ]);
-				} else if (optLabel != undefined) {
+				} else if (optLabel[i] != null && optLabel[i] != "") {
 					commands.push([ '_trackEvent', category[i], action[i], optLabel[i] ]);
 				} else {
 					commands.push([ '_trackEvent', category[i], action[i] ]);
@@ -129,6 +128,7 @@ public class GoogleAnalytics {
 				commands.push([ '_trackEvent', category[i], action[i], optLabel[i], optValue[i] ]);
 			}
 //			$wnd._gaq.push.apply(this||$wnd.window,commands);
+			$wnd.console.log(commands);
 			$wnd._gaq.push.apply($wnd._gaq.push, commands);
 		} else {
 			throw new Error("Unequal set of arguments for tracking events: " + category.length + " - " + action.length + " - " + optLabel.length + " - " + optValue.length);
