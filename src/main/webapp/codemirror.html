@@ -53,17 +53,7 @@ SELECT DISTINCT *
 				CodeMirror.simpleHint(cm, CodeMirror.prefixHint);
 			},
 			onHighlightComplete: function(cm) {
-				wrong = false;
-				for (l = 0; l < cm.lineCount(); ++l) {
-					state = myCodeMirror.getTokenAt({
-						line : l,
-						ch : cm.getLine(l).length
-					}).state;
-					if (!state.OK) {
-						wrong = true;
-						break;
-					}
-				}
+				checkSyntax(cm);
 			}
 		});
 			

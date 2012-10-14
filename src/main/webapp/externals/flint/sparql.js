@@ -2,12 +2,12 @@ CodeMirror
 		.defineMode(
 				"sparql",
 				function(config, parserConfig) {
-
+					var tms = getTerminals();
 					var indentUnit = config.indentUnit;
 
-					var keywords = /^(GROUP_CONCAT|DATATYPE|BASE|PREFIX|SELECT|CONSTRUCT|DESCRIBE|ASK|FROM|NAMED|ORDER|BY|LIMIT|ASC|DESC|OFFSET|DISTINCT|REDUCED|WHERE|GRAPH|OPTIONAL|UNION|FILTER|GROUP|HAVING|AS|VALUES|LOAD|CLEAR|DROP|CREATE|MOVE|COPY|SILENT|INSERT|DELETE|DATA|WITH|TO|USING|NAMED|MINUS|BIND|LANGMATCHES|LANG|BOUND|SAMETERM|ISIRI|ISURI|ISBLANK|ISLITERAL|REGEX|TRUE|FALSE|UNDEF|ADD|DEFAULT|ALL|SERVICE|INTO|IN|NOT|IRI|URI|BNODE|RAND|ABS|CEIL|FLOOR|ROUND|CONCAT|STRLEN|UCASE|LCASE|ENCODE_FOR_URI|CONTAINS|STRSTARTS|STRENDS|STRBEFORE|STRAFTER|YEAR|MONTH|DAY|HOURS|MINUTES|SECONDS|TIMEZONE|TZ|NOW|UUID|STRUUID|MD5|SHA1|SHA256|SHA384|SHA512|COALESCE|IF|STRLANG|STRDT|ISNUMERIC|SUBSTR|REPLACE|EXISTS|COUNT|SUM|MIN|MAX|AVG|SAMPLE|SEPARATOR|STR)/i;
+					var keywords = tms.keywords;
 
-					var punct = /^(\*|a|\.|\{|\}|,|\(|\)|;|\[|\]|\|\||&&|=|!=|!|<=|>=|<|>|\+|-|\/|\^\^|\?|\||\^)/;
+					var punct = tms.punct;
 
 					var acceptEmpty = true;
 
@@ -21,7 +21,7 @@ CodeMirror
 						return possibles;
 					}
 
-					var tms = getTerminals();
+					
 					var terminal = tms.terminal;
 
 					function tokenBase(stream, state) {
@@ -277,7 +277,7 @@ CodeMirror
 								allowBnodes : true,
 								storeProperty : false,
 								lastProperty : "",
-								stack : []
+								stack : ["update", "query"]
 							};
 						},
 						indent : indent,
