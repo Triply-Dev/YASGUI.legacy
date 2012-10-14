@@ -107,6 +107,7 @@ function checkSyntax(cm) {
 			break;
 		}
 	}
+	showPlayButton((queryValid? "1": "0"));
 	var stack = state.stack, len = state.stack.length;
 	// Because incremental parser doesn't receive end-of-input
 	// it can't clear stack, so we have to check that whatever
@@ -119,10 +120,6 @@ function checkSyntax(cm) {
 			queryValid = false;
 	}
 
-	if (queryValid) {
-		//do something
-	} else {
-		//do something
-	}
+	
 }
 

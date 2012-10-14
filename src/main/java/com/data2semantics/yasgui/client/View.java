@@ -73,8 +73,9 @@ public class View extends VLayout {
 		} catch (Exception e) {
 			settings = new Settings();
 		}
-		initJs();
 		viewElements = new ViewElements(this);
+		initJs();
+		
 		getElements().initLoadingWidget();
 		setWidth100();
 		setHeight100();
@@ -129,11 +130,13 @@ public class View extends VLayout {
 	
 	private void initJs() {
 		JsMethods.setTabBarProperties(QueryTabs.INDENT_TABS);
-		JsMethods.declareCallableViewMethods(this);
+		JsMethods.declareCallableViewMethods(this, viewElements);
 		JsMethods.setProxyUriInVar(GWT.getModuleBaseURL() + "sparql");
 		JsMethods.setQtipZIndex(ZIndexes.HELP_TOOLTIPS);
 	}
-	
+	public void showPlayButton(java.lang.Boolean queryValid) {
+		
+	}
 	
 	public ViewElements getElements() {
 		return this.viewElements;
@@ -187,14 +190,14 @@ public class View extends VLayout {
 		}
 		int resultFormat;
 		if (contentType == null) {
-			onQueryError("No content type returned.<br><br>" + resultString);
+			viewElements.onQueryError("No content type returned.<br><br>" + resultString);
 			return;
 		} else if (contentType.contains("sparql-results+json")) {
 			resultFormat = ResultContainer.RESULT_FORMAT_JSON;
 		} else if (contentType.contains("sparql-results+xml")) {
 			resultFormat = ResultContainer.RESULT_FORMAT_XML;
 		} else {
-			onQueryError("Invalid content type returned: " + contentType + "<br><br>" + resultString);
+			viewElements.onQueryError("Invalid content type returned: " + contentType + "<br><br>" + resultString);
 			return;
 		}
 		tab.getResultContainer().addQueryResult(resultString, resultFormat);
@@ -226,7 +229,7 @@ public class View extends VLayout {
 		String prefixes = LocalStorageHelper.getPrefixesFromLocalStorage();
 		if (forceUpdate || prefixes == null) {
 			// get prefixes from server
-			onLoadingStart("Fetching prefixes");
+			viewElements.onLoadingStart("Fetching prefixes");
 			getRemoteService().fetchPrefixes(forceUpdate, new AsyncCallback<String>() {
 				public void onFailure(Throwable caught) {
 					onError(caught.getMessage());
@@ -235,7 +238,7 @@ public class View extends VLayout {
 				public void onSuccess(String prefixes) {
 					LocalStorageHelper.setPrefixes(prefixes);
 					JsMethods.setAutocompletePrefixes(prefixes);
-					onLoadingFinish();
+					viewElements.onLoadingFinish();
 				}
 			});
 		} else {
@@ -252,7 +255,7 @@ public class View extends VLayout {
 		String endpoints = LocalStorageHelper.getEndpointsFromLocalStorage();
 		if (forceUpdate || endpoints == null || endpoints.length() == 0) {
 			// get endpoint data from server
-			onLoadingStart("Fetching endpoint data");
+			viewElements.onLoadingStart("Fetching endpoint data");
 			getRemoteService().fetchEndpoints(forceUpdate, new AsyncCallback<String>() {
 				public void onFailure(Throwable caught) {
 					onError(caught);
@@ -269,7 +272,7 @@ public class View extends VLayout {
 					} else {
 						onError("Failed to retrieve list of endpoints from server");
 					}
-					onLoadingFinish();
+					viewElements.onLoadingFinish();
 				}
 			});
 		} else {
@@ -347,33 +350,6 @@ public class View extends VLayout {
 			}
 		}
 	}
-	/**
-	 * @see ViewElements#onLoadingStart()
-	 */
-	public void onLoadingStart(String message) {
-		getElements().onLoadingStart(message);
-	}
-
-	/**
-	 * @see ViewElements#onLoadingFinish()
-	 */
-	public void onLoadingFinish() {
-		getElements().onLoadingFinish();
-	}
-	
-	/**
-	 * @see ViewElements#onQueryStart()
-	 */
-	public void onQueryStart() {
-		getElements().onQueryStart();
-	}
-	
-	/**
-	 * @see ViewElements#onQueryFinish()
-	 */
-	public void onQueryFinish() {
-		getElements().onQueryFinish();
-	}
 	
 	/**
 	 * @see ViewElements#onError(String)
@@ -382,12 +358,6 @@ public class View extends VLayout {
 		getElements().onError(error);
 	}
 	
-	/**
-	 * @see ViewElements#onQueryError(String)
-	 */
-	public void onQueryError(String error) {
-		getElements().onQueryError(error);
-	}
 	
 	/**
 	 * @see ViewElements#onError()Throwable

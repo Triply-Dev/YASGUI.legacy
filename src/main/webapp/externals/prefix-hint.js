@@ -46,17 +46,17 @@
 		
 		
 		
-		if (token.string == "PREFIX") {
-		
-			//Cursor is immediately after prefix. Move it one item to the right, and set token as empty string
-			editor.replaceRange(" ", {line : cur.line,ch : token.end}, {line : cur.line,ch : token.end + 1});
-			token = {
-					start : cur.ch + 1,
-					end : cur.ch + 1,
-					string : "",
-					state : token.state
-				};
-		}
+//		if (token.string == "PREFIX") {
+//		
+//			//Cursor is immediately after prefix. Move it one item to the right, and set token as empty string
+//			editor.replaceRange(" ", {line : cur.line,ch : token.end}, {line : cur.line,ch : token.end + 1});
+//			token = {
+//					start : cur.ch + 1,
+//					end : cur.ch + 1,
+//					string : "",
+//					state : token.state
+//				};
+//		}
 		
 		
 		//If this is a whitespace, and token is just after PREFIX, proceed using empty string as token

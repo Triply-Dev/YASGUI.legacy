@@ -25,6 +25,7 @@
 package com.data2semantics.yasgui.client.helpers;
 
 import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.client.ViewElements;
 
 public class JsMethods {
 	
@@ -205,30 +206,31 @@ public class JsMethods {
 		$wnd.checkCorsEnabled(endpointUri);
 	}-*/;
 	
+	
 	/**
 	 * Add view methods to JS, use this for situation where a non-static GWT method needs to be called
 	 * 
 	 * @param view
 	 */
-	public static native void declareCallableViewMethods(View view) /*-{
+	public static native void declareCallableViewMethods(View view, ViewElements viewElements) /*-{
 		var view = view; 
 		$wnd.drawResults = function(tabId, resultString, contentType) {
 			view.@com.data2semantics.yasgui.client.View::drawResults(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(tabId, resultString, contentType);
 		}
 		$wnd.onError = function(errorMsg) {
-			view.@com.data2semantics.yasgui.client.View::onError(Ljava/lang/String;)(errorMsg);
+			viewElements.@com.data2semantics.yasgui.client.ViewElements::onError(Ljava/lang/String;)(errorMsg);
 		}
 		$wnd.onLoadingStart = function(message) {
-			view.@com.data2semantics.yasgui.client.View::onLoadingStart(Ljava/lang/String;)(message);
+			viewElements.@com.data2semantics.yasgui.client.ViewElements::onLoadingStart(Ljava/lang/String;)(message);
 		}
 		$wnd.onLoadingFinish = function() {
-			view.@com.data2semantics.yasgui.client.View::onLoadingFinish()();
+			viewElements.@com.data2semantics.yasgui.client.ViewElements::onLoadingFinish()();
 		}
 		$wnd.onQueryStart = function() {
-			view.@com.data2semantics.yasgui.client.View::onQueryStart()();
+			viewElements.@com.data2semantics.yasgui.client.ViewElements::onQueryStart()();
 		}
 		$wnd.onQueryFinish = function() {
-			view.@com.data2semantics.yasgui.client.View::onQueryFinish()();
+			viewElements.@com.data2semantics.yasgui.client.ViewElements::onQueryFinish()();
 		}
 		$wnd.clearQueryResult = function() {
 			view.@com.data2semantics.yasgui.client.View::resetQueryResult()();
@@ -237,10 +239,15 @@ public class JsMethods {
 			view.@com.data2semantics.yasgui.client.View::storeQueryInCookie()();
 		}
 		$wnd.onQueryError = function(errorMsg) {
-			view.@com.data2semantics.yasgui.client.View::onQueryError(Ljava/lang/String;)(errorMsg);
+			viewElements.@com.data2semantics.yasgui.client.ViewElements::onQueryError(Ljava/lang/String;)(errorMsg);
 		}
-		
+		$wnd.showPlayButton = function(queryValid) {
+			viewElements.@com.data2semantics.yasgui.client.ViewElements::showPlayButton(Ljava/lang/String;)(queryValid);
+		}
 	}-*/;
+	
+	
+	
 	
 	/**
 	 * Define the url of the sparql proxy servlet in javascript

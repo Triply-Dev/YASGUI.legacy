@@ -83,9 +83,6 @@ public class ViewElements {
 				String requestMethod = view.getSelectedTabSettings().getRequestMethod();
 				JsMethods.queryJson(tabId, queryString, endpoint, contentType, argsString, requestMethod);
 				view.checkAndAddEndpointToDs(endpoint);
-//				GoogleAnalytics.trackEvent("query", "endpoint", endpoint);
-//				GoogleAnalytics.trackEvent("query", "query", queryString);
-//				GoogleAnalytics.trackEvents(new String[]{"query", "query"}, new String[]{"endpoint", "query"}, new String[]{endpoint,queryString});
 				GoogleAnalyticsEvent endpointEvent = new GoogleAnalyticsEvent("sparql", "endpoint");
 				endpointEvent.setOptLabel(endpoint);
 				GoogleAnalyticsEvent queryEvent = new GoogleAnalyticsEvent("sparql", "query");
@@ -142,6 +139,14 @@ public class ViewElements {
 		loading.redraw();
 	}
 
+	public void showPlayButton(String queryValid) {
+		view.getLogger().severe(queryValid);
+		if (queryValid.equals("1")) {
+			queryButton.setSrc("icons/custom/start.png");
+		} else {
+			queryButton.setSrc("icons/custom/start-error.png");
+		}
+	}
 	public void onLoadingStart() {
 		onLoadingStart(DEFAULT_LOADING_MESSAGE);
 	}
