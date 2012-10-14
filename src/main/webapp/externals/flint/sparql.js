@@ -1,236 +1,165 @@
-CodeMirror
-		.defineMode(
-				"sparql",
-				function(config, parserConfig) {
+CodeMirror.defineMode("sparql", function(config, parserConfig) {
 
-					var indentUnit = config.indentUnit;
+    var indentUnit = config.indentUnit;
 
-					var keywords = /^(GROUP_CONCAT|DATATYPE|BASE|PREFIX|SELECT|CONSTRUCT|DESCRIBE|ASK|FROM|NAMED|ORDER|BY|LIMIT|ASC|DESC|OFFSET|DISTINCT|REDUCED|WHERE|GRAPH|OPTIONAL|UNION|FILTER|GROUP|HAVING|AS|VALUES|LOAD|CLEAR|DROP|CREATE|MOVE|COPY|SILENT|INSERT|DELETE|DATA|WITH|TO|USING|NAMED|MINUS|BIND|LANGMATCHES|LANG|BOUND|SAMETERM|ISIRI|ISURI|ISBLANK|ISLITERAL|REGEX|TRUE|FALSE|UNDEF|ADD|DEFAULT|ALL|SERVICE|INTO|IN|NOT|IRI|URI|BNODE|RAND|ABS|CEIL|FLOOR|ROUND|CONCAT|STRLEN|UCASE|LCASE|ENCODE_FOR_URI|CONTAINS|STRSTARTS|STRENDS|STRBEFORE|STRAFTER|YEAR|MONTH|DAY|HOURS|MINUTES|SECONDS|TIMEZONE|TZ|NOW|UUID|STRUUID|MD5|SHA1|SHA256|SHA384|SHA512|COALESCE|IF|STRLANG|STRDT|ISNUMERIC|SUBSTR|REPLACE|EXISTS|COUNT|SUM|MIN|MAX|AVG|SAMPLE|SEPARATOR|STR)/i;
 
-					var punct = /^(\*|a|\.|\{|\}|,|\(|\)|;|\[|\]|\|\||&&|=|!=|!|<=|>=|<|>|\+|-|\/|\^\^|\?|\||\^)/;
 
-					var acceptEmpty = true;
 
-					function getPossibles(symbol) {
-						var possibles = [], possiblesOb = ll1_table[symbol];
-						if (possiblesOb != undefined)
-							for ( var property in possiblesOb)
-								possibles.push(property.toString());
-						else
-							possibles.push(symbol);
-						return possibles;
-					}
+    function getPossibles(symbol)
+    {
+	var possibles=[], possiblesOb=ll1_table[symbol];
+	if (possiblesOb!=undefined)
+	    for (var property in possiblesOb) 
+		possibles.push(property.toString());
+	else
+	    possibles.push(symbol);
+	return possibles;
+    }
 
-					var tms = getTerminals();
-					var terminal = tms.terminal;
+    var tms= getTerminals();
+    var terminal=tms.terminal;
+    var keywords=tms.keywords;
+    var punct=tms.punct;
 
-					function tokenBase(stream, state) {
+    function tokenBase(stream, state) {
+	
+	function nextToken() {
 
-						function nextToken() {
+	    var consumed=null;
+ 	    // Tokens defined by individual regular expressions
+	    for (var i=0; i<terminal.length; ++i) {
+		consumed= stream.match(terminal[i].regex,true,false);
+		if (consumed) 
+		    return { cat: terminal[i].name, 
+			     style: terminal[i].style,
+			     text: consumed[0]
+			   };
+	    }
 
-							var consumed = null;
-							// Tokens defined by individual regular expressions
-							for ( var i = 0; i < terminal.length; ++i) {
-								consumed = stream.match(terminal[i].regex,
-										true, false);
-								if (consumed)
-									return {
-										cat : terminal[i].name,
-										style : terminal[i].style,
-										text : consumed[0]
-									};
-							}
+	    // Keywords
+	    consumed= stream.match(keywords,true,false);
+	    if (consumed)
+		return { cat: stream.current().toUpperCase(),
+			 style: "keyword",
+			 text: consumed[0]
+		       };
+	
+	    // Punctuation
+	    consumed= stream.match(punct,true,false);
+	    if (consumed) 
+		return { cat: stream.current(),
+			 style: "meta",
+			 text: consumed[0]
+		       };
+	    
+	    // Token is invalid
+	    // better consume something anyway, or else we're stuck
+	    consumed= stream.match(/^.[A-Za-z0-9]*/,true,false);
+	    return { cat:"<invalid_token>", 
+		     style: "error",
+		     text: consumed[0]
+		   };
+	}
 
-							// Keywords
-							consumed = stream.match(keywords, true, false);
-							if (consumed)
-								return {
-									cat : stream.current().toUpperCase(),
-									style : "sp-keyword",
-									text : consumed[0]
-								};
+	function recordFailurePos() { 
+	    // tokenOb.style= "sp-invalid";
+	    var col= stream.column();
+	    state.errorStartPos= col;
+	    state.errorEndPos= col+tokenOb.text.length;
+	};
 
-							// Punctuation
-							consumed = stream.match(punct, true, false);
-							if (consumed)
-								return {
-									cat : stream.current(),
-									style : "sp-punc",
-									text : consumed[0]
-								};
+	function setQueryType(s) {
+	    if (s=="SELECT" || s=="CONSTRUCT" || s=="ASK" || s=="DESCRIBE")
+		state.queryType=s;
+	}
 
-							// Token is invalid
-							// better consume something anyway, or else we're
-							// stuck
-							consumed = stream.match(/^.[A-Za-z0-9]*/, true,
-									false);
-							return {
-								cat : "<invalid_token>",
-								style : "sp-invalid",
-								text : consumed[0]
-							};
-						}
+	// CodeMirror works with one line at a time,
+	// but newline should behave like whitespace
+	// - i.e. a definite break between tokens (for autocompleter)
+	if (stream.pos==0) 
+	    state.possibleCurrent= state.possibleNext;
 
-						function recordFailurePos() {
-							// tokenOb.style= "sp-invalid";
-							var col = stream.column();
-							state.errorStartPos = col;
-							state.errorEndPos = col + tokenOb.text.length;
-						}
-						;
+	var tokenOb= nextToken();
 
-						function setQueryType(s) {
-							if (state.queryType == null) {
-								if (s == "SELECT" || s == "CONSTRUCT"
-										|| s == "ASK" || s == "DESCRIBE")
-									state.queryType = s;
-							}
-						}
+	if (tokenOb.cat=="<invalid_token>") {
+	    // set error state, and
+	    if (state.OK==true) {
+		state.OK=false;
+		recordFailurePos();
+	    }
+	    //alert("Invalid:"+tokenOb.text);
+	    return tokenOb.style;
+	}
 
-						// Some fake non-terminals are just there to have
-						// side-effect on state
-						// - i.e. allow or disallow variables and bnodes in
-						// certain non-nesting
-						// contexts
-						function setSideConditions(topSymbol) {
-							if (topSymbol == "disallowVars")
-								state.allowVars = false;
-							else if (topSymbol == "allowVars")
-								state.allowVars = true;
-							else if (topSymbol == "disallowBnodes")
-								state.allowBnodes = false;
-							else if (topSymbol == "allowBnodes")
-								state.allowBnodes = true;
-							else if (topSymbol == "storeProperty")
-								state.storeProperty = true;
-						}
+	if (tokenOb.cat == "WS" ||
+	    tokenOb.cat == "COMMENT") {
+	    state.possibleCurrent= state.possibleNext;
+	    return(tokenOb.style);
+	}
+	// Otherwise, run the parser until the token is digested
+	// or failure
+	var finished= false;
+	var topSymbol;
+	var token= tokenOb.cat;
 
-						function checkSideConditions(topSymbol) {
-							return ((state.allowVars || topSymbol != "var") && (state.allowBnodes || (topSymbol != "blankNode"
-									&& topSymbol != "blankNodePropertyList" && topSymbol != "blankNodePropertyListPath")))
-						}
+	// Incremental LL1 parse
+	while(state.stack.length>0 && token && state.OK && !finished ) {
+	    topSymbol= state.stack.pop();
+	    
+	    if (!ll1_table[topSymbol]) {
+		// Top symbol is a terminal
+		if (topSymbol==token) {
+		    // Matching terminals
+		    // - consume token from input stream
+		    finished=true;
+		    setQueryType(topSymbol);
+		} else {
+		    state.OK=false;
+		    recordFailurePos();
+		}
+	    } else {
+		// topSymbol is nonterminal
+		//  - see if there is an entry for topSymbol 
+		// and nextToken in table
+		var nextSymbols= ll1_table[topSymbol][token];
+		if (nextSymbols!=undefined) {
+		    // Match - copy RHS of rule to stack
+		    for (var i=nextSymbols.length-1; i>=0; --i)
+			state.stack.push(nextSymbols[i]);
+		} else {
+		    // No match in table - fail
+		    state.OK=false;
+		    recordFailurePos();
+		    state.stack.push(topSymbol);  // Shove topSymbol back on stack
+		}
+	    }
+	} 
 
-						// CodeMirror works with one line at a time,
-						// but newline should behave like whitespace
-						// - i.e. a definite break between tokens (for
-						// autocompleter)
-						if (stream.pos == 0)
-							state.possibleCurrent = state.possibleNext;
+    	state.possibleCurrent= state.possibleNext;
+	state.possibleNext= getPossibles(state.stack[state.stack.length-1]);
 
-						var tokenOb = nextToken();
+	//alert(tokenOb.style);
+	return tokenOb.style;
+    }
 
-						if (tokenOb.cat == "<invalid_token>") {
-							// set error state, and
-							if (state.OK == true) {
-								state.OK = false;
-								recordFailurePos();
-							}
-							state.complete = false;
-							// alert("Invalid:"+tokenOb.text);
-							return tokenOb.style;
-						}
+    
+    var indentTop={
+	"*[,, object]": 3,
+	"?[verb, objectList]": 1,
+	"object": 2,
+	"objectList": 2,
+	"propertyListNotEmpty": 1,
+	"propertyList": 1,
+    };
 
-						if (tokenOb.cat == "WS" || tokenOb.cat == "COMMENT") {
-							state.possibleCurrent = state.possibleNext;
-							return (tokenOb.style)
-						}
-						// Otherwise, run the parser until the token is digested
-						// or failure
-						var finished = false;
-						var topSymbol;
-						var token = tokenOb.cat;
+    var indentTable={
+	"}":1,
+	"]":0,
+	")":1
+    };
 
-						// Incremental LL1 parse
-						while (state.stack.length > 0 && token && state.OK
-								&& !finished) {
-							topSymbol = state.stack.pop();
-
-							if (!ll1_table[topSymbol]) {
-								// Top symbol is a terminal
-								if (topSymbol == token) {
-									// Matching terminals
-									// - consume token from input stream
-									finished = true;
-									setQueryType(topSymbol);
-									// Check whether $ (end of input token) is
-									// poss next
-									// for everything on stack
-									var allNillable = true;
-									for ( var sp = state.stack.length; sp > 0; --sp) {
-										var item = ll1_table[state.stack[sp - 1]];
-										if (!item || !item["$"])
-											allNillable = false;
-									}
-									state.complete = allNillable;
-									if (state.storeProperty
-											&& token.cat != "sp-punc") {
-										state.lastProperty = tokenOb.text;
-										state.storeProperty = false;
-									}
-								} else {
-									state.OK = false;
-									state.complete = false;
-									recordFailurePos();
-								}
-							} else {
-								// topSymbol is nonterminal
-								// - see if there is an entry for topSymbol
-								// and nextToken in table
-								var nextSymbols = ll1_table[topSymbol][token];
-								if (nextSymbols != undefined
-										&& checkSideConditions(topSymbol)) {
-									// Match - copy RHS of rule to stack
-									for ( var i = nextSymbols.length - 1; i >= 0; --i)
-										state.stack.push(nextSymbols[i]);
-									// Peform any non-grammatical side-effects
-									setSideConditions(topSymbol);
-								} else {
-									// No match in table - fail
-									state.OK = false;
-									state.complete = false;
-									recordFailurePos();
-									state.stack.push(topSymbol); // Shove
-									// topSymbol
-									// back on
-									// stack
-								}
-							}
-						}
-						if (!finished && state.OK) {
-							state.OK = false;
-							state.complete = false;
-							recordFailurePos();
-						}
-
-						state.possibleCurrent = state.possibleNext;
-						state.possibleNext = getPossibles(state.stack[state.stack.length - 1]);
-
-						// alert(token+"="+tokenOb.style+'\n'+state.stack);
-						return tokenOb.style;
-					}
-
-					var indentTop = {
-						"*[,, object]" : 3,
-						"*[ (,), object]" : 3,
-						"?[verb, objectList]" : 1,
-						"object" : 2,
-						"objectList" : 2,
-						"objectListPath" : 2,
-						"storeProperty" : 2,
-						"propertyListNotEmpty" : 1,
-						"propertyList" : 1,
-						"propertyListPath" : 1,
-						"propertyListPathNotEmpty" : 1
-					};
-
-					var indentTable = {
-						"}" : 1,
-						"]" : 0,
-						")" : 1
-					};
-
-					function indent(state, textAfter) {
-						var n = 0; // indent level
+    function indent(state, textAfter) {
+	var n = 0; // indent level
 						var i = state.stack.length - 1;
 
 						if (/^[\}\]\)]/.test(textAfter)) {
@@ -239,16 +168,16 @@ CodeMirror
 							for (; i >= 0; --i) {
 								if (state.stack[i] == closeBracket) {
 									--i;
-									break
+									break;
 								}
-								;
 							}
 						} else {
-							// Consider nullable non-terminals if at top of stack
+							// Consider nullable non-terminals if at top of
+							// stack
 							var dn = indentTop[state.stack[i]];
 							if (dn) {
 								n += dn;
-								--i
+								--i;
 							}
 						}
 						for (; i >= 0; --i) {
@@ -259,29 +188,21 @@ CodeMirror
 						return n * config.indentUnit;
 					}
 					;
-
-					return {
-						token : tokenBase,
-						startState : function(base) {
-							return {
-								tokenize : tokenBase,
-								OK : true,
-								complete : acceptEmpty,
-								errorStartPos : null,
-								errorEndPos : null,
-								possibleCurrent : getPossibles("query").concat(
-										getPossibles("update")),
-								possibleNext : getPossibles("query").concat(
-										getPossibles("update")),
-								allowVars : true,
-								allowBnodes : true,
-								storeProperty : false,
-								lastProperty : "",
-								stack : []
-							};
-						},
-						indent : indent,
-						electricChars : "}])"
-					};
-				});
+    
+    return {
+	token: tokenBase,
+	startState: function(base) {
+	    return {
+		tokenize: tokenBase,
+		OK: true, 
+		errorStartPos: null,
+		errorEndPos: null,
+		queryType: null,
+		possibleCurrent: getPossibles("query"),
+		possibleNext: getPossibles("query"),
+		stack: ["query"] }; },
+	indent: indent,
+	electricChars: "}])"
+    };
+});
 CodeMirror.defineMIME("application/x-sparql-query", "sparql");
