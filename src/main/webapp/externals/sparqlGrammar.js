@@ -3243,7 +3243,7 @@ var ll1_table=
   "prologue" : {
      "PREFIX": ["?baseDecl","*prefixDecl"], 
      "BASE": ["?baseDecl","*prefixDecl"], 
-     "CONSTRUCT": ["?baseDecl","*prefixDecl"], 
+"CONSTRUCT": ["?baseDecl","*prefixDecl"], 
      "DESCRIBE": ["?baseDecl","*prefixDecl"], 
      "ASK": ["?baseDecl","*prefixDecl"], 
      "SELECT": ["?baseDecl","*prefixDecl"], 
@@ -3867,217 +3867,164 @@ var ll1_table=
      "WHERE": ["?WHERE","groupGraphPattern"]}
 };
 
-var getTerminals = function() {
-	var IRI_REF = '<[^<>\"\'\|\{\}\^\\\x00-\x20]*>';
-	/*
-	 PN_CHARS_BASE =	
-	 '[A-Z]|[a-z]|[\\u00C0-\\u00D6]|[\\u00D8-\\u00F6]|[\\u00F8-\\u02FF]|[\\u0370-\\u037D]|[\\u037F-\\u1FFF]|[\\u200C-\\u200D]|[\\u2070-\\u218F]|[\\u2C00-\\u2FEF]|[\\u3001-\\uD7FF]|[\\uF900-\\uFDCF]|[\\uFDF0-\\uFFFD]|[\\u10000-\\uEFFFF]';
-	 */
 
-	var PN_CHARS_BASE = '[A-Za-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD]';
-	var PN_CHARS_U = PN_CHARS_BASE + '|_';
+var getTerminals = function()
+{
+var IRI_REF = '<[^<>\"\'\|\{\}\^\\\x00-\x20]*>';
 
-	var PN_CHARS = PN_CHARS_U + '|-|[0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040]';
-	var VARNAME = '(' + PN_CHARS_U + '|[0-9])' + '(' + PN_CHARS_U
-			+ '|[0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040])*';
-	var VAR1 = '\\?' + VARNAME;
-	var VAR2 = '\\$' + VARNAME;
+var PN_CHARS_BASE =	
+    '[A-Za-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD]';
+var PN_CHARS_U = PN_CHARS_BASE+'|_';
 
-	var PN_PREFIX = '(' + PN_CHARS_BASE + ')(((' + PN_CHARS + ')|\\.)*('
-			+ PN_CHARS + '))?';
-	var PN_LOCAL = '(' + PN_CHARS_U + '|[0-9])(((' + PN_CHARS + ')|\\.)*('
-			+ PN_CHARS + '))?';
+var PN_CHARS=  PN_CHARS_U+'|-|[0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040]';
+var VARNAME = '('+PN_CHARS_U+'|[0-9])'+
+    '('+PN_CHARS_U+'|[0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040])*';
+var VAR1 = '\\?'+VARNAME;
+var VAR2 = '\\$'+VARNAME;
 
-	var PNAME_NS = '(' + PN_PREFIX + ')?:';
-	var PNAME_LN = PNAME_NS + PN_LOCAL;
-	var BLANK_NODE_LABEL = '_:' + PN_LOCAL;
-	var LANGTAG = '@[a-zA-Z]+(-[a-zA-Z0-9]+)*';
+var PN_PREFIX= '('+PN_CHARS_BASE+')((('+PN_CHARS+')|\\.)*('+PN_CHARS+'))?';
+var PN_LOCAL= '('+PN_CHARS_U+'|[0-9])((('+PN_CHARS+')|\\.)*('+PN_CHARS+'))?';
 
-	var EXPONENT = '[eE][\\+-]?[0-9]+';
-	var INTEGER = '[0-9]+';
-	var DECIMAL = '(([0-9]+\\.[0-9]*)|(\\.[0-9]+))';
-	var DOUBLE = '(([0-9]+\\.[0-9]*' + EXPONENT + ')|' + '(\\.[0-9]+'
-			+ EXPONENT + ')|' + '([0-9]+' + EXPONENT + '))';
+var PNAME_NS = '('+PN_PREFIX+')?:';
+var PNAME_LN = PNAME_NS+PN_LOCAL;
+var BLANK_NODE_LABEL = '_:'+PN_LOCAL;
+var LANGTAG = '@[a-zA-Z]+(-[a-zA-Z0-9]+)*';
 
-	var INTEGER_POSITIVE = '\\+' + INTEGER;
-	var DECIMAL_POSITIVE = '\\+' + DECIMAL;
-	var DOUBLE_POSITIVE = '\\+' + DOUBLE;
-	var INTEGER_NEGATIVE = '-' + INTEGER;
-	var DECIMAL_NEGATIVE = '-' + DECIMAL;
-	var DOUBLE_NEGATIVE = '-' + DOUBLE;
+var EXPONENT = '[eE][\\+-]?[0-9]+';
+var INTEGER = '[0-9]+';
+var DECIMAL = '(([0-9]+\\.[0-9]*)|(\\.[0-9]+))';
+var DOUBLE = 
+    '(([0-9]+\\.[0-9]*'+EXPONENT+')|'+
+    '(\\.[0-9]+'+EXPONENT+')|'+                    
+    '([0-9]+'+EXPONENT+'))';
 
-	var ECHAR = '\\\\[tbnrf\\\\"\']';
+var INTEGER_POSITIVE = '\\+' + INTEGER;
+var DECIMAL_POSITIVE = '\\+' + DECIMAL;
+var DOUBLE_POSITIVE  = '\\+' + DOUBLE;
+var INTEGER_NEGATIVE = '-' + INTEGER;
+var DECIMAL_NEGATIVE = '-' + DECIMAL;
+var DOUBLE_NEGATIVE  = '-' + DOUBLE;
 
-	var STRING_LITERAL1 = "'(([^\x27\x5C\x0A\x0D])|" + ECHAR + ")*'";
-	var STRING_LITERAL2 = '"(([^\x22\x5C\x0A\x0D])|' + ECHAR + ')*"';
-	var STRING_LITERAL_LONG1 = "'''(('|'')?([^'\\\\]|" + ECHAR + "))*'''";
-	var STRING_LITERAL_LONG2 = '"""(("|"")?([^"\\\\]|' + ECHAR + '))*"""';
+var ECHAR = '\\\\[tbnrf\\\\"\']';
 
-	var WS = '[\\x20\\x09\\x0D\\x0A]';
-	// Careful! Code mirror feeds one line at a time with no \n
-	// ... but otherwise comment is terminated by \n
-	var COMMENT = '#([^\\n\\r]*[\\n\\r]|[^\\n\\r]*$)';
-	var WS_OR_COMMENT_STAR = '(' + WS + '|(' + COMMENT + '))*';
-	var NIL = '\\(' + WS_OR_COMMENT_STAR + '\\)';
-	var ANON = '\\[' + WS_OR_COMMENT_STAR + '\\]';
+var STRING_LITERAL1 = "'(([^\x27\x5C\x0A\x0D])|"+ECHAR+")*'";
+var STRING_LITERAL2 = '"(([^\x22\x5C\x0A\x0D])|'+ECHAR+')*"';
+var STRING_LITERAL_LONG1 = "'''(('|'')?([^'\\\\]|"+ECHAR+"))*'''";
+var STRING_LITERAL_LONG2 = '"""(("|"")?([^"\\\\]|'+ECHAR+'))*"""';
 
-	var terminals = {
-		terminal : [
+var WS    =	'[\\x20\\x09\\x0D\\x0A]';
+// Careful! Code mirror feeds one line at a time with no \n
+// ... but otherwise comment is terminated by \n
+var COMMENT = '#([^\\n\\r]*[\\n\\r]|[^\\n\\r]*$)' ;
+var WS_OR_COMMENT_STAR = '('+WS+'|('+COMMENT+'))*';
+var NIL   = '\\('+WS_OR_COMMENT_STAR+'\\)';
+var ANON  =	'\\['+WS_OR_COMMENT_STAR+'\\]';
 
-		{
-			name : "WS",
-			regex : new RegExp("^" + WS + "+"),
-			style : "ws"
-		},
+var terminals=
+    {
+	terminal: [
 
-		{
-			name : "COMMENT",
-			regex : new RegExp("^" + COMMENT),
-			style : "comment"
-		},
+	    { name: "WS", 
+	      regex:new RegExp("^"+WS+"+"), 
+	      style:"ws" }, 
 
-		{
-			name : "IRI_REF",
-			regex : new RegExp("^" + IRI_REF),
-			style : "variable-3"
-		},
+	    { name: "COMMENT", 
+	      regex:new RegExp("^"+COMMENT), 
+	      style:"comment" }, 
 
-		{
-			name : "VAR1",
-			regex : new RegExp("^" + VAR1),
-			style : "variable-2"
-		},
+	    { name: "IRI_REF", 
+	      regex:new RegExp("^"+IRI_REF), 
+	      style:"variable-3" }, 
 
-		{
-			name : "VAR2",
-			regex : new RegExp("^" + VAR2),
-			style : "variable-2"
-		},
+	    { name: "VAR1", 
+	      regex:new RegExp("^"+VAR1), 
+	      style:"variable-2"}, 
 
-		{
-			name : "LANGTAG",
-			regex : new RegExp("^" + LANGTAG),
-			style : "qualifier"
-		},
+	    { name: "VAR2", 
+	      regex:new RegExp("^"+VAR2), 
+	      style:"variable-2"},
 
-		{
-			name : "DOUBLE",
-			regex : new RegExp("^" + DOUBLE),
-			style : "string"
-		},
+	    { name: "LANGTAG", 
+	      regex:new RegExp("^"+LANGTAG), 
+	      style:"qualifier"}, 
 
-		{
-			name : "DECIMAL",
-			regex : new RegExp("^" + DECIMAL),
-			style : "string"
-		},
+	    { name: "DOUBLE", 
+	      regex:new RegExp("^"+DOUBLE), 
+	      style:"string" }, 
 
-		{
-			name : "INTEGER",
-			regex : new RegExp("^" + INTEGER),
-			style : "string"
-		},
+	    { name: "DECIMAL", 
+	      regex:new RegExp("^"+DECIMAL), 
+	      style:"string" }, 
 
-		{
-			name : "DOUBLE_POSITIVE",
-			regex : new RegExp("^" + DOUBLE_POSITIVE),
-			style : "string"
-		},
+	    { name: "INTEGER", 
+	      regex:new RegExp("^"+INTEGER), 
+	      style:"string" }, 
 
-		{
-			name : "DECIMAL_POSITIVE",
-			regex : new RegExp("^" + DECIMAL_POSITIVE),
-			style : "string"
-		},
+	    { name: "DOUBLE_POSITIVE", 
+	      regex:new RegExp("^"+DOUBLE_POSITIVE), 
+	      style:"string" }, 
 
-		{
-			name : "INTEGER_POSITIVE",
-			regex : new RegExp("^" + INTEGER_POSITIVE),
-			style : "string"
-		},
+	    { name: "DECIMAL_POSITIVE", 
+	      regex:new RegExp("^"+DECIMAL_POSITIVE), 
+	      style:"string" }, 
 
-		{
-			name : "DOUBLE_NEGATIVE",
-			regex : new RegExp("^" + DOUBLE_NEGATIVE),
-			style : "string"
-		},
+	    { name: "INTEGER_POSITIVE", 
+	      regex:new RegExp("^"+INTEGER_POSITIVE), 
+	      style:"string" }, 
 
-		{
-			name : "DECIMAL_NEGATIVE",
-			regex : new RegExp("^" + DECIMAL_NEGATIVE),
-			style : "string"
-		},
+	    { name: "DOUBLE_NEGATIVE", 
+	      regex:new RegExp("^"+DOUBLE_NEGATIVE), 
+	      style:"string" }, 
 
-		{
-			name : "INTEGER_NEGATIVE",
-			regex : new RegExp("^" + INTEGER_NEGATIVE),
-			style : "string"
-		},
+	    { name: "DECIMAL_NEGATIVE", 
+	      regex:new RegExp("^"+DECIMAL_NEGATIVE), 
+	      style:"string" }, 
 
-		{
-			name : "STRING_LITERAL_LONG1",
-			regex : new RegExp("^" + STRING_LITERAL_LONG1),
-			style : "string"
-		},
+	    { name: "INTEGER_NEGATIVE", 
+	      regex:new RegExp("^"+INTEGER_NEGATIVE), 
+	      style:"string" }, 
 
-		{
-			name : "STRING_LITERAL_LONG2",
-			regex : new RegExp("^" + STRING_LITERAL_LONG2),
-			style : "string"
-		},
+	    { name: "STRING_LITERAL_LONG1", 
+	      regex:new RegExp("^"+STRING_LITERAL_LONG1), 
+	      style:"string" }, 
 
-		{
-			name : "STRING_LITERAL1",
-			regex : new RegExp("^" + STRING_LITERAL1),
-			style : "string"
-		},
+	    { name: "STRING_LITERAL_LONG2", 
+	      regex:new RegExp("^"+STRING_LITERAL_LONG2), 
+	      style:"string" }, 
 
-		{
-			name : "STRING_LITERAL2",
-			regex : new RegExp("^" + STRING_LITERAL2),
-			style : "string"
-		},
+	    { name: "STRING_LITERAL1", 
+	      regex:new RegExp("^"+STRING_LITERAL1), 
+	      style:"string" }, 
 
-		// Enclosed comments won't be highlighted
-		{
-			name : "NIL",
-			regex : new RegExp("^" + NIL),
-			style : "meta"
-		},
+	    { name: "STRING_LITERAL2", 
+	      regex:new RegExp("^"+STRING_LITERAL2), 
+	      style:"string" }, 
 
-		// Enclosed comments won't be highlighted
-		{
-			name : "ANON",
-			regex : new RegExp("^" + ANON),
-			style : "meta"
-		},
+	    // Enclosed comments won't be highlighted
+	    { name: "NIL", 
+	      regex:new RegExp("^"+NIL), 
+	      style:"meta" }, 
 
-		{
-			name : "PNAME_LN",
-			regex : new RegExp("^" + PNAME_LN),
-			style : "string-2"
-		},
+	    // Enclosed comments won't be highlighted
+	    { name: "ANON", 
+	      regex:new RegExp("^"+ANON), 
+	      style:"meta" }, 
 
-		{
-			name : "PNAME_NS",
-			regex : new RegExp("^" + PNAME_NS),
-			style : "string-2"
-		},
+	    { name: "PNAME_LN", 
+	      regex:new RegExp("^"+PNAME_LN), 
+	      style:"string-2" }, 
 
-		{
-			name : "BLANK_NODE_LABEL",
-			regex : new RegExp("^" + BLANK_NODE_LABEL),
-			style : "string-2"
-		} ],
+	    { name: "PNAME_NS", 
+	      regex:new RegExp("^"+PNAME_NS), 
+	      style:"string-2" }, 
 
-		punct : /^(\?|\*|a|\.|\{|\}|,|\(|\)|;|\[|\]|\|\||\||&&|=|!=|!|<=|>=|<|>|\+|-|\/|\^\^|\^)/,
+	    { name: "BLANK_NODE_LABEL", 
+	      regex:new RegExp("^"+BLANK_NODE_LABEL), 
+	      style:"string-2" }
+	],
+	punct: /^(\?|\*|a|\.|\{|\}|,|\(|\)|;|\[|\]|\|\||\||&&|=|!=|!|<=|>=|<|>|\+|-|\/|\^\^|\^)/,
+	keywords: /^(REPLACE|INTO|LOAD|CLEAR|DROP|CREATE|MOVE|COPY|INSERT|DATA|DELETE|WITH|USING|DEFAULT|BNODE|RAND|ABS|CEIL|FLOOR|ROUND|CONCAT|STRLEN|UCASE|LCASE|ENCODE_FOR_URI|CONTAINS|STRSTARTS|STRENDS|STRBEFORE|STRAFTER|YEAR|MONTH|DAY|HOURS|MINUTES|SECONDS|TIMEZONE|UUID|STRUUID|MD5|SHA512|SHA384|SHA256|SHA1|COALESCE|STRLANG|STRDT|ISNUMERIC|SUBSTR|EXISTS|VALUES|BIND|UNDEF|SERVICE|SILENT|MINUS|COUNT|SUM|MIN|MAX|AVG|SAMPLE|GROUP_CONCAT|SEPARATOR|GROUP|BASE|PREFIX|SELECT|CONSTRUCT|DESCRIBE|ASK|FROM|NAMED|ORDER|BY|LIMIT|ASC|DESC|OFFSET|DISTINCT|REDUCED|WHERE|GRAPH|OPTIONAL|UNION|FILTER|STR|LANG|LANGMATCHES|DATATYPE|BOUND|SAMETERM|ISIRI|ISURI|ISBLANK|ISLITERAL|REGEX|TRUE|FALSE|IRI|URI|AS|TO|IN|NOT|ADD|NOW|ALL|TZ|HAVING|IF)/i,
 
-		keywords : keywords = /^(REPLACE|INTO|LOAD|CLEAR|DROP|CREATE|MOVE|COPY|INSERT|DATA|DELETE|WITH|USING|DEFAULT|BNODE|RAND|ABS|CEIL|FLOOR|ROUND|CONCAT|STRLEN|UCASE|LCASE|ENCODE_FOR_URI|CONTAINS|STRSTARTS|STRENDS|STRBEFORE|STRAFTER|YEAR|MONTH|DAY|HOURS|MINUTES|SECONDS|TIMEZONE|UUID|STRUUID|MD5|SHA512|SHA384|SHA256|SHA1|COALESCE|STRLANG|STRDT|ISNUMERIC|SUBSTR|EXISTS|VALUES|BIND|UNDEF|SERVICE|SILENT|MINUS|COUNT|SUM|MIN|MAX|AVG|SAMPLE|GROUP_CONCAT|SEPARATOR|GROUP|BASE|PREFIX|SELECT|CONSTRUCT|DESCRIBE|ASK|FROM|NAMED|ORDER|BY|LIMIT|ASC|DESC|OFFSET|DISTINCT|REDUCED|WHERE|GRAPH|OPTIONAL|UNION|FILTER|STR|LANG|LANGMATCHES|DATATYPE|BOUND|SAMETERM|ISIRI|ISURI|ISBLANK|ISLITERAL|REGEX|TRUE|FALSE|IRI|URI|AS|TO|IN|NOT|ADD|NOW|ALL|TZ|HAVING|IF)/i,
-
-	//	whitespace: new RegExp("^"+WS+"*"),
-	//	comments: new RegExp("^"+COMMENT),
-	//	whitespace_or_comments: new RegExp("^"+WS_OR_COMMENT_STAR)
-
-	};
-	return terminals;
-}
+    };
+return terminals;
+};

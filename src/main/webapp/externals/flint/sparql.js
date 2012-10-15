@@ -6,7 +6,7 @@ CodeMirror
 					var indentUnit = config.indentUnit;
 
 					var keywords = tms.keywords;
-
+					var defaultQueryType="update";
 					var punct = tms.punct;
 
 					var acceptEmpty = true;
@@ -66,7 +66,7 @@ CodeMirror
 									false);
 							return {
 								cat : "<invalid_token>",
-								style : "sp-invalid",
+								style : "error",
 								text : consumed[0]
 							};
 						}
@@ -268,15 +268,15 @@ CodeMirror
 								complete : acceptEmpty,
 								errorStartPos : null,
 								errorEndPos : null,
-//								possibleCurrent : getPossibles("update"),
-//								possibleNext : getPossibles("update"),
-								possibleCurrent : getPossibles("update").concat(getPossibles("query")),
-								possibleNext : getPossibles("update").concat(getPossibles("query")),
+								possibleCurrent : getPossibles("update"),
+								possibleNext : getPossibles("update"),
+//								possibleCurrent : getPossibles("update").concat(getPossibles("query")),
+//								possibleNext : getPossibles("update").concat(getPossibles("query")),
 								allowVars : true,
 								allowBnodes : true,
 								storeProperty : false,
 								lastProperty : "",
-								stack : ["query"]
+								stack : ["update"]
 							};
 						},
 						indent : indent,
