@@ -57,7 +57,9 @@ public class SparqlServlet extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String query = request.getParameter("query");
 		String endpoint = request.getParameter("endpoint");
-		String accept = "application/sparql-results+json";
+		
+		String accept = request.getHeader("Accept");
+		if (accept == null) accept = "application/sparql-results+xml";
 		String requestMethod = request.getParameter("requestMethod");
 		if (query != null && query.length() > 0 && endpoint != null && endpoint.length() > 0) {
 			HttpClient client = new DefaultHttpClient();
@@ -84,7 +86,7 @@ public class SparqlServlet extends HttpServlet {
 				response.sendError(endpointStatusCode, reason);
 				
 			} else {
-				//Header should be sparql json (we asked for that). It might be something else (sparql xml?)
+				//Header should be what we asked. It might be something else
 				//Copy response header to the new response
 				Header[] headers = endpointResponse.getHeaders("Content-Type");
 				String contentType = accept;
