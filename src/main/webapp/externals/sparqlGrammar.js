@@ -4,6 +4,7 @@
 //Have grammar as global vars: we want to use this in more locations than just the sparql.js file
 var ll1_table=
 {
+  
   "*[&&,valueLogical]" : {
      "&&": ["[&&,valueLogical]","*[&&,valueLogical]"], 
      "AS": [], 
@@ -3864,7 +3865,27 @@ var ll1_table=
      "VAR2": ["var"]}, 
   "whereClause" : {
      "{": ["?WHERE","groupGraphPattern"], 
-     "WHERE": ["?WHERE","groupGraphPattern"]}
+     "WHERE": ["?WHERE","groupGraphPattern"]},
+ "top" : {
+     "INSERT": ["prologue","?[update1,?[;,update]]"], 
+     "DELETE": ["prologue","?[update1,?[;,update]]"], 
+     "LOAD": ["prologue","?[update1,?[;,update]]"], 
+     "CLEAR": ["prologue","?[update1,?[;,update]]"], 
+     "DROP": ["prologue","?[update1,?[;,update]]"], 
+     "ADD": ["prologue","?[update1,?[;,update]]"], 
+     "MOVE": ["prologue","?[update1,?[;,update]]"], 
+     "COPY": ["prologue","?[update1,?[;,update]]"], 
+     "CREATE": ["prologue","?[update1,?[;,update]]"], 
+     "WITH": ["prologue","?[update1,?[;,update]]"], 
+     "PREFIX": ["prologue","?[update1,?[;,update]]"], 
+     "BASE": ["prologue","?[update1,?[;,update]]"], 
+     "$": ["prologue","?[update1,?[;,update]]"],
+     "CONSTRUCT": ["prologue","or([selectQuery,constructQuery,describeQuery,askQuery])","valuesClause"], 
+     "DESCRIBE": ["prologue","or([selectQuery,constructQuery,describeQuery,askQuery])","valuesClause"], 
+     "ASK": ["prologue","or([selectQuery,constructQuery,describeQuery,askQuery])","valuesClause"], 
+     "SELECT": ["prologue","or([selectQuery,constructQuery,describeQuery,askQuery])","valuesClause"], 
+     "PREFIX": ["prologue","or([selectQuery,constructQuery,describeQuery,askQuery])","valuesClause"], 
+     "BASE": ["prologue","or([selectQuery,constructQuery,describeQuery,askQuery])","valuesClause"]}
 };
 
 

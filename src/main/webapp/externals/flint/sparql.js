@@ -143,6 +143,9 @@ CodeMirror
 						// Incremental LL1 parse
 						while (state.stack.length > 0 && token && state.OK
 								&& !finished) {
+							if (token == "INSERT") {
+								bla   = 2;
+							}
 							topSymbol = state.stack.pop();
 							if (!ll1_table[topSymbol]) {
 								// Top symbol is a terminal
@@ -276,7 +279,7 @@ CodeMirror
 								allowBnodes : true,
 								storeProperty : false,
 								lastProperty : "",
-								stack : ["update"]
+								stack : ["top"]
 							};
 						},
 						indent : indent,
