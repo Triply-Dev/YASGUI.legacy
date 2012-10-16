@@ -26,9 +26,9 @@ package com.data2semantics.yasgui.client.tab.results.output;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
+import com.data2semantics.yasgui.client.tab.results.input.ResultsHelper;
 import com.data2semantics.yasgui.client.tab.results.input.SparqlResults;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.smartgwt.client.util.StringUtil;
@@ -79,8 +79,9 @@ public class SimpleGrid extends HTMLPane {
 				if (bindings.containsKey(variable)) {
 					HashMap<String, String> binding = bindings.get(variable);
 					if (binding.get("type").equals("uri")) {
-						String uri = binding.get("value");
-						html += "<a href=\"" + uri + "\" target=\"_blank\">" + StringUtil.asHTML(getShortUri(uri)) + "</a>";
+						html += ResultsHelper.getHtmlLinkForUri(binding, queryPrefixes);
+					} else if (binding.get("type").equals("literal") || binding.get("type").equals("typed-literal")) {
+						html += ResultsHelper.getLiteralFromBinding(binding);
 					} else {
 						html += StringUtil.asHTML(binding.get("value"));
 					}
@@ -92,24 +93,5 @@ public class SimpleGrid extends HTMLPane {
 			html += "</tr>";
 		}
 		html += "</tbody>";
-	}
-
-	/**
-	 * Check for a uri whether there is a prefix defined in the query.
-	 * 
-	 * @param uri
-	 * @return Short version of this uri if prefix is defined. Long version
-	 *         otherwise
-	 */
-	private String getShortUri(String uri) {
-		for (Map.Entry<String, Prefix> entry : queryPrefixes.entrySet()) {
-			String prefixUri = entry.getKey();
-			if (uri.startsWith(prefixUri)) {
-				uri = uri.substring(prefixUri.length());
-				uri = entry.getValue().getPrefix() + ":" + uri;
-				break;
-			}
-		}
-		return uri;
 	}
 }

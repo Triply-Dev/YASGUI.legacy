@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
+import com.data2semantics.yasgui.client.tab.results.input.ResultsHelper;
 import com.data2semantics.yasgui.client.tab.results.input.SparqlResults;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.smartgwt.client.types.Alignment;
@@ -42,7 +43,6 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 public class ResultGrid extends ListGrid {
 	private static String SOLUTION_ATTRIBUTE = "yasgui___solution";
-	private static String XSD_DATA_PREFIX = "http://www.w3.org/2001/XMLSchema#";
 	private HashMap<Integer, HashMap<String, HashMap<String, String>>> solutions = new HashMap<Integer, HashMap<String, HashMap<String, String>>>();
 	@SuppressWarnings("unused")
 	private View view;
@@ -91,22 +91,14 @@ public class ResultGrid extends ListGrid {
 				String type = binding.get("type");
 				if (type.equals("uri")) {
 					final String uri = binding.get("value");
-					Prefix prefix = getPrefixForUri(uri);
-					String text = uri;
-					if (prefix != null) {
-						text = prefix.getPrefix() + ":" + uri.substring(prefix.getUri().length());
-					}
-					return Helper.getLinkNewWindow(text, uri);
-				} else if (type.equals("literal")) {
-					String literal = binding.get("value");
+					return Helper.getLinkNewWindow(ResultsHelper.getShortUri(uri, queryPrefixes), uri);
+				} else if (type.equals("literal") || binding.get("type").equals("typed-literal")) {
+					String literal = ResultsHelper.getLiteralFromBinding(binding);
 					Label label = new Label(literal);
 					label.setOverflow(Overflow.VISIBLE);
 					label.setWidth100();
 					label.setAutoHeight();
 					label.setCanSelectText(true);
-					if (binding.containsKey("datatype") && binding.get("datatype") != null) {
-						label.setPrompt("xsd:" + binding.get("datatype").substring(XSD_DATA_PREFIX.length()));
-					}
 					return label;
 				} else {
 					//is bnode
@@ -157,20 +149,4 @@ public class ResultGrid extends ListGrid {
 		return listGridFields;
 	}
 	
-	/**
-	 * Check for a uri whether there is a prefix defined in the query. Used to shorten uri's in the resultgrid
-	 * @param uri
-	 * @return null on no prefix found, or a string of the prefix
-	 */
-	private Prefix getPrefixForUri(String uri) {
-		Prefix prefix = null;
-		for (Map.Entry<String, Prefix> entry : queryPrefixes.entrySet()) {
-		    String prefixUri = entry.getKey();
-		    if (uri.startsWith(prefixUri)) {
-		    	prefix = entry.getValue();
-		    	break;
-		    }
-		}
-		return prefix;
-	}
 }

@@ -27,7 +27,6 @@ package com.data2semantics.yasgui.client.tab.results;
 import java.util.HashMap;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
-import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.client.tab.results.input.JsonResults;
 import com.data2semantics.yasgui.client.tab.results.input.SparqlResults;
@@ -51,6 +50,7 @@ import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 public class ResultContainer extends VLayout {
+	public static String XSD_DATA_PREFIX = "http://www.w3.org/2001/XMLSchema#";
 	public static int RESULT_TYPE_TABLE = 1;
 	public static int RESULT_TYPE_BOOLEAN = 2;
 	public static int RESULT_TYPE_INSERT = 3;
