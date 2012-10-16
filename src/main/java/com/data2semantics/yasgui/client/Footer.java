@@ -42,6 +42,7 @@ public class Footer extends HLayout {
 	private static String GITHUB_LINK = "http://github.com/LaurensRietveld/yasgui";
 	private View view;
 	private ImgButton tooltipButton;
+	private ImgButton githubButton;
 	public Footer(View view) {
 		this.view = view;
 		setWidth100();
@@ -68,7 +69,16 @@ public class Footer extends HLayout {
 		tProp.setContent(TooltipText.TOOLTIP_BUTTON);
 		tProp.setMy(TooltipProperties.POS_BOTTOM_RIGHT);
 		tProp.setAt(TooltipProperties.POS_TOP_CENTER);
+		tProp.setYOffset(-2);
 		Helper.drawTooltip(tProp);
+		
+		TooltipProperties githubProp = new TooltipProperties();
+		githubProp.setId(githubButton.getDOM().getId());
+		githubProp.setContent(TooltipText.GITHUB_ICON);
+		githubProp.setMy(TooltipProperties.POS_RIGHT_CENTER);
+		githubProp.setAt(TooltipProperties.POS_LEFT_CENTER);
+		githubProp.setYOffset(-2);
+		Helper.drawTooltip(githubProp);
 	}
 	
 	private void addTooltipToggler() {
@@ -107,7 +117,7 @@ public class Footer extends HLayout {
 
 	private void addGitHub() {
 
-		ImgButton githubButton = new ImgButton();
+		githubButton = new ImgButton();
 		githubButton.setSrc("github.png");
 		githubButton.setMargin(1);
 		githubButton.setHeight(20);

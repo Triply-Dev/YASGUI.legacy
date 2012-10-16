@@ -25,6 +25,7 @@
 package com.data2semantics.yasgui.client.helpers.properties;
 
 public class TooltipText {
+	public static final String GITHUB_ICON = "Found bugs? Miss any features? Submit an issue on GitHub";
 	public static String TOOLTIP_BUTTON = "Click this button to show these hints again";
 	public static String CONFIG_MENU = "<ul style=\"margin: 1px;\">" +
 			"<li>Update prefixes (e.g. after adding prefix to www.prefix.cc)</li>" +
