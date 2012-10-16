@@ -87,34 +87,36 @@ public class ResultGrid extends ListGrid {
 		if (!colName.startsWith("$")) { 
 			HashMap<String, HashMap<String, String>> bindings = solutions.get(row.getAttributeAsInt(SOLUTION_ATTRIBUTE));
 			HashMap<String, String> binding = bindings.get(colName);
-			String type = binding.get("type");
-			if (type.equals("uri")) {
-				final String uri = binding.get("value");
-				Prefix prefix = getPrefixForUri(uri);
-				String text = uri;
-				if (prefix != null) {
-					text = prefix.getPrefix() + ":" + uri.substring(prefix.getUri().length());
+			if (binding != null) {
+				String type = binding.get("type");
+				if (type.equals("uri")) {
+					final String uri = binding.get("value");
+					Prefix prefix = getPrefixForUri(uri);
+					String text = uri;
+					if (prefix != null) {
+						text = prefix.getPrefix() + ":" + uri.substring(prefix.getUri().length());
+					}
+					return Helper.getLinkNewWindow(text, uri);
+				} else if (type.equals("literal")) {
+					String literal = binding.get("value");
+					Label label = new Label(literal);
+					label.setOverflow(Overflow.VISIBLE);
+					label.setWidth100();
+					label.setAutoHeight();
+					label.setCanSelectText(true);
+					if (binding.containsKey("datatype") && binding.get("datatype") != null) {
+						label.setPrompt("xsd:" + binding.get("datatype").substring(XSD_DATA_PREFIX.length()));
+					}
+					return label;
+				} else {
+					//is bnode
+					String uri = binding.get("value");
+					Label label = new Label(uri);
+					label.setHeight100();
+					label.setCanSelectText(true);
+					label.setWidth100();
+					return label;
 				}
-				return Helper.getLinkNewWindow(text, uri);
-			} else if (type.equals("literal")) {
-				String literal = binding.get("value");
-				Label label = new Label(literal);
-				label.setOverflow(Overflow.VISIBLE);
-				label.setWidth100();
-				label.setAutoHeight();
-				label.setCanSelectText(true);
-				if (binding.containsKey("datatype") && binding.get("datatype") != null) {
-					label.setPrompt("xsd:" + binding.get("datatype").substring(XSD_DATA_PREFIX.length()));
-				}
-				return label;
-			} else {
-				//is bnode
-				String uri = binding.get("value");
-				Label label = new Label(uri);
-				label.setHeight100();
-				label.setCanSelectText(true);
-				label.setWidth100();
-				return label;
 			}
 		}
 		return null;
