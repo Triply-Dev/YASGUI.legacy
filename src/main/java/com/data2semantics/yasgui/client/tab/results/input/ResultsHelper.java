@@ -37,15 +37,16 @@ import com.smartgwt.client.util.StringUtil;
  */
 public class ResultsHelper {
 	public static String getLiteralFromBinding(HashMap<String, String> binding) {
-		String literal = "\"" + StringUtil.asHTML(binding.get("value")) + "\"";
+		String literal = StringUtil.asHTML(binding.get("value"));
 		if (binding.containsKey("xml:lang")) {
-			literal += "@" + binding.get("xml:lang");
+			literal = "\"" + literal + "\"@" + binding.get("xml:lang");
 		} else if (binding.containsKey("datatype")) {
 			String dataType = binding.get("datatype");
+			literal = "\"" + literal;
 			if (dataType.contains(ResultContainer.XSD_DATA_PREFIX)) {
-				literal += "^^xsd:" + dataType.substring(ResultContainer.XSD_DATA_PREFIX.length());
+				literal += "\"^^xsd:" + dataType.substring(ResultContainer.XSD_DATA_PREFIX.length());
 			} else {
-				literal += "^^<" + dataType + ">";
+				literal += "\"^^<" + dataType + ">";
 			}
 		}
 		return literal;
