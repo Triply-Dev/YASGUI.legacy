@@ -105,9 +105,10 @@ public class QueryTab extends Tab {
 			@Override
 			public void onClick(MenuItemClickEvent event) {
 				int tabNumber = ((QueryTabs) getTabSet()).getTabNumber(getTabObject().getID());
-				TabSettings settings = (TabSettings) view.getSettings().getTabArray().get(tabNumber).clone();
-				settings.setTabTitle("Copy of " + settings.getTabTitle());
-				((QueryTabs) getTabSet()).addTab(settings, true);
+				TabSettings tabSettings = (TabSettings) view.getSettings().getTabArray().get(tabNumber).clone();
+				tabSettings.setTabTitle("Copy of " + tabSettings.getTabTitle());
+				((QueryTabs) getTabSet()).addTab(tabSettings, true);
+				view.getSettings().addTabSettings(tabSettings);
 			}
 		});
 
