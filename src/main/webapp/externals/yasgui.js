@@ -1,5 +1,6 @@
 var corsEnabled = {};
 var proxy;
+var sparqlHighlightHeight = {};
 var sparqlHighlight = {};
 var sparqlResponseHighlight = {};
 var prefixes;

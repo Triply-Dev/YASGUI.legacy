@@ -27,7 +27,6 @@ package com.data2semantics.yasgui.client.tab.results.output;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.tab.results.input.ResultsHelper;

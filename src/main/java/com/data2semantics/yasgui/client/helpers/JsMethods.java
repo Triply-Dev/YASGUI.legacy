@@ -57,11 +57,11 @@ public class JsMethods {
 	 * @param queryInputId Id of text area to attach codemirror to
 	 */
 	public static native void attachCodeMirrorToQueryInput(String queryInputId) /*-{
-		if ($doc.getElementById(queryInputId)) {
+		var qInput = $doc.getElementById(queryInputId);
+		if (qInput) {
 			if ($wnd.sparqlHighlight[queryInputId] == null) { 
 				//Only add if it hasnt been drawn yet
-				$wnd.sparqlHighlight[queryInputId] = $wnd.CodeMirror.fromTextArea($doc
-						.getElementById(queryInputId), {
+				$wnd.sparqlHighlight[queryInputId] = $wnd.CodeMirror.fromTextArea(qInput, {
 					mode : "application/x-sparql-query",
 					tabMode : "indent",
 					lineNumbers : true,
@@ -83,16 +83,39 @@ public class JsMethods {
 					},
 					onHighlightComplete : function(cm) {
 						$wnd.checkSyntax(cm);
+						height = $wnd.sparqlHighlight[queryInputId].getWrapperElement().offsetHeight;
+						if ($wnd.sparqlHighlightHeight[queryInputId]) {
+							if (height != $wnd.sparqlHighlightHeight[queryInputId]) {
+								$wnd.sparqlHighlightHeight[queryInputId] = height;
+								$wnd.adjustQueryInputForContent();
+							}
+						} else {
+							$wnd.sparqlHighlightHeight[queryInputId] = height;
+						}
 					},
 					onBlur: function() {
 						$wnd.storeQueryInCookie();
-					}
+					},
 				});
+				//Append another classname to the codemirror div, so we can set width and height via css
+				if (qInput.nextSibling != null && qInput.nextSibling.className == "CodeMirror") {
+					qInput.nextSibling.className = "CodeMirror queryCm";
+					scrollElement = qInput.nextSibling.getElementsByClassName("CodeMirror-scroll");
+					//use jquery for this (a bit easier). for this element, find scroll class, and append another class
+					$wnd.$("#"+queryInputId).next().find($wnd.$(".CodeMirror-scroll")).addClass("queryScrollCm");
+				}
 			}
 		} else {
 			$wnd.onError("no text area for input id: " + queryInputId);
 		}
 	}-*/;
+	
+	public static native void resizeQueryInput(String queryInputId, int width, int height) /*-{
+		if ($wnd.sparqlHighlight[queryInputId] != null) {
+			$wnd.sparqlHighlight[queryInputId].setSize(width + "px", height + "px");
+		}
+	}-*/;
+
 	/**
 	 * Initialize and atatch codemirror to a text area used for displaying json/xml results of query
 	 * 
@@ -132,7 +155,7 @@ public class JsMethods {
 					qInput.nextSibling.className = "CodeMirror resultCm";
 					scrollElement = qInput.nextSibling.getElementsByClassName("CodeMirror-scroll");
 					//use jquery for this (a bit easier). for this element, find scroll class, and append another class
-					$wnd.$("#"+queryInputId).next().find($wnd.$(".CodeMirror-scroll")).addClass("scrollCm");
+					$wnd.$("#"+queryInputId).next().find($wnd.$(".CodeMirror-scroll")).addClass("resultScrollCm");
 				}
 			}
 		} else {
@@ -244,6 +267,9 @@ public class JsMethods {
 		$wnd.showPlayButton = function(queryValid) {
 			viewElements.@com.data2semantics.yasgui.client.ViewElements::showPlayButton(Ljava/lang/String;)(queryValid);
 		}
+		$wnd.adjustQueryInputForContent = function() {
+			view.@com.data2semantics.yasgui.client.View::adjustQueryInputForContent()();
+		}
 	}-*/;
 	
 	
@@ -339,6 +365,7 @@ public class JsMethods {
 			}
 		});
 	}-*/;
+
 	
 	
 }

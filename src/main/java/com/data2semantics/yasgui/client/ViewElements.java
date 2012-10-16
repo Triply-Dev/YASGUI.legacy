@@ -140,7 +140,6 @@ public class ViewElements {
 	}
 
 	public void showPlayButton(String queryValid) {
-		view.getLogger().severe(queryValid);
 		if (queryValid.equals("1")) {
 			queryButton.setSrc("icons/custom/start.png");
 		} else {

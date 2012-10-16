@@ -25,7 +25,7 @@
 <!-- Code for adding custom keycombination/mouseclick commands to codemirror -->
 <script src="externals/addCommands.js"></script>
   <body>
-
+<br><br>
 	<textarea id="test" style="width:400px;height:300px;">PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
 PREFIX : &lt;http://aers.data2semantics.org/vocab/&gt; 
 SELECT DISTINCT *
@@ -33,7 +33,11 @@ SELECT DISTINCT *
 ?patient rdfs:comment ?comment.
 }
 </textarea>
+
 	<script type="text/javascript">
+	function checkAdjustParent() {
+		
+	}
 	var prefixes = ["aers: <bwah>", "aaebs: <sdf>", "aacbs: <sdf>", "whereeee: <sdf>", "whereeec: <sdf>"];
 				var modes;
 		var myCodeMirror = CodeMirror.fromTextArea(document
@@ -55,7 +59,9 @@ SELECT DISTINCT *
 			},
 			onHighlightComplete: function(cm) {
 				checkSyntax(cm);
-			}
+				checkAdjustParent();
+			},
+			adjustParent: function(){console.log("in callback")}
 		});
 			
 	</script>

@@ -28,14 +28,26 @@ span.CodeMirror-matchhighlight {
 	border-bottom: 2px dotted red;
 }
 
+/*Custom stuff for the codemirror query input. This makes sure resizing doesnt mess up things*/
+.queryCm {
+	height: 100%;
+	min-height: 350px;
+}
+.queryScrollCm {
+	height: 100%;
+	min-height:350px;
+}
+
 /*Custom stuff for the codemirror box used for displaying raw query results*/
 .resultCm {
 	height: 100%;
 }
-.scrollCm {
+.resultScrollCm {
 	height: 100%;
 }
-
+.queryInputContainer {
+	border-bottom: 4px solid #D9D9D9;
+}
 
 
 /*Tabset Tweak*/

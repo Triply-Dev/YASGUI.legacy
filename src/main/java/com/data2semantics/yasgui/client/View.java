@@ -365,4 +365,8 @@ public class View extends VLayout {
 	public void onError(Throwable e) {
 		getElements().onError(e);
 	}
+	
+	public void adjustQueryInputForContent() {
+		getSelectedTab().getQueryTextArea().adjustForContent(true);
+	}
 }

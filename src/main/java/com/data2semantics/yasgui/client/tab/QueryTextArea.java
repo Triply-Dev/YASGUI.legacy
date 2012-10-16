@@ -30,7 +30,10 @@ import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
 import com.data2semantics.yasgui.client.helpers.properties.TooltipText;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
+import com.smartgwt.client.types.DragAppearance;
 import com.smartgwt.client.widgets.HTMLPane;
+import com.smartgwt.client.widgets.events.ResizedEvent;
+import com.smartgwt.client.widgets.events.ResizedHandler;
 
 public class QueryTextArea extends HTMLPane {
 	@SuppressWarnings("unused")
@@ -38,12 +41,25 @@ public class QueryTextArea extends HTMLPane {
 	private static String APPEND_INPUT_ID = "_queryInput";
 	private String inputId;
 	private QueryTab tab;
-	public static int HEIGHT = 350;
-	public QueryTextArea(View view, QueryTab tab) {
+	public static int HEIGHT = 354;
+	public QueryTextArea(final View view, QueryTab tab) {
 		this.tab = tab;
 		this.view = view;
 		this.inputId = tab.getID() + APPEND_INPUT_ID;
 		setHeight(Integer.toString(HEIGHT) + "px");
+		setCanDragResize(true);
+		setDragAppearance(DragAppearance.OUTLINE);
+		setStyleName("queryInputContainer");
+		addResizedHandler(new ResizedHandler(){
+			@Override
+			public void onResized(ResizedEvent event) {
+				try {
+					adjustForContent(true);
+				} catch (Exception e) {
+					//on first load, event.getY is null. Just ignore
+				}
+				
+		}});
 		setTextArea();
 	}
 	public void showTooltips() throws ElementIdException {
