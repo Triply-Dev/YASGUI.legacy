@@ -59,7 +59,9 @@ SELECT DISTINCT *
 			},
 			onHighlightComplete: function(cm) {
 				checkSyntax(cm);
+				setQueryType(cm.getStateAfter().queryType);
 				checkAdjustParent();
+				
 			},
 			adjustParent: function(){console.log("in callback")}
 		});

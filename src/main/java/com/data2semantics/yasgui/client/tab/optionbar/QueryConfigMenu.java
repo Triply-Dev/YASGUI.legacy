@@ -50,13 +50,19 @@ public class QueryConfigMenu extends IconMenuButton {
 	private View view;
 	private Window window;
 	private Menu mainMenu = new Menu();
+	private MenuItem selectJson;
+	private MenuItem selectXml;
+	private MenuItem constructXml;
+	private MenuItem constructTurtle;
 	private MenuItem post;
 	private MenuItem get;
 	private static int WINDOW_HEIGHT = 200;
 	private static int WINDOW_WIDTH = 400;
 	private ParametersListGrid paramListGrid;
-	public static String CONTENT_TYPE_JSON = "application/sparql-results+json";
-	public static String CONTENT_TYPE_XML = "application/sparql-results+xml";
+	public static String CONTENT_TYPE_SELECT_JSON = "application/sparql-results+json";
+	public static String CONTENT_TYPE_SELECT_XML = "application/sparql-results+xml";
+	public static String CONTENT_TYPE_CONSTRUCT_TURTLE = "text/turtle";
+	public static String CONTENT_TYPE_CONSTRUCT_XML = "application/rdf+xml";
 	public static String REQUEST_POST = "POST";
 	public static String REQUEST_GET = "GET";
 
@@ -114,40 +120,85 @@ public class QueryConfigMenu extends IconMenuButton {
 	}
 
 	private MenuItem getAcceptHeaderMenuItem() {
-		MenuItem acceptHeaders = new MenuItem("Query accept headers");
+		MenuItem headersMenuItem = new MenuItem("Accept headers");
 
+		Menu headersMenu = new Menu();
+		MenuItem queryHeaders = new MenuItem("Select");
+		queryHeaders.setSubmenu(getQueryAcceptHeadersSubMenu());
+		MenuItem constructHeaders = new MenuItem("Construct");
+		constructHeaders.setSubmenu(getConstructAcceptHeadersSubMenu());
+		headersMenu.setItems(queryHeaders, constructHeaders);
+		
+		
+		headersMenuItem.setSubmenu(headersMenu);
+		return headersMenuItem;
+	}
+	
+	private Menu getQueryAcceptHeadersSubMenu() {
 		Menu acceptHeadersSubMenu = new Menu();
-		post = new MenuItem("JSON");
-		get = new MenuItem("XML");
+		selectJson = new MenuItem("JSON");
+		selectXml = new MenuItem("XML");
 		
-		post.setCheckIfCondition(new MenuItemIfFunction(){
+		selectJson.setCheckIfCondition(new MenuItemIfFunction(){
 			@Override
 			public boolean execute(Canvas target, Menu menu, MenuItem item) {
-				return view.getSelectedTabSettings().getContentType().equals(CONTENT_TYPE_JSON);
+				return view.getSelectedTabSettings().getSelectContentType().equals(CONTENT_TYPE_SELECT_JSON);
 			}});
-		get.setCheckIfCondition(new MenuItemIfFunction(){
+		selectXml.setCheckIfCondition(new MenuItemIfFunction(){
 			@Override
 			public boolean execute(Canvas target, Menu menu, MenuItem item) {
-				return view.getSelectedTabSettings().getContentType().equals(CONTENT_TYPE_XML);
+				return view.getSelectedTabSettings().getSelectContentType().equals(CONTENT_TYPE_SELECT_XML);
 			}});
 		
-		post.addClickHandler(new ClickHandler() {
+		selectJson.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(MenuItemClickEvent event) {
-				view.getSelectedTabSettings().setContentType(CONTENT_TYPE_JSON);
+				view.getSelectedTabSettings().setSelectContentType(CONTENT_TYPE_SELECT_JSON);
 				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
 			}
 		});
-		get.addClickHandler(new ClickHandler() {
+		selectXml.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(MenuItemClickEvent event) {
-				view.getSelectedTabSettings().setContentType(CONTENT_TYPE_XML);
+				view.getSelectedTabSettings().setSelectContentType(CONTENT_TYPE_SELECT_XML);
 				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
 			}
 		});
-		acceptHeadersSubMenu.setItems(get, post);
-		acceptHeaders.setSubmenu(acceptHeadersSubMenu);
-		return acceptHeaders;
+		acceptHeadersSubMenu.setItems(selectXml, selectJson);
+		return acceptHeadersSubMenu;
+	}
+	private Menu getConstructAcceptHeadersSubMenu() {
+		Menu acceptHeadersSubMenu = new Menu();
+		constructTurtle = new MenuItem("Turtle");
+		constructXml = new MenuItem("XML");
+		
+		constructTurtle.setCheckIfCondition(new MenuItemIfFunction(){
+			@Override
+			public boolean execute(Canvas target, Menu menu, MenuItem item) {
+				return view.getSelectedTabSettings().getConstructContentType().equals(CONTENT_TYPE_CONSTRUCT_TURTLE);
+			}});
+		constructXml.setCheckIfCondition(new MenuItemIfFunction(){
+			@Override
+			public boolean execute(Canvas target, Menu menu, MenuItem item) {
+				return view.getSelectedTabSettings().getConstructContentType().equals(CONTENT_TYPE_CONSTRUCT_XML);
+			}});
+		
+		constructTurtle.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				view.getSelectedTabSettings().setConstructContentType(CONTENT_TYPE_CONSTRUCT_TURTLE);
+				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+			}
+		});
+		constructXml.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				view.getSelectedTabSettings().setConstructContentType(CONTENT_TYPE_CONSTRUCT_XML);
+				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+			}
+		});
+		acceptHeadersSubMenu.setItems(constructTurtle, constructXml);
+		return acceptHeadersSubMenu;
 	}
 
 	private MenuItem getQueryParamMenuItem() {

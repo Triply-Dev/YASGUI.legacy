@@ -28,6 +28,7 @@ import java.util.HashMap;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.tab.QueryTab;
+import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
 import com.data2semantics.yasgui.client.tab.results.input.JsonResults;
 import com.data2semantics.yasgui.client.tab.results.input.SparqlResults;
 import com.data2semantics.yasgui.client.tab.results.input.XmlResults;
@@ -62,8 +63,11 @@ public class ResultContainer extends VLayout {
 	
 	public static int CONTENT_TYPE_JSON = 1;
 	public static int CONTENT_TYPE_XML = 2;
+	public static int CONTENT_TYPE_TURTLE = 2;
+	
 	private static String ICON_OK = "icons/fugue/tick.png";
 	private static String ICON_WRONG = "icons/fugue/cross.png";
+	private String contentType;
 	private View view;
 	private QueryTab queryTab;
 	private RawResponse rawResponseOutput;
@@ -114,8 +118,18 @@ public class ResultContainer extends VLayout {
 	 * @param contentType
 	 */
 	public void processResult(String resultString, String contentType) {
+		reset();
 		int resultFormat;
+		this.contentType = contentType;
+		
+		
+		if (queryTab.getQueryType().equals("CONSTRUCT")) {
+			drawConstructResult(resultString);
+			return;
+		}
+		
 		if (contentType == null) {
+			//assuming select query here (no construct)
 			resultFormat = detectContentType(resultString);
 			if (resultFormat == 0) {
 				view.getElements().onQueryError("Unable to detect content type<br><br>" + resultString);
@@ -126,6 +140,7 @@ public class ResultContainer extends VLayout {
 		} else if (contentType.contains("sparql-results+xml")) {
 			resultFormat = ResultContainer.CONTENT_TYPE_XML;
 		} else {
+			//assuming select query here (no construct)
 			resultFormat = detectContentType(resultString);
 			if (resultFormat == 0) {
 				view.getElements().onQueryError("Unable to parse results with content type " + contentType + ".<br><br>" + resultString);
@@ -133,6 +148,16 @@ public class ResultContainer extends VLayout {
 			}
 		}
 		addQueryResult(resultString, resultFormat);
+	}
+	
+	private void drawConstructResult(String responseString) {
+		int mode = 0;
+		if (contentType.equals(QueryConfigMenu.CONTENT_TYPE_CONSTRUCT_TURTLE)) {
+			mode = CONTENT_TYPE_TURTLE;
+		} else {
+			mode = CONTENT_TYPE_XML;
+		}
+		drawRawResponse(responseString, mode);
 	}
 	
 	public void addQueryResult(String responseString, int resultFormat) {

@@ -56,6 +56,7 @@ public class QueryTab extends Tab {
 	private OutputSelection outputSelection;
 	private EndpointSearch searchIcon;
 	private QueryConfigMenu queryConfigMenu;
+	private String queryType;
 	public QueryTab(View view, TabSettings tabSettings) {
 		super(tabSettings.getTabTitle());
 		this.tabSettings = tabSettings;
@@ -197,5 +198,12 @@ public class QueryTab extends Tab {
 	public EndpointInput getEndpointInput() {
 		return this.endpointInput;
 	}
+	public void setQueryType(String queryType) {
+		this.queryType = queryType;
+		outputSelection.adaptToQueryType(queryType);
+	}
 	
+	public String getQueryType() {
+		return this.queryType;
+	}
 }

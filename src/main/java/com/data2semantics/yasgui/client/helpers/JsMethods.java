@@ -83,6 +83,7 @@ public class JsMethods {
 					},
 					onHighlightComplete : function(cm) {
 						$wnd.checkSyntax(cm);
+						$wnd.setQueryType(cm.getStateAfter().queryType);
 						height = $wnd.sparqlHighlight[queryInputId].getWrapperElement().offsetHeight;
 						if ($wnd.sparqlHighlightHeight[queryInputId]) {
 							if (height != $wnd.sparqlHighlightHeight[queryInputId]) {
@@ -269,6 +270,9 @@ public class JsMethods {
 		}
 		$wnd.adjustQueryInputForContent = function() {
 			view.@com.data2semantics.yasgui.client.View::adjustQueryInputForContent()();
+		}
+		$wnd.setQueryType = function(queryType) {
+			view.@com.data2semantics.yasgui.client.View::setQueryType(Ljava/lang/String;)(queryType);
 		}
 	}-*/;
 	

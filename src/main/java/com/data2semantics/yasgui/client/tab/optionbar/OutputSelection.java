@@ -71,4 +71,20 @@ public class OutputSelection extends DynamicForm {
 		});
 		setItems(selectItem);
 	}
+	
+	
+	public void selectOutput(String output) {
+		selectItem.setValue(output);
+	}
+	
+	public void adaptToQueryType(String queryType) {
+		if (queryType == null) {
+			selectItem.setDisabled(false);
+		} else if (queryType.equals("CONSTRUCT")) {
+			selectItem.setValue(Output.OUTPUT_RAW_RESPONSE);
+			selectItem.setDisabled(true);
+		} else {
+			selectItem.setDisabled(false);
+		}
+	}
 }

@@ -44,7 +44,8 @@ public class TabSettings extends JSONObject {
 	private static String QUERY_STRING = "queryFormat";
 	private static String TAB_TITLE = "tabTitle";
 	private static String OUTPUT_FORMAT = "outputFormat";
-	private static String CONTENT_TYPE = "contentType";
+	private static String CONTENT_TYPE_SELECT = "contentTypeSelect";
+	private static String CONTENT_TYPE_CONSTRUCT = "contentTypeConstruct";
 	private static String EXTRA_QUERY_ARGS = "extraArgs";
 	private static String REQUEST_METHOD = "requestMethod";
 
@@ -57,7 +58,8 @@ public class TabSettings extends JSONObject {
 
 	private static String DEFAULT_ENDPOINT = "http://dbpedia.org/sparql";
 	private static String DEFAULT_TAB_TITLE = "Query";
-	private static String DEFAULT_CONTENT_TYPE = QueryConfigMenu.CONTENT_TYPE_XML;
+	private static String DEFAULT_CONTENT_TYPE_SELECT = QueryConfigMenu.CONTENT_TYPE_SELECT_XML;
+	private static String DEFAULT_CONTENT_TYPE_CONSTRUCT = QueryConfigMenu.CONTENT_TYPE_CONSTRUCT_TURTLE;
 	private static String DEFAULT_REQUEST_METHOD = QueryConfigMenu.REQUEST_POST;
 	private static String DEFAULT_OUTPUT = Output.OUTPUT_TABLE;
 	
@@ -83,8 +85,11 @@ public class TabSettings extends JSONObject {
 		if (getTabTitle() == null || getTabTitle().length() == 0) {
 			setTabTitle(DEFAULT_TAB_TITLE);
 		}
-		if (getContentType() == null || getContentType().length() == 0) {
-			setContentType(DEFAULT_CONTENT_TYPE);
+		if (getSelectContentType() == null || getSelectContentType().length() == 0) {
+			setSelectContentType(DEFAULT_CONTENT_TYPE_SELECT);
+		}
+		if (getConstructContentType() == null || getConstructContentType().length() == 0) {
+			setConstructContentType(DEFAULT_CONTENT_TYPE_CONSTRUCT);
 		}
 		if (getOutputFormat() == null || getOutputFormat().length() == 0) {
 			setOutputFormat(DEFAULT_OUTPUT);
@@ -154,14 +159,25 @@ public class TabSettings extends JSONObject {
 		return format;
 	}
 	
-	public void setContentType(String contentType) {
-		put(CONTENT_TYPE, new JSONString(contentType));
+	public void setSelectContentType(String contentType) {
+		put(CONTENT_TYPE_SELECT, new JSONString(contentType));
 	}
 	
-	public String getContentType() {
+	public String getSelectContentType() {
 		String contentType = "";
-		if (containsKey(CONTENT_TYPE)) {
-			 contentType = get(CONTENT_TYPE).isString().stringValue();
+		if (containsKey(CONTENT_TYPE_SELECT)) {
+			 contentType = get(CONTENT_TYPE_SELECT).isString().stringValue();
+		}
+		return contentType;
+	}
+	public void setConstructContentType(String contentType) {
+		put(CONTENT_TYPE_CONSTRUCT, new JSONString(contentType));
+	}
+	
+	public String getConstructContentType() {
+		String contentType = "";
+		if (containsKey(CONTENT_TYPE_CONSTRUCT)) {
+			contentType = get(CONTENT_TYPE_CONSTRUCT).isString().stringValue();
 		}
 		return contentType;
 	}

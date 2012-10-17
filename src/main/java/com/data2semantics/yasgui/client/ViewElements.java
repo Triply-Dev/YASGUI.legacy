@@ -78,9 +78,20 @@ public class ViewElements {
 				String tabId = view.getSelectedTab().getID();
 				String endpoint = view.getSelectedTabSettings().getEndpoint();
 				String queryString = view.getSelectedTabSettings().getQueryString();
-				String contentType = view.getSelectedTabSettings().getContentType();
+				
+				String contentType;
+				if (view.getSelectedTab().getQueryType().equals("CONSTRUCT")) {
+					//Change content type automatically for construct queries
+					contentType = view.getSelectedTabSettings().getConstructContentType();
+				} else {
+					contentType = view.getSelectedTabSettings().getSelectContentType();
+				}
+			
 				String argsString = view.getSelectedTabSettings().getQueryArgsAsJsonString();
 				String requestMethod = view.getSelectedTabSettings().getRequestMethod();
+				
+				
+				
 				JsMethods.queryJson(tabId, queryString, endpoint, contentType, argsString, requestMethod);
 				view.checkAndAddEndpointToDs(endpoint);
 				GoogleAnalyticsEvent endpointEvent = new GoogleAnalyticsEvent("sparql", "endpoint");

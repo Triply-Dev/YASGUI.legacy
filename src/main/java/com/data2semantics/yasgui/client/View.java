@@ -338,6 +338,10 @@ public class View extends VLayout {
 		}
 	}
 	
+	public void setQueryType(String queryType) {
+		getSelectedTab().setQueryType(queryType);
+	}
+	
 	/**
 	 * @see ViewElements#onError(String)
 	 */
