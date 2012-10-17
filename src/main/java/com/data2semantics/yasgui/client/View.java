@@ -106,7 +106,8 @@ public class View extends VLayout {
 	}
 	
 	private void processVersionChanges() {
-		if (!LocalStorageHelper.getVersion().equals(VERSION)) {
+		String version = LocalStorageHelper.getVersion();
+		if (version == null || !version.equals(VERSION)) {
 			LocalStorageHelper.setVersion(VERSION);
 			Scheduler.get().scheduleFinally(new Command() {
 				public void execute() {
