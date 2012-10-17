@@ -33,7 +33,6 @@ import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.client.tab.optionbar.EndpointDataSource;
-import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 import com.data2semantics.yasgui.shared.Endpoints;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.data2semantics.yasgui.shared.exceptions.SettingsException;
@@ -61,7 +60,7 @@ public class View extends VLayout {
 	private ViewElements viewElements;
 	private Footer footer;
 	private Settings settings = new Settings();
-	public static String VERSION = "12.10b"; //also defined in pom.xml and index.html
+	public static String VERSION = "12.10c"; //also defined in pom.xml and index.html
 	
 	public View() {
 		processVersionChanges();
@@ -188,19 +187,7 @@ public class View extends VLayout {
 		if (tab == null) {
 			onError("No tab to draw results in");
 		}
-		int resultFormat;
-		if (contentType == null) {
-			viewElements.onQueryError("No content type returned.<br><br>" + resultString);
-			return;
-		} else if (contentType.contains("sparql-results+json")) {
-			resultFormat = ResultContainer.RESULT_FORMAT_JSON;
-		} else if (contentType.contains("sparql-results+xml")) {
-			resultFormat = ResultContainer.RESULT_FORMAT_XML;
-		} else {
-			viewElements.onQueryError("Invalid content type returned: " + contentType + "<br><br>" + resultString);
-			return;
-		}
-		tab.getResultContainer().addQueryResult(resultString, resultFormat);
+		tab.getResultContainer().processResult(resultString, contentType);
 	}
 	
 	/**

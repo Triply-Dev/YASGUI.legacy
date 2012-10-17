@@ -38,7 +38,11 @@ import com.data2semantics.yasgui.client.tab.results.output.SimpleGrid;
 import com.data2semantics.yasgui.shared.Output;
 import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.xml.client.Document;
+import com.google.gwt.xml.client.XMLParser;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Img;
@@ -54,8 +58,9 @@ public class ResultContainer extends VLayout {
 	public static int RESULT_TYPE_TABLE = 1;
 	public static int RESULT_TYPE_BOOLEAN = 2;
 	public static int RESULT_TYPE_INSERT = 3;
-	public static int RESULT_FORMAT_JSON = 1;
-	public static int RESULT_FORMAT_XML = 2;
+	
+	public static int CONTENT_TYPE_JSON = 1;
+	public static int CONTENT_TYPE_XML = 2;
 	private static String ICON_OK = "icons/fugue/tick.png";
 	private static String ICON_WRONG = "icons/fugue/cross.png";
 	private View view;
@@ -101,6 +106,34 @@ public class ResultContainer extends VLayout {
 		}
 	}
 	
+	/**
+	 * Process and draw results. Checks for content type. If it is missing or strange, try to detect by parsing to xml or json
+	 * 
+	 * @param resultString
+	 * @param contentType
+	 */
+	public void processResult(String resultString, String contentType) {
+		int resultFormat;
+		if (contentType == null) {
+			resultFormat = detectContentType(resultString);
+			if (resultFormat == 0) {
+				view.getElements().onQueryError("Unable to detect content type<br><br>" + resultString);
+				return;
+			}
+		} else if (contentType.contains("sparql-results+json")) {
+			resultFormat = ResultContainer.CONTENT_TYPE_JSON;
+		} else if (contentType.contains("sparql-results+xml")) {
+			resultFormat = ResultContainer.CONTENT_TYPE_XML;
+		} else {
+			resultFormat = detectContentType(resultString);
+			if (resultFormat == 0) {
+				view.getElements().onQueryError("Unable to parse results with content type " + contentType + ".<br><br>" + resultString);
+				return;
+			}
+		}
+		addQueryResult(resultString, resultFormat);
+	}
+	
 	public void addQueryResult(String responseString, int resultFormat) {
 		reset();
 		String queryType = JsMethods.getQueryType(view.getSelectedTab().getQueryTextArea().getInputId());
@@ -120,7 +153,7 @@ public class ResultContainer extends VLayout {
 				} else {
 					SparqlResults results;
 					view.getLogger().severe(Integer.toString(resultFormat));
-					if (resultFormat == RESULT_FORMAT_JSON) {
+					if (resultFormat == CONTENT_TYPE_JSON) {
 						results = new JsonResults(responseString, view, queryMode);
 					} else {
 						//xml
@@ -188,7 +221,7 @@ public class ResultContainer extends VLayout {
 		rawResponseOutput = new RawResponse(view, queryTab, responseString);
 		addMember(rawResponseOutput);
 		final String mode;
-		if (resultFormat == RESULT_FORMAT_JSON) {
+		if (resultFormat == CONTENT_TYPE_JSON) {
 			mode = "json";
 		} else {
 			mode = "xml";
@@ -208,6 +241,24 @@ public class ResultContainer extends VLayout {
 	}
 	public RawResponse getRawResponseOutput() {
 		return this.rawResponseOutput;
+	}
+	
+	public int detectContentType(String responseString) {
+		int contentType = 0;
+		try {
+			JSONValue jsonValue = JSONParser.parseStrict(responseString);
+			if (jsonValue != null) {
+				return CONTENT_TYPE_JSON;
+			}
+		} catch (Exception e) {}
+		try {
+			Document xmlDoc = XMLParser.parse(responseString);
+			if (xmlDoc != null) {
+				return CONTENT_TYPE_XML;
+			}
+		} catch (Exception e) {}
+		
+		return contentType;
 	}
 	
 }
