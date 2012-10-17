@@ -106,7 +106,7 @@ public class XmlResults implements SparqlResults{
 	private void storeBindings(Document xmlDoc) throws SparqlParseException, SparqlEmptyException {
 		NodeList xmlSolutions = xmlDoc.getElementsByTagName("result");
 		if (xmlSolutions.getLength() == 0) {
-			throw new SparqlEmptyException("No solutions found in xml");
+			throw new SparqlEmptyException("No results");
 		}
 		//Loop through results
 		for (int i = 0; i < xmlSolutions.getLength(); i++) {
