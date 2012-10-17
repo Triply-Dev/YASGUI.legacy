@@ -69,12 +69,10 @@ public class QueryConfigMenu extends IconMenuButton {
 		setTitle("Configure request");
 		setCanFocus(false);
 		addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler(){
-
 			@Override
 			public void onClick(ClickEvent event) {
 				showMenu();
 			}
-			
 		});
 	}
 
@@ -155,12 +153,16 @@ public class QueryConfigMenu extends IconMenuButton {
 	private MenuItem getQueryParamMenuItem() {
 		MenuItem queryParam = new MenuItem("Add query parameters");
 		queryParam.addClickHandler(new ClickHandler() {
-
 			@Override
 			public void onClick(MenuItemClickEvent event) {
 				drawParamListGrid();
 			}
 		});
+		queryParam.setCheckIfCondition(new MenuItemIfFunction(){
+			@Override
+			public boolean execute(Canvas target, Menu menu, MenuItem item) {
+				return (view.getSelectedTabSettings().getQueryArgs().size() > 0);
+			}});
 		return queryParam;
 	}
 	private void drawParamListGrid() {
