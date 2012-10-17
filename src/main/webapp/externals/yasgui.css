@@ -31,11 +31,11 @@ span.CodeMirror-matchhighlight {
 /*Custom stuff for the codemirror query input. This makes sure resizing doesnt mess up things*/
 .queryCm {
 	height: 100%;
-	min-height: 350px;
+	min-height: 300px;
 }
 .queryScrollCm {
 	height: 100%;
-	min-height:350px;
+	min-height:300px;
 }
 
 /*Custom stuff for the codemirror box used for displaying raw query results*/

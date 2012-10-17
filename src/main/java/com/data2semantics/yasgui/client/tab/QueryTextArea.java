@@ -41,7 +41,8 @@ public class QueryTextArea extends HTMLPane {
 	private static String APPEND_INPUT_ID = "_queryInput";
 	private String inputId;
 	private QueryTab tab;
-	public static int HEIGHT = 354;
+	private static int HEIGHT = 306; //just a little bit higher than the min-length property of codemirror in css (300)
+	
 	public QueryTextArea(final View view, QueryTab tab) {
 		this.tab = tab;
 		this.view = view;

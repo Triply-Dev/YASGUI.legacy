@@ -53,7 +53,7 @@ public class TabSettings extends JSONObject {
 	 */
 	private static String DEFAULT_QUERY = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" + 
 			"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
-			+ "SELECT * {?sub ?pred ?obj} LIMIT 10";
+			+ "SELECT * {?sub ?pred ?obj} LIMIT 10\n";
 
 	private static String DEFAULT_ENDPOINT = "http://dbpedia.org/sparql";
 	private static String DEFAULT_TAB_TITLE = "Query";

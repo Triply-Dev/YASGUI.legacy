@@ -83,6 +83,7 @@ public class QueryTabs extends TabSet {
 		Scheduler.get().scheduleFinally(new Command() {
 			public void execute() {
 				JsMethods.attachCodeMirrorToQueryInput(((QueryTab) getSelectedTab()).getQueryTextArea().getInputId());
+				((QueryTab) getSelectedTab()).getQueryTextArea().adjustForContent(true);
 			}
 		});
 		addHandlers();
@@ -186,6 +187,7 @@ public class QueryTabs extends TabSet {
 				Scheduler.get().scheduleDeferred(new Command() {
 					public void execute() {
 						JsMethods.attachCodeMirrorToQueryInput(((QueryTab) getSelectedTab()).getQueryTextArea().getInputId());
+						((QueryTab) getSelectedTab()).getQueryTextArea().adjustForContent(true);
 					}
 				});
 			}
