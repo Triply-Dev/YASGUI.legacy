@@ -95,12 +95,11 @@ public class SparqlServlet extends HttpServlet {
 					contentType = headers[0].getValue();
 				}
 				BufferedReader rd = new BufferedReader(new InputStreamReader(endpointResponse.getEntity().getContent()));
-	
 				String line;
+				response.setContentType(contentType);
 				while ((line = rd.readLine()) != null) {
 					out.println(line);
 				}
-				response.setContentType(contentType);
 				out.close();
 			}
 		} else {

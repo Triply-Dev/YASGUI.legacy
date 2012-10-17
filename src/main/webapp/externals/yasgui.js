@@ -74,7 +74,6 @@ function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader, argsJsonString
 			//nothing
 		},
 		success : function(data, textStatus, jqXHR) {
-			console.log(tabId);
 			onQueryFinish();
 			callback(tabId, data, jqXHR.getResponseHeader('Content-Type'));
 		},
