@@ -116,7 +116,7 @@ public class EndpointSearch extends ImgButton {
 				window.destroy();
 			}});
 		searchGrid.setFixedRecordHeights(false);
-		searchGrid.setHeight(WINDOW_HEIGHT);
+		searchGrid.setHeight100();
 		searchGrid.setWidth100();
 		searchGrid.setFilterButtonPrompt("");
 		searchGrid.setAutoFitData(Autofit.VERTICAL);
