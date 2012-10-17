@@ -38,6 +38,7 @@ import com.data2semantics.yasgui.client.tab.results.output.SimpleGrid;
 import com.data2semantics.yasgui.shared.Output;
 import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Command;
@@ -248,12 +249,16 @@ public class ResultContainer extends VLayout {
 		try {
 			JSONValue jsonValue = JSONParser.parseStrict(responseString);
 			if (jsonValue != null) {
-				return CONTENT_TYPE_JSON;
+				JSONObject jsonObject = jsonValue.isObject();
+				JSONValue head = jsonObject.get("head");
+				if (head != null) {
+					return CONTENT_TYPE_JSON;
+				}
 			}
 		} catch (Exception e) {}
 		try {
 			Document xmlDoc = XMLParser.parse(responseString);
-			if (xmlDoc != null) {
+			if (xmlDoc != null && xmlDoc.getElementsByTagName("sparql").getLength() > 0) {
 				return CONTENT_TYPE_XML;
 			}
 		} catch (Exception e) {}

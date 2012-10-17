@@ -59,7 +59,7 @@ public class TabSettings extends JSONObject {
 	private static String DEFAULT_TAB_TITLE = "Query";
 	private static String DEFAULT_CONTENT_TYPE = QueryConfigMenu.CONTENT_TYPE_XML;
 	private static String DEFAULT_REQUEST_METHOD = QueryConfigMenu.REQUEST_POST;
-	private static String DEFAULT_OUTPUT = Output.OUTPUT_TABLE_SIMPLE;
+	private static String DEFAULT_OUTPUT = Output.OUTPUT_TABLE;
 	
 	public TabSettings() {
 		setDefaultsIfUnset();
