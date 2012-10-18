@@ -45,7 +45,6 @@ public class TooltipProperties {
 	private String at = POS_BOTTOM_RIGHT;
 	private int xOffset = 0;
 	private int yOffset = 0;
-	
 	private String id;
 	private String content;
 	public String getMy() {

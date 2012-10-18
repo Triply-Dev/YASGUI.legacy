@@ -365,7 +365,7 @@ public class JsMethods {
 				effect: function() { $wnd.$(this).fadeOut(250); }
 			},
 			style: { 
-		  		classes: 'ui-tooltip-tipped'
+		  		classes: 'ui-tooltip-tipped',
 			}
 		});
 	}-*/;

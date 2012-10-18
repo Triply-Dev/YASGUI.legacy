@@ -260,9 +260,8 @@ public class QueryConfigMenu extends IconMenuButton {
 		TooltipProperties tProp = new TooltipProperties();
 		tProp.setId(getDOM().getId());
 		tProp.setContent(TooltipText.QUERY_CONFIG_MENU);
-		tProp.setMy(TooltipProperties.POS_BOTTOM_CENTER);
-		tProp.setAt(TooltipProperties.POS_TOP_CENTER);
-		tProp.setYOffset(8);
+		tProp.setMy(TooltipProperties.POS_LEFT_CENTER);
+		tProp.setAt(TooltipProperties.POS_RIGHT_CENTER);
 		Helper.drawTooltip(tProp);
 		
 	}

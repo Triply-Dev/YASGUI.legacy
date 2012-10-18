@@ -43,8 +43,8 @@ public class TooltipText {
 			"</ul>";
 	public static String QUERY_CONFIG_MENU = "Advanced options which you normally wont need, including:" +
 			"<ul style=\"margin: 1px;\">\n" + 
-			"<li>Changing request method (POST or GET)</li>\n" + 
-			"<li>Adding additional query arguments</li>\n" + 
-			"<li>Changing requested content (XML or JSON)</li>\n" + 
+			"<li>Change request method (POST / GET)</li>\n" + 
+			"<li>Add more query arguments</li>\n" + 
+			"<li>Change requested content (XML/JSON/Turtle)</li>\n" + 
 		"</ul>";
 }
