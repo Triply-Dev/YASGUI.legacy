@@ -133,14 +133,12 @@ public class JsMethods {
 			if (qInput.nextSibling == null) drawCodeMirror = true;
 
 			if (drawCodeMirror) {
-				var cmMode;
+				var cmMode = mode;
 				if (mode == "json") {
 					cmMode = {
 						name: "javascript",
 						json: true
 					};
-				} else {
-					cmMode = "xml";
 				}
 				$wnd.sparqlResponseHighlight[queryInputId] = $wnd.CodeMirror.fromTextArea($doc.getElementById(queryInputId), {
 					mode : cmMode,

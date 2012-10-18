@@ -9,7 +9,9 @@
 <script src="externals/yasgui.js"></script>
   </head>
 <script src="externals/codemirror/codemirror.js"></script>
+<script src="externals/flint/sparql.js"></script>
 <script src="externals/codemirror/mode/turtle/turtle.js"></script>
+<script src="externals/flint/sparql.js"></script>
 <link rel="stylesheet" href="externals/codemirror/codemirror.css">
 <!-- Autocompletion code -->
 <link rel="stylesheet" href="externals/codemirror/util/simple-hint.css">
@@ -27,12 +29,13 @@
 <script src="externals/addCommands.js"></script>
   <body>
 <br><br>
-	<textarea id="test" style="width:400px;height:300px;">PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
-PREFIX : &lt;http://aers.data2semantics.org/vocab/&gt; 
-SELECT DISTINCT *
-{
-?patient rdfs:comment ?comment.
-}
+	<textarea id="test" style="width:400px;height:300px;">PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns# &gt;
+
+CONSTRUCT {?obj ?pred ?obj} WHERE {&lt;http://aers.data2semantics.org/resource/patient/john_doe&gt; ?pred ?obj} 
+
+
+
+
 </textarea>
 
 	<script type="text/javascript">

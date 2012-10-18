@@ -253,7 +253,7 @@ public class ResultContainer extends VLayout {
 			mode = "turtle";
 		} else {
 			mode = "xml";
-		} 
+		}
 		//on window resize, part of the page get redrawn. This means we have to attach to codemirror again
 		//this is also called on first load
 		rawResponseOutput.addResizedHandler(new ResizedHandler(){
