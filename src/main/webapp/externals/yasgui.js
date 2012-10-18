@@ -82,7 +82,13 @@ function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader, argsJsonString
 				//if user cancels query, textStatus will be 'abort'. No need to show error window than
 				onQueryFinish();
 				clearQueryResult();
-				onQueryError("Error querying endpoint: " + jqXHR.status + " - " + errorThrown);
+				var errorMsg;
+				if (jqXHR.status == 0 && errorThrown.length == 0) {
+					errorMsg = "Error querying endpoint: empty response returned";
+				} else {
+					errorMsg = "Error querying endpoint: " + jqXHR.status + " - " + errorThrown;
+				}
+				onQueryError(errorMsg);
 			}
 		},
 	});
