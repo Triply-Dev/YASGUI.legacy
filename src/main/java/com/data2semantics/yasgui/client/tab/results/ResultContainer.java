@@ -249,9 +249,11 @@ public class ResultContainer extends VLayout {
 		final String mode;
 		if (resultFormat == CONTENT_TYPE_JSON) {
 			mode = "json";
+		} else if (resultFormat == CONTENT_TYPE_TURTLE) {
+			mode = "turtle";
 		} else {
 			mode = "xml";
-		}
+		} 
 		//on window resize, part of the page get redrawn. This means we have to attach to codemirror again
 		//this is also called on first load
 		rawResponseOutput.addResizedHandler(new ResizedHandler(){
