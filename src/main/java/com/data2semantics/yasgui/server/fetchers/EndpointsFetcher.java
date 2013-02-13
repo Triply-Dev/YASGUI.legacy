@@ -40,9 +40,9 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 
 public class EndpointsFetcher {
 	
-	private static String ENDPOINT = "http://labs.mondeca.com/endpoint/ends";
+	private static String ENDPOINT_MONDECA = "http://labs.mondeca.com/endpoint/ends";
+	private static String ENDPOINT_CKAN = "http://semantic.ckan.net/sparql";
 	private static String CACHE_FILENAME = "endpoints.json";
-	private static String CACHE_FILENAME_BAK = "endpoints.json.bak";
 	private static int CACHE_EXPIRES_DAYS = 14;
 	
 	public static String fetch(boolean forceUpdate, File cacheDir) throws JSONException, IOException {
@@ -51,24 +51,24 @@ public class EndpointsFetcher {
 			cacheDir.mkdir();
 			forceUpdate = true;
 		}
-		File file = new File(cacheDir + "/" + CACHE_FILENAME);
+		File cacheFile = new File(cacheDir + "/" + CACHE_FILENAME);
 		
-		if (forceUpdate || Helper.needUpdating(file, CACHE_EXPIRES_DAYS)) {
-			file.createNewFile();
+		if (forceUpdate || Helper.needUpdating(cacheFile, CACHE_EXPIRES_DAYS)) {
 			try {
 				result = getEndpointsAsJsonArrayString();
 				if (result.length() > 0) {
-					Helper.writeFile(file, result);
+					cacheFile.createNewFile();
+					Helper.writeFile(cacheFile, result);
 				}
 			} catch (Exception e) {
-				//probably endpoints problems with ckan or mondeca... just use our backup
+				//probably endpoints problems with ckan or mondeca... just use our cached version
 				//pretty ugly, but at least we have something...
-				result = Helper.readFile(new File(cacheDir + "/" + CACHE_FILENAME_BAK));
+				result = Helper.readFile(cacheFile);
 			}
 			
 		} else {
 			try {
-				result = Helper.readFile(file);
+				result = Helper.readFile(cacheFile);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -85,7 +85,7 @@ public class EndpointsFetcher {
 	 */
 	private static String getEndpointsAsJsonArrayString() throws JSONException {
 		JSONArray endpoints = new JSONArray();
-		ResultSet resultSet = SparqlService.query(ENDPOINT, getQuery());
+		ResultSet resultSet = SparqlService.query(ENDPOINT_CKAN, getCkanQuery());
 		while (resultSet.hasNext()) {
 			JSONObject endpoint = new JSONObject();
 			
@@ -113,7 +113,7 @@ public class EndpointsFetcher {
 		}
 	}
 	
-	private static String getQuery() {
+	private static String getMondecaQuery() {
 		return "PREFIX xsd:<http://www.w3.org/2001/XMLSchema#>\n" + 
 				"PREFIX dcterms:<http://purl.org/dc/terms/>\n" + 
 				"PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>\n" + 
@@ -130,5 +130,20 @@ public class EndpointsFetcher {
 				//"  		dcterms:identifier ?" + Endpoints.KEY_TITLE + ".\n" + 
 				"} \n";
 
+	}
+	
+	private static String getCkanQuery() {
+		return "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" 
+				+ "		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
+				+ "		PREFIX dcat: <http://www.w3.org/ns/dcat#>\n" 
+				+ "		PREFIX dcterms: <http://purl.org/dc/terms/>\n" + "\n"
+				+ "		SELECT DISTINCT ?"	+ Endpoints.KEY_DATASETURI	+ " ?" + Endpoints.KEY_TITLE + " ?"	+ Endpoints.KEY_DESCRIPTION + " ?" + Endpoints.KEY_ENDPOINT	+ "  {\n"
+				+ "		  ?" + Endpoints.KEY_DATASETURI	+ " dcat:distribution ?distribution.\n"
+				+ "		?distribution dcterms:format ?format.\n"
+				+ "		?format rdf:value 'api/sparql'.\n"
+				+ "		?distribution dcat:accessURL ?"	+ Endpoints.KEY_ENDPOINT + ".\n"
+				+ "		?" + Endpoints.KEY_DATASETURI + " dcterms:title ?" + Endpoints.KEY_TITLE + ";\n"
+				+ "			dcterms:description ?" + Endpoints.KEY_DESCRIPTION + ".\n" +
+				"		} ORDER BY ?" + Endpoints.KEY_TITLE;
 	}
 }
