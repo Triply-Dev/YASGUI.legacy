@@ -84,7 +84,13 @@ public class PrefixesFetcher {
 	private static JSONObject getJsonObject() throws JSONException, URISyntaxException, MalformedURLException, IOException {
 		URI uri = new URI(PREFIX_CC_URL);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(uri.toURL().openStream()));
-		JSONTokener tokener = new JSONTokener(reader);
+		
+		StringBuilder builder = new StringBuilder();
+		for (String line = null; (line = reader.readLine()) != null;) {
+		    builder.append(line).append("\n");
+		}
+		
+		JSONTokener tokener = new JSONTokener(builder.toString());
 		return new JSONObject(tokener);
 	}
 	
