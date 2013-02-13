@@ -44,15 +44,27 @@ import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
 
 public class SparqlService {
 
-	
 	public static ResultSet query(String endpoint, String queryString) throws SparqlException {
+		return query(endpoint, queryString, new HashMap<String,String>());
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public static ResultSet query(String endpoint, String queryString, HashMap<String, String> args) throws SparqlException {
 		ResultSet results;
 		try {
 			Query query = QueryFactory.create(queryString);
-			QueryExecution queryExecution = QueryExecutionFactory.sparqlService(endpoint, query);
+			QueryEngineHTTP queryExecution = new QueryEngineHTTP(endpoint, query);
+			Iterator iterator = args.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Map.Entry entry = (Map.Entry) iterator.next();
+				String key = (String) entry.getKey();
+				String val = (String)entry.getValue();
+				queryExecution.addParam(key, val);
+			}
 			results = queryExecution.execSelect();
 		} catch (QueryParseException e) {
 			throw new SparqlException(e.getMessage(), e);
