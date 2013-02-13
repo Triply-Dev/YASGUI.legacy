@@ -39,12 +39,10 @@ import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 
 public class EndpointsFetcher {
-	//can also use http://labs.mondeca.com/sparqlEndpointsStatus/endpoint/endpoint.html to check for availability
-	//Not really correct though. If has false negatives for quite some endpoints
 	
-	
-	private static String ENDPOINT = "http://semantic.ckan.net/sparql";
+	private static String ENDPOINT = "http://labs.mondeca.com/endpoint/ends";
 	private static String CACHE_FILENAME = "endpoints.json";
+	private static String CACHE_FILENAME_BAK = "endpoints.json.bak";
 	private static int CACHE_EXPIRES_DAYS = 14;
 	
 	public static String fetch(boolean forceUpdate, File cacheDir) throws JSONException, IOException {
@@ -57,8 +55,17 @@ public class EndpointsFetcher {
 		
 		if (forceUpdate || Helper.needUpdating(file, CACHE_EXPIRES_DAYS)) {
 			file.createNewFile();
-			result = getEndpointsAsJsonArrayString();
-			Helper.writeFile(file, result);
+			try {
+				result = getEndpointsAsJsonArrayString();
+				if (result.length() > 0) {
+					Helper.writeFile(file, result);
+				}
+			} catch (Exception e) {
+				//probably endpoints problems with ckan or mondeca... just use our backup
+				//pretty ugly, but at least we have something...
+				result = Helper.readFile(new File(cacheDir + "/" + CACHE_FILENAME_BAK));
+			}
+			
 		} else {
 			try {
 				result = Helper.readFile(file);
@@ -90,6 +97,8 @@ public class EndpointsFetcher {
 			}
 			endpoints.put(endpoint);
 		}
+		
+		
 		return endpoints.toString();
 	}
 	
@@ -105,35 +114,21 @@ public class EndpointsFetcher {
 	}
 	
 	private static String getQuery() {
-		return "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" + 
-				"		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" + 
-				"		PREFIX dcat: <http://www.w3.org/ns/dcat#>\n" + 
-				"		PREFIX dcterms: <http://purl.org/dc/terms/>\n" + 
+		return "PREFIX xsd:<http://www.w3.org/2001/XMLSchema#>\n" + 
+				"PREFIX dcterms:<http://purl.org/dc/terms/>\n" + 
+				"PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>\n" + 
+				"PREFIX ends:<http://labs.mondeca.com/vocab/endpointStatus#>\n" + 
+				"PREFIX void:<http://rdfs.org/ns/void#>\n" + 
 				"\n" + 
-				"\n" + 
-				"		SELECT DISTINCT ?" + Endpoints.KEY_DATASETURI +" ?" + Endpoints.KEY_TITLE + " ?" + Endpoints.KEY_DESCRIPTION +" ?" + Endpoints.KEY_ENDPOINT + "  {\n" + 
-				"		  ?" + Endpoints.KEY_DATASETURI +" dcat:distribution ?distribution.\n" + 
-				"		?distribution dcterms:format ?format.\n" + 
-				"		?format rdf:value 'api/sparql'.\n" + 
-				"		?distribution dcat:accessURL ?" + Endpoints.KEY_ENDPOINT + ".\n" + 
-				"		?" + Endpoints.KEY_DATASETURI +" dcterms:title ?" + Endpoints.KEY_TITLE + ";\n" + 
-				"			dcterms:description ?" + Endpoints.KEY_DESCRIPTION + ".\n" + 
-//				"		} ORDER BY ?" + Endpoints.KEY_TITLE + " LIMIT 20";
-				"		} ORDER BY ?" + Endpoints.KEY_TITLE;
-		/**
-		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-			PREFIX dcat: <http://www.w3.org/ns/dcat#>
-			PREFIX dcterms: <http://purl.org/dc/terms/>
-
-
-			SELECT DISTINCT ?dataset ?title ?description ?endpointUri  {
-			  ?dataset dcat:distribution ?distribution.
-			?distribution dcterms:format ?format.
-			?format rdf:value 'api/sparql'.
-			?distribution dcat:accessURL ?endpointUri.
-			?dataset dcterms:title ?title;
-				dcterms:description ?description.
-			} ORDER BY ?title LIMIT 10**/
+				"SELECT DISTINCT ?" + Endpoints.KEY_DATASETURI + " ?"  + Endpoints.KEY_TITLE + " ?" + Endpoints.KEY_DESCRIPTION + " ?" + Endpoints.KEY_ENDPOINT + " \n" + 
+				"WHERE{\n" + 
+				"	?" + Endpoints.KEY_DATASETURI + " void:sparqlEndpoint ?" + Endpoints.KEY_ENDPOINT + ".\n" + 
+				"	?" + Endpoints.KEY_DATASETURI + " ends:status ?status.\n" + 
+				"	?status ends:statusIsAvailable \"true\"^^xsd:boolean.\n" + 
+				"  	?" + Endpoints.KEY_DATASETURI + " dcterms:title ?" + Endpoints.KEY_DESCRIPTION + ".\n" + 
+				"BIND(?" + Endpoints.KEY_DESCRIPTION + " AS ?" + Endpoints.KEY_TITLE + ")" +
+				//"  		dcterms:identifier ?" + Endpoints.KEY_TITLE + ".\n" + 
+				"} \n";
 
 	}
 }
