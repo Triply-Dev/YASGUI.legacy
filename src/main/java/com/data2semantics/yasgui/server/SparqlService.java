@@ -27,7 +27,9 @@ package com.data2semantics.yasgui.server;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import com.data2semantics.yasgui.shared.Output;
 import com.data2semantics.yasgui.shared.exceptions.SparqlException;
