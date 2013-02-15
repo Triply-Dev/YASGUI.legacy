@@ -90,7 +90,7 @@
 
 				text-align: center;
 				text-indent: 0;
-				font: normal bold 10px/13px Tahoma,sans-serif;
+				font:  normal bold 10px/13px Tahoma, sans-serif;
 
 				color: inherit;
 				background: transparent none no-repeat -100em -100em;
@@ -414,7 +414,7 @@
 	color: #454545;
 
 	font-weight: normal;
-	font-family: serif;
+	font-family: georgia;/*changed from serif to georgia. in ie, serif, can look veeery ugly (mapped to a Batang font!!)*/
 }
 
 	.ui-tooltip-tipped .ui-tooltip-titlebar{
