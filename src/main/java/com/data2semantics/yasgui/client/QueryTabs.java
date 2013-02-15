@@ -80,7 +80,7 @@ public class QueryTabs extends TabSet {
 		setTabBarThickness(50);
 		// Need to schedule attaching of codemirror. It uses doc.getElementById,
 		// which doesnt work if element hasnt been drawn yet
-		Scheduler.get().scheduleFinally(new Command() {
+		Scheduler.get().scheduleDeferred(new Command() {
 			public void execute() {
 				JsMethods.attachCodeMirrorToQueryInput(((QueryTab) getSelectedTab()).getQueryTextArea().getInputId());
 				((QueryTab) getSelectedTab()).getQueryTextArea().adjustForContent(true);
