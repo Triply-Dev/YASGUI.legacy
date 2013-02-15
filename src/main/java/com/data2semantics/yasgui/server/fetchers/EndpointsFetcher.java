@@ -40,6 +40,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 
 public class EndpointsFetcher {
 	
+	@SuppressWarnings("unused")
 	private static String ENDPOINT_MONDECA = "http://labs.mondeca.com/endpoint/ends";
 	private static String ENDPOINT_CKAN = "http://semantic.ckan.net/sparql";
 	private static String CACHE_FILENAME = "endpoints.json";
@@ -62,8 +63,9 @@ public class EndpointsFetcher {
 				}
 			} catch (Exception e) {
 				//probably endpoints problems with ckan or mondeca... just use our cached version
-				//pretty ugly, but at least we have something...
-				result = Helper.readFile(cacheFile);
+				if (cacheFile.exists()) {
+					result = Helper.readFile(cacheFile);
+				}
 			}
 			
 		} else {
@@ -113,6 +115,7 @@ public class EndpointsFetcher {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private static String getMondecaQuery() {
 		return "PREFIX xsd:<http://www.w3.org/2001/XMLSchema#>\n" + 
 				"PREFIX dcterms:<http://purl.org/dc/terms/>\n" + 

@@ -76,13 +76,13 @@ public class GoogleAnalytics {
 	}-*/;
 	
 	public static void trackEvents(GoogleAnalyticsEvent... events) throws IllegalArgumentException {
-		if (events.length > 0) {
+		if (events != null && events.length > 0) {
 			ArrayList<String> categories = new ArrayList<String>();
 			ArrayList<String> actions = new ArrayList<String>();
 			ArrayList<String> optLabels = new ArrayList<String>();
 			ArrayList<Integer> optValues = new ArrayList<Integer>();
 			for (GoogleAnalyticsEvent event: events) {
-				if (event.getCategory() == null || event.getAction() == null) {
+				if (event == null || event.getCategory() == null || event.getAction() == null) {
 					//at least require this
 					throw new IllegalArgumentException("No category or action passed for google analytics event");
 				}
@@ -91,7 +91,11 @@ public class GoogleAnalytics {
 				optLabels.add(event.getOptLabel());
 				optValues.add(event.getOptValue());
 			}
-			trackEvents(categories.toArray(new String[categories.size()]), actions.toArray(new String[actions.size()]), optLabels.toArray(new String[optLabels.size()]), optValues.toArray(new Integer[optValues.size()]));
+			try {
+				trackEvents(categories.toArray(new String[categories.size()]), actions.toArray(new String[actions.size()]), optLabels.toArray(new String[optLabels.size()]), optValues.toArray(new Integer[optValues.size()]));
+			} catch (Exception e) {
+				//do nothing, just happens sometimes (e.g. first page load in dev mode, or with ga blockers
+			}
 		}
 	}
 
@@ -127,7 +131,12 @@ public class GoogleAnalytics {
 				}
 				commands.push([ '_trackEvent', category[i], action[i], optLabel[i], optValue[i] ]);
 			}
-			$wnd._gaq.push.apply($wnd._gaq.push, commands);
+			$wnd.console.log($wnd._gaq);
+			if ($wnd._gaq != null) {
+				$wnd._gaq.push.apply($wnd._gaq.push, commands);
+			} else {
+				throw new Error("No google analyitics found to push results to");
+			}
 		} else {
 			throw new Error("Unequal set of arguments for tracking events: " + category.length + " - " + action.length + " - " + optLabel.length + " - " + optValue.length);
 		}
