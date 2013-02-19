@@ -41,7 +41,7 @@ public class TabSettings extends JSONObject {
 	 * KEYS
 	 */
 	private static String ENDPOINT = "endpoint";
-	private static String QUERY_STRING = "queryFormat";
+	private static String QUERY_STRING = "queryFormat";//hmm, should be queryString. leave as is (otherwise current user lose their setting)
 	private static String TAB_TITLE = "tabTitle";
 	private static String OUTPUT_FORMAT = "outputFormat";
 	private static String CONTENT_TYPE_SELECT = "contentTypeSelect";
