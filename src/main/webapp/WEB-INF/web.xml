@@ -21,27 +21,12 @@
 	</servlet>
 	
 	<servlet-mapping>
-		<servlet-name>configServlet</servlet-name>
-		<url-pattern>/Yasgui/config</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>configServlet</servlet-name>
-		<servlet-class>com.data2semantics.yasgui.server.servlets.ConfigServlet</servlet-class>
-	</servlet>
-	
-	<servlet-mapping>
 		<servlet-name>sparqlServlet</servlet-name>
 		<url-pattern>/Yasgui/sparql</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>jUnitHostImpl</servlet-name>
 		<servlet-class>com.google.gwt.junit.server.JUnitHostImpl</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>ConfigServlet</servlet-name>
-		<display-name>ConfigServlet</display-name>
-		<description></description>
-		<servlet-class>com.data2semantics.yasgui.server.servlets.ConfigServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>jUnitHostImpl</servlet-name>
@@ -56,13 +41,9 @@
 		<servlet-name>yasguiService</servlet-name>
 		<url-pattern>/com.data2semantics.yasgui.YasguiJUnit/Yasgui/YasguiService</url-pattern>
 	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>ConfigServlet</servlet-name>
-		<url-pattern>/ConfigServlet</url-pattern>
-	</servlet-mapping>
 	<!-- Default page to serve -->
 	<welcome-file-list>
-		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
 
 </web-app>
