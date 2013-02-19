@@ -1,4 +1,4 @@
-<%@ page import="com.data2semantics.yasgui.server.fetchers.ConfigFetcher" %>
+<%@ page import="com.data2semantics.yasgui.server.fetchers.ConfigFetcher,org.apache.commons.lang.StringEscapeUtils" %>
 <!doctype html>
 <!-- The DOCTYPE declaration above will set the    -->
 <!-- browser's rendering engine into               -->
@@ -47,7 +47,7 @@
 <!-- be added before this line.                -->
 <!--                                           -->
 <script type="text/javascript" src="Yasgui/Yasgui.nocache.js"></script>
-<script type="text/javascript">var defaults = "<% out.print(ConfigFetcher.getJson());%>"</script>
+<script type="text/javascript">defaults = "<% out.print(StringEscapeUtils.escapeJavaScript(ConfigFetcher.getJson()));%>"</script>
 </head>
 
 <body>
