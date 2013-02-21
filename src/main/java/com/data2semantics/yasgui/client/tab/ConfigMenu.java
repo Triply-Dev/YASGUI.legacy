@@ -24,6 +24,8 @@
  ******************************************************************************/
 package com.data2semantics.yasgui.client.tab;
 
+import java.util.ArrayList;
+
 import com.data2semantics.yasgui.client.View;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
@@ -35,7 +37,7 @@ public class ConfigMenu extends Menu {
 	private View view;
 	public ConfigMenu(final View view) {
 		this.view = view;
-		
+		ArrayList<MenuItem> items = new ArrayList<MenuItem>();
 		MenuItem prefixUpdate = new MenuItem("Force prefixes update");
 		prefixUpdate.setIcon("icons/diagona/reload.png");
 		prefixUpdate.addClickHandler(new ClickHandler(){
@@ -44,13 +46,17 @@ public class ConfigMenu extends Menu {
 			public void onClick(MenuItemClickEvent event) {
 				view.setAutocompletePrefixes(true);
 			}});
-		MenuItem endpointsUpdate = new MenuItem("Force endpoints update");
-		endpointsUpdate.setIcon("icons/diagona/reload.png");
-		endpointsUpdate.addClickHandler(new ClickHandler(){
-			@Override
-			public void onClick(MenuItemClickEvent event) {
-				view.initEndpointDataSource(true);
-			}});
-		setItems(prefixUpdate, endpointsUpdate);
+		items.add(prefixUpdate);
+		if (!view.getSettings().inSingleEndpointMode()) {
+			MenuItem endpointsUpdate = new MenuItem("Force endpoints update");
+			endpointsUpdate.setIcon("icons/diagona/reload.png");
+			endpointsUpdate.addClickHandler(new ClickHandler(){
+				@Override
+				public void onClick(MenuItemClickEvent event) {
+					view.initEndpointDataSource(true);
+				}});
+			items.add(endpointsUpdate);
+		}
+		setItems(items.toArray(new MenuItem[items.size()]));
 	}
 }

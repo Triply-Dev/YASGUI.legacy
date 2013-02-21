@@ -69,7 +69,9 @@ public class View extends VLayout {
 		processVersionChanges();
 		GoogleAnalytics.init(GoogleAnalytics.UID);
 		setOverflow(Overflow.HIDDEN);
-		endpointDataSource = new EndpointDataSource(this);
+		if (!settings.inSingleEndpointMode()) {
+			endpointDataSource = new EndpointDataSource(this);
+		}
 		
 		viewElements = new ViewElements(this);
 		initJs();
@@ -91,7 +93,9 @@ public class View extends VLayout {
 		
 		footer = new Footer(this);
 		addMember(footer);
-		initEndpointDataSource(false);
+		if (!settings.inSingleEndpointMode()) {
+			initEndpointDataSource(false);
+		}
 		//Schedule this all the way at the end, so we have no problems with absolute positions and undrawn elements
 		Scheduler.get().scheduleFinally(new Command() {
 			public void execute() {

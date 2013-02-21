@@ -73,7 +73,7 @@ public class Settings extends JSONObject {
 				JSONArray jsonArray = jsonObject.get(key).isArray();
 				for (int i = 0; i < jsonArray.size(); i++) {
 					//Add as TabSettings to tab arraylist
-					tabArray.add(new TabSettings(jsonArray.get(i).isObject()));
+					tabArray.add(new TabSettings(this, jsonArray.get(i).isObject()));
 				}
 			} else if (key.equals(Settings.DEFAULTS)) {
 				defaults = new Defaults(jsonObject.get(key).isObject());
@@ -85,7 +85,7 @@ public class Settings extends JSONObject {
 	
 	public void initDefaultTab() {
 		this.setSelectedTabNumber(DEFAULT_SELECTED_TAB);
-		addTabSettings(new TabSettings(defaults));
+		addTabSettings(new TabSettings(this, defaults));
 	}
 	
 	public boolean inSingleEndpointMode() {

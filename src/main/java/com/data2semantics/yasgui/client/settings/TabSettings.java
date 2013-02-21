@@ -35,6 +35,7 @@ import com.google.gwt.json.client.JSONString;
 
 public class TabSettings extends JSONObject {
 	Defaults defaults;
+	Settings mainSettings;
 	/**
 	 * KEYS
 	 */
@@ -47,12 +48,13 @@ public class TabSettings extends JSONObject {
 	public static String EXTRA_QUERY_ARGS = "extraArgs";
 	public static String REQUEST_METHOD = "requestMethod";
 
-	public TabSettings(Defaults defaults) {
-		this.defaults = defaults;
+	public TabSettings(Settings mainSettings) {
+		this.defaults = mainSettings.getDefaults();
+		this.mainSettings = mainSettings;
 		setDefaultsIfUnset();
 	}
 
-	public TabSettings(JSONObject jsonObject) {
+	public TabSettings(Settings mainSettings, JSONObject jsonObject) {
 		Set<String> keys = jsonObject.keySet();
 		for (String key : keys) {
 			if (key.equals("queryFormat")) {
@@ -105,7 +107,11 @@ public class TabSettings extends JSONObject {
 
 	public String getEndpoint() {
 		String endpoint = null;
-		if (containsKey(ENDPOINT)) {
+		if (mainSettings.inSingleEndpointMode()) {
+			//do this, because otherwise when config on server changes to single endpoint mode, we don't want old (cached) endpoints in settings still being used
+			//instead, we just want to use one: the default
+			endpoint = defaults.getDefaultEndpoint();
+		} else if (containsKey(ENDPOINT)) {
 			endpoint = get(ENDPOINT).isString().stringValue();
 		}
 		return endpoint;
@@ -224,6 +230,6 @@ public class TabSettings extends JSONObject {
 
 	public TabSettings clone() {
 		//GWT and cloning is difficult. Use the simple solution: serialize to json, and parse into new settings object
-		return new TabSettings(JSONParser.parseStrict(this.toString()).isObject());
+		return new TabSettings(mainSettings, JSONParser.parseStrict(this.toString()).isObject());
 	}
 }

@@ -10,5 +10,5 @@
 		"outputFormat": "table",
 		"requestMethod": "POST"
 	},
-	"singleEndpointMode": false
+	"singleEndpointMode": true
 }

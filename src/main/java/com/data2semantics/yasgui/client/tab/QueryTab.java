@@ -78,13 +78,16 @@ public class QueryTab extends Tab {
 		HLayout queryOptions = new HLayout();
 		queryOptions.setDefaultLayoutAlign(VerticalAlignment.BOTTOM);
 		queryOptions.setHeight(35);
-		endpointInput = new EndpointInput(view, this);
-		queryOptions.addMember(endpointInput);
+		if (!view.getSettings().inSingleEndpointMode()) {
+			endpointInput = new EndpointInput(view, this);
+			queryOptions.addMember(endpointInput);
 		
-		searchIcon = new EndpointSearch(view);
-		
-		queryOptions.addMember(searchIcon);
+			searchIcon = new EndpointSearch(view);
+			queryOptions.addMember(searchIcon);
 
+		}
+		
+		
 		outputSelection = new OutputSelection(view, this);
 		queryOptions.addMember(outputSelection);
 		
