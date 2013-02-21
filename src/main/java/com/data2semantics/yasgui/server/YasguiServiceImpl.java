@@ -38,7 +38,6 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiService {
 	public static String CACHE_DIR = "/cache";
 	
-
 	public String fetchPrefixes(boolean forceUpdate) throws IllegalArgumentException, FetchException {
 		String prefixes = "";
 		try {

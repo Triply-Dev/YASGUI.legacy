@@ -7,13 +7,12 @@ import java.io.IOException;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 
-import com.google.gwt.core.client.GWT;
-
 /**
  * Servlet implementation class ConfigServlet
  */
 public class ConfigFetcher  {
 	private static String CONFIG_FILE = "config/config.json";
+	
 	public static String getJson() throws FileNotFoundException, IOException {
 		String jsonString;
 		File configFile = new File(CONFIG_FILE);

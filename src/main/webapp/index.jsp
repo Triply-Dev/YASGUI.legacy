@@ -1,4 +1,4 @@
-<%@ page import="com.data2semantics.yasgui.server.fetchers.ConfigFetcher,org.apache.commons.lang.StringEscapeUtils" %>
+<%@ page import="com.data2semantics.yasgui.server.fetchers.ConfigFetcher,org.apache.commons.lang.StringEscapeUtils,com.data2semantics.yasgui.shared.StaticConfig" %>
 <!doctype html>
 <!-- The DOCTYPE declaration above will set the    -->
 <!-- browser's rendering engine into               -->
@@ -39,8 +39,8 @@
 <!-- Code for adding custom keycombination/mouseclick commands to codemirror -->
 <script src="externals/addCommands.js"></script>
 
-<script src="externals/yasgui.js?v12.10c"></script>
-<link rel="stylesheet" href="externals/yasgui.css?v12.10c">
+<script src="externals/yasgui.js?<% out.print(StaticConfig.VERSION); %>"></script>
+<link rel="stylesheet" href="externals/yasgui.css?<% out.print(StaticConfig.VERSION); %>">
 <!--                                           -->
 <!-- This script loads your compiled module.   -->
 <!-- If you add any GWT meta tags, they must   -->
