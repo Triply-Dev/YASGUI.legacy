@@ -24,20 +24,26 @@
  ******************************************************************************/
 package com.data2semantics.yasgui.client.settings;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 import com.data2semantics.yasgui.shared.exceptions.SettingsException;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
 
 public class Settings extends JSONObject {
 	private ArrayList<TabSettings> tabArray = new ArrayList<TabSettings>();
+	private Defaults defaults;
 	/**
 	 * KEYS
 	 */
 	private static String SELECTED_TAB_NUMBER = "selectedTabNumber";
+	private static String DEFAULTS = "defaults";
 	public static String TAB_SETTINGS = "tabSettings";
+	private static String SINGLE_ENDPOINT_MODE = "singleEndpointMode";
 	
 	
 	/**
@@ -45,12 +51,22 @@ public class Settings extends JSONObject {
 	 */
 	public static int DEFAULT_SELECTED_TAB = 0;
 	
-	public Settings(){
-		addTabSettings(new TabSettings());
-		setSelectedTabNumber(DEFAULT_SELECTED_TAB);
+	
+	public void addToSettings(String jsonString) throws IOException {
+		JSONValue jsonVal = JSONParser.parseStrict(jsonString);
+		if (jsonVal != null) {
+			JSONObject jsonObject = jsonVal.isObject();
+			if (jsonObject != null) {
+				addToSettings(jsonObject);
+			} else {
+				throw new IOException("Unable to convert json value to json object");
+			}
+		} else {
+			throw new IOException("Unable to parse json settings string");
+		}
 	}
 	
-	public Settings(JSONObject jsonObject) {
+	public void addToSettings(JSONObject jsonObject) {
 		Set<String> keys = jsonObject.keySet();
 		for (String key : keys) {
 			if (key.equals(Settings.TAB_SETTINGS)) {
@@ -59,12 +75,27 @@ public class Settings extends JSONObject {
 					//Add as TabSettings to tab arraylist
 					tabArray.add(new TabSettings(jsonArray.get(i).isObject()));
 				}
+			} else if (key.equals(Settings.DEFAULTS)) {
+				defaults = new Defaults(jsonObject.get(key).isObject());
 			} else {
 				put(key, jsonObject.get(key));
 			}
 		}
-		
 	}
+	
+	public void initDefaultTab() {
+		this.setSelectedTabNumber(DEFAULT_SELECTED_TAB);
+		addTabSettings(new TabSettings(defaults));
+	}
+	
+	public boolean inSingleEndpointMode() {
+		boolean singleEndpointMode = false;
+		if (containsKey(SINGLE_ENDPOINT_MODE)) {
+			singleEndpointMode = get(SINGLE_ENDPOINT_MODE).isBoolean().booleanValue();
+		}
+		return singleEndpointMode;
+	}
+
 	
 	public void setSelectedTabNumber(int selectedTabNumber) {
 		put(SELECTED_TAB_NUMBER, new JSONNumber(selectedTabNumber));
@@ -96,8 +127,12 @@ public class Settings extends JSONObject {
 		if (getSelectedTabNumber() >= 0) {
 			return tabArray.get(getSelectedTabNumber());
 		} else {
-			return new TabSettings();
+			return new TabSettings(getDefaults());
 		}
+	}
+	
+	public Defaults getDefaults() {
+		return defaults;
 	}
 	
 	/**
@@ -113,4 +148,6 @@ public class Settings extends JSONObject {
 		
 		return super.toString();
 	}
+	
+	
 }

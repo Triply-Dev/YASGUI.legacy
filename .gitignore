@@ -1,3 +1,4 @@
+*.class
 .classpath
 target
 src/main/gwt-unitCache

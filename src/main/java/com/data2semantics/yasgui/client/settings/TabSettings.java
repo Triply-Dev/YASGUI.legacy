@@ -28,48 +28,39 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
-import com.data2semantics.yasgui.shared.Output;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 
 public class TabSettings extends JSONObject {
-
+	Defaults defaults;
 	/**
 	 * KEYS
 	 */
-	private static String ENDPOINT = "endpoint";
-	private static String QUERY_STRING = "queryFormat";//hmm, should be queryString. leave as is (otherwise current user lose their setting)
-	private static String TAB_TITLE = "tabTitle";
-	private static String OUTPUT_FORMAT = "outputFormat";
-	private static String CONTENT_TYPE_SELECT = "contentTypeSelect";
-	private static String CONTENT_TYPE_CONSTRUCT = "contentTypeConstruct";
-	private static String EXTRA_QUERY_ARGS = "extraArgs";
-	private static String REQUEST_METHOD = "requestMethod";
+	public static String ENDPOINT = "endpoint";
+	public static String QUERY_STRING = "query";
+	public static String TAB_TITLE = "tabTitle";
+	public static String OUTPUT_FORMAT = "outputFormat";
+	public static String CONTENT_TYPE_SELECT = "contentTypeSelect";
+	public static String CONTENT_TYPE_CONSTRUCT = "contentTypeConstruct";
+	public static String EXTRA_QUERY_ARGS = "extraArgs";
+	public static String REQUEST_METHOD = "requestMethod";
 
-	/**
-	 * DEFAULTS
-	 */
-	private static String DEFAULT_QUERY = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" + 
-			"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n"
-			+ "SELECT * {?sub ?pred ?obj} LIMIT 10\n";
-
-	private static String DEFAULT_ENDPOINT = "http://dbpedia.org/sparql";
-	private static String DEFAULT_TAB_TITLE = "Query";
-	private static String DEFAULT_CONTENT_TYPE_SELECT = QueryConfigMenu.CONTENT_TYPE_SELECT_XML;
-	private static String DEFAULT_CONTENT_TYPE_CONSTRUCT = QueryConfigMenu.CONTENT_TYPE_CONSTRUCT_TURTLE;
-	private static String DEFAULT_REQUEST_METHOD = QueryConfigMenu.REQUEST_POST;
-	private static String DEFAULT_OUTPUT = Output.OUTPUT_TABLE;
-	
-	public TabSettings() {
+	public TabSettings(Defaults defaults) {
+		this.defaults = defaults;
 		setDefaultsIfUnset();
 	}
 
 	public TabSettings(JSONObject jsonObject) {
 		Set<String> keys = jsonObject.keySet();
 		for (String key : keys) {
+			if (key.equals("queryFormat")) {
+				//we used to have queryFormat as key for query string (yes, a bug).
+				//for backwards compatability, store this as query string
+				//can remove this a couple of versions onwards
+				put(QUERY_STRING, jsonObject.get(key));
+			}
 			put(key, jsonObject.get(key));
 		}
 		setDefaultsIfUnset();
@@ -77,25 +68,25 @@ public class TabSettings extends JSONObject {
 	
 	private void setDefaultsIfUnset() {
 		if (getEndpoint() == null || getEndpoint().length() == 0) {
-			setEndpoint(DEFAULT_ENDPOINT);
+			setEndpoint(defaults.getDefaultEndpoint());
 		}
 		if (getQueryString() == null || getQueryString().length() == 0) {
-			setQueryString(DEFAULT_QUERY);
+			setQueryString(defaults.getDefaultQueryString());
 		}
 		if (getTabTitle() == null || getTabTitle().length() == 0) {
-			setTabTitle(DEFAULT_TAB_TITLE);
+			setTabTitle(defaults.getDefaultTabTitle());
 		}
 		if (getSelectContentType() == null || getSelectContentType().length() == 0) {
-			setSelectContentType(DEFAULT_CONTENT_TYPE_SELECT);
+			setSelectContentType(defaults.getDefaultSelectContentType());
 		}
 		if (getConstructContentType() == null || getConstructContentType().length() == 0) {
-			setConstructContentType(DEFAULT_CONTENT_TYPE_CONSTRUCT);
+			setConstructContentType(defaults.getDefaultConstructContentType());
 		}
 		if (getOutputFormat() == null || getOutputFormat().length() == 0) {
-			setOutputFormat(DEFAULT_OUTPUT);
+			setOutputFormat(defaults.getDefaultOutputFormat());
 		}
 		if (getRequestMethod() == null || getRequestMethod().length() == 0) {
-			setRequestMethod(DEFAULT_REQUEST_METHOD);
+			setRequestMethod(defaults.getDefaultRequestMethod());
 		}
 	}
 

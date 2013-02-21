@@ -27,9 +27,6 @@ package com.data2semantics.yasgui.client.helpers;
 import java.util.Date;
 
 import com.data2semantics.yasgui.client.settings.Settings;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.datepicker.client.CalendarUtil;
@@ -151,24 +148,13 @@ public class LocalStorageHelper {
 	 * Get settings from cookie (or html local storage if supported). Settings is saved as a json string, so need to parse as json object
 	 * @return
 	 */
-	public static Settings getSettingsFromCookie() {
-		Settings settings = new Settings(); //if parsing fails, we always have the default settings
+	public static String getSettingsStringFromCookie() {
 		String jsonString = getFromLocalStorage(COOKIE_SETTINGS);
 		if (jsonString == null) {
 			//We are using a browser which does not support html5
 			jsonString = Cookies.getCookie(COOKIE_SETTINGS);
 		}
-		
-		if (jsonString != null && jsonString.length() > 0) {
-			JSONValue jsonVal = JSONParser.parseStrict(jsonString);
-			if (jsonVal != null) {
-				JSONObject jsonObject = jsonVal.isObject();
-				if (jsonObject != null) {
-					settings = new Settings(jsonObject);
-				}
-			}
-		}
-		return settings;
+		return jsonString;
 	}
 	
 	public static void setPrefixes(String prefixes) {

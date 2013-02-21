@@ -177,6 +177,12 @@ public class JsMethods {
 		$wnd.sparqlQueryJson(tabId, queryString, endpoint, acceptHeader, argsJsonString, requestMethod, function(tabId, jsonResult, contentType) {$wnd.drawResults(tabId, jsonResult, contentType);});
 	}-*/;
 	
+	
+	public static native String getInstallationSettings() /*-{
+		return $wnd.defaults;
+	}-*/;
+	
+	
 	/**
 	 * Let codemirror save its content to the textarea it is attached to
 	 * 

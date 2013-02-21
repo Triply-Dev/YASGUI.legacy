@@ -24,6 +24,7 @@
  ******************************************************************************/
 package com.data2semantics.yasgui.client;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 import com.data2semantics.yasgui.client.helpers.GoogleAnalytics;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
@@ -63,15 +64,13 @@ public class View extends VLayout {
 	public static String VERSION = "12.10c"; //also defined in pom.xml and index.html
 	
 	public View() {
+		retrieveSettings();
+		
 		processVersionChanges();
 		GoogleAnalytics.init(GoogleAnalytics.UID);
 		setOverflow(Overflow.HIDDEN);
 		endpointDataSource = new EndpointDataSource(this);
-		try {
-			settings = LocalStorageHelper.getSettingsFromCookie();
-		} catch (Exception e) {
-			settings = new Settings();
-		}
+		
 		viewElements = new ViewElements(this);
 		initJs();
 		
@@ -103,6 +102,29 @@ public class View extends VLayout {
 			}
 		});
 		getElements().checkHtml5();
+	}
+	
+	private void retrieveSettings() {
+		try {
+			String installationSettings = JsMethods.getInstallationSettings();
+			//First create settings object with the proper default values
+			//need default values when creating settings objects, as not all values might be filled in our cache and stuff
+			settings.addToSettings(installationSettings);
+			
+			String settingsString = LocalStorageHelper.getSettingsStringFromCookie();
+			if (settingsString != null && settingsString.length() > 0) {
+				settings.addToSettings(settingsString);
+				
+				//add installation settings again. The settings retrieved from cookie might have stale default values
+				settings.addToSettings(installationSettings);
+			} else {
+				//no options in cache. we already have default values and settings object
+				//now initialize a tab with default values
+				settings.initDefaultTab();
+			}
+		} catch (IOException e) {
+			onError(e);
+		}
 	}
 	
 	private void processVersionChanges() {
@@ -161,7 +183,7 @@ public class View extends VLayout {
 	 * @return
 	 */
 	public TabSettings getSelectedTabSettings() {
-		TabSettings tabSettings = new TabSettings();
+		TabSettings tabSettings = null;
 		try {
 			tabSettings = getSettings().getSelectedTabSettings();
 		} catch (SettingsException e) {

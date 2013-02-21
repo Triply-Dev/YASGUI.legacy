@@ -121,7 +121,7 @@ public class QueryTabs extends TabSet {
 		ArrayList<TabSettings> tabArray = view.getSettings().getTabArray();
 		if (tabArray.size() == 0) {
 			// Don't have anything yet. Just draw a new tab with default vals
-			addTab(new TabSettings());
+			addTab(new TabSettings(view.getSettings().getDefaults()));
 		} else {
 			for (TabSettings tabSettings : tabArray) {
 				addTab(tabSettings);
@@ -149,7 +149,7 @@ public class QueryTabs extends TabSet {
 		addTabButton.setZIndex(ZIndexes.TAB_CONTROLS);//Otherwise the onclick of the tab bar is used..
 		addTabButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				TabSettings tabSettings = new TabSettings();
+				TabSettings tabSettings = new TabSettings(view.getSettings().getDefaults());
 				view.getSettings().addTabSettings(tabSettings);
 				view.getTabs().addTab(tabSettings, true);
 				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
