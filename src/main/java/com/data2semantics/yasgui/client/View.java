@@ -35,6 +35,7 @@ import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.client.tab.optionbar.EndpointDataSource;
 import com.data2semantics.yasgui.shared.Endpoints;
+import com.data2semantics.yasgui.shared.StaticConfig;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.data2semantics.yasgui.shared.exceptions.SettingsException;
 import com.google.gwt.core.client.GWT;
@@ -61,7 +62,6 @@ public class View extends VLayout {
 	private ViewElements viewElements;
 	private Footer footer;
 	private Settings settings = new Settings();
-	public static String VERSION = "12.10c"; //also defined in pom.xml and index.html
 	
 	public View() {
 		retrieveSettings();
@@ -128,10 +128,10 @@ public class View extends VLayout {
 	}
 	
 	private void processVersionChanges() {
-		String version = LocalStorageHelper.getVersion();
-		if (version == null || !version.equals(VERSION)) {
-			LocalStorageHelper.setVersion(VERSION);
-			Scheduler.get().scheduleFinally(new Command() {
+		if (LocalStorageHelper.getVersionId() < StaticConfig.VERSION_ID) {
+			LocalStorageHelper.setVersion(StaticConfig.VERSION);
+			LocalStorageHelper.setVersionId(StaticConfig.VERSION_ID);
+			Scheduler.get().scheduleDeferred(new Command() {
 				public void execute() {
 					showTooltips();
 					LocalStorageHelper.setTooltipsShown();

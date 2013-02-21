@@ -37,6 +37,7 @@ public class LocalStorageHelper {
 	private static String COOKIE_PREFIXES = "prefixes";
 	private static String COOKIE_ENDPOINTS = "endpoints";
 	private static String COOKIE_VERSION = "version";
+	private static String COOKIE_VERSION_ID = "versionId";
 	private static String COOKIE_HTML5_CHECKED = "html5Checked";
 	
 	private static String LOCAL_STORAGE_EXPIRE_SEPARATOR = "_"; //used to separate content and long value containing timestamp of insertion
@@ -196,6 +197,18 @@ public class LocalStorageHelper {
 	
 	public static String getVersion() {
 		return Cookies.getCookie(COOKIE_VERSION);
+	}
+	
+	public static void setVersionId(int version) {
+		Cookies.setCookie(COOKIE_VERSION_ID, Integer.toString(version), getExpireDate(VERSION_EXPIRE_DAYS));
+	}
+	
+	public static int getVersionId() {
+		String versionId = Cookies.getCookie(COOKIE_VERSION_ID);
+		if (versionId == null || versionId.length() == 0) {
+			return 0;
+		}
+		return Integer.parseInt(versionId);
 	}
 	
 	public static void setHtml5Checked() {
