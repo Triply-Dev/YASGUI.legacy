@@ -27,6 +27,7 @@ package com.data2semantics.yasgui.client;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
 import com.data2semantics.yasgui.client.helpers.properties.TooltipText;
+import com.data2semantics.yasgui.shared.StaticConfig;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.google.gwt.user.client.Window;
 import com.smartgwt.client.types.Alignment;
@@ -99,7 +100,7 @@ public class Footer extends HLayout {
 	}
 	
 	private void addYasguiVersion() {
-		Label yasguiVersion = new Label("Yasgui " + View.VERSION);
+		Label yasguiVersion = new Label("Yasgui " + StaticConfig.VERSION);
 		yasguiVersion.setAlign(Alignment.CENTER);
 		yasguiVersion.setMargin(3);
 		yasguiVersion.setStyleName("footerText");
