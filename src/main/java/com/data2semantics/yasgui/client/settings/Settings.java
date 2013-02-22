@@ -127,7 +127,7 @@ public class Settings extends JSONObject {
 		if (getSelectedTabNumber() >= 0) {
 			return tabArray.get(getSelectedTabNumber());
 		} else {
-			return new TabSettings(getDefaults());
+			return new TabSettings(this, getDefaults());
 		}
 	}
 	

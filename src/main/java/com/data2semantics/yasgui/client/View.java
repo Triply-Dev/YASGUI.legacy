@@ -108,9 +108,13 @@ public class View extends VLayout {
 		getElements().checkHtml5();
 	}
 	
-	private void retrieveSettings() {
+	private void retrieveSettings()  {
 		try {
 			String installationSettings = JsMethods.getInstallationSettings();
+			if (installationSettings == null || installationSettings.length() == 0) {
+				throw new IOException("Failed to load default settings from javascript.");
+			}
+			 
 			//First create settings object with the proper default values
 			//need default values when creating settings objects, as not all values might be filled in our cache and stuff
 			settings.addToSettings(installationSettings);

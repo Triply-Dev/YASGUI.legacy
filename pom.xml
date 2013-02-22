@@ -1,256 +1,265 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <!-- POM file generated with GWT webAppCreator -->
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.data2semantics.yasgui</groupId>
-  <artifactId>yasgui</artifactId>
-  <packaging>war</packaging>
-  <version>12.10</version><!-- also defined in view.java and index.html-->
+	<!-- POM file generated with GWT webAppCreator -->
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.data2semantics.yasgui</groupId>
+	<artifactId>yasgui</artifactId>
+	<packaging>war</packaging>
+	<version>12.10</version><!-- also defined in view.java and index.html -->
 
-  <properties>
-    <!-- Convenience property to set the GWT version -->
-    <gwtVersion>2.5.0-rc1</gwtVersion>
-    <yasguiVersion>${version}</yasguiVersion>
-    <!-- GWT needs at least java 1.5 -->
-    <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <generated-sources>target/generated-sources/gwt</generated-sources>
-  </properties>
+	<properties>
+		<!-- Convenience property to set the GWT version -->
+		<gwtVersion>2.5.0-rc1</gwtVersion>
+		<yasguiVersion>${version}</yasguiVersion>
+		<!-- GWT needs at least java 1.5 -->
+		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<generated-sources>target/generated-sources/gwt</generated-sources>
+	</properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-servlet</artifactId>
-      <version>${gwtVersion}</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-      <version>${gwtVersion}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.7</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.validation</groupId>
-      <artifactId>validation-api</artifactId>
-      <version>1.0.0.GA</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.validation</groupId>
-      <artifactId>validation-api</artifactId>
-      <version>1.0.0.GA</version>
-      <classifier>sources</classifier>
-      <scope>test</scope>
-    </dependency>
-    <!-- <dependency>
-    	<groupId>com.smartgwt</groupId>
-    	<artifactId>smartgwt</artifactId>
-    	<version>3.1</version>
-    </dependency>
-    <dependency>
-    	<groupId>com.smartgwt</groupId>
-    	<artifactId>smartgwt-skins</artifactId>
-    	<version>3.1</version>
-    </dependency> -->
-    <dependency>
-    	<groupId>com.d2s</groupId>
-    	<artifactId>smartgwt</artifactId>
-    	<version>3.1p</version>
-    </dependency>
-    <dependency>
-    	<groupId>com.d2s</groupId>
-    	<artifactId>smartgwt-skins</artifactId>
-    	<version>3.1p</version>
-    </dependency> 
-    <dependency>
-    	<groupId>com.hp.hpl.jena</groupId>
-    	<artifactId>arq</artifactId>
-    	<version>2.8.8</version>
-    </dependency>
-    <dependency>
-    	<groupId>com.hp.hpl.jena</groupId>
-    	<artifactId>iri</artifactId>
-    	<version>0.8</version>
-    </dependency>
-    <dependency>
-    	<groupId>com.hp.hpl.jena</groupId>
-    	<artifactId>jena</artifactId>
-    	<version>2.6.4</version>
-    </dependency>
-    <dependency>
-    	<groupId>com.google.gwt</groupId>
-    	<artifactId>gwt</artifactId>
-    	<version>2.5.0</version>
-    	<type>pom</type>
-    </dependency>
+	<dependencies>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-servlet</artifactId>
+			<version>${gwtVersion}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<version>${gwtVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.7</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.0.0.GA</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.0.0.GA</version>
+			<classifier>sources</classifier>
+			<scope>test</scope>
+		</dependency>
+		<!-- <dependency> <groupId>com.smartgwt</groupId> <artifactId>smartgwt</artifactId> 
+			<version>3.1</version> </dependency> <dependency> <groupId>com.smartgwt</groupId> 
+			<artifactId>smartgwt-skins</artifactId> <version>3.1</version> </dependency> -->
+		<dependency>
+			<groupId>com.d2s</groupId>
+			<artifactId>smartgwt</artifactId>
+			<version>3.1p</version>
+		</dependency>
+		<dependency>
+			<groupId>com.d2s</groupId>
+			<artifactId>smartgwt-skins</artifactId>
+			<version>3.1p</version>
+		</dependency>
+		<dependency>
+			<groupId>com.hp.hpl.jena</groupId>
+			<artifactId>arq</artifactId>
+			<version>2.8.8</version>
+		</dependency>
+		<dependency>
+			<groupId>com.hp.hpl.jena</groupId>
+			<artifactId>iri</artifactId>
+			<version>0.8</version>
+		</dependency>
+		<dependency>
+			<groupId>com.hp.hpl.jena</groupId>
+			<artifactId>jena</artifactId>
+			<version>2.6.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt</artifactId>
+			<version>2.5.0</version>
+			<type>pom</type>
+		</dependency>
 
-    <dependency>
-    	<groupId>org.apache.httpcomponents</groupId>
-    	<artifactId>httpclient</artifactId>
-    	<version>4.2.1</version>
-    </dependency>
-    <dependency>
-    	<groupId>org.json</groupId>
-    	<artifactId>json</artifactId>
-    	<version>20090211</version>
-    </dependency>
-  </dependencies>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20090211</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>6.0.36</version>
+		</dependency>
+            
+	</dependencies>
 
-  <build>
-    <resources>
+	<build>
+		<resources>
 
-      <!-- bundle generated sources with the jar, so they are visible to GWT's compiler -->
-      <resource>
-        <directory>${generated-sources}</directory>
-        <includes>
-          <include>**/*.java</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>src/main/java</directory>
-        <includes>
-          <include>**/*.java</include>
-          <include>**/*.gwt.xml</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>src/main/resources</directory>
-        <includes>
-          <include>**/*.gwt.xml</include>
-        </includes>
-      </resource>
-      </resources>
-      
+			<!-- bundle generated sources with the jar, so they are visible to GWT's 
+				compiler -->
+			<resource>
+				<directory>${generated-sources}</directory>
+				<includes>
+					<include>**/*.java</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.java</include>
+					<include>**/*.gwt.xml</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.gwt.xml</include>
+				</includes>
+			</resource>
+		</resources>
 
-    <!-- Generate compiled stuff in the folder used for developing mode -->
-    <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
 
-    <plugins>
+		<!-- Generate compiled stuff in the folder used for developing mode -->
+		<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
 
-      <!-- GWT Maven Plugin -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>gwt-maven-plugin</artifactId>
-        <version>2.5.0-rc1</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>compile</goal>
-              <goal>test</goal>
-              <goal>generateAsync</goal>
-            </goals>
-          </execution>
-        </executions>
-        <!-- Plugin configuration. There are many available options, see 
-          gwt-maven-plugin documentation at codehaus.org -->
-        <configuration>
-          <runTarget>Yasgui.html</runTarget>
-          <hostedWebapp>${webappDirectory}</hostedWebapp>
-        </configuration>
-      </plugin>
+		<plugins>
 
-      <!-- Copy static web files before executing gwt:run -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>2.1.1</version>
-        <executions>
-          <execution>
-            <phase>compile</phase>
-            <goals>
-              <goal>exploded</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <webappDirectory>${webappDirectory}</webappDirectory>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
-      </plugin>
-    </plugins>
-    <pluginManagement>
-    	<plugins>
-    		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-    		<plugin>
-    			<groupId>org.eclipse.m2e</groupId>
-    			<artifactId>lifecycle-mapping</artifactId>
-    			<version>1.0.0</version>
-    			<configuration>
-    				<lifecycleMappingMetadata>
-    					<pluginExecutions>
-    						<pluginExecution>
-    							<pluginExecutionFilter>
-    								<groupId>org.codehaus.mojo</groupId>
-    								<artifactId>
-    									gwt-maven-plugin
-    								</artifactId>
-    								<versionRange>
-    									[2.5.0-rc1,)
-    								</versionRange>
-    								<goals>
-    									<goal>generateAsync</goal>
-    								</goals>
-    							</pluginExecutionFilter>
-    							<action>
-    								<ignore></ignore>
-    							</action>
-    						</pluginExecution>
-    						<pluginExecution>
-    							<pluginExecutionFilter>
-    								<groupId>
-    									org.apache.maven.plugins
-    								</groupId>
-    								<artifactId>
-    									maven-war-plugin
-    								</artifactId>
-    								<versionRange>
-    									[2.1.1,)
-    								</versionRange>
-    								<goals>
-    									<goal>exploded</goal>
-    								</goals>
-    							</pluginExecutionFilter>
-    							<action>
-    								<ignore></ignore>
-    							</action>
-    						</pluginExecution>
-    					</pluginExecutions>
-    				</lifecycleMappingMetadata>
-    			</configuration>
-    		</plugin>
-    	</plugins>
-    </pluginManagement>
-  </build>
+			<!-- GWT Maven Plugin -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<version>2.5.0-rc1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>test</goal>
+							<goal>generateAsync</goal>
+						</goals>
+					</execution>
+				</executions>
+				<!-- Plugin configuration. There are many available options, see gwt-maven-plugin 
+					documentation at codehaus.org -->
+				<configuration>
+					<runTarget>Yasgui.html</runTarget>
+					<hostedWebapp>${webappDirectory}</hostedWebapp>
+				</configuration>
+			</plugin>
 
-  <name>yasgui</name>
-  <repositories>
-  <repository>
-  <id>com.smartgwt</id>
-  <url>http://www.smartclient.com/maven2</url>
-  </repository>
-  <repository>
-    <id>smartgwtNightly</id>
-    <url>file://${basedir}/localRepo</url>
-  </repository>
-  </repositories>
-  
+			<!-- Copy static web files before executing gwt:run -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1.1</version>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>exploded</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<webappDirectory>${webappDirectory}</webappDirectory>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>
+											gwt-maven-plugin
+										</artifactId>
+										<versionRange>
+											[2.5.0-rc1,)
+										</versionRange>
+										<goals>
+											<goal>generateAsync</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-war-plugin
+										</artifactId>
+										<versionRange>
+											[2.1.1,)
+										</versionRange>
+										<goals>
+											<goal>exploded</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<name>yasgui</name>
+	<repositories>
+		<repository>
+			<id>com.smartgwt</id>
+			<url>http://www.smartclient.com/maven2</url>
+		</repository>
+		<repository>
+			<id>smartgwtNightly</id>
+			<url>file://${basedir}/localRepo</url>
+		</repository>
+	</repositories>
+
 </project>
