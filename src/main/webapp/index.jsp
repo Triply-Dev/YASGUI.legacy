@@ -1,4 +1,4 @@
-<%@ page import="com.data2semantics.yasgui.server.fetchers.ConfigFetcher,org.apache.commons.lang.StringEscapeUtils,com.data2semantics.yasgui.shared.StaticConfig" %>
+<%@ page import="com.data2semantics.yasgui.server.fetchers.ConfigFetcher,org.apache.commons.lang3.StringEscapeUtils,com.data2semantics.yasgui.shared.StaticConfig" %>
 <!doctype html>
 <!-- The DOCTYPE declaration above will set the    -->
 <!-- browser's rendering engine into               -->
@@ -47,7 +47,13 @@
 <!-- be added before this line.                -->
 <!--                                           -->
 <script type="text/javascript" src="Yasgui/Yasgui.nocache.js"></script>
-<script type="text/javascript">defaults = "<% out.print(StringEscapeUtils.escapeJavaScript(ConfigFetcher.getJson()));%>"</script>
+<script type="text/javascript">defaults = "<% 
+//relative results in /var/lib/tomcat7/config..
+//getContextPath prefixes /yasgui
+out.print(StringEscapeUtils.escapeEcmaScript(ConfigFetcher.getJson(request.getRealPath ("/") )));
+
+
+%>"</script>
 </head>
 
 <body>

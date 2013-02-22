@@ -10,12 +10,12 @@ import org.json.JSONObject;
 /**
  * Servlet implementation class ConfigServlet
  */
-public class ConfigFetcher  {
-	private static String CONFIG_FILE = "config/config.json";
-	
-	public static String getJson() throws FileNotFoundException, IOException {
+public class ConfigFetcher {
+	private static String CONFIG_FILE = "/config/config.json";
+
+	public static String getJson(String path) throws FileNotFoundException, IOException {
 		String jsonString;
-		File configFile = new File(CONFIG_FILE);
+		File configFile = new File( path + CONFIG_FILE);
 		if (!configFile.exists()) {
 			throw new IOException("Unable to load config file from server. Trying to load: " + configFile.getAbsolutePath());
 		} else {

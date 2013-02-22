@@ -55,6 +55,8 @@ public class TabSettings extends JSONObject {
 	}
 
 	public TabSettings(Settings mainSettings, JSONObject jsonObject) {
+		this.mainSettings = mainSettings;
+		this.defaults = mainSettings.getDefaults();
 		Set<String> keys = jsonObject.keySet();
 		for (String key : keys) {
 			if (key.equals("queryFormat")) {
