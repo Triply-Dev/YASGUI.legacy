@@ -8,7 +8,8 @@
 		"contentTypeSelect": "application/sparql-results+xml",
 		"contentTypeConstruct": "text/turtle",
 		"outputFormat": "table",
-		"requestMethod": "POST"
+		"requestMethod": "POST",
+		"extraArgs": []
 	},
 	"singleEndpointMode": false
 }

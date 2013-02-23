@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.data2semantics.yasgui.shared.Output;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
@@ -64,8 +65,18 @@ public class TabSettings extends JSONObject {
 				//for backwards compatability, store this as query string
 				//can remove this a couple of versions onwards
 				put(QUERY_STRING, jsonObject.get(key));
+			} else if (key.equals(OUTPUT_FORMAT)) {
+				//we used to have a valid output format value 'json', which is replace by 'rawResponse'. 
+				//for backwards compatability, store it under the new value
+				//can remove this in a couple of version onwards
+				if (jsonObject.get(OUTPUT_FORMAT).isString().stringValue().equals("json")) {
+					put(OUTPUT_FORMAT, new JSONString(Output.OUTPUT_RAW_RESPONSE));
+				} else {
+					put(key, jsonObject.get(key));
+				}
+			} else {
+				put(key, jsonObject.get(key));
 			}
-			put(key, jsonObject.get(key));
 		}
 		setDefaultsIfUnset();
 	}
@@ -91,6 +102,9 @@ public class TabSettings extends JSONObject {
 		}
 		if (getRequestMethod() == null || getRequestMethod().length() == 0) {
 			setRequestMethod(defaults.getDefaultRequestMethod());
+		}
+		if (getQueryArgs().size() == 0) {
+			put(EXTRA_QUERY_ARGS, defaults.getDefaultQueryArgs());
 		}
 	}
 
@@ -188,9 +202,23 @@ public class TabSettings extends JSONObject {
 			if (argsArray != null) {
 				for (int i = 0; i < argsArray.size(); i++) {
 					JSONObject argObject = argsArray.get(i).isObject();
-					String key = argObject.get("key").isString().stringValue();
-					String value = argObject.get("value").isString().stringValue();
-					args.put(key, value);
+					//for backwards compatability, first try to get key and value from object
+					//can remove this in the future
+					String key = null;
+					String value = null;
+					if (argObject.containsKey("key") && argObject.containsKey("value")) {
+						key = argObject.get("key").isString().stringValue();
+						value = argObject.get("value").isString().stringValue();
+					} else {
+						Set<String> keySet = argObject.keySet();
+						for (String arrayKey: keySet) {
+							key = arrayKey;
+							value = argObject.get(arrayKey).isString().stringValue();
+						}
+					}
+					if (key != null && value != null) {
+						args.put(key, value);
+					}
 				}
 			}
 		}
