@@ -50,7 +50,7 @@
 <script type="text/javascript">defaults = "<% 
 //relative results in /var/lib/tomcat7/config..
 //getContextPath prefixes /yasgui
-out.print(StringEscapeUtils.escapeEcmaScript(ConfigFetcher.getJson(request.getRealPath ("/") )));
+out.print(StringEscapeUtils.escapeEcmaScript(ConfigFetcher.getJson(request.getSession().getServletContext().getRealPath("/"))));
 
 
 %>"</script>
