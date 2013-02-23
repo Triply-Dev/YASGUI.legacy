@@ -94,7 +94,7 @@ public class Defaults extends JSONObject {
 		return requestMethod;
 	}
 	
-	public JSONArray getQueryArgs() {
+	public JSONArray getDefaultQueryArgs() {
 		JSONArray args = null;
 		if (containsKey(TabSettings.EXTRA_QUERY_ARGS)) {
 			args = get(TabSettings.EXTRA_QUERY_ARGS).isArray();
