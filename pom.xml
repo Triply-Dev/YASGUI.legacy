@@ -111,7 +111,7 @@
 			<artifactId>jsp-api</artifactId>
 			<version>6.0.36</version>
 		</dependency>
-            
+
 	</dependencies>
 
 	<build>
@@ -145,7 +145,6 @@
 		<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
 
 		<plugins>
-
 			<!-- GWT Maven Plugin -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -192,6 +191,64 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<version>1.1</version>
+				<groupId>net.alchim31.maven</groupId>
+				<artifactId>yuicompressor-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compress</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<sourceDirectory>${webappDirectory}/externals</sourceDirectory>
+					<nosuffix>true</nosuffix>
+					<aggregations>
+						<aggregation>
+							<!-- remove files after aggregation (default: false) -->
+							<removeIncluded>false</removeIncluded>
+							<!-- insert new line after each concatenation (default: false) -->
+							<insertNewLine>true</insertNewLine>
+							<output>${webappDirectory}/static/yasgui.js</output>
+							<includes>
+								<include>../externals/qtip/jquery.qtip.min.js</include>
+								<include>../externals/codemirror/codemirror.js</include>
+								<include>../externals/codemirror/mode/javascript/javascript.js</include>
+								<include>../externals/codemirror/mode/xml/xml.js</include>
+								<include>../externals/codemirror/mode/turtle/turtle.js</include>
+								<include>../externals/codemirror/util/simple-hint.js</include>
+								<include>../externals/prefix-hint.js</include>
+								<include>../externals/codemirror/util/searchcursor.js</include>
+								<include>../externals/codemirror/util/match-highlighter.js</include>
+								<include>../externals/sparqlGrammar.js</include>
+								<include>../externals/flint/sparql.js</include>
+								<include>../externals/addCommands.js</include>
+								<include>../externals/yasgui.js</include>
+							</includes>
+						</aggregation>
+						<aggregation>
+							<!-- remove files after aggregation (default: false) -->
+							<removeIncluded>false</removeIncluded>
+							<!-- insert new line after each concatenation (default: false) -->
+							<insertNewLine>true</insertNewLine>
+							<output>${webappDirectory}/static/yasgui.css</output>
+							<includes>
+								<include>../externals/qtip/jquery.qtip.css</include>
+								<include>../externals/codemirror/codemirror.css</include>
+								<include>../externals/codemirror/util/simple-hint.css</include>
+								<include>../externals/flint/sparql.css</include>
+								<include>../externals/yasgui.css</include>
+							</includes>
+						</aggregation>
+					</aggregations>
+					<excludes>
+						<exclude>**/*.java</exclude>
+						<exclude>**/*.xml</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -242,10 +299,30 @@
 										<ignore></ignore>
 									</action>
 								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											net.alchim31.maven
+										</groupId>
+										<artifactId>
+											yuicompressor-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.1,)
+										</versionRange>
+										<goals>
+											<goal>compress</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
+
 			</plugins>
 		</pluginManagement>
 	</build>

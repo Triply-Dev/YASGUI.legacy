@@ -12,9 +12,35 @@
 <meta name="description" content="A user-friendly interface to query any remote SPARQL endpoint">
 <title>YASGUI</title>
 <link rel="shortcut icon" type="image/png" href="images/rdf.png">
+
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-<script src="static/yasgui.js?<% out.print(StaticConfig.VERSION); %>"></script>
-<link rel="stylesheet" href="static/yasgui.css?<% out.print(StaticConfig.VERSION); %>">
+<!-- qtip lib -->
+<script src="externals/qtip/jquery.qtip.min.js"></script>
+<link rel="stylesheet" href="externals/qtip/jquery.qtip.css">
+
+<!-- Main codemirror stuff -->
+<script src="externals/codemirror/codemirror.js"></script>
+<link rel="stylesheet" href="externals/codemirror/codemirror.css">
+<script src="externals/codemirror/mode/javascript/javascript.js"></script>
+<script src="externals/codemirror/mode/xml/xml.js"></script>
+<script src="externals/codemirror/mode/turtle/turtle.js"></script>
+<!-- Autocompletion code -->
+<link rel="stylesheet" href="externals/codemirror/util/simple-hint.css">
+<script src="externals/codemirror/util/simple-hint.js"></script>
+<script src="externals/prefix-hint.js"></script>
+<!-- Highlight words onclick code -->
+<script src="externals/codemirror/util/searchcursor.js"></script>
+<script src="externals/codemirror/util/match-highlighter.js"></script>
+
+<!-- Flint code for sparql mode -->
+<script src="externals/sparqlGrammar.js"></script>
+<script src="externals/flint/sparql.js"></script>
+<link rel="stylesheet" href="externals/flint/sparql.css">
+<!-- Code for adding custom keycombination/mouseclick commands to codemirror -->
+<script src="externals/addCommands.js"></script>
+
+<script src="externals/yasgui.js?<% out.print(StaticConfig.VERSION); %>"></script>
+<link rel="stylesheet" href="externals/yasgui.css?<% out.print(StaticConfig.VERSION); %>">
 <!--                                           -->
 <!-- This script loads your compiled module.   -->
 <!-- If you add any GWT meta tags, they must   -->
