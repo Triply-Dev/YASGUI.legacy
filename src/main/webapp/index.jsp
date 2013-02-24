@@ -11,6 +11,7 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <meta name="description" content="A user-friendly interface to query any remote SPARQL endpoint">
 <title>YASGUI</title>
+<link href='http://fonts.googleapis.com/css?family=Audiowide' rel='stylesheet' type='text/css'>
 <link rel="shortcut icon" type="image/png" href="images/rdf.png">
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
 <script src="static/yasgui.js?<% out.print(StaticConfig.VERSION); %>"></script>
@@ -22,11 +23,7 @@
 <!--                                           -->
 <script type="text/javascript" src="Yasgui/Yasgui.nocache.js"></script>
 <script type="text/javascript">defaults = "<% 
-//relative results in /var/lib/tomcat7/config..
-//getContextPath prefixes /yasgui
 out.print(StringEscapeUtils.escapeEcmaScript(ConfigFetcher.getJson(request.getSession().getServletContext().getRealPath("/"))));
-
-
 %>"</script>
 </head>
 

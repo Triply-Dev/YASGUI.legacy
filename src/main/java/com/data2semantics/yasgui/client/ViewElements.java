@@ -38,6 +38,7 @@ import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Positioning;
 import com.smartgwt.client.widgets.Button;
+import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
@@ -136,10 +137,11 @@ public class ViewElements {
 		loading.setIcon("loading.gif");
 		loading.setBackgroundColor("#f0f0f0");
 		loading.setBorder("1px solid #C0C3C7");
-		loading.getElement().getStyle().setPosition(Position.ABSOLUTE);
+		loading.getElement().getStyle().setPosition(Position.FIXED);
 		loading.getElement().getStyle().setTop(0, Unit.PX);
-		loading.getElement().getStyle().setRight(0, Unit.PX);
-		loading.setHeight(30);
+		loading.getElement().getStyle().setLeft(50, Unit.PCT);
+		loading.getElement().getStyle().setMarginLeft(-25, Unit.PX);
+		loading.setHeight(24);
 		loading.setAutoWidth();
 		loading.setOverflow(Overflow.VISIBLE);
 		loading.setWrap(false);
@@ -290,6 +292,20 @@ public class ViewElements {
 			GoogleAnalyticsEvent event = new GoogleAnalyticsEvent("html5", (html5? "1": "0"));
 			GoogleAnalytics.trackEvents(event);
 		}
+	}
+	
+	public void addLogo() {
+		HTMLFlow html = new HTMLFlow();
+		html.setContents("<span style=\"font-family: 'Audiowide'; font-size: 35px;\">YASGUI</span>");
+//		font-family: 'Audiowide', cursive;
+//		html.setPosition(Positioning.ABSOLUTE);
+//		html.setTop(5);
+//		html.setRight(5);
+		html.getElement().getStyle().setPosition(Position.ABSOLUTE);
+		html.getElement().getStyle().setTop(4, Unit.PX);
+		html.getElement().getStyle().setRight(8, Unit.PX);
+		html.setWidth(150);
+		html.draw();
 	}
 	
 }

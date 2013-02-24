@@ -8,6 +8,7 @@
 
 <html>
 <head>
+<link href='http://fonts.googleapis.com/css?family=Audiowide' rel='stylesheet' type='text/css'>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <meta name="description" content="A user-friendly interface to query any remote SPARQL endpoint">
 <title>YASGUI</title>

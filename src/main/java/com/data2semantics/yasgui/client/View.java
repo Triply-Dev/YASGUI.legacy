@@ -75,7 +75,7 @@ public class View extends VLayout {
 		
 		viewElements = new ViewElements(this);
 		initJs();
-		
+		getElements().addLogo();
 		getElements().initLoadingWidget();
 		setWidth100();
 		setHeight100();
