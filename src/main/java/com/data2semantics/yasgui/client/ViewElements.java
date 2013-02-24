@@ -286,7 +286,7 @@ public class ViewElements {
 	}
 	
 	public void checkHtml5() {
-		if (LocalStorageHelper.checkHtml5()) {
+		if (LocalStorageHelper.newUser()) {
 			LocalStorageHelper.setHtml5Checked();
 			boolean html5 = Storage.isSupported();
 			if (!html5) {

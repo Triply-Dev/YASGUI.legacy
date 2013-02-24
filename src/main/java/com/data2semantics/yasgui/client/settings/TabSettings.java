@@ -25,6 +25,9 @@
 package com.data2semantics.yasgui.client.settings;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -33,10 +36,11 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
+import com.google.gwt.user.client.Window;
 
 public class TabSettings extends JSONObject {
-	Defaults defaults;
-	Settings mainSettings;
+	private Defaults defaults;
+	private Settings mainSettings;
 	/**
 	 * KEYS
 	 */
@@ -80,6 +84,37 @@ public class TabSettings extends JSONObject {
 		}
 		setDefaultsIfUnset();
 	}
+	
+	/**
+	 * Add settings from url parameters
+	 */
+	public void setValuesFromUrlParams() {
+		Map<String, List<String>> parameters = Window.Location.getParameterMap();
+		Iterator<String> iterator = parameters.keySet().iterator();
+		while (iterator.hasNext()) {
+			String key = iterator.next();
+			if (key.equals(QUERY_STRING)) {
+				setQueryString(parameters.get(key).get(0));
+			} else if (key.equals(ENDPOINT)) {
+				setEndpoint(parameters.get(key).get(0));
+			} else if (key.equals(TAB_TITLE)) {
+				setTabTitle(parameters.get(key).get(0));
+			} else if (key.equals(OUTPUT_FORMAT)) {
+				setOutputFormat(parameters.get(key).get(0));
+			} else if (key.equals(CONTENT_TYPE_CONSTRUCT)) {
+				setConstructContentType(parameters.get(key).get(0));
+			} else if (key.equals(CONTENT_TYPE_SELECT)) {
+				setSelectContentType(parameters.get(key).get(0));
+			} else if (key.equals(REQUEST_METHOD)) {
+				setRequestMethod(parameters.get(key).get(0));
+			} else if (!key.startsWith("gwt.")) {
+				//all other parameter keys are added as extra query arguments 
+				//ignore keys starting with gwt though (used for debugging)
+				addQueryArg(key, parameters.get(key).get(0));
+			}
+		}
+	}
+	
 	
 	private void setDefaultsIfUnset() {
 		if (getEndpoint() == null || getEndpoint().length() == 0) {
@@ -257,7 +292,7 @@ public class TabSettings extends JSONObject {
 		put(EXTRA_QUERY_ARGS, argsArray);
 
 	}
-
+	
 	public TabSettings clone() {
 		//GWT and cloning is difficult. Use the simple solution: serialize to json, and parse into new settings object
 		return new TabSettings(mainSettings, JSONParser.parseStrict(this.toString()).isObject());

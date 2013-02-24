@@ -47,6 +47,7 @@ import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Overflow;
@@ -64,6 +65,10 @@ public class View extends VLayout {
 	private Settings settings = new Settings();
 	
 	public View() {
+		boolean newUser = false;
+		if (LocalStorageHelper.newUser()) newUser = true;
+		
+		
 		setViewLayout();
 		
 		retrieveSettings();
@@ -88,6 +93,8 @@ public class View extends VLayout {
 		addMember(footer);
 		
 		getElements().checkHtml5();
+		
+		processUrlParameters(newUser);
 	}
 	
 	private void setViewLayout() {
@@ -97,6 +104,28 @@ public class View extends VLayout {
 		LayoutSpacer spacer = new LayoutSpacer();
 		spacer.setHeight(30);
 		addMember(spacer);	
+	}
+	
+	private void processUrlParameters(boolean newUser) {
+		String query = Window.Location.getParameter(TabSettings.QUERY_STRING);
+		String endpoint = Window.Location.getParameter(TabSettings.ENDPOINT);
+		if (query != null && endpoint != null && query.length() > 0 && endpoint.length() > 0) {
+			if (newUser) {
+				//If we are a new user, just show the results in the same query tab. Otherwise, show in a new query tab
+				//to do this, we simple remove the only open tab, and re-open a new one
+				QueryTab selectedTab = getSelectedTab();
+				if (selectedTab != null) {
+					queryTabs.removeTab(selectedTab, false);
+				}
+			}
+			
+			TabSettings tabSettings = new TabSettings(getSettings());
+			tabSettings.setValuesFromUrlParams();
+			
+			getSettings().addTabSettings(tabSettings);
+			getTabs().addTab(tabSettings, true);
+			LocalStorageHelper.storeSettingsInCookie(getSettings());
+		}
 	}
 	
 	private void retrieveSettings()  {

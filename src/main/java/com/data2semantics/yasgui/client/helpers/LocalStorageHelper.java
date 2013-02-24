@@ -215,7 +215,7 @@ public class LocalStorageHelper {
 		Cookies.setCookie(COOKIE_HTML5_CHECKED, "1", getExpireDate(HTML5_CHECKED_EXPIRE_DAYS));
 	}
 	
-	public static boolean checkHtml5() {
+	public static boolean newUser() {
 		return (Cookies.getCookie(COOKIE_HTML5_CHECKED) == null);
 	}
 	
