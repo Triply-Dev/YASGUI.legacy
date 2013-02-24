@@ -32,12 +32,14 @@ import com.data2semantics.yasgui.client.helpers.properties.TooltipText;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.optionbar.EndpointInput;
 import com.data2semantics.yasgui.client.tab.optionbar.EndpointSearch;
+import com.data2semantics.yasgui.client.tab.optionbar.LinkCreator;
 import com.data2semantics.yasgui.client.tab.optionbar.OutputSelection;
 import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
 import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.layout.HLayout;
+import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
@@ -47,6 +49,7 @@ import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 import com.smartgwt.client.widgets.tab.Tab;
 
 public class QueryTab extends Tab {
+	private static final int TOOLTIP_VERSION_SEARCH_ICON = 1;
 	private View view;
 	private QueryTextArea queryTextArea;
 	private EndpointInput endpointInput;
@@ -57,6 +60,7 @@ public class QueryTab extends Tab {
 	private EndpointSearch searchIcon;
 	private QueryConfigMenu queryConfigMenu;
 	private String queryType;
+	private LinkCreator linkCreator;
 	public QueryTab(View view, TabSettings tabSettings) {
 		super(tabSettings.getTabTitle());
 		this.tabSettings = tabSettings;
@@ -87,12 +91,18 @@ public class QueryTab extends Tab {
 
 		}
 		
-		
 		outputSelection = new OutputSelection(view, this);
 		queryOptions.addMember(outputSelection);
 		
 		queryConfigMenu = new QueryConfigMenu(view);
 		queryOptions.addMember(queryConfigMenu);
+		
+		LayoutSpacer spacer = new LayoutSpacer();
+		spacer.setWidth100();
+		queryOptions.addMember(spacer);
+		
+		linkCreator = new LinkCreator(view);
+		queryOptions.addMember(linkCreator);
 		
 		return queryOptions;
 	}
@@ -165,21 +175,24 @@ public class QueryTab extends Tab {
 		setContextMenu(menu);
 
 	}
-	public void showTooltips() throws ElementIdException {
-		queryTextArea.showTooltips();
-		showSearchIconTooltip();
-		queryConfigMenu.showTooltips();
+	public void showTooltips(int fromVersionId) throws ElementIdException {
+		queryTextArea.showTooltips(fromVersionId);
+		showSearchIconTooltip(fromVersionId);
+		queryConfigMenu.showTooltips(fromVersionId);
+		linkCreator.showToolTips(fromVersionId);
 		
 	}
-	private void showSearchIconTooltip() {
-		TooltipProperties tProp = new TooltipProperties();
-		tProp.setId(searchIcon.getDOM().getId());
-		tProp.setContent(TooltipText.ENDPOINT_SEARCH_ICON);
-		tProp.setMy(TooltipProperties.POS_BOTTOM_CENTER);
-		tProp.setAt(TooltipProperties.POS_TOP_CENTER);
-		tProp.setYOffset(-7);
-		tProp.setXOffset(-1);
-		Helper.drawTooltip(tProp);
+	private void showSearchIconTooltip(int fromVersionId) {
+		if (fromVersionId < TOOLTIP_VERSION_SEARCH_ICON) {
+			TooltipProperties tProp = new TooltipProperties();
+			tProp.setId(searchIcon.getDOM().getId());
+			tProp.setContent(TooltipText.ENDPOINT_SEARCH_ICON);
+			tProp.setMy(TooltipProperties.POS_BOTTOM_CENTER);
+			tProp.setAt(TooltipProperties.POS_TOP_CENTER);
+			tProp.setYOffset(-7);
+			tProp.setXOffset(-1);
+			Helper.drawTooltip(tProp);
+		}
 	}
 
 	private QueryTab getTabObject() {

@@ -36,6 +36,8 @@ import com.smartgwt.client.widgets.events.ResizedEvent;
 import com.smartgwt.client.widgets.events.ResizedHandler;
 
 public class QueryTextArea extends HTMLPane {
+	private static final int TOOLTIP_VERSION_KEYBOARD_SHORTCUTS = 1;
+	private static final int TOOLTIP_VERSION_PREFIX = 1;
 	@SuppressWarnings("unused")
 	private View view;
 	private static String APPEND_INPUT_ID = "_queryInput";
@@ -63,30 +65,34 @@ public class QueryTextArea extends HTMLPane {
 		}});
 		setTextArea();
 	}
-	public void showTooltips() throws ElementIdException {
-		showPrefixTooltip();
-		showKeyShortcutsTooltip();
+	public void showTooltips(int fromVersionId) throws ElementIdException {
+		showPrefixTooltip(fromVersionId);
+		showKeyShortcutsTooltip(fromVersionId);
 	}
 	
-	private void showPrefixTooltip() throws ElementIdException {
-		TooltipProperties tProp = new TooltipProperties();
-		tProp.setId(getDOM().getId());
-		tProp.setContent(TooltipText.QUERY_PREFIXES_AUTOCOMPLETE);
-		tProp.setMy(TooltipProperties.POS_TOP_LEFT);
-		tProp.setAt(TooltipProperties.POS_TOP_LEFT);
-		tProp.setXOffset(540);
-		tProp.setYOffset(35);
-		Helper.drawTooltip(tProp);
+	private void showPrefixTooltip(int fromVersionId) throws ElementIdException {
+		if (fromVersionId < TOOLTIP_VERSION_PREFIX) {
+			TooltipProperties tProp = new TooltipProperties();
+			tProp.setId(getDOM().getId());
+			tProp.setContent(TooltipText.QUERY_PREFIXES_AUTOCOMPLETE);
+			tProp.setMy(TooltipProperties.POS_TOP_LEFT);
+			tProp.setAt(TooltipProperties.POS_TOP_LEFT);
+			tProp.setXOffset(540);
+			tProp.setYOffset(35);
+			Helper.drawTooltip(tProp);
+		}
 	}
 	
-	private void showKeyShortcutsTooltip() throws ElementIdException {
-		TooltipProperties tProp = new TooltipProperties();
-		tProp.setId(getDOM().getId());
-		tProp.setContent(TooltipText.QUERY_KEYBOARD_SHORTCUTS);
-		tProp.setMy(TooltipProperties.POS_CENTER);
-		tProp.setAt(TooltipProperties.POS_LEFT_CENTER);
-		tProp.setXOffset(200);
-		Helper.drawTooltip(tProp);
+	private void showKeyShortcutsTooltip(int fromVersionId) throws ElementIdException {
+		if (fromVersionId < TOOLTIP_VERSION_KEYBOARD_SHORTCUTS) {
+			TooltipProperties tProp = new TooltipProperties();
+			tProp.setId(getDOM().getId());
+			tProp.setContent(TooltipText.QUERY_KEYBOARD_SHORTCUTS);
+			tProp.setMy(TooltipProperties.POS_CENTER);
+			tProp.setAt(TooltipProperties.POS_LEFT_CENTER);
+			tProp.setXOffset(200);
+			Helper.drawTooltip(tProp);
+		}
 	}
 	
 	public void setTextArea() {

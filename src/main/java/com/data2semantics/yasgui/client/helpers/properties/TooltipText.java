@@ -47,4 +47,5 @@ public class TooltipText {
 			"<li>Add more query arguments</li>\n" + 
 			"<li>Change requested content (XML/JSON/Turtle)</li>\n" + 
 		"</ul>";
+	public static String LINK_GENERATOR = "Share your queries with others by <br>generating a YASGUI link for them";
 }

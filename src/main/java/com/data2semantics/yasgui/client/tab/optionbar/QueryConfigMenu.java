@@ -47,6 +47,7 @@ import com.smartgwt.client.widgets.menu.events.ClickHandler;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 
 public class QueryConfigMenu extends IconMenuButton {
+	private static final int TOOLTIP_VERSION_QUERY_CONFIG = 1;
 	private View view;
 	private Window window;
 	private Menu mainMenu = new Menu();
@@ -256,13 +257,15 @@ public class QueryConfigMenu extends IconMenuButton {
 		window.draw();
 	}
 
-	public void showTooltips() {
-		TooltipProperties tProp = new TooltipProperties();
-		tProp.setId(getDOM().getId());
-		tProp.setContent(TooltipText.QUERY_CONFIG_MENU);
-		tProp.setMy(TooltipProperties.POS_LEFT_CENTER);
-		tProp.setAt(TooltipProperties.POS_RIGHT_CENTER);
-		Helper.drawTooltip(tProp);
+	public void showTooltips(int fromVersionId) {
+		if (fromVersionId < TOOLTIP_VERSION_QUERY_CONFIG) {
+			TooltipProperties tProp = new TooltipProperties();
+			tProp.setId(getDOM().getId());
+			tProp.setContent(TooltipText.QUERY_CONFIG_MENU);
+			tProp.setMy(TooltipProperties.POS_LEFT_CENTER);
+			tProp.setAt(TooltipProperties.POS_RIGHT_CENTER);
+			Helper.drawTooltip(tProp);
+		}
 		
 	}
 }
