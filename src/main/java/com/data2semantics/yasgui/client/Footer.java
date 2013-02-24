@@ -45,6 +45,9 @@ public class Footer extends HLayout {
 	private View view;
 	private ImgButton tooltipButton;
 	private ImgButton githubButton;
+	
+	private static int TOOLTIP_VERSION_TOOLTIP = 1;
+	private static int TOOLTIP_VERSION_GITHUB = 1;
 	public Footer(View view) {
 		this.view = view;
 		setWidth100();
@@ -65,22 +68,26 @@ public class Footer extends HLayout {
 		addMember(extraSmallSpacer);
 	}
 	
-	public void showTooltips() throws ElementIdException {
-		TooltipProperties tProp = new TooltipProperties();
-		tProp.setId(tooltipButton.getDOM().getId());
-		tProp.setContent(TooltipText.TOOLTIP_BUTTON);
-		tProp.setMy(TooltipProperties.POS_BOTTOM_RIGHT);
-		tProp.setAt(TooltipProperties.POS_TOP_CENTER);
-		tProp.setYOffset(-2);
-		Helper.drawTooltip(tProp);
+	public void showTooltips(int fromVersionId) throws ElementIdException {
+		if (fromVersionId <= TOOLTIP_VERSION_TOOLTIP) {
+			TooltipProperties tProp = new TooltipProperties();
+			tProp.setId(tooltipButton.getDOM().getId());
+			tProp.setContent(TooltipText.TOOLTIP_BUTTON);
+			tProp.setMy(TooltipProperties.POS_BOTTOM_RIGHT);
+			tProp.setAt(TooltipProperties.POS_TOP_CENTER);
+			tProp.setYOffset(-2);
+			Helper.drawTooltip(tProp);
+		}
 		
-		TooltipProperties githubProp = new TooltipProperties();
-		githubProp.setId(githubButton.getDOM().getId());
-		githubProp.setContent(TooltipText.GITHUB_ICON);
-		githubProp.setMy(TooltipProperties.POS_RIGHT_CENTER);
-		githubProp.setAt(TooltipProperties.POS_LEFT_CENTER);
-		githubProp.setYOffset(-2);
-		Helper.drawTooltip(githubProp);
+		if (fromVersionId <= TOOLTIP_VERSION_GITHUB) {
+			TooltipProperties githubProp = new TooltipProperties();
+			githubProp.setId(githubButton.getDOM().getId());
+			githubProp.setContent(TooltipText.GITHUB_ICON);
+			githubProp.setMy(TooltipProperties.POS_RIGHT_CENTER);
+			githubProp.setAt(TooltipProperties.POS_LEFT_CENTER);
+			githubProp.setYOffset(-2);
+			Helper.drawTooltip(githubProp);
+		}
 	}
 	
 	private void addTooltipToggler() {
@@ -94,7 +101,7 @@ public class Footer extends HLayout {
 		tooltipButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				view.showTooltips();
+				view.showTooltips(0); //show from version 0 onwards
 			}
 		});
 		addMember(tooltipButton);

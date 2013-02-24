@@ -156,23 +156,24 @@ public class View extends VLayout {
 	}
 	
 	private void processVersionChanges() {
-		if (LocalStorageHelper.getVersionId() < StaticConfig.VERSION_ID) {
+		final int versionId = LocalStorageHelper.getVersionId();
+		if (versionId < StaticConfig.VERSION_ID) {
 			LocalStorageHelper.setVersion(StaticConfig.VERSION);
 			LocalStorageHelper.setVersionId(StaticConfig.VERSION_ID);
 			Scheduler.get().scheduleDeferred(new Command() {
 				public void execute() {
-					showTooltips();
+					showTooltips(versionId);
 					LocalStorageHelper.setTooltipsShown();
 				}
 			});
 		}
 	}
 	
-	public void showTooltips() {
+	public void showTooltips(int fromVersionId) {
 		try {
-			footer.showTooltips();
-			queryTabs.showTooltips();
-			getSelectedTab().showTooltips();
+			footer.showTooltips(fromVersionId);
+			queryTabs.showTooltips(fromVersionId);
+			getSelectedTab().showTooltips(fromVersionId);
 		} catch (ElementIdException e) {
 			onError(e);
 		}

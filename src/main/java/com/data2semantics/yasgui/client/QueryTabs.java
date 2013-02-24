@@ -64,6 +64,9 @@ public class QueryTabs extends TabSet {
 	private ImgButton addTabButton;
 	private IconMenuButton configButton;
 	public static int INDENT_TABS = 130; //space reserved for buttons on lhs
+	
+	private static int TOOLTIP_VERSION_TAB_SELECTION = 1;
+	private static int TOOLTIP_VERSION_MENU_CONFIG = 1;
 	public QueryTabs(View view) {
 		this.view = view;
 		setTabBarThickness(28); //this way the icon menu button alligns well with the tabbar
@@ -90,28 +93,32 @@ public class QueryTabs extends TabSet {
 		addTabControls();
 	}
 	
-	public void showTooltips() throws ElementIdException {
-		showTabSelectionTooltip();
-		showConfigMenuTooltip();
+	public void showTooltips(int fromVersionId) throws ElementIdException {
+		showTabSelectionTooltip(fromVersionId);
+		showConfigMenuTooltip(fromVersionId);
 	}
 	
-	private void showConfigMenuTooltip() throws ElementIdException {
-		TooltipProperties tProp = new TooltipProperties();
-		tProp.setId(configButton.getDOM().getId());
-		tProp.setContent(TooltipText.CONFIG_MENU);
-		tProp.setMy(TooltipProperties.POS_TOP_LEFT);
-		tProp.setAt(TooltipProperties.POS_BOTTOM_CENTER);
-		Helper.drawTooltip(tProp);
+	private void showConfigMenuTooltip(int fromVersionId) throws ElementIdException {
+		if (fromVersionId < TOOLTIP_VERSION_MENU_CONFIG) {
+			TooltipProperties tProp = new TooltipProperties();
+			tProp.setId(configButton.getDOM().getId());
+			tProp.setContent(TooltipText.CONFIG_MENU);
+			tProp.setMy(TooltipProperties.POS_TOP_LEFT);
+			tProp.setAt(TooltipProperties.POS_BOTTOM_CENTER);
+			Helper.drawTooltip(tProp);
+		}
 	}
-	private void showTabSelectionTooltip() throws ElementIdException {
-		TooltipProperties tProp = new TooltipProperties();
-		tProp.setId(getDOM().getId());
-		tProp.setContent(TooltipText.TAB_SELECTION);
-		tProp.setMy(TooltipProperties.POS_BOTTOM_CENTER);
-		tProp.setAt(TooltipProperties.POS_TOP_LEFT);
-		tProp.setXOffset(169);
-		tProp.setYOffset(10);
-		Helper.drawTooltip(tProp);
+	private void showTabSelectionTooltip(int fromVersionId) throws ElementIdException {
+		if (fromVersionId < TOOLTIP_VERSION_TAB_SELECTION) {
+			TooltipProperties tProp = new TooltipProperties();
+			tProp.setId(getDOM().getId());
+			tProp.setContent(TooltipText.TAB_SELECTION);
+			tProp.setMy(TooltipProperties.POS_BOTTOM_CENTER);
+			tProp.setAt(TooltipProperties.POS_TOP_LEFT);
+			tProp.setXOffset(169);
+			tProp.setYOffset(10);
+			Helper.drawTooltip(tProp);
+		}
 	}
 
 	/**
