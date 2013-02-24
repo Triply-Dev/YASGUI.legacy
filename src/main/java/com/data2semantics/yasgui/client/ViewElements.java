@@ -59,6 +59,9 @@ public class ViewElements {
 	private Label loading;
 	public ViewElements(View view) {
 		this.view = view;
+		addLogo();
+		initLoadingWidget();
+		addQueryButton();
 	}
 	
 	/**
@@ -297,10 +300,6 @@ public class ViewElements {
 	public void addLogo() {
 		HTMLFlow html = new HTMLFlow();
 		html.setContents("<span style=\"font-family: 'Audiowide'; font-size: 35px;\">YASGUI</span>");
-//		font-family: 'Audiowide', cursive;
-//		html.setPosition(Positioning.ABSOLUTE);
-//		html.setTop(5);
-//		html.setRight(5);
 		html.getElement().getStyle().setPosition(Position.ABSOLUTE);
 		html.getElement().getStyle().setTop(4, Unit.PX);
 		html.getElement().getStyle().setRight(8, Unit.PX);

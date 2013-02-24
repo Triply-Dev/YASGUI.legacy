@@ -64,48 +64,39 @@ public class View extends VLayout {
 	private Settings settings = new Settings();
 	
 	public View() {
+		setViewLayout();
+		
 		retrieveSettings();
 		
 		processVersionChanges();
 		GoogleAnalytics.init(GoogleAnalytics.UID);
 		setOverflow(Overflow.HIDDEN);
+		
+		
 		if (!settings.inSingleEndpointMode()) {
 			endpointDataSource = new EndpointDataSource(this);
 		}
-		
+		setAutocompletePrefixes(false);
 		viewElements = new ViewElements(this);
 		initJs();
-		getElements().addLogo();
-		getElements().initLoadingWidget();
-		setWidth100();
-		setHeight100();
-		
-		getElements().addQueryButton();
 
-		//Setting margins on tabset messes up layout. Therefore use spacer
-		LayoutSpacer spacer = new LayoutSpacer();
-		spacer.setHeight(30);
-		addMember(spacer);
 		
-		setAutocompletePrefixes(false);
 		queryTabs = new QueryTabs(this);
 		addMember(queryTabs);
 		
 		footer = new Footer(this);
 		addMember(footer);
-		if (!settings.inSingleEndpointMode()) {
-			initEndpointDataSource(false);
-		}
-		//Schedule this all the way at the end, so we have no problems with absolute positions and undrawn elements
-		Scheduler.get().scheduleFinally(new Command() {
-			public void execute() {
-				if (LocalStorageHelper.showTooltips()) {
-					showTooltips();
-					LocalStorageHelper.setTooltipsShown();
-				}
-			}
-		});
+		
 		getElements().checkHtml5();
+	}
+	
+	private void setViewLayout() {
+		setWidth100();
+		setHeight100();
+		//Setting margins on tabset messes up layout. Therefore use spacer
+		LayoutSpacer spacer = new LayoutSpacer();
+		spacer.setHeight(30);
+		addMember(spacer);	
 	}
 	
 	private void retrieveSettings()  {
