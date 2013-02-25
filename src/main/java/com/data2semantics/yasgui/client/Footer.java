@@ -69,7 +69,7 @@ public class Footer extends HLayout {
 	}
 	
 	public void showTooltips(int fromVersionId) throws ElementIdException {
-		if (fromVersionId <= TOOLTIP_VERSION_TOOLTIP) {
+		if (fromVersionId < TOOLTIP_VERSION_TOOLTIP) {
 			TooltipProperties tProp = new TooltipProperties();
 			tProp.setId(tooltipButton.getDOM().getId());
 			tProp.setContent(TooltipText.TOOLTIP_BUTTON);
@@ -79,7 +79,7 @@ public class Footer extends HLayout {
 			Helper.drawTooltip(tProp);
 		}
 		
-		if (fromVersionId <= TOOLTIP_VERSION_GITHUB) {
+		if (fromVersionId < TOOLTIP_VERSION_GITHUB) {
 			TooltipProperties githubProp = new TooltipProperties();
 			githubProp.setId(githubButton.getDOM().getId());
 			githubProp.setContent(TooltipText.GITHUB_ICON);
