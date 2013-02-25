@@ -204,11 +204,22 @@ public class LocalStorageHelper {
 	}
 	
 	public static int getVersionId() {
-		String versionId = Cookies.getCookie(COOKIE_VERSION_ID);
-		if (versionId == null || versionId.length() == 0) {
-			return 0;
+		int versionId = 0;
+		String versionIdString = Cookies.getCookie(COOKIE_VERSION_ID);
+		if (versionIdString == null || versionIdString.length() == 0) {
+			//no versionId set
+			String versionString = getVersion();
+			if (versionString != null && versionString.equals("12.10c")) {
+				//for backwards compatability (versionId wasnt set yet)
+				//can remove this later on
+				versionId = 1;
+			} else {
+				versionId = 0;
+			}
+		} else {
+			versionId = Integer.parseInt(versionIdString);
 		}
-		return Integer.parseInt(versionId);
+		return versionId;
 	}
 	
 	public static void setHtml5Checked() {
