@@ -73,6 +73,8 @@ public class View extends VLayout {
 		
 		retrieveSettings();
 		
+		viewElements = new ViewElements(this);
+		
 		processVersionChanges();
 		GoogleAnalytics.init(GoogleAnalytics.UID);
 		setOverflow(Overflow.HIDDEN);
@@ -82,7 +84,7 @@ public class View extends VLayout {
 			endpointDataSource = new EndpointDataSource(this);
 		}
 		setAutocompletePrefixes(false);
-		viewElements = new ViewElements(this);
+		
 		initJs();
 
 		
