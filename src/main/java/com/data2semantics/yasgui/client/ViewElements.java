@@ -214,9 +214,7 @@ public class ViewElements {
 		window.setAutoSize(true);
 		window.setMinWidth(400);
 		window.setShowMinimizeButton(false);
-//		window.setShowModalMask(true);
 		window.setAutoCenter(true);
-//		window.setCanDrag(false);
 		window.setCanDragResize(true);
 		window.addCloseClickHandler(new CloseClickHandler() {
 			public void onCloseClick(CloseClickEvent event) {
@@ -304,7 +302,11 @@ public class ViewElements {
 		html.getElement().getStyle().setTop(4, Unit.PX);
 		html.getElement().getStyle().setRight(8, Unit.PX);
 		html.setWidth(150);
-		html.draw();
+		if (html.isDrawn()) {
+			html.redraw();
+		} else {
+			html.draw();
+		}
 	}
 	
 }
