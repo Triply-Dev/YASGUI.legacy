@@ -84,20 +84,21 @@ public class ViewElements {
 				String endpoint = view.getSelectedTabSettings().getEndpoint();
 				String queryString = view.getSelectedTabSettings().getQueryString();
 				
-				String contentType;
+				String mainAcceptHeader;
 				if (view.getSelectedTab().getQueryType().equals("CONSTRUCT")) {
 					//Change content type automatically for construct queries
-					contentType = view.getSelectedTabSettings().getConstructContentType();
+					mainAcceptHeader = view.getSelectedTabSettings().getConstructContentType();
 				} else {
-					contentType = view.getSelectedTabSettings().getSelectContentType();
+					mainAcceptHeader = view.getSelectedTabSettings().getSelectContentType();
 				}
+				String acceptHeaders = Helper.getAcceptHeaders(mainAcceptHeader);
 			
 				String argsString = view.getSelectedTabSettings().getQueryArgsAsJsonString();
 				String requestMethod = view.getSelectedTabSettings().getRequestMethod();
 				
 				
 				
-				JsMethods.queryJson(tabId, queryString, endpoint, contentType, argsString, requestMethod);
+				JsMethods.query(tabId, queryString, endpoint, acceptHeaders, argsString, requestMethod);
 				view.checkAndAddEndpointToDs(endpoint);
 				GoogleAnalyticsEvent endpointEvent = new GoogleAnalyticsEvent("sparql", "endpoint");
 				endpointEvent.setOptLabel(endpoint);
