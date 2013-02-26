@@ -165,7 +165,6 @@ public class View extends VLayout {
 			Scheduler.get().scheduleDeferred(new Command() {
 				public void execute() {
 					showTooltips(versionId);
-					LocalStorageHelper.setTooltipsShown();
 				}
 			});
 		}

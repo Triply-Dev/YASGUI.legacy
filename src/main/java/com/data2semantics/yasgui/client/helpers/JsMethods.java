@@ -341,7 +341,6 @@ public class JsMethods {
 	}-*/;
 	
 	
-	
 	public static native String drawTooltip(String id, String content, String my, String at, int xOffset, int yOffset) /*-{
 		if ($wnd.$('#' + id).data("qtip")) {
 			//To support multiple tooltips on the same element, remove data, and add next qtip.
