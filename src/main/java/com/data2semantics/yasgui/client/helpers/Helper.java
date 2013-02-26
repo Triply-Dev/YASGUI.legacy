@@ -26,6 +26,8 @@ package com.data2semantics.yasgui.client.helpers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.google.gwt.regexp.shared.MatchResult;
@@ -144,5 +146,15 @@ public class Helper {
 			throw new ElementIdException("id '" + tProp.getId() + "' not found on page. Unable to draw tooltip");
 		}
 		JsMethods.drawTooltip(tProp.getId(), tProp.getContent(), tProp.getMy(), tProp.getAt(), tProp.getXOffset(), tProp.getYOffset());
+	}
+	
+	public static String getAcceptHeaders(String mainAccept) {
+		String acceptString = mainAccept;
+		acceptString += 	QueryConfigMenu.CONTENT_TYPE_CONSTRUCT_TURTLE + "," + 
+						QueryConfigMenu.CONTENT_TYPE_CONSTRUCT_XML + "," + 
+						QueryConfigMenu.CONTENT_TYPE_SELECT_JSON + "," +
+						QueryConfigMenu.CONTENT_TYPE_SELECT_XML;
+		acceptString += ";q=0.9,*/*;q=0.8";
+		return acceptString;
 	}
 }

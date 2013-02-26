@@ -173,7 +173,7 @@ public class JsMethods {
 	 * @param queryString
 	 * @param endpoint
 	 */
-	public static native void queryJson(String tabId, String queryString, String endpoint, String acceptHeader, String argsJsonString, String requestMethod) /*-{
+	public static native void query(String tabId, String queryString, String endpoint, String acceptHeader, String argsJsonString, String requestMethod) /*-{
 		$wnd.sparqlQueryJson(tabId, queryString, endpoint, acceptHeader, argsJsonString, requestMethod, function(tabId, jsonResult, contentType) {$wnd.drawResults(tabId, jsonResult, contentType);});
 	}-*/;
 	
