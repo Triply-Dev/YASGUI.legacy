@@ -178,7 +178,6 @@ public class ResultContainer extends VLayout {
 					drawRawResponse(responseString, resultFormat);
 				} else {
 					SparqlResults results;
-					view.getLogger().severe(Integer.toString(resultFormat));
 					if (resultFormat == CONTENT_TYPE_JSON) {
 						results = new JsonResults(responseString, view, queryMode);
 					} else {
@@ -238,8 +237,7 @@ public class ResultContainer extends VLayout {
 		} else if (outputFormat.equals(Output.OUTPUT_TABLE_SIMPLE)) {
 			addMember(new SimpleGrid(view, sparqlResults));
 		} else if (outputFormat.equals(Output.OUTPUT_CSV)) {
-			Csv output = new Csv(view, sparqlResults);
-			view.getLogger().severe(output.getCsvString());
+//			Csv output = new Csv(view, sparqlResults);
 		}
 	}
 	

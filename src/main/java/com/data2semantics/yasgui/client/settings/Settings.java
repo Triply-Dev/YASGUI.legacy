@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import com.data2semantics.yasgui.shared.exceptions.SettingsException;
 import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
@@ -44,6 +45,10 @@ public class Settings extends JSONObject {
 	private static String DEFAULTS = "defaults";
 	public static String TAB_SETTINGS = "tabSettings";
 	private static String SINGLE_ENDPOINT_MODE = "singleEndpointMode";
+	private static String COOKIE_CONSENT_MESSAGE = "consentApprovalMessage";
+	private static String GOOGLE_ANALYTICS_ID = "googleAnalyticsId";
+	private static String TRACKING_CONSENT = "trackingConsent";
+	private static String TRACKING_QUERIES_CONSENT = "trackingQueriesConsent";
 	
 	
 	/**
@@ -134,6 +139,55 @@ public class Settings extends JSONObject {
 	public Defaults getDefaults() {
 		return defaults;
 	}
+	
+	public String getCookieConcentMessage() {
+		String message = "";
+		if (containsKey(COOKIE_CONSENT_MESSAGE)) {
+			message = get(COOKIE_CONSENT_MESSAGE).isString().stringValue();
+		}
+		return message;
+	}
+	
+	public String getGoogleAnalyticsId() {
+		String id = "";
+		if (containsKey(GOOGLE_ANALYTICS_ID)) {
+			id = get(GOOGLE_ANALYTICS_ID).isString().stringValue();
+		}
+		return id;
+	}
+	
+	public boolean useGoogleAnalytics() {
+		return (getGoogleAnalyticsId().length() > 0 && getTrackingConsent());
+	}
+	
+	public void setTrackingConsent(boolean consent) {
+		put(TRACKING_CONSENT, JSONBoolean.getInstance(consent));
+	}
+	
+	public boolean getTrackingConsent() {
+		boolean consent = true;
+		if (containsKey(TRACKING_CONSENT)) {
+			consent = get(TRACKING_CONSENT).isBoolean().booleanValue();
+		}
+		return consent;
+	}
+	
+	public void setTrackingQueryConsent(boolean consent) {
+		put(TRACKING_QUERIES_CONSENT, JSONBoolean.getInstance(consent));
+	}
+	
+	public boolean getTrackingQueryConsent() {
+		boolean consent = true;
+		if (containsKey(TRACKING_QUERIES_CONSENT)) {
+			consent = get(TRACKING_QUERIES_CONSENT).isBoolean().booleanValue();
+		}
+		return consent;
+	}
+	
+	public boolean cookieConsentAnswered() {
+		return (containsKey(TRACKING_CONSENT) && containsKey(TRACKING_QUERIES_CONSENT));
+	}
+	
 	
 	/**
 	 * Returns JSON representation of this object

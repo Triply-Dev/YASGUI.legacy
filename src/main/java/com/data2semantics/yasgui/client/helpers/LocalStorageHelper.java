@@ -235,7 +235,4 @@ public class LocalStorageHelper {
 		CalendarUtil.addDaysToDate(date, days);
 		return date;
 	}
-	
-	
-
 }
