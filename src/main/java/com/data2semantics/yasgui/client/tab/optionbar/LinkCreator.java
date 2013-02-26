@@ -24,10 +24,11 @@
  ******************************************************************************/
 package com.data2semantics.yasgui.client.tab.optionbar;
 
-import java.util.HashMap;
 import java.util.Iterator;
-
+import java.util.TreeMap;
 import com.smartgwt.client.types.TitleOrientation;
+import com.smartgwt.client.widgets.AnimationCallback;
+import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -37,6 +38,7 @@ import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
+import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
@@ -44,6 +46,8 @@ import com.data2semantics.yasgui.client.helpers.TooltipProperties;
 import com.data2semantics.yasgui.client.helpers.properties.TooltipText;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
 import com.data2semantics.yasgui.client.settings.TabSettings;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.http.client.URL;
 
 public class LinkCreator extends ImgButton {
@@ -54,12 +58,14 @@ public class LinkCreator extends ImgButton {
 	private static int WINDOW_HEIGHT = 170;
 	private static int ICON_WIDTH = 25;
 	private static int ICON_HEIGHT = 25;
+	private static int ANIMATE_SPEED = 100;
 	private CheckboxItem query;
 	private CheckboxItem endpoint;
 	private CheckboxItem tabTitle;
 	private CheckboxItem outputFormat;
 	private CheckboxItem requestOptions;
 	private TextItem urlTextBox;
+	private Canvas urlTextBoxAnim;
 	
 	public LinkCreator(View view) {
 		this.view = view;
@@ -93,25 +99,47 @@ public class LinkCreator extends ImgButton {
 
 	private VLayout getWindowContent() {
 		VLayout layout = new VLayout();
+		LayoutSpacer spacer1 = new LayoutSpacer();
+		spacer1.setHeight100();
+		layout.addMember(spacer1);
+		
 		layout.addMember(getLinkText());
 
 		layout.addMember(getLinkOptions());
-		updateLink();
+		
+		LayoutSpacer spacer2 = new LayoutSpacer();
+		spacer2.setHeight100();
+		layout.addMember(spacer2);
+		
+		Scheduler.get().scheduleDeferred(new ScheduledCommand(){
+			@Override
+			public void execute() {
+				updateLink();
+				
+			}});
+		
 		return layout;
 	}
 
-	private DynamicForm getLinkText() {
+	private Canvas getLinkText() {
+		urlTextBoxAnim = new Canvas(); 
+		urlTextBoxAnim.setWidth100();
 		DynamicForm form = new DynamicForm();
 		form.setWidth100();
 
 		urlTextBox = new TextItem();
 		urlTextBox.setCanEdit(false);
+		urlTextBox.setHeight(27);
 		urlTextBox.setShowTitle(false);
-		urlTextBox.setName("itemName");
-		urlTextBox.setTitle("Item");
+		urlTextBox.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler(){
+			@Override
+			public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
+				urlTextBox.selectValue();
+			}});
 		urlTextBox.setWidth(WINDOW_WIDTH - 15);
 		form.setItems(urlTextBox);
-		return form;
+		urlTextBoxAnim.addChild(form);
+		return urlTextBoxAnim;
 	}
 
 	private DynamicForm getLinkOptions() {
@@ -153,13 +181,22 @@ public class LinkCreator extends ImgButton {
 	}
 	
 	private void updateLink() {
-		HashMap<String, String> args = getQueryArgsAsHashmap();
-		String url = getLink(args);
-		urlTextBox.setValue(url);
+		TreeMap<String, String> args = getQueryArgs();
+		final String url = getLink(args);
+		urlTextBoxAnim.animateFade(20, new AnimationCallback(){
+			@Override
+			public void execute(boolean earlyFinish) {
+				urlTextBox.setValue(url);
+				urlTextBoxAnim.animateFade(100, new AnimationCallback(){
+					@Override
+					public void execute(boolean earlyFinish) {
+						//nothing
+					}}, ANIMATE_SPEED);
+			}}, ANIMATE_SPEED);
 	}
 	
-	private HashMap<String, String> getQueryArgsAsHashmap() {
-		HashMap<String, String> args = new HashMap<String, String>();
+	private TreeMap<String, String> getQueryArgs() {
+		TreeMap<String, String> args = new TreeMap<String, String>();
 		if ((Boolean)query.getValueAsBoolean()) args.put(TabSettings.QUERY_STRING, view.getSelectedTabSettings().getQueryString());
 		if ((Boolean)endpoint.getValueAsBoolean()) args.put(TabSettings.ENDPOINT, view.getSelectedTabSettings().getEndpoint());
 		if ((Boolean)outputFormat.getValueAsBoolean()) args.put(TabSettings.OUTPUT_FORMAT, view.getSelectedTabSettings().getOutputFormat());
@@ -173,7 +210,7 @@ public class LinkCreator extends ImgButton {
 		return args;
 	}
 	
-	private String getLink(HashMap<String, String> args) {
+	private String getLink(TreeMap<String, String> args) {
 		String url = getBaseUrl();
 		
 		boolean firstItem = true;
