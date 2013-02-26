@@ -68,7 +68,6 @@ public class View extends VLayout {
 		boolean newUser = false;
 		if (LocalStorageHelper.newUser()) newUser = true;
 		
-		
 		setViewLayout();
 		
 		retrieveSettings();
@@ -76,7 +75,9 @@ public class View extends VLayout {
 		viewElements = new ViewElements(this);
 		
 		processVersionChanges();
-		GoogleAnalytics.init(GoogleAnalytics.UID);
+		if (getSettings().useGoogleAnalytics()) {
+			GoogleAnalytics.init(getSettings().getGoogleAnalyticsId());
+		}
 		setOverflow(Overflow.HIDDEN);
 		
 		
@@ -95,6 +96,10 @@ public class View extends VLayout {
 		addMember(footer);
 		
 		getElements().checkHtml5();
+		
+		if (!settings.cookieConsentAnswered()) {
+			getElements().askCookieConsent();
+		}
 		
 		processUrlParameters(newUser);
 	}
@@ -413,4 +418,6 @@ public class View extends VLayout {
 	public void adjustQueryInputForContent() {
 		getSelectedTab().getQueryTextArea().adjustForContent(true);
 	}
+	
+
 }

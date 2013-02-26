@@ -38,8 +38,10 @@ import com.google.gwt.storage.client.Storage;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Positioning;
+import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.HTMLFlow;
+import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
@@ -48,6 +50,7 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.CloseClickEvent;
 import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
+import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 public class ViewElements {
@@ -57,6 +60,11 @@ public class ViewElements {
 	public static String DEFAULT_LOADING_MESSAGE = "Loading...";
 	private static int QUERY_BUTTON_POS_TOP = 5;
 	private static int QUERY_BUTTON_POS_LEFT = 5;
+	private static int CONSENT_WINDOW_HEIGHT = 110;
+	private static int CONSENT_WINDOW_WIDTH = 600;
+	private static int CONSENT_BUTTON_HEIGHT = 40;
+	private static int CONSENT_BUTTON_WIDTH = 130;
+	private Window consentWindow;
 	private Label loading;
 	public ViewElements(View view) {
 		this.view = view;
@@ -100,11 +108,13 @@ public class ViewElements {
 				
 				JsMethods.query(tabId, queryString, endpoint, acceptHeaders, argsString, requestMethod);
 				view.checkAndAddEndpointToDs(endpoint);
-				GoogleAnalyticsEvent endpointEvent = new GoogleAnalyticsEvent("sparql", "endpoint");
-				endpointEvent.setOptLabel(endpoint);
-				GoogleAnalyticsEvent queryEvent = new GoogleAnalyticsEvent("sparql", "query");
-				queryEvent.setOptLabel(queryString);
-				GoogleAnalytics.trackEvents(endpointEvent, queryEvent);
+				if (view.getSettings().useGoogleAnalytics() && view.getSettings().getTrackingQueryConsent()) {
+					GoogleAnalyticsEvent endpointEvent = new GoogleAnalyticsEvent("sparql", "endpoint");
+					endpointEvent.setOptLabel(endpoint);
+					GoogleAnalyticsEvent queryEvent = new GoogleAnalyticsEvent("sparql", "query");
+					queryEvent.setOptLabel(queryString);
+					GoogleAnalytics.trackEvents(endpointEvent, queryEvent);
+				}
 			}
 		});
 		
@@ -292,8 +302,10 @@ public class ViewElements {
 			if (!html5) {
 				onError("Your browser does not support html5. This website will function slower without html5.<br><br> Try browsers such as Chrome 4+, Firefox 4+, Safari 4+ and Internet Explorer 8+ for better performance");
 			}
-			GoogleAnalyticsEvent event = new GoogleAnalyticsEvent("html5", (html5? "1": "0"));
-			GoogleAnalytics.trackEvents(event);
+			if (view.getSettings().useGoogleAnalytics()) {
+				GoogleAnalyticsEvent event = new GoogleAnalyticsEvent("html5", (html5? "1": "0"));
+				GoogleAnalytics.trackEvents(event);
+			}
 		}
 	}
 	
@@ -316,6 +328,109 @@ public class ViewElements {
 		} else {
 			html.draw();
 		}
+	}
+
+	public void askCookieConsent() {
+		consentWindow = new Window();
+		int pageWidth = com.google.gwt.user.client.Window.getClientWidth();
+		int pageHeight = com.google.gwt.user.client.Window.getClientHeight();
+		
+		
+		consentWindow.setRect((pageWidth / 2) - (CONSENT_WINDOW_WIDTH / 2), pageHeight - CONSENT_WINDOW_HEIGHT, CONSENT_WINDOW_WIDTH, CONSENT_WINDOW_HEIGHT);
+		
+		VLayout windowCanvas = new VLayout();
+		
+		HTMLFlow consentMessage = new HTMLFlow();
+		consentMessage.setContents("<p style='text-align:center; margin:0px;'>" + view.getSettings().getCookieConcentMessage() + "</p>");
+		
+		consentMessage.setMargin(8);
+		consentMessage.setWidth(CONSENT_WINDOW_WIDTH - 20);
+		consentMessage.setAlign(Alignment.CENTER);
+		windowCanvas.addMember(consentMessage);
+		
+		LayoutSpacer vSpacer = new LayoutSpacer();
+		vSpacer.setHeight100();
+		windowCanvas.addMember(vSpacer);
+		
+		HLayout buttons = new HLayout();
+		buttons.setAlign(Alignment.CENTER);
+		IButton yesButton = new IButton("Yes, allow");  
+		yesButton.setWidth(CONSENT_BUTTON_WIDTH);
+        yesButton.setShowRollOver(true);  
+        yesButton.setHeight(CONSENT_BUTTON_HEIGHT);
+        yesButton.setIcon("icons/fugue/tick.png");
+        yesButton.setIconOrientation("left");
+        yesButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				consentWindow.destroy();
+				view.getSettings().setTrackingConsent(true);
+				view.getSettings().setTrackingQueryConsent(true);
+				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+			}});
+        yesButton.setShowDownIcon(false);
+		
+        LayoutSpacer spacer1 = new LayoutSpacer();
+        spacer1.setWidth(10);
+        
+		buttons.setAlign(Alignment.CENTER);
+		IButton noQueriesButton = new IButton("Yes, but don't track <br>queries/endpoints");  
+		noQueriesButton.setWidth(CONSENT_BUTTON_WIDTH);
+		noQueriesButton.setHeight(CONSENT_BUTTON_HEIGHT);
+		noQueriesButton.setShowRollOver(true);  
+		noQueriesButton.setIcon("icons/fugue/cross-tick.png");
+		noQueriesButton.setIconOrientation("left");  
+		noQueriesButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				consentWindow.destroy();
+				view.getSettings().setTrackingConsent(true);
+				view.getSettings().setTrackingQueryConsent(false);
+				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+			}});
+		noQueriesButton.setShowDownIcon(false);
+        
+        LayoutSpacer spacer2 = new LayoutSpacer();
+        spacer2.setWidth(10);
+        
+		IButton noButton = new IButton("No, disable tracking");  
+		noButton.setShowRollOver(true);  
+		noButton.setWidth(CONSENT_BUTTON_WIDTH);
+		noButton.setHeight(CONSENT_BUTTON_HEIGHT);
+		noButton.setIcon("icons/fugue/cross.png");
+		noButton.setIconOrientation("left");  
+		noButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				consentWindow.destroy();
+				view.getSettings().setTrackingConsent(false);
+				view.getSettings().setTrackingQueryConsent(false);
+				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+			}});
+		noButton.setShowDownIcon(false); 
+		
+        LayoutSpacer spacer3 = new LayoutSpacer();
+        spacer3.setWidth(10);
+		
+		IButton askLater = new IButton("Ask me later");  
+		askLater.setShowRollOver(true);  
+		askLater.setWidth(CONSENT_BUTTON_WIDTH);
+		askLater.setHeight(CONSENT_BUTTON_HEIGHT);
+		askLater.setIconOrientation("left");  
+		askLater.setShowDownIcon(false); 
+		askLater.addClickHandler(new ClickHandler(){
+			@Override
+			public void onClick(ClickEvent event) {
+				consentWindow.destroy();
+			}});
+		
+        buttons.addMembers(yesButton, spacer1, noQueriesButton, spacer2, noButton, spacer3, askLater);
+        buttons.setMargin(5);
+        windowCanvas.addMember(buttons);
+		consentWindow.setShowHeader(false);
+		
+		consentWindow.addItem(windowCanvas);
+		consentWindow.draw();
 	}
 	
 }

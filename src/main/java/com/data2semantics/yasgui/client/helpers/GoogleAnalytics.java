@@ -30,7 +30,6 @@ import com.google.gwt.user.client.Window;
  */
 public class GoogleAnalytics {
 	
-	public static String UID = "UA-35569470-1";
 	public static void init(String userAccount) {
 
 		Element firstScript = Document.get().getElementsByTagName("script").getItem(0);
