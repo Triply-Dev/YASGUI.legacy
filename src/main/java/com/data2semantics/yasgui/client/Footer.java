@@ -40,7 +40,7 @@ import com.smartgwt.client.widgets.layout.LayoutSpacer;
 
 public class Footer extends HLayout {
 	
-	private static String GITHUB_LINK = "http://github.com/LaurensRietveld/yasgui";
+	public static String GITHUB_LINK = "http://github.com/LaurensRietveld/yasgui";
 	public static int HEIGHT = 30;
 	private View view;
 	private ImgButton tooltipButton;
