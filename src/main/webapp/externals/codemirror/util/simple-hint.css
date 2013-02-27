@@ -1,17 +1,24 @@
 .CodeMirror-completions {
-  position: absolute;
- z-index: 99999999;
-  overflow: hidden;
-  -webkit-box-shadow: 2px 3px 5px rgba(0,0,0,.2);
-  -moz-box-shadow: 2px 3px 5px rgba(0,0,0,.2);
-  box-shadow: 2px 3px 5px rgba(0,0,0,.2);
+	position: absolute;
+	z-index: 99999999;
+	overflow: hidden;
+	-webkit-box-shadow: 2px 3px 5px rgba(0, 0, 0, .2);
+	-moz-box-shadow: 2px 3px 5px rgba(0, 0, 0, .2);
+	box-shadow: 2px 3px 5px rgba(0, 0, 0, .2);
+	background-color: #212427;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border: 3px solid #959FA9;
 }
+
+
+
 .CodeMirror-completions select {
-  background: #fafafa;
-  outline: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-  z-index: 10001;
-  font-family: monospace;
+	background: #f9f9f9;
+	outline: none;
+	border: none;
+	padding: 0;
+	margin: 0;
+	z-index: 10001;
+	font-family: monospace;
 }
