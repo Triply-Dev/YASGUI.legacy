@@ -17,6 +17,8 @@
 		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<generated-sources>target/generated-sources/gwt</generated-sources>
+		<license.organizationName>Laurens Rietveld</license.organizationName>
+		<license.inceptionYear>2013</license.inceptionYear>
 	</properties>
 
 	<dependencies>
@@ -61,16 +63,9 @@
 			<artifactId>smartgwt-skins</artifactId>
 			<version>3.1</version>
 		</dependency>
-		<!-- <dependency>
-			<groupId>com.d2s</groupId>
-			<artifactId>smartgwt</artifactId>
-			<version>3.1p</version>
-		</dependency>
-		<dependency>
-			<groupId>com.d2s</groupId>
-			<artifactId>smartgwt-skins</artifactId>
-			<version>3.1p</version>
-		</dependency> -->
+		<!-- <dependency> <groupId>com.d2s</groupId> <artifactId>smartgwt</artifactId> 
+			<version>3.1p</version> </dependency> <dependency> <groupId>com.d2s</groupId> 
+			<artifactId>smartgwt-skins</artifactId> <version>3.1p</version> </dependency> -->
 		<dependency>
 			<groupId>com.hp.hpl.jena</groupId>
 			<artifactId>arq</artifactId>
@@ -252,6 +247,32 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>1.4</version>
+				<configuration>
+					<verbose>false</verbose>
+					<addSvnKeyWords>false</addSvnKeyWords>
+					<licenseName>mit</licenseName>
+					<includes>
+						<include>**/*.java</include>
+					</includes>
+					
+					<!-- <canUpdateLicense>true</canUpdateLicense>
+					<canUpdateDescription>true</canUpdateDescription>
+					<canUpdateCopyright>true</canUpdateCopyright> -->
+				</configuration>
+				<executions>
+					<execution>
+						<id>first</id>
+						<goals>
+							<goal>update-file-header</goal>
+						</goals>
+						<phase>process-sources</phase>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -319,6 +340,27 @@
 										<ignore></ignore>
 									</action>
 								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.codehaus.mojo
+										</groupId>
+										<artifactId>
+											license-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.4,)
+										</versionRange>
+										<goals>
+											<goal>
+												update-file-header
+											</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
@@ -328,7 +370,7 @@
 		</pluginManagement>
 	</build>
 
-	<name>yasgui</name>
+	<name>YASGUI</name>
 	<repositories>
 		<repository>
 			<id>com.smartgwt</id>
