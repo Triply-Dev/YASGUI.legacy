@@ -31,12 +31,18 @@ import java.util.HashMap;
 import java.util.List;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
+import com.data2semantics.yasgui.client.helpers.JsMethods;
+import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
 import com.data2semantics.yasgui.client.tab.results.input.ResultsHelper;
 import com.data2semantics.yasgui.client.tab.results.input.SparqlResults;
 import com.data2semantics.yasgui.shared.Prefix;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.user.client.Command;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.Canvas;
+import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
@@ -48,8 +54,10 @@ public class ResultGrid extends ListGrid {
 	@SuppressWarnings("unused")
 	private View view;
 	private SparqlResults sparqlResults;
+	private HTMLFlow html;
 	private HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
-	public ResultGrid(View view, SparqlResults sparqlResults) {
+	public ResultGrid(View view, SparqlResults sparqlResults, HTMLFlow html) {
+		this.html = html;
 		this.view = view;
 		this.sparqlResults = sparqlResults;
 		setWidth100();
@@ -62,6 +70,7 @@ public class ResultGrid extends ListGrid {
 		setCanResizeFields(true);
 		queryPrefixes = Helper.getPrefixesFromQuery(view.getSelectedTabSettings().getQueryString());
 		drawQueryResults();
+		drawExportLink(sparqlResults);
 	}
 	
 	/**
@@ -149,5 +158,27 @@ public class ResultGrid extends ListGrid {
 		}
 		return listGridFields;
 	}
+	
+	
+	public void drawExportLink(SparqlResults results) {
+		view.getLogger().severe(view.getSelectedTab().getResultContainer().getElement().getId());
+		Csv csvParser = new Csv(view, results);
+		String url = JsMethods.stringToUrl(csvParser.getCsvString(), "text/csv");
+		String style = "style='z-index:" + Integer.toString(ZIndexes.DOWNLOAD_ICON) + ";position:absolute;right:0px;top:0px;'";
+		String downloadLink = "<a " + style + " href='" + url + "' ";
+		if (JsMethods.downloadAttributeSupported()) {
+			downloadLink += "download='" + getDownloadFilename() + "'";
+		} else {
+			downloadLink += "target='_blank'";
+		}
+		downloadLink += "><img height='24' width='24' src='images/icons/custom/csv.png'></img></a>";
+		html.setContents(downloadLink);
+	}
+	
+	public String getDownloadFilename() {
+		String filename = view.getSelectedTabSettings().getTabTitle() + ".csv";
+		return filename;
+	}
+	
 	
 }

@@ -34,7 +34,6 @@ import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
 import com.data2semantics.yasgui.client.tab.results.input.JsonResults;
 import com.data2semantics.yasgui.client.tab.results.input.SparqlResults;
 import com.data2semantics.yasgui.client.tab.results.input.XmlResults;
-import com.data2semantics.yasgui.client.tab.results.output.Csv;
 import com.data2semantics.yasgui.client.tab.results.output.RawResponse;
 import com.data2semantics.yasgui.client.tab.results.output.ResultGrid;
 import com.data2semantics.yasgui.client.tab.results.output.SimpleGrid;
@@ -236,17 +235,17 @@ public class ResultContainer extends VLayout {
 	
 	private void drawResultsInTable(SparqlResults sparqlResults, String outputFormat) {
 		if (outputFormat.equals(Output.OUTPUT_TABLE)) {
-			addMember(new ResultGrid(view, sparqlResults));
+			HTMLFlow html = new HTMLFlow();
+			addMember(html);
+			addMember(new ResultGrid(view, sparqlResults, html));
 		} else if (outputFormat.equals(Output.OUTPUT_TABLE_SIMPLE)) {
 			addMember(new SimpleGrid(view, sparqlResults));
-		} else if (outputFormat.equals(Output.OUTPUT_CSV)) {
-//			Csv output = new Csv(view, sparqlResults);
 		}
 	}
 	
 	private void drawRawResponse(String responseString, int resultFormat) {
 		
-		rawResponseOutput = new RawResponse(view, queryTab, responseString, contentType);
+		rawResponseOutput = new RawResponse(view, queryTab, responseString, contentType, resultFormat);
 		addMember(rawResponseOutput);
 		final String mode;
 		if (resultFormat == CONTENT_TYPE_JSON) {
@@ -266,8 +265,6 @@ public class ResultContainer extends VLayout {
 					public void execute() {
 						JsMethods.attachCodeMirrorToQueryResult(rawResponseOutput.getInputId(), mode);
 						rawResponseOutput.adjustForContent(true);
-						view.getLogger().severe(Integer.toString(rawResponseOutput.getWidth()));
-						view.getLogger().severe(Integer.toString(rawResponseOutput.getAbsoluteTop()));
 					}
 				});
 		}});

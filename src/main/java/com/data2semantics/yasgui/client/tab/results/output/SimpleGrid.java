@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
+import com.data2semantics.yasgui.client.helpers.JsMethods;
+import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
 import com.data2semantics.yasgui.client.tab.results.input.ResultsHelper;
 import com.data2semantics.yasgui.client.tab.results.input.SparqlResults;
 import com.data2semantics.yasgui.shared.Prefix;
@@ -37,12 +39,11 @@ import com.smartgwt.client.util.StringUtil;
 import com.smartgwt.client.widgets.HTMLPane;
 
 public class SimpleGrid extends HTMLPane {
-	@SuppressWarnings("unused")
 	private View view;
 	private HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
 	private ArrayList<String> variables;
 	private ArrayList<HashMap<String, HashMap<String, String>>> solutions;
-	private String html;
+	private String html = "";
 
 	public SimpleGrid(View view, SparqlResults sparqlResults) {
 		this.view = view;
@@ -51,13 +52,14 @@ public class SimpleGrid extends HTMLPane {
 		queryPrefixes = Helper.getPrefixesFromQuery(view.getSettings().getSelectedTabSettings().getQueryString());
 		variables = sparqlResults.getVariables();
 		solutions = sparqlResults.getBindings();
+		drawExportLink(sparqlResults);
 		drawTable();
 		setContents(html);
 		
 	}
 
 	private void drawTable() {
-		html = "<table class=\"simpleTable\">";
+		html += "<table class=\"simpleTable\">";
 		drawHeader();
 		drawRows();
 
@@ -95,5 +97,25 @@ public class SimpleGrid extends HTMLPane {
 			html += "</tr>";
 		}
 		html += "</tbody>";
+	}
+	
+	public void drawExportLink(SparqlResults results) {
+		Csv csvParser = new Csv(view, results);
+		String url = JsMethods.stringToUrl(csvParser.getCsvString(), "text/csv");
+		String style = "style='z-index:" + Integer.toString(ZIndexes.DOWNLOAD_ICON) + ";position:absolute;right:0px;top:0px;'";
+		String downloadLink = "<a " + style + " href='" + url + "' ";
+		if (JsMethods.downloadAttributeSupported()) {
+			downloadLink += "download='" + getDownloadFilename() + "'";
+		} else {
+			downloadLink += "target='_blank'";
+		}
+		downloadLink += "><img src='images/icons/custom/csv.png'></img></a>";
+		
+		html += downloadLink;
+	}
+	
+	public String getDownloadFilename() {
+		String filename = view.getSelectedTabSettings().getTabTitle() + ".csv";
+		return filename;
 	}
 }
