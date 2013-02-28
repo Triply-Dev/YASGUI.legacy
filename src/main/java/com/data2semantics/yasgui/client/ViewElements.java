@@ -40,7 +40,6 @@ import com.google.gwt.storage.client.Storage;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Positioning;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
@@ -63,9 +62,9 @@ public class ViewElements {
 	private static int QUERY_BUTTON_POS_TOP = 5;
 	private static int QUERY_BUTTON_POS_LEFT = 5;
 	private static int CONSENT_WINDOW_HEIGHT = 110;
-	private static int CONSENT_WINDOW_WIDTH = 600;
+	private static int CONSENT_WINDOW_WIDTH = 650;
 	private static int CONSENT_BUTTON_HEIGHT = 40;
-	private static int CONSENT_BUTTON_WIDTH = 130;
+	private static int CONSENT_BUTTON_WIDTH = 145;
 	private Window consentWindow;
 	private Label loading;
 	public ViewElements(View view) {
@@ -376,7 +375,7 @@ public class ViewElements {
         spacer1.setWidth(10);
         
 		buttons.setAlign(Alignment.CENTER);
-		IButton noQueriesButton = new IButton("Yes, but don't track <br>queries/endpoints");  
+		IButton noQueriesButton = new IButton("Yes, track site usage, but not <br>the queries/endpoints I use");  
 		noQueriesButton.setWidth(CONSENT_BUTTON_WIDTH);
 		noQueriesButton.setHeight(CONSENT_BUTTON_HEIGHT);
 		noQueriesButton.setShowRollOver(true);  

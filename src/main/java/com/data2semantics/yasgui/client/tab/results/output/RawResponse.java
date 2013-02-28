@@ -27,8 +27,14 @@ package com.data2semantics.yasgui.client.tab.results.output;
  */
 
 import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.client.helpers.JsMethods;
+import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
 import com.data2semantics.yasgui.client.tab.QueryTab;
+import com.smartgwt.client.types.Positioning;
+import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.HTMLPane;
+import com.smartgwt.client.widgets.events.ContentLoadedEvent;
+import com.smartgwt.client.widgets.events.ContentLoadedHandler;
 
 public class RawResponse extends HTMLPane {
 	private static String APPEND_INPUT_ID = "_rawResponse";
@@ -36,18 +42,44 @@ public class RawResponse extends HTMLPane {
 	private View view;
 	private String responseString;
 	private String inputId;
-	public RawResponse(View view, QueryTab tab, String responseString) {
+	private String contentType;
+	public RawResponse(View view, QueryTab tab, String responseString, String contentType) {
+		this.contentType = contentType;
 		this.view = view;
 		this.responseString = responseString;
 		this.inputId = tab.getID() + APPEND_INPUT_ID;
-		drawTextArea();
+		String htmlContent = "";
+		if (JsMethods.stringToDownloadSupported()) {
+			htmlContent += getDownloadLink();
+		}
+		htmlContent += getTextArea();
+		setContents(htmlContent);
 	}
 	
-	private void drawTextArea() {
-		setContents("<textarea style=\"overflow:scroll;\" " + "id=\"" + getInputId() + "\"" + ">" + responseString + "</textarea>");
+	private String getTextArea() {
+		return "<textarea style=\"overflow:scroll;\" " + "id=\"" + getInputId() + "\"" + ">" + responseString + "</textarea>";
 	}
 	
 	public String getInputId() {
 		return this.inputId;
+	}
+	
+	public String getDownloadLink() {
+		String url = JsMethods.stringToUrl(responseString, contentType);
+		String style = "style='z-index:" + Integer.toString(ZIndexes.DOWNLOAD_ICON) + ";position:absolute;right:0px;top:0px;'";
+		String downloadLink = "<a " + style + " href='" + url + "' ";
+		if (JsMethods.downloadAttributeSupported()) {
+			downloadLink += "download='" + getDownloadFilename() + "'";
+		} else {
+			downloadLink += "target='_blank'";
+		}
+		downloadLink += "><img src='images/icons/custom/download.png'></img></a>";
+		view.getLogger().severe(downloadLink);
+		return downloadLink;
+	}
+	
+	public String getDownloadFilename() {
+		String filename = view.getSelectedTabSettings().getTabTitle();
+		return filename;
 	}
 }
