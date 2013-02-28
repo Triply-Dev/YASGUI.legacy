@@ -30,20 +30,18 @@ import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
 import com.data2semantics.yasgui.client.tab.QueryTab;
-import com.smartgwt.client.types.Positioning;
-import com.smartgwt.client.widgets.HTMLFlow;
+import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 import com.smartgwt.client.widgets.HTMLPane;
-import com.smartgwt.client.widgets.events.ContentLoadedEvent;
-import com.smartgwt.client.widgets.events.ContentLoadedHandler;
 
 public class RawResponse extends HTMLPane {
 	private static String APPEND_INPUT_ID = "_rawResponse";
-	@SuppressWarnings("unused")
 	private View view;
 	private String responseString;
 	private String inputId;
 	private String contentType;
-	public RawResponse(View view, QueryTab tab, String responseString, String contentType) {
+	private int contentTypeId;
+	public RawResponse(View view, QueryTab tab, String responseString, String contentType, int contentTypeId) {
+		this.contentTypeId = contentTypeId;
 		this.contentType = contentType;
 		this.view = view;
 		this.responseString = responseString;
@@ -74,12 +72,18 @@ public class RawResponse extends HTMLPane {
 			downloadLink += "target='_blank'";
 		}
 		downloadLink += "><img src='images/icons/custom/download.png'></img></a>";
-		view.getLogger().severe(downloadLink);
 		return downloadLink;
 	}
 	
 	public String getDownloadFilename() {
 		String filename = view.getSelectedTabSettings().getTabTitle();
+		if (contentTypeId == ResultContainer.CONTENT_TYPE_JSON) {
+			filename += ".json";
+		} else if (contentTypeId == ResultContainer.CONTENT_TYPE_TURTLE) {
+			filename += ".ttl";
+		} else if (contentTypeId == ResultContainer.CONTENT_TYPE_XML) {
+			filename += ".xml";
+		}
 		return filename;
 	}
 }

@@ -28,12 +28,10 @@ package com.data2semantics.yasgui.client.tab.results.output;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.tab.results.input.SparqlResults;
-import com.smartgwt.client.widgets.HTMLPane;
 
-public class Csv extends HTMLPane {
+public class Csv  {
 	private static String QUOTE = "\"";
 	private static String DELIMITER = ",";
 	private static String LINE_BREAK = "\n";
@@ -44,8 +42,6 @@ public class Csv extends HTMLPane {
 	private String csvString = "";
 	public Csv(View view, SparqlResults queryResults) {
 		this.view = view;
-		setWidth100();
-		setHeight100();
 		variables = queryResults.getVariables();
 		querySolutions = queryResults.getBindings();
 	}
