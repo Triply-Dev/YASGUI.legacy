@@ -375,6 +375,62 @@ public class JsMethods {
 		});
 	}-*/;
 
+	/**
+	 * 
+	 * 
+	 * http://hackworthy.blogspot.nl/2012/05/savedownload-data-generated-in.html
+	 * 
+	 * 
+	 * 
+	 * 
+	 * if (BrowserSupportedMimeTypes[mimetype.split(";")[0]] === true) {
+  mimetype = "application/octet-stream";
+ }
+ 
+ blob = builder.getBlob(mimetype);
+ url = URL.createObjectURL(blob);
+ window.open(url, '_blank', '');
+}
+	 * 
+	 * 
+	 * 
+	 * 
+	 * @return
+	 */
+	public static native boolean downloadAttributeSupported() /*-{
+		supported = false;
+		var a = $wnd.document.createElement('a');
+		if (typeof a.download != "undefined") {
+		    supported = true;
+		}
+		return supported;
+	}-*/;
+	
+	public static native boolean stringToDownloadSupported() /*-{
+		supported = true;
+		windowUrl = $wnd.window.URL || $wnd.window.webkitURL || $wnd.window.mozURL || $wnd.window.msURL;
+		
+		if (windowUrl == undefined || windowUrl == null) {
+			supported = false;
+		}
+		
+		if (supported && Blob == undefined) {
+			supported = false;
+		}
+		return supported;
+	}-*/;
+	public static native String stringToUrl(String string, String contentType) /*-{
+		url = "";
+		windowUrl = $wnd.window.URL || $wnd.window.webkitURL || $wnd.window.mozURL || $wnd.window.msURL;
+
+		if (windowUrl && Blob) {
+			var blob = new Blob([string], {type: contentType});
+			url = windowUrl.createObjectURL(blob);
+		}
+		return url;
+	}-*/;
+	
+	
 	
 	
 }

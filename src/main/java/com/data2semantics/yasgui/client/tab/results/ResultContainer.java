@@ -49,6 +49,7 @@ import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.XMLParser;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Canvas;
+import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ResizedEvent;
@@ -244,7 +245,8 @@ public class ResultContainer extends VLayout {
 	}
 	
 	private void drawRawResponse(String responseString, int resultFormat) {
-		rawResponseOutput = new RawResponse(view, queryTab, responseString);
+		
+		rawResponseOutput = new RawResponse(view, queryTab, responseString, contentType);
 		addMember(rawResponseOutput);
 		final String mode;
 		if (resultFormat == CONTENT_TYPE_JSON) {
@@ -254,6 +256,7 @@ public class ResultContainer extends VLayout {
 		} else {
 			mode = "xml";
 		}
+		
 		//on window resize, part of the page get redrawn. This means we have to attach to codemirror again
 		//this is also called on first load
 		rawResponseOutput.addResizedHandler(new ResizedHandler(){
@@ -263,6 +266,8 @@ public class ResultContainer extends VLayout {
 					public void execute() {
 						JsMethods.attachCodeMirrorToQueryResult(rawResponseOutput.getInputId(), mode);
 						rawResponseOutput.adjustForContent(true);
+						view.getLogger().severe(Integer.toString(rawResponseOutput.getWidth()));
+						view.getLogger().severe(Integer.toString(rawResponseOutput.getAbsoluteTop()));
 					}
 				});
 		}});
