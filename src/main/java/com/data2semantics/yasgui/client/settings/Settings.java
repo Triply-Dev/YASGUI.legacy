@@ -47,7 +47,6 @@ public class Settings extends JSONObject {
 	private static String DEFAULTS = "defaults";
 	public static String TAB_SETTINGS = "tabSettings";
 	private static String SINGLE_ENDPOINT_MODE = "singleEndpointMode";
-	private static String COOKIE_CONSENT_MESSAGE = "consentApprovalMessage";
 	private static String GOOGLE_ANALYTICS_ID = "googleAnalyticsId";
 	private static String TRACKING_CONSENT = "trackingConsent";
 	private static String TRACKING_QUERIES_CONSENT = "trackingQueriesConsent";
@@ -140,14 +139,6 @@ public class Settings extends JSONObject {
 	
 	public Defaults getDefaults() {
 		return defaults;
-	}
-	
-	public String getCookieConcentMessage() {
-		String message = "";
-		if (containsKey(COOKIE_CONSENT_MESSAGE)) {
-			message = get(COOKIE_CONSENT_MESSAGE).isString().stringValue();
-		}
-		return message;
 	}
 	
 	public String getGoogleAnalyticsId() {
