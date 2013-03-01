@@ -171,8 +171,8 @@ public class ResultGrid extends ListGrid {
 			downloadLink += "target='_blank'";
 		}
 		downloadLink += "><img height='24' width='24' src='images/icons/custom/csv.png'></img></a>";
-		view.getLogger().severe(downloadLink);
-		html.setContents(downloadLink);
+		//view.getLogger().severe(downloadLink);
+		//html.setContents(downloadLink);
 	}
 	
 	public String getDownloadFilename() {
