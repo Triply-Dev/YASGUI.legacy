@@ -43,6 +43,7 @@ import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLFlow;
+import com.smartgwt.client.widgets.HTMLPane;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
@@ -51,12 +52,11 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 public class ResultGrid extends ListGrid {
 	private static String SOLUTION_ATTRIBUTE = "yasgui___solution";
 	private HashMap<Integer, HashMap<String, HashMap<String, String>>> solutions = new HashMap<Integer, HashMap<String, HashMap<String, String>>>();
-	@SuppressWarnings("unused")
 	private View view;
 	private SparqlResults sparqlResults;
-	private HTMLFlow html;
+	private HTMLPane html;
 	private HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
-	public ResultGrid(View view, SparqlResults sparqlResults, HTMLFlow html) {
+	public ResultGrid(View view, SparqlResults sparqlResults, HTMLPane html) {
 		this.html = html;
 		this.view = view;
 		this.sparqlResults = sparqlResults;
@@ -161,7 +161,6 @@ public class ResultGrid extends ListGrid {
 	
 	
 	public void drawExportLink(SparqlResults results) {
-		view.getLogger().severe(view.getSelectedTab().getResultContainer().getElement().getId());
 		Csv csvParser = new Csv(view, results);
 		String url = JsMethods.stringToUrl(csvParser.getCsvString(), "text/csv");
 		String style = "style='z-index:" + Integer.toString(ZIndexes.DOWNLOAD_ICON) + ";position:absolute;right:0px;top:0px;'";
@@ -172,6 +171,7 @@ public class ResultGrid extends ListGrid {
 			downloadLink += "target='_blank'";
 		}
 		downloadLink += "><img height='24' width='24' src='images/icons/custom/csv.png'></img></a>";
+		view.getLogger().severe(downloadLink);
 		html.setContents(downloadLink);
 	}
 	

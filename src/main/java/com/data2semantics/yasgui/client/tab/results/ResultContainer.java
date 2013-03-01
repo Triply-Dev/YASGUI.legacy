@@ -49,6 +49,7 @@ import com.google.gwt.xml.client.XMLParser;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLFlow;
+import com.smartgwt.client.widgets.HTMLPane;
 import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ResizedEvent;
@@ -235,7 +236,8 @@ public class ResultContainer extends VLayout {
 	
 	private void drawResultsInTable(SparqlResults sparqlResults, String outputFormat) {
 		if (outputFormat.equals(Output.OUTPUT_TABLE)) {
-			HTMLFlow html = new HTMLFlow();
+			HTMLPane html = new HTMLPane();
+			html.setHeight(27);
 			addMember(html);
 			addMember(new ResultGrid(view, sparqlResults, html));
 		} else if (outputFormat.equals(Output.OUTPUT_TABLE_SIMPLE)) {
