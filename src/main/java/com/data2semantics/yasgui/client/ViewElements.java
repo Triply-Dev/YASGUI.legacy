@@ -62,9 +62,9 @@ public class ViewElements {
 	private static int QUERY_BUTTON_POS_TOP = 5;
 	private static int QUERY_BUTTON_POS_LEFT = 5;
 	private static int CONSENT_WINDOW_HEIGHT = 110;
-	private static int CONSENT_WINDOW_WIDTH = 650;
+	private static int CONSENT_WINDOW_WIDTH = 750;
 	private static int CONSENT_BUTTON_HEIGHT = 40;
-	private static int CONSENT_BUTTON_WIDTH = 145;
+	private static int CONSENT_BUTTON_WIDTH = 175;
 	private Window consentWindow;
 	private Label loading;
 	public ViewElements(View view) {
@@ -337,7 +337,7 @@ public class ViewElements {
 		int pageHeight = com.google.gwt.user.client.Window.getClientHeight();
 		
 		
-		consentWindow.setRect((pageWidth / 2) - (CONSENT_WINDOW_WIDTH / 2), pageHeight - CONSENT_WINDOW_HEIGHT, CONSENT_WINDOW_WIDTH, CONSENT_WINDOW_HEIGHT);
+		consentWindow.setRect((pageWidth / 2) - (CONSENT_WINDOW_WIDTH / 2), pageHeight - CONSENT_WINDOW_HEIGHT - Footer.HEIGHT, CONSENT_WINDOW_WIDTH, CONSENT_WINDOW_HEIGHT);
 		
 		VLayout windowCanvas = new VLayout();
 		
@@ -415,7 +415,7 @@ public class ViewElements {
 		
 		IButton askLater = new IButton("Ask me later");  
 		askLater.setShowRollOver(true);  
-		askLater.setWidth(CONSENT_BUTTON_WIDTH);
+		askLater.setWidth(CONSENT_BUTTON_WIDTH - 30);
 		askLater.setHeight(CONSENT_BUTTON_HEIGHT);
 		askLater.setIconOrientation("left");  
 		askLater.setShowDownIcon(false); 
