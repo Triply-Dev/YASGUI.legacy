@@ -375,28 +375,7 @@ public class JsMethods {
 		});
 	}-*/;
 
-	/**
-	 * 
-	 * 
-	 * http://hackworthy.blogspot.nl/2012/05/savedownload-data-generated-in.html
-	 * 
-	 * 
-	 * 
-	 * 
-	 * if (BrowserSupportedMimeTypes[mimetype.split(";")[0]] === true) {
-  mimetype = "application/octet-stream";
- }
- 
- blob = builder.getBlob(mimetype);
- url = URL.createObjectURL(blob);
- window.open(url, '_blank', '');
-}
-	 * 
-	 * 
-	 * 
-	 * 
-	 * @return
-	 */
+	
 	public static native boolean downloadAttributeSupported() /*-{
 		supported = false;
 		var a = $wnd.document.createElement('a');

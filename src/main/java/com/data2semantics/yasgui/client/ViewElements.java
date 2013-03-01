@@ -89,6 +89,9 @@ public class ViewElements {
 		queryButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				if (JsMethods.stringToDownloadSupported()) {
+					view.getSelectedTab().getDownloadLink().showDisabledIcon();
+				}
 				String tabId = view.getSelectedTab().getID();
 				String endpoint = view.getSelectedTabSettings().getEndpoint();
 				String queryString = view.getSelectedTabSettings().getQueryString();

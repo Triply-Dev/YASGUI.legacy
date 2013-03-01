@@ -32,6 +32,6 @@ public class ZIndexes {
 	public static int TAB_CONTROLS = 50000001;
 	public static int HELP_TOOLTIPS = 50000007;
 	public static int MODAL_WINDOWS = 50000010;
-	public static int DOWNLOAD_ICON = 60000004;
+	public static int DOWNLOAD_ICON = 50000004;
 	
 }
