@@ -237,7 +237,7 @@ public class ResultContainer extends VLayout {
 	private void drawResultsInTable(SparqlResults sparqlResults, String outputFormat) {
 		if (outputFormat.equals(Output.OUTPUT_TABLE)) {
 			HTMLPane html = new HTMLPane();
-			html.setHeight(27);
+			//html.setHeight(27);
 			addMember(html);
 			addMember(new ResultGrid(view, sparqlResults, html));
 		} else if (outputFormat.equals(Output.OUTPUT_TABLE_SIMPLE)) {
