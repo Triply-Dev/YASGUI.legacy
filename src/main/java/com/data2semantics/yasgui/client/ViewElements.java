@@ -342,7 +342,7 @@ public class ViewElements {
 		VLayout windowCanvas = new VLayout();
 		
 		HTMLFlow consentMessage = new HTMLFlow();
-		consentMessage.setContents("<p style='text-align:center; margin:0px;'>" + view.getSettings().getCookieConcentMessage() + "</p>");
+		consentMessage.setContents("<p style='text-align:center; margin:0px;'>We track user actions (including used endpoints and queries). This data is solely used for research purposes and to get insight into how users use the site. <strong>We would appreciate your consent!</strong></p>");
 		
 		consentMessage.setMargin(8);
 		consentMessage.setWidth(CONSENT_WINDOW_WIDTH - 20);

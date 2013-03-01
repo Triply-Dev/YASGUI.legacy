@@ -12,6 +12,5 @@
 		"extraArgs": []
 	},
 	"singleEndpointMode": false,
-	"consentApprovalMessage": "We track user actions (including used endpoints and queries). This data is solely used for research purposes and to get insight into how users use the site. <strong>We would appreciate your consent!</strong>",
 	"googleAnalyticsId": ""
 }
