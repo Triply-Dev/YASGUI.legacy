@@ -66,7 +66,7 @@ public class ResultContainer extends VLayout {
 	
 	public static int CONTENT_TYPE_JSON = 1;
 	public static int CONTENT_TYPE_XML = 2;
-	public static int CONTENT_TYPE_TURTLE = 2;
+	public static int CONTENT_TYPE_TURTLE = 3;
 	
 	private static String ICON_OK = "icons/fugue/tick.png";
 	private static String ICON_WRONG = "icons/fugue/cross.png";
