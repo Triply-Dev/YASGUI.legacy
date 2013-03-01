@@ -29,9 +29,11 @@ package com.data2semantics.yasgui.client.tab;
 import com.data2semantics.yasgui.client.QueryTabs;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
+import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
 import com.data2semantics.yasgui.client.helpers.properties.TooltipText;
 import com.data2semantics.yasgui.client.settings.TabSettings;
+import com.data2semantics.yasgui.client.tab.optionbar.DownloadLink;
 import com.data2semantics.yasgui.client.tab.optionbar.EndpointInput;
 import com.data2semantics.yasgui.client.tab.optionbar.EndpointSearch;
 import com.data2semantics.yasgui.client.tab.optionbar.LinkCreator;
@@ -61,6 +63,7 @@ public class QueryTab extends Tab {
 	private OutputSelection outputSelection;
 	private EndpointSearch searchIcon;
 	private QueryConfigMenu queryConfigMenu;
+	private DownloadLink downloadLink;
 	private String queryType;
 	private LinkCreator linkCreator;
 	public QueryTab(View view, TabSettings tabSettings) {
@@ -95,6 +98,11 @@ public class QueryTab extends Tab {
 		
 		outputSelection = new OutputSelection(view, this);
 		queryOptions.addMember(outputSelection);
+		
+		if (JsMethods.stringToDownloadSupported()) {
+			downloadLink = new DownloadLink(view);
+			queryOptions.addMember(downloadLink);
+		}
 		
 		queryConfigMenu = new QueryConfigMenu(view);
 		queryOptions.addMember(queryConfigMenu);
@@ -223,5 +231,8 @@ public class QueryTab extends Tab {
 	
 	public String getQueryType() {
 		return this.queryType;
+	}
+	public DownloadLink getDownloadLink() {
+		return this.downloadLink;
 	}
 }

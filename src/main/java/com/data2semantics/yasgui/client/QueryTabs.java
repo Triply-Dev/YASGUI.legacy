@@ -36,7 +36,6 @@ import com.data2semantics.yasgui.client.helpers.properties.TooltipText;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
-import com.data2semantics.yasgui.client.tab.ConfigMenu;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.client.tab.results.output.RawResponse;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;

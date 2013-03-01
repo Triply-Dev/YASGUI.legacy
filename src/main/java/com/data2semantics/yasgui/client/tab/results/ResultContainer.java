@@ -34,6 +34,7 @@ import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
 import com.data2semantics.yasgui.client.tab.results.input.JsonResults;
 import com.data2semantics.yasgui.client.tab.results.input.SparqlResults;
 import com.data2semantics.yasgui.client.tab.results.input.XmlResults;
+import com.data2semantics.yasgui.client.tab.results.output.Csv;
 import com.data2semantics.yasgui.client.tab.results.output.RawResponse;
 import com.data2semantics.yasgui.client.tab.results.output.ResultGrid;
 import com.data2semantics.yasgui.client.tab.results.output.SimpleGrid;
@@ -48,7 +49,6 @@ import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.XMLParser;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Canvas;
-import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.HTMLPane;
 import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.Label;
@@ -235,6 +235,11 @@ public class ResultContainer extends VLayout {
 	}
 	
 	private void drawResultsInTable(SparqlResults sparqlResults, String outputFormat) {
+		Csv csvParser = new Csv(view, sparqlResults);
+		if (JsMethods.stringToDownloadSupported()) {
+			String url = JsMethods.stringToUrl(csvParser.getCsvString(), "text/csv");
+			view.getSelectedTab().getDownloadLink().showCsvIcon(url);
+		}
 		if (outputFormat.equals(Output.OUTPUT_TABLE)) {
 			HTMLPane html = new HTMLPane();
 			//html.setHeight(27);
@@ -246,9 +251,13 @@ public class ResultContainer extends VLayout {
 	}
 	
 	private void drawRawResponse(String responseString, int resultFormat) {
-		
-		rawResponseOutput = new RawResponse(view, queryTab, responseString, contentType, resultFormat);
+		if (JsMethods.stringToDownloadSupported()) {
+			String url = JsMethods.stringToUrl(responseString, contentType);
+			view.getSelectedTab().getDownloadLink().showDownloadIcon(url, resultFormat);
+		}
+		rawResponseOutput = new RawResponse(view, queryTab, responseString);
 		addMember(rawResponseOutput);
+
 		final String mode;
 		if (resultFormat == CONTENT_TYPE_JSON) {
 			mode = "json";
@@ -257,7 +266,6 @@ public class ResultContainer extends VLayout {
 		} else {
 			mode = "xml";
 		}
-		
 		//on window resize, part of the page get redrawn. This means we have to attach to codemirror again
 		//this is also called on first load
 		rawResponseOutput.addResizedHandler(new ResizedHandler(){
