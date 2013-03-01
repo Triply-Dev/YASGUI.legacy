@@ -175,8 +175,8 @@ public class Helper {
 	}
 	
 	public static String getAcceptHeaders(String mainAccept) {
-		String acceptString = mainAccept;
-		acceptString += 	QueryConfigMenu.CONTENT_TYPE_CONSTRUCT_TURTLE + "," + 
+		String acceptString = mainAccept + "," +
+						QueryConfigMenu.CONTENT_TYPE_CONSTRUCT_TURTLE + "," + 
 						QueryConfigMenu.CONTENT_TYPE_CONSTRUCT_XML + "," + 
 						QueryConfigMenu.CONTENT_TYPE_SELECT_JSON + "," +
 						QueryConfigMenu.CONTENT_TYPE_SELECT_XML;
