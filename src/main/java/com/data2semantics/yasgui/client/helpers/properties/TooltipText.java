@@ -32,6 +32,7 @@ public class TooltipText {
 	public static String CONFIG_MENU = "<ul style=\"margin: 1px;\">" +
 			"<li>Update prefixes (e.g. after adding prefix to www.prefix.cc)</li>" +
 			"<li>Update list of endpoints from CKAN</li>" +
+			"<li>Show what YASGUI features your browser supports</li>" +
 			"</ul>";
 	public static String TAB_SELECTION = "Double click to rename. Right click for tab options";
 	public static String ENDPOINT_SEARCH_ICON = "Search for endpoints";

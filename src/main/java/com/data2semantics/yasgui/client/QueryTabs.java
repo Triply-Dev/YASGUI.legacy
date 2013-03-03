@@ -67,7 +67,7 @@ public class QueryTabs extends TabSet {
 	public static int INDENT_TABS = 130; //space reserved for buttons on lhs
 	
 	private static int TOOLTIP_VERSION_TAB_SELECTION = 1;
-	private static int TOOLTIP_VERSION_MENU_CONFIG = 1;
+	private static int TOOLTIP_VERSION_MENU_CONFIG = 3;
 	public QueryTabs(View view) {
 		this.view = view;
 		setTabBarThickness(28); //this way the icon menu button alligns well with the tabbar
