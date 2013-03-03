@@ -44,6 +44,7 @@ import com.google.gwt.user.client.Command;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Side;
 import com.smartgwt.client.types.TabTitleEditEvent;
+import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -63,9 +64,10 @@ public class QueryTabs extends TabSet {
 	private View view;
 	private static boolean STORE_SETTINGS_ON_CLOSE_DEFAULT = true;
 	private ImgButton addTabButton;
-	private IconMenuButton configButton;
+	public IconMenuButton configButton;
 	public static int INDENT_TABS = 130; //space reserved for buttons on lhs
-	
+	private HLayout controls;
+	private LayoutSpacer controlsSpacer;
 	private static int TOOLTIP_VERSION_TAB_SELECTION = 1;
 	private static int TOOLTIP_VERSION_MENU_CONFIG = 3;
 	public QueryTabs(View view) {
@@ -141,10 +143,10 @@ public class QueryTabs extends TabSet {
 	 * Add controls (e.g. 'add new tab') to the tab bar
 	 */
 	private void addTabControls() {
-		HLayout controls = new HLayout();
-		LayoutSpacer spacer = new LayoutSpacer();
-		spacer.setWidth100();
-		controls.addMember(spacer);
+		controls = new HLayout();
+		controlsSpacer = new LayoutSpacer();
+		controlsSpacer.setWidth100();
+		controls.addMember(controlsSpacer);
 		controls.setWidth(INDENT_TABS - 2);
 		
 		
@@ -163,19 +165,13 @@ public class QueryTabs extends TabSet {
 				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
 			}
 		});
+		Compatabilities compatabilities = new Compatabilities(view);
+		if (!compatabilities.allSupported() && LocalStorageHelper.getCompatabilitiesShownVersionNumber() < Compatabilities.VERSION_NUMBER) {
+			configButton = getConfigButton("icons/fugue/exclamation.png");
+		} else {
+			configButton = getConfigButton("icons/diagona/bolt.png");
+		}
 		
-		configButton = new IconMenuButton("");
-		configButton.setIcon("icons/diagona/bolt.png");
-		configButton.setMenu(new ConfigMenu(view));
-		configButton.setCanFocus(false);
-		configButton.addClickHandler(new ClickHandler(){
-
-			@Override
-			public void onClick(ClickEvent event) {
-				configButton.showMenu();
-			}
-			
-		});
 		controls.setZIndex(ZIndexes.TAB_CONTROLS);
 		controls.addMember(configButton);
 		controls.addMember(addTabButton);
@@ -375,6 +371,32 @@ public class QueryTabs extends TabSet {
 			return createUniqueTitle(tabTitles, title, i + 1);
 		} else {
 			return newTitle;
+		}
+	}
+	public IconMenuButton getConfigButton(String icon) {
+		configButton = new IconMenuButton("");
+		configButton.setIcon(icon);
+		configButton.setMenu(new ConfigMenu(view));
+		configButton.setCanFocus(false);
+		configButton.addClickHandler(new ClickHandler(){
+
+			@Override
+			public void onClick(ClickEvent event) {
+				configButton.showMenu();
+			}
+			
+		});
+		return configButton;
+	}
+	public void redrawConfigButton(String icon) {
+		Canvas[] members = controls.getMembers();
+		if (members.length > 2) { 
+			//replace second element (the menu), and keep the third one (add tab button) and first one (spacer)
+			for (int i = 0; i < members.length; i++) {
+				members[i].destroy();
+			}
+			IconMenuButton button = getConfigButton(icon);
+			controls.addMembers(controlsSpacer, button, addTabButton);
 		}
 	}
 }

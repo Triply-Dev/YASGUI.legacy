@@ -41,6 +41,7 @@ import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Positioning;
 import com.smartgwt.client.widgets.Button;
+import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.ImgButton;
@@ -53,6 +54,7 @@ import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
+import com.smartgwt.client.widgets.menu.IconMenuButton;
 
 public class ViewElements {
 	private View view;
@@ -61,7 +63,7 @@ public class ViewElements {
 	public static String DEFAULT_LOADING_MESSAGE = "Loading...";
 	private static int QUERY_BUTTON_POS_TOP = 5;
 	private static int QUERY_BUTTON_POS_LEFT = 5;
-	private static int CONSENT_WINDOW_HEIGHT = 110;
+	private static int CONSENT_WINDOW_HEIGHT = 130;
 	private static int CONSENT_WINDOW_WIDTH = 750;
 	private static int CONSENT_BUTTON_HEIGHT = 40;
 	private static int CONSENT_BUTTON_WIDTH = 175;
@@ -431,7 +433,7 @@ public class ViewElements {
         buttons.addMembers(yesButton, spacer1, noQueriesButton, spacer2, noButton, spacer3, askLater);
         buttons.setMargin(5);
         windowCanvas.addMember(buttons);
-		consentWindow.setShowHeader(false);
+		consentWindow.setTitle("Tracking site usage");
 		
 		consentWindow.addItem(windowCanvas);
 		consentWindow.draw();
