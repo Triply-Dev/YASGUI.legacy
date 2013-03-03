@@ -211,6 +211,7 @@
 							<insertNewLine>true</insertNewLine>
 							<output>${webappDirectory}/static/yasgui.js</output>
 							<includes>
+								<include>../externals/jquery.browser.min.js</include>
 								<include>../externals/qtip/jquery.qtip.min.js</include>
 								<include>../externals/codemirror/codemirror.js</include>
 								<include>../externals/codemirror/mode/javascript/javascript.js</include>
