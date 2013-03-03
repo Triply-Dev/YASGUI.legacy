@@ -34,7 +34,6 @@ import com.smartgwt.client.widgets.menu.events.ClickHandler;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 
 public class ConfigMenu extends Menu {
-	@SuppressWarnings("unused")
 	private View view;
 	public ConfigMenu(final View view) {
 		this.view = view;
@@ -58,15 +57,26 @@ public class ConfigMenu extends Menu {
 				}});
 			items.add(endpointsUpdate);
 		}
+		MenuItem compatability;
+		Compatabilities compatabilities = new Compatabilities(view);
+		if (!compatabilities.allSupported()) {
+			compatability = getCompatabilityMenu("icons/fugue/exclamation.png");
+		} else {
+			compatability = getCompatabilityMenu("icons/fugue/information.png");
+		}
+		items.add(compatability);
+		setItems(items.toArray(new MenuItem[items.size()]));
+	}
+	
+	private MenuItem getCompatabilityMenu(String icon) {
 		MenuItem compatability = new MenuItem("Show browser compatabilities");
-		compatability.setIcon("icons/fugue/information.png");
+		compatability.setIcon(icon);
 		compatability.addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(MenuItemClickEvent event) {
 				Compatabilities compatabilities = new Compatabilities(view);
-				compatabilities.draw();
+				compatabilities.drawContent();
 			}});
-		items.add(compatability);
-		setItems(items.toArray(new MenuItem[items.size()]));
+		return compatability;
 	}
 }

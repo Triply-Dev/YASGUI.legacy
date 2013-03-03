@@ -27,7 +27,9 @@ package com.data2semantics.yasgui.client;
  */
 
 import com.data2semantics.yasgui.client.helpers.JsMethods;
+import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
+import com.data2semantics.yasgui.shared.StaticConfig;
 import com.google.gwt.storage.client.Storage;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.VerticalAlignment;
@@ -50,11 +52,13 @@ public class Compatabilities extends Window {
 	private static String URL_COMPATABILTIES_LOCAL_STORAGE = "http://caniuse.com/#feat=namevalue-storage";
 	private static String URL_COMPATABILITIES_DOWNLOAD_ATTRIBUTE = "http://caniuse.com/#feat=download";
 	private static String URL_COMPATABILITIES_DOWNLOAD_FILE = "http://caniuse.com/#feat=bloburls";
+	
+	
+	public static int VERSION_NUMBER = 3; //used for determining whether we need warning icon (i.e. something not compatible, and not shown before)
 	private boolean html5StorageSupported = false;
 	private boolean downloadAttributeSupported = false;
 	private boolean downloadFileSupported = false;
 	private boolean allSupported = false;
-	@SuppressWarnings("unused")
 	private View view;
 	private VLayout layout = new VLayout();;
 	public Compatabilities(View view) {
@@ -69,7 +73,6 @@ public class Compatabilities extends Window {
 		layout.setMargin(10);
 		addItem(layout);
 		checkCompatabilities();
-		drawContent();
 	}
 	
 	private void checkCompatabilities() {
@@ -80,9 +83,15 @@ public class Compatabilities extends Window {
 		allSupported = (html5StorageSupported && downloadFileSupported && downloadAttributeSupported);
 	}
 	
+	public boolean allSupported() {
+		return allSupported;
+	}
 	
 	
-	private void drawContent() {
+	
+	public void drawContent() {
+		LocalStorageHelper.setCompatabilitiesShown(StaticConfig.VERSION_ID);
+		
 		String html = "<div style='width:100%;text-align:center;'>You are using <strong>" + JsMethods.getBrowserName() + " " + JsMethods.getBrowserVersionNumber() + "</strong> on <strong>" + JsMethods.GetBrowserOs() + "</strong>. ";
 		if (allSupported) {
 			html += "Congrats! Your browser supports all YASGUI functionality";
@@ -100,7 +109,10 @@ public class Compatabilities extends Window {
 		drawHtml5LocalStorage();
 		drawDownloadFunctionality();
 		drawDownloadFilenameFunctionality();
+		draw();
 		
+		//ok, so we've shown the stuff. reload the menu button, as we might still have an exclamation mark there
+		view.getTabs().redrawConfigButton("icons/diagona/bolt.png");
 	}
 	
 	private void drawHtml5LocalStorage() {
@@ -157,7 +169,6 @@ public class Compatabilities extends Window {
 	
 	private Img getIcon(boolean supported) {
 		Img img;
-		
 		if (supported) {
 			img = new Img("icons/fugue/tick.png");
 		} else {
