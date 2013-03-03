@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.client.tab;
+package com.data2semantics.yasgui.client;
 
 /*
  * #%L
@@ -28,7 +28,6 @@ package com.data2semantics.yasgui.client.tab;
 
 import java.util.ArrayList;
 
-import com.data2semantics.yasgui.client.View;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.ClickHandler;
@@ -59,6 +58,15 @@ public class ConfigMenu extends Menu {
 				}});
 			items.add(endpointsUpdate);
 		}
+		MenuItem compatability = new MenuItem("Show browser compatabilities");
+		compatability.setIcon("icons/fugue/information.png");
+		compatability.addClickHandler(new ClickHandler(){
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				Compatabilities compatabilities = new Compatabilities(view);
+				compatabilities.draw();
+			}});
+		items.add(compatability);
 		setItems(items.toArray(new MenuItem[items.size()]));
 	}
 }

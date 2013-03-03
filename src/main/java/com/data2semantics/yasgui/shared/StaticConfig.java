@@ -32,5 +32,5 @@ public class StaticConfig implements Serializable {
 	private static final long serialVersionUID = 1L;
 	//YASGUI versions
 	public static int VERSION_ID = 3;
-	public static String VERSION = "13.02c";
+	public static String VERSION = "13.02d";
 }

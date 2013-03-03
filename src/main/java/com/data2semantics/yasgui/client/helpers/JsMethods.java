@@ -408,6 +408,18 @@ public class JsMethods {
 		}
 		return url;
 	}-*/;
+
+	public static native String getBrowserName() /*-{
+		return $wnd.$.browser.name;
+	}-*/;
+
+	public static native String getBrowserVersionNumber() /*-{
+		return $wnd.$.browser.versionNumber.toString();
+	}-*/;
+
+	public static native String GetBrowserOs() /*-{
+		return $wnd.$.os.name;
+	}-*/;
 	
 	
 	
