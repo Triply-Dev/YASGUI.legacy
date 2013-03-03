@@ -174,6 +174,13 @@ public class View extends VLayout {
 					showTooltips(versionId);
 				}
 			});
+		} else {
+			String versionString = LocalStorageHelper.getVersion();
+			//the version ID might have stayed the same (no major changes which might have influenced stale caches or needing tooltip popups),
+			//but version string might have been upped. Keep track of this
+			if (!versionString.equals(StaticConfig.VERSION)) {
+				LocalStorageHelper.setVersion(StaticConfig.VERSION);
+			}
 		}
 	}
 	
