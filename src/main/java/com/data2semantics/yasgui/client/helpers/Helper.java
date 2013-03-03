@@ -65,7 +65,7 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 public class Helper {
-
+	private static String CRAWL_USER_AGENTS = "googlebot|msnbot|baidu|curl|wget|Mediapartners-Google|slurp|ia_archiver|Gigabot|libwww-perl|lwp-trivial|bingbot";
 
 	/**
 	 * Implode arraylist into string
@@ -176,11 +176,22 @@ public class Helper {
 	
 	public static String getAcceptHeaders(String mainAccept) {
 		String acceptString = mainAccept + "," +
-						QueryConfigMenu.CONTENT_TYPE_CONSTRUCT_TURTLE + "," + 
-						QueryConfigMenu.CONTENT_TYPE_CONSTRUCT_XML + "," + 
-						QueryConfigMenu.CONTENT_TYPE_SELECT_JSON + "," +
-						QueryConfigMenu.CONTENT_TYPE_SELECT_XML;
-		acceptString += ";q=0.9,*/*;q=0.8";
+						QueryConfigMenu.CONTENT_TYPE_CONSTRUCT_TURTLE + ";q=0.9," + 
+						QueryConfigMenu.CONTENT_TYPE_CONSTRUCT_XML + ";q=0.9," + 
+						QueryConfigMenu.CONTENT_TYPE_SELECT_JSON + ";q=0.9," +
+						QueryConfigMenu.CONTENT_TYPE_SELECT_XML + ";q=0.9," +
+						"*/*;q=0.8";
 		return acceptString;
+	}
+	
+	/**
+	 * Check whether visitor is a crawler. This way we can avoid the google screenshot containing lots of popups
+	 */
+	public static boolean isCrawler() {
+		String userAgent = JsMethods.getUserAgent();
+		RegExp regExp = RegExp.compile(".*(" + CRAWL_USER_AGENTS + ").*");
+		MatchResult matcher = regExp.exec(userAgent);
+		boolean matchFound = (matcher != null);
+		return matchFound;
 	}
 }

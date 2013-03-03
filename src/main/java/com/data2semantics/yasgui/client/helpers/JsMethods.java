@@ -421,6 +421,9 @@ public class JsMethods {
 		return $wnd.$.os.name;
 	}-*/;
 	
+	public static native String getUserAgent() /*-{
+		return $wnd.navigator.userAgent;
+	}-*/;
 	
 	
 	

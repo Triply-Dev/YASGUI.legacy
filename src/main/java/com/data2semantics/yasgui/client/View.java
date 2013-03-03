@@ -29,6 +29,7 @@ package com.data2semantics.yasgui.client;
 import java.io.IOException;
 import java.util.logging.Logger;
 import com.data2semantics.yasgui.client.helpers.GoogleAnalytics;
+import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
@@ -99,7 +100,7 @@ public class View extends VLayout {
 		
 		getElements().checkHtml5();
 		
-		if (!settings.cookieConsentAnswered()) {
+		if (!settings.cookieConsentAnswered() && !Helper.isCrawler()) {
 			getElements().askCookieConsent();
 		}
 		
@@ -185,12 +186,14 @@ public class View extends VLayout {
 	}
 	
 	public void showTooltips(int fromVersionId) {
-		try {
-			footer.showTooltips(fromVersionId);
-			queryTabs.showTooltips(fromVersionId);
-			getSelectedTab().showTooltips(fromVersionId);
-		} catch (ElementIdException e) {
-			onError(e);
+		if (!Helper.isCrawler()) {
+			try {
+				footer.showTooltips(fromVersionId);
+				queryTabs.showTooltips(fromVersionId);
+				getSelectedTab().showTooltips(fromVersionId);
+			} catch (ElementIdException e) {
+				onError(e);
+			}
 		}
 	}
 	
