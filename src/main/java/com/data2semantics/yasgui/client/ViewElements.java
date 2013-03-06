@@ -31,6 +31,7 @@ import com.data2semantics.yasgui.client.helpers.GoogleAnalyticsEvent;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
+import com.data2semantics.yasgui.client.helpers.properties.ExternalLinks;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Position;
@@ -41,7 +42,6 @@ import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Positioning;
 import com.smartgwt.client.widgets.Button;
-import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.ImgButton;
@@ -54,7 +54,6 @@ import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
-import com.smartgwt.client.widgets.menu.IconMenuButton;
 
 public class ViewElements {
 	private View view;
@@ -317,7 +316,7 @@ public class ViewElements {
 	
 	public void addLogo() {
 		HTMLFlow html = new HTMLFlow();
-		html.setContents("<span style=\"font-family: 'Audiowide'; font-size: 35px;cursor:pointer;\" onclick=\"window.open('" + Footer.GITHUB_LINK +  "')\">YASGUI</span>");
+		html.setContents("<span style=\"font-family: 'Audiowide'; font-size: 35px;cursor:pointer;\" onclick=\"window.open('" + ExternalLinks.YASGUI_HTML +  "')\">YASGUI</span>");
 		html.getElement().getStyle().setPosition(Position.ABSOLUTE);
 		html.getElement().getStyle().setTop(4, Unit.PX);
 		html.getElement().getStyle().setRight(8, Unit.PX);
@@ -326,7 +325,7 @@ public class ViewElements {
 		html.addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
-				com.google.gwt.user.client.Window.open(Footer.GITHUB_LINK, "_blank", "");
+				com.google.gwt.user.client.Window.open(ExternalLinks.YASGUI_HTML, "_blank", "");
 			}});
 		html.setWidth(150);
 		if (html.isDrawn()) {

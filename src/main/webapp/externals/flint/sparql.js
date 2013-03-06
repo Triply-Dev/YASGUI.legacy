@@ -1,6 +1,5 @@
-CodeMirror
-		.defineMode(
-				"sparql",
+CodeMirror.defineMode(
+				"sparql11",
 				function(config, parserConfig) {
 					var tms = getTerminals();
 					var indentUnit = config.indentUnit;
@@ -273,8 +272,6 @@ CodeMirror
 								errorEndPos : null,
 								possibleCurrent : getPossibles("update"),
 								possibleNext : getPossibles("update"),
-//								possibleCurrent : getPossibles("update").concat(getPossibles("query")),
-//								possibleNext : getPossibles("update").concat(getPossibles("query")),
 								allowVars : true,
 								allowBnodes : true,
 								storeProperty : false,

@@ -28,6 +28,7 @@ package com.data2semantics.yasgui.client;
 
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
+import com.data2semantics.yasgui.client.helpers.properties.ExternalLinks;
 import com.data2semantics.yasgui.client.helpers.properties.TooltipText;
 import com.data2semantics.yasgui.shared.StaticConfig;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
@@ -42,7 +43,6 @@ import com.smartgwt.client.widgets.layout.LayoutSpacer;
 
 public class Footer extends HLayout {
 	
-	public static String GITHUB_LINK = "http://github.com/LaurensRietveld/yasgui";
 	public static int HEIGHT = 30;
 	private View view;
 	private ImgButton tooltipButton;
@@ -120,7 +120,7 @@ public class Footer extends HLayout {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				Window.open(GITHUB_LINK, "_blank", null);
+				Window.open(ExternalLinks.YASGUI_HTML, "_blank", null);
 				
 			}});
 		addMember(yasguiVersion);
@@ -138,7 +138,7 @@ public class Footer extends HLayout {
 		githubButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				Window.open(GITHUB_LINK, "_blank", null);
+				Window.open(ExternalLinks.GITHUB_PAGE, "_blank", null);
 			}
 		});
 		addMember(githubButton);
