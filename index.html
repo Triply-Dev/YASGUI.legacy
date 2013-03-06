@@ -4,7 +4,8 @@
 
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" type="text/css" media="screen" href="css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" media="screen"
+	href="css/bootstrap.min.css">
 <style type="text/css">
 body {
 	padding-top: 60px;
@@ -12,21 +13,22 @@ body {
 }
 </style>
 <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
-	<meta charset='utf-8' />
-	<meta http-equiv="X-UA-Compatible" content="chrome=1" />
-	<meta name="description" content="Yasgui : Yet another SPARQL GUI" />
-	
+<meta charset='utf-8' />
+<meta http-equiv="X-UA-Compatible" content="chrome=1" />
+<meta name="description" content="Yasgui : Yet another SPARQL GUI" />
 
-	<link rel="stylesheet" type="text/css" media="screen" href="css/yasgui.css">
-	<script type="text/javascript" src="js/bootstrap.min.js"></script>
-	<title>YASGUI</title>
+
+<link rel="stylesheet" type="text/css" media="screen"
+	href="css/yasgui.css">
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<title>YASGUI</title>
 </head>
 
 <body>
 	<div class="navbar navbar-fixed-top">
 		<div class="navbar-inner">
 			<div class="container">
-				
+
 				<div class="nav-collapse">
 					<ul class="nav">
 						<li class="active"><a href="#">About YASGUI</a></li>
@@ -43,47 +45,72 @@ body {
 		<div class="hero-unit">
 			<div class="row">
 				<div class="span9">
-			
-				<h1>YASGUI</h1>
-				<p>
-					Yet another SPARQL GUI
-				</p>
-				<p>
-					<a class="btn btn-primary btn-large" href="http://aers.data2semantics.org/yasgui" target="_blank"><i class="icon-share-alt icon-white"></i>Try it out!</a>
-					<a class="btn btn-large btn-info" href="https://github.com/LaurensRietveld/yasgui">View source on GitHub&nbsp;<img style="height:22px;" src="img/blacktocat.png"></img></a>
-				</p>
-				
+
+					<h1>YASGUI</h1>
+					<p>Yet another SPARQL GUI</p>
+					<p>
+						<a class="btn btn-primary btn-large"
+							href="http://aers.data2semantics.org/yasgui" target="_blank"><i
+							class="icon-share-alt icon-white"></i>Try it out!</a> <a
+							class="btn btn-large btn-info"
+							href="https://github.com/LaurensRietveld/yasgui">View source
+							on GitHub&nbsp;<img style="height: 22px;"
+							src="img/blacktocat.png"></img>
+						</a>
+					</p>
+
 				</div>
 			</div>
 		</div>
 
 	</div>
 
-
-	<!-- MAIN CONTENT -->
-	<div class="row">
-		<div class="span7 offset1">
-			<h3>What is it?</h3>
-
-
-
-			<p>YASGUI (Yet Another Sparql GUI) is a web application to query
-				any SPARQL endpoint. I work on this tool as a pet-project, as I
-				could not find any other SPARQL graphical user interface which fits
-				all my requirements:
-				</p>
-			<ul>
-				<li>Work on all endpoints (not just the CORS-enabled ones)</li>
-				<li>Multi-platform (i.e. a web application)</li>
-				<li>Easy-to-work user interface (i.e. prefix fetching, syntax
-					highlighting/checking, storing queries)</li>
-			</ul>
-			
-			<h3>Issues and feedback</h3>
-			Do you have any issues with YASGUI or feedback? <a href="http://github.com/LaurensRietveld/yasgui/issues" target="_blank">Submit</a> an an issue on github!
+	<div class="container">
+		<!-- MAIN CONTENT -->
+		<div class="row">
+			<div class="span9">
+				<h3>What is it?</h3>
 
 
-			
+
+				<p>YASGUI (Yet Another Sparql GUI) is a web application to query
+					any SPARQL endpoint. I work on this tool as a pet-project, as I
+					could not find any other SPARQL graphical user interface which fits
+					all my requirements:</p>
+				<ul>
+					<li>Work on all endpoints (not just the CORS-enabled ones)</li>
+					<li>Multi-platform (i.e. a web application)</li>
+					<li>Easy-to-work user interface (i.e. prefix fetching, syntax
+						highlighting/checking, storing queries)</li>
+				</ul>
+
+				<h3>Issues and feedback</h3>
+				Do you have any issues with YASGUI or feedback? <a
+					href="http://github.com/LaurensRietveld/yasgui/issues"
+					target="_blank">Submit</a> an an issue on github!
+
+				<h3>Used services and libraries</h3>
+				<ul>
+					<li>Thanks to Marijn Haverbeke for <a
+						href="http://codemirror.net/" target="_blank">CodeMirror</a> and
+						the SPARQL highlight plugin
+					</li>
+					<li><a href="http://www.smartclient.com/product/smartgwt.jsp" target="_blank">SMARTGWT</a></li>
+					<li>Thanks to the people from <a
+						href="https://github.com/TSO-Openup/FlintSparqlEditor"
+						target="_blank">FLINT SPARQL editor</a> and the javascript SPARQL
+						grammar they created
+					</li>
+					<li><a href="http://thedatahub.org/" target="_blank">CKAN</a>
+						dataset catalogue</li>
+					<li><a href="http://prefix.cc" target="_blank">prefix.cc</a>
+						namespace lookup service</li>
+					<li><a href="http://jquery.com/" target="_blank">jQuery</a>
+						and the <a href="http://craigsworks.com/projects/qtip/"
+						target="_blank">jQuery qTip plugin</a></li>
+				</ul>
+
+			</div>
 		</div>
 	</div>
 
