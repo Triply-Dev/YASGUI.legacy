@@ -7,5 +7,5 @@ YASGUI: Yet another SPARQL GUI
 
 
 
-  [1]: http://org.data2semantics.org/yasgui
+  [1]: http://aers.data2semantics.org/yasgui
   [2]: http://laurensrietveld.nl/yasgui
