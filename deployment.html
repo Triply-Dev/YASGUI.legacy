@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" media="screen"
+	href="css/bootstrap.min.css">
+<style type="text/css">
+body {
+	padding-top: 60px;
+	padding-bottom: 40px;
+}
+</style>
+<link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+<meta charset='utf-8' />
+<meta http-equiv="X-UA-Compatible" content="chrome=1" />
+<meta name="description" content="Yasgui : Yet another SPARQL GUI" />
+
+
+<link rel="stylesheet" type="text/css" media="screen"
+	href="css/yasgui.css">
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<title>YASGUI</title>
+</head>
+
+<body>
+	<div class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+
+				<div class="nav-collapse">
+					<ul class="nav">
+						<li><a href="index.html">About YASGUI</a></li>
+						<li class="active"><a href="#">Local Deployment</a></li>
+						<li><a href="http://laurensrietveld.nl">About me</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+	<div class="container">
+		<div class="row">
+			<div class="span9 offset1">
+				<h3>Why deploy YASGUI locally?</h3>
+
+				YASGUI works on any SPARQL endpoint, even endpoints installed on the
+				computer you are using (i.e. using localhost). This means regular
+				users won't need to follow this guide. This guide is meant for
+				people who would like to deploy YASGUI as GUI interface for their
+				dataset/endpoint.
+
+
+				<h3>Local Deployment</h3>
+				Prerequisites: A java webserver, e.g. <a
+					href="http://tomcat.apache.org/" target="_blank">tomcat</a>
+				<ul>
+					<li>Download the zip file <a
+						href="http://github.com/LaurensRietveld/yasgui/archive/master.zip">here</a>,
+						or <a href="http://github.com/LaurensRietveld/yasgui"
+						target="_blank">clone</a> the github repository
+					</li>
+					<li>Package the .war file<pre>mvn package</pre></li>
+					<li>Deploy the war file to your java webserver. For tomcat,
+						you would issue this command <pre>sudo cp target/yasgui-*.war /var/lib/tomcat7/webapps/yasgui.war; </pre>
+					</li>
+				</ul>
+				<h3>Configuration</h3>
+				<ul>
+					<li>After deployment to the web server, go to the root of the
+						YASGUI directory (for tomcat, this would be <code>/var/lib/tomcat7/webapps/yasgui/</code>)
+					</li>
+					<li>Edit the configuration file located in <code>config/config.json</code>
+					<li><strong>Make sure the configuration file is valid
+							JSON. After editing, validate it using <a
+							href="http://jsonlint.com/" target="_blank">JSON Lint</a>
+					</strong></li>
+				</ul>
+				<h3>Example configuration file</h3>
+				<pre>{
+    "defaults": {
+        "endpoint": "http://dbpedia.org/sparql",
+        "query": "PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;\nPREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;\nSELECT * {\n\t?sub ?pred ?obj\n} LIMIT 10\n",
+        "tabTitle": "Query",
+        "contentTypeSelect": "application/sparql-results+xml",
+        "contentTypeConstruct": "text/turtle",
+        "outputFormat": "table",
+        "requestMethod": "POST",
+        "extraArgs": []
+    },
+    "singleEndpointMode": false,
+    "googleAnalyticsId": "UA-11111111-1"
+}</pre>
+				<h3>Fields in config file</h3>
+				<h4>Defaults</h4>
+				<p>The main part of the config file contains all the possible
+					default values. When opening YASGUI for the first time, or when
+					opening a new tab, these values are used as defaults. Most are self
+					explanatory.</p>
+				<dl>
+					<dt>endpoint</dt>
+					<dt>query</dt>
+					<dt>tabTitle
+					<dt>
+					<dd>Default name of a yasgui query tab</dd>
+					<dt>contentTypeSelect
+					<dt>
+					<dd>Default content type to use for SPARQL SELECT queries</dd>
+					<dt>contentTypeConstruct</dt>
+					<dd>Default content type to use for SPARQL CONSTRUCT queries</dd>
+					<dt>outputFormat</dt>
+					<dd>
+						Default output to visualize query results in. Possible values are:
+						<dl style="margin-top:0px;margin-bottom:0px;padding-left:20px;">
+							<dt>rawResponse</dt>
+							<dd>The result as we received it from the endpoint (i.e.
+								something like json or xml)</dd>
+							<dt>table</dt>
+							<dd>Sortable table (not suitable for large resultsets)</dd>
+							<dt>simpleTable</dt>
+							<dd>Simple table (suitable for larger resultsets)</dd>
+						</dl>
+					</dd>
+					<dt>requestMethod</dt>
+					<dd>Either POST or GET</dd>
+					<dt>extraArgs</dt>
+					<dd>
+						Any extra url arguments you'd like to pass on to the endpoint. The
+						following example will at &amp;bla=bla2 to the request send to the
+						endpoint:
+						<code>"extraArgs": [{"bla":"bla2"}]</code>
+					</dd>
+				</dl>
+
+
+				<h4>Other options</h4>
+				<dl>
+					<dt>singleEndpointMode</dt>
+					<dd>A boolean value. If set the true, the user won't be able
+						to change the endpoint. Instead, the default endpoint is always
+						used.</dd>
+					<dt>googleAnalyticsId</dt>
+					<dd>Google analytics ID. If you prefer not to use Google
+						Analytics, use an empty strin
+				g</dl>
+
+
+			</div>
+
+
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl."
+				: "http://www.");
+		document
+				.write(unescape("%3Cscript src='"
+						+ gaJsHost
+						+ "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+		try {
+			var pageTracker = _gat._getTracker("UA-35569470-2");
+			pageTracker._trackPageview();
+		} catch (err) {
+		}
+	</script>
+
+
+</body>
+</html>
