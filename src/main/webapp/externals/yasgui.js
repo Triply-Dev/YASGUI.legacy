@@ -12,34 +12,39 @@ var queryRequest;
  * http://bugs.jquery.com/ticket/10338
  */
 var _super = $.ajaxSettings.xhr;
-$.ajaxSetup( {
-    xhr: function ()
-    {
-        var xhr = _super();
-        var getAllResponseHeaders = xhr.getAllResponseHeaders;
+$
+		.ajaxSetup({
+			xhr : function() {
+				var xhr = _super();
+				var getAllResponseHeaders = xhr.getAllResponseHeaders;
 
-        xhr.getAllResponseHeaders = function ()
-        {
-            var allHeaders = getAllResponseHeaders.call( xhr );
-            if( allHeaders )
-            {
-                return allHeaders;
-            }
-            allHeaders = "";
-            $( ["Cache-Control", "Content-Language", "Content-Type",
-                "Expires", "Last-Modified", "Pragma"] ).each( function ( i, header_name )
-                    {
-                        if( xhr.getResponseHeader( header_name ) )
-                        {
-                            allHeaders += header_name + ": " + xhr.getResponseHeader( header_name ) + "\n";
-                        }
-                    } );
-            return allHeaders;
-        };
-        return xhr;
-    }
-} );
-function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader, argsJsonString, requestMethod, callback) {
+				xhr.getAllResponseHeaders = function() {
+					var allHeaders = getAllResponseHeaders.call(xhr);
+					if (allHeaders) {
+						return allHeaders;
+					}
+					allHeaders = "";
+					$(
+							[ "Cache-Control", "Content-Language",
+									"Content-Type", "Expires", "Last-Modified",
+									"Pragma" ])
+							.each(
+									function(i, header_name) {
+										if (xhr.getResponseHeader(header_name)) {
+											allHeaders += header_name
+													+ ": "
+													+ xhr
+															.getResponseHeader(header_name)
+													+ "\n";
+										}
+									});
+					return allHeaders;
+				};
+				return xhr;
+			}
+		});
+function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader,
+		argsJsonString, requestMethod, callback) {
 	var ajaxData = {
 		query : queryStr,
 	};
@@ -54,44 +59,47 @@ function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader, argsJsonString
 		requestMethod = "POST"; //we stil want to use POST to access the servlet itself
 		uri = proxy;
 	}
-	args = jQuery.parseJSON( argsJsonString );
+	args = jQuery.parseJSON(argsJsonString);
 	if (args != null) {
-		for (var key in args) {
-		  if (args.hasOwnProperty(key)) {
-			  ajaxData[key] = args[key];
-		  }
+		for ( var key in args) {
+			if (args.hasOwnProperty(key)) {
+				ajaxData[key] = args[key];
+			}
 		}
 	}
-	queryRequest = $.ajax({
-		url : uri,
-		type : requestMethod,
-		headers: { 
-	        Accept : acceptHeader
-		},
-		dataType : 'text',//get as text, let gwt parse it to gwt json object. Want to retrieve json though, so use header setting above
-		data: ajaxData,
-		beforeSend : function(xhr) {
-			//nothing
-		},
-		success : function(data, textStatus, jqXHR) {
-			onQueryFinish();
-			callback(tabId, data, jqXHR.getResponseHeader('Content-Type'));
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-			if (textStatus != "abort") {
-				//if user cancels query, textStatus will be 'abort'. No need to show error window than
-				onQueryFinish();
-				clearQueryResult();
-				var errorMsg;
-				if (jqXHR.status == 0 && errorThrown.length == 0) {
-					errorMsg = "Error querying endpoint: empty response returned";
-				} else {
-					errorMsg = "Error querying endpoint: " + jqXHR.status + " - " + errorThrown;
-				}
-				onQueryError(errorMsg);
-			}
-		},
-	});
+	queryRequest = $
+			.ajax({
+				url : uri,
+				type : requestMethod,
+				headers : {
+					Accept : acceptHeader
+				},
+				dataType : 'text',//get as text, let gwt parse it to gwt json object. Want to retrieve json though, so use header setting above
+				data : ajaxData,
+				beforeSend : function(xhr) {
+					//nothing
+				},
+				success : function(data, textStatus, jqXHR) {
+					onQueryFinish();
+					callback(tabId, data, jqXHR
+							.getResponseHeader('Content-Type'));
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+					if (textStatus != "abort") {
+						//if user cancels query, textStatus will be 'abort'. No need to show error window than
+						onQueryFinish();
+						clearQueryResult();
+						var errorMsg;
+						if (jqXHR.status == 0 && errorThrown.length == 0) {
+							errorMsg = "Error querying endpoint: empty response returned";
+						} else {
+							errorMsg = "Error querying endpoint: "
+									+ jqXHR.status + " - " + errorThrown;
+						}
+						onQueryError(errorMsg);
+					}
+				},
+			});
 };
 
 /**
@@ -107,7 +115,7 @@ function checkCorsEnabled(endpoint) {
 			url : endpoint,
 			method : 'get',
 			complete : function(xhr) {
-				if(xhr.status != 0) { // CORS-enabled site
+				if (xhr.status != 0) { // CORS-enabled site
 					corsEnabled[endpoint] = true;
 				} else {
 					corsEnabled[endpoint] = false;
@@ -116,3 +124,16 @@ function checkCorsEnabled(endpoint) {
 		});
 	}
 }
+//$(document).keydown("s",function(e) {
+//	  if(e.ctrlKey) {
+//		  storeSettings();
+//		  e.preventDefault();
+//	  }
+//});
+$(document).keydown(function(e) {
+	var code = (e.keyCode ? e.keyCode : e.which);
+	if (code == 27) {//escape key
+		cancelQuery();
+	}
+
+});
