@@ -430,6 +430,12 @@ public class View extends VLayout {
 	public void adjustQueryInputForContent() {
 		getSelectedTab().getQueryTextArea().adjustForContent(true);
 	}
-	
+	public void storeSettings() {
+		LocalStorageHelper.storeSettingsInCookie(getSettings());
+	}
+	public void cancelQuery() {
+		JsMethods.cancelQuery();
+		viewElements.onQueryFinish();
+	}
 
 }

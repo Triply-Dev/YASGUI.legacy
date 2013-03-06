@@ -280,6 +280,12 @@ public class JsMethods {
 		$wnd.setQueryType = function(queryType) {
 			view.@com.data2semantics.yasgui.client.View::setQueryType(Ljava/lang/String;)(queryType);
 		}
+		$wnd.storeSettings = function() {
+			view.@com.data2semantics.yasgui.client.View::storeSettings()();
+		}
+		$wnd.cancelQuery = function() {
+			view.@com.data2semantics.yasgui.client.View::cancelQuery()();
+		}
 	}-*/;
 	
 	

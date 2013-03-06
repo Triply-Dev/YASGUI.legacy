@@ -140,8 +140,7 @@ public class ViewElements {
 		queryLoading.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				JsMethods.cancelQuery();
-				onQueryFinish();
+				view.cancelQuery();
 			}
 		});
 		queryLoading.setShowRollOver(false);
