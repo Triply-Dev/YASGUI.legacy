@@ -35,7 +35,6 @@
 <script src="externals/codemirror/util/match-highlighter.js"></script>
 
 <!-- Flint code for sparql mode -->
-<script src="externals/sparqlGrammar.js"></script>
 <script src="externals/flint/sparql.js"></script>
 <link rel="stylesheet" href="externals/flint/sparql.css">
 <!-- Code for adding custom keycombination/mouseclick commands to codemirror -->

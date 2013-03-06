@@ -221,7 +221,6 @@
 								<include>../externals/prefix-hint.js</include>
 								<include>../externals/codemirror/util/searchcursor.js</include>
 								<include>../externals/codemirror/util/match-highlighter.js</include>
-								<include>../externals/sparqlGrammar.js</include>
 								<include>../externals/flint/sparql.js</include>
 								<include>../externals/addCommands.js</include>
 								<include>../externals/yasgui.js</include>
