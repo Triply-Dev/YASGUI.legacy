@@ -86,6 +86,7 @@ public class View extends VLayout {
 		
 		if (!settings.inSingleEndpointMode()) {
 			endpointDataSource = new EndpointDataSource(this);
+			initEndpointDataSource(false);
 		}
 		setAutocompletePrefixes(false);
 		
