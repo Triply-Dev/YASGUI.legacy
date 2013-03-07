@@ -153,7 +153,7 @@ function getNextNonWsToken(cm, lineNumber, charNumber) {
 function appendPrefixIfNeeded(cm) {
 	var cur = cm.getCursor();
 	var token = cm.getTokenAt(cur);
-	if (token.className == "sp-prefixed" && endsWith(token.string, ":")) {
+	if (token.className == "sp-prefixed" && endsWith(token.string, ":") && cur.ch == token.end) {
 		//check previous token isnt PREFIX
 		var firstToken = getNextNonWsToken(cm, cur.line);
 		if (firstToken.string != "PREFIX") {
