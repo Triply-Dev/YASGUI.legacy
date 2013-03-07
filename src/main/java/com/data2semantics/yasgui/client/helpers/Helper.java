@@ -66,7 +66,7 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 public class Helper {
 	private static String CRAWL_USER_AGENTS = "googlebot|msnbot|baidu|curl|wget|Mediapartners-Google|slurp|ia_archiver|Gigabot|libwww-perl|lwp-trivial|bingbot";
-
+	private static String PREFIX_PATTERN = "\\s*PREFIX\\s*(\\w*):\\s*<(.*)>\\s*$";
 	/**
 	 * Implode arraylist into string
 	 * 
@@ -123,9 +123,9 @@ public class Helper {
 	/**
 	 * Checks to query string and retrieves/stores all defined prefixes in an object variable
 	 */
-	public static HashMap<String, Prefix> getPrefixesFromQuery(String query) {
+	public static HashMap<String, Prefix> getPrefixHashMapFromQuery(String query) {
 		HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
-		RegExp regExp = RegExp.compile("^\\s*PREFIX\\s*(\\w*):\\s*<(.*)>\\s*$", "gm");
+		RegExp regExp = RegExp.compile(PREFIX_PATTERN, "gm");
 		while (true) {
 			MatchResult matcher = regExp.exec(query);
 			if (matcher == null)
