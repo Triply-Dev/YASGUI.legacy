@@ -40,7 +40,8 @@
 		};
 		
 		//First token of line needs to be PREFIX, and there should be no trailing text (otherwise, text is wrongly inserted in between)
-		if (getToken(editor, {line : cur.line,ch : 1}).string != "PREFIX") return;
+		firstToken = getNextNonWsToken(editor, cur.line);
+		if (firstToken == null || firstToken.string != "PREFIX") return;
 		if (editor.getLine(cur.line).length > cur.ch) return;
 		//Dont show prefixes when - cursor is on first page, or there is text previously
 		

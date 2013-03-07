@@ -38,7 +38,7 @@ SELECT DISTINCT *
 	function checkAdjustParent() {
 		
 	}
-	var prefixes = ["aers: <bwah>", "aaebs: <sdf>", "aacbs: <sdf>", "whereeee: <sdf>", "whereeec: <sdf>"];
+	var prefixes = ["aers: <bwah>", "aaebs: <sdf>", "aacbs: <sdf>", "rdfs: <bwah>", "whereeee: <sdf>", "whereeec: <sdf>"];
 				var modes;
 		var myCodeMirror = CodeMirror.fromTextArea(document
 				.getElementById("test"), {
@@ -56,6 +56,7 @@ SELECT DISTINCT *
 			},
 			onChange : function(cm) {
 				CodeMirror.simpleHint(cm, CodeMirror.prefixHint);
+				appendPrefixIfNeeded(cm);
 			},
 			onHighlightComplete: function(cm) {
 				checkSyntax(cm);
@@ -65,6 +66,11 @@ SELECT DISTINCT *
 			},
 			adjustParent: function(){console.log("in callback")}
 		});
+			
+			
+			
+
+			
 			
 	</script>
 </body>
