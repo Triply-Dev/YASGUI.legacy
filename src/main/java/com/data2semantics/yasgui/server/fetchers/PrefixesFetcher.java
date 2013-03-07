@@ -116,7 +116,7 @@ public class PrefixesFetcher {
 
 		for (String key : keysList) {
 			if (!jsonObject.isNull(key)) {
-				prefixes.put(key + ": <" + jsonObject.getString(key) + ">\n");
+				prefixes.put(key + ": <" + jsonObject.getString(key) + ">");
 			}
 		}
 		return prefixes;

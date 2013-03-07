@@ -23,10 +23,7 @@
 		var cur = editor.getCursor(), token = getToken(editor, cur);
 		
 		includePreviousTokens = function(token, cur) {
-			
 			var prevToken = getToken(editor, {line : cur.line,ch : token.start});
-//			var punct = getTerminals().punct.toLowerCase();
-//			var keywords = getTerminals().keywords.toLowerCase();
 			var punct = getTerminals().punct;
 			var keywords = getTerminals().keywords;
 			if (prevToken.string.match(punct) || prevToken.string.match(keywords)) {
@@ -46,20 +43,6 @@
 		//Dont show prefixes when - cursor is on first page, or there is text previously
 		
 		
-		
-//		if (token.string == "PREFIX") {
-//		
-//			//Cursor is immediately after prefix. Move it one item to the right, and set token as empty string
-//			editor.replaceRange(" ", {line : cur.line,ch : token.end}, {line : cur.line,ch : token.end + 1});
-//			token = {
-//					start : cur.ch + 1,
-//					end : cur.ch + 1,
-//					string : "",
-//					state : token.state
-//				};
-//		}
-		
-		
 		//If this is a whitespace, and token is just after PREFIX, proceed using empty string as token
 		if (/\s*/.test(token.string) && getToken(editor, {line : cur.line,ch : token.start}).string == "PREFIX") {
 			token = {
@@ -73,9 +56,7 @@
 			//Good example is 'a', which is a valid punct in our grammar. 
 			//This is parsed as separate token which messes up the token for autocompletion (the part after 'a' is used as separate token)
 			//If previous token is in keywords or keywords, prepend this token to current token
-			
 			token = includePreviousTokens(token, cur);
-			
 		}
 		
 		return {
@@ -103,7 +84,7 @@
 		var found = [], start = token.string;
 		function maybeAdd(str) {
 			if (str.indexOf(start) == 0 && !arrayContains(found, str))
-				found.push(str);
+				found.push(str + "\n"); //append linebreak! Otherwise we stay on the same line, and after adding the popup with autocompletions is still firing..
 		}
 		forEach(keywords, maybeAdd);
 		return found;
