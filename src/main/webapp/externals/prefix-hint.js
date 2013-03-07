@@ -24,9 +24,7 @@
 		
 		includePreviousTokens = function(token, cur) {
 			var prevToken = getToken(editor, {line : cur.line,ch : token.start});
-			var punct = getTerminals().punct;
-			var keywords = getTerminals().keywords;
-			if (prevToken.string.match(punct) || prevToken.string.match(keywords)) {
+			if (prevToken.className == "sp-punct" || prevToken.className == "sp-keyword") {
 				token.start = prevToken.start;
 				cur.ch = prevToken.start;
 				token.string = prevToken.string + token.string;
