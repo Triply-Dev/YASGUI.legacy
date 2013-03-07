@@ -75,6 +75,7 @@ public class JsMethods {
 					},
 					onChange : function(cm) {
 						$wnd.CodeMirror.simpleHint(cm, $wnd.CodeMirror.prefixHint);
+						$wnd.appendPrefixIfNeeded(cm);
 					},
 					extraKeys : {
 						"Ctrl-Space" : "autocomplete",
