@@ -51,7 +51,6 @@ CodeMirror.commands.commentLines = function(cm) {
 
 CodeMirror.commands.copyLineUp = function(cm) {
 	copyLinesBelow(cm);
-	
 };
 CodeMirror.commands.copyLineDown = function(cm) {
 	copyLinesBelow(cm);

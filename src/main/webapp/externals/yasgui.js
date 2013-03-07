@@ -124,12 +124,6 @@ function checkCorsEnabled(endpoint) {
 		});
 	}
 }
-//$(document).keydown("s",function(e) {
-//	  if(e.ctrlKey) {
-//		  storeSettings();
-//		  e.preventDefault();
-//	  }
-//});
 $(document).keydown(function(e) {
 	var code = (e.keyCode ? e.keyCode : e.which);
 	if (code == 27) {//escape key
@@ -137,3 +131,108 @@ $(document).keydown(function(e) {
 	}
 
 });
+function endsWith(str, suffix) {
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+}
+function getNextNonWsToken(cm, lineNumber, charNumber) {
+	if (charNumber == undefined) charNumber = 1;
+	token = cm.getTokenAt({line : lineNumber,ch : charNumber});
+	if (token == null || token == undefined) {
+		return null;
+	}
+	if (token.className == "sp-ws") {
+		return getNextNonWsToken(cm, lineNumber, token.end+1);
+	}
+	return token;
+}
+
+/**
+ * Check whether typed prefix is declared. If not, automatically add declaration using list from prefix.cc
+ * @param cm
+ */
+function appendPrefixIfNeeded(cm) {
+	var cur = cm.getCursor();
+	var token = cm.getTokenAt(cur);
+	if (token.className == "sp-prefixed" && endsWith(token.string, ":")) {
+		//check previous token isnt PREFIX
+		var firstToken = getNextNonWsToken(cm, cur.line);
+		if (firstToken.string != "PREFIX") {
+			//check whether it isnt defined already (saves us from looping through the array)
+			var currentPrefix = token.string;
+			var queryPrefixes = getPrefixesFromQuery(cm);
+			if ($.inArray(currentPrefix, queryPrefixes) == -1) {
+				for (var i = 0; i < prefixes.length; i++) {
+					var prefix = prefixes[i].substring(0, currentPrefix.length);
+					if (prefix == currentPrefix) {
+						appendToPrefixes(cm, prefixes[i]);
+						break;
+					}
+				}
+			}
+		}
+
+	}
+}
+
+
+/**
+ * Get defined prefixes from query as array, in format ["rdf:", "rdfs:"]
+ * @param cm
+ * @returns {Array}
+ */
+function getPrefixesFromQuery(cm) {
+	var queryPrefixes = [];
+	var numLines = cm.lineCount();
+	for (var i = 0; i < numLines; i++) {
+		var firstToken = getNextNonWsToken(cm, i);
+		if (firstToken.string == "PREFIX") {
+			var prefix = getNextNonWsToken(cm, i, firstToken.end + 1);
+			if (prefix.string != ":") {
+				queryPrefixes.push(prefix.string);
+			}
+		}
+	}
+	return queryPrefixes;
+}
+
+/**
+ * Append prefix declaration to list of prefixes in query window.
+ * @param cm
+ * @param prefix
+ */
+function appendToPrefixes(cm, prefix) {
+	var lastPrefix = null;
+	var lastPrefixLine = 0;
+	var numLines = cm.lineCount();
+	for (var i = 0; i < numLines; i++) {
+		var firstToken = getNextNonWsToken(cm, i);
+		if (firstToken.string == "PREFIX" || firstToken.string == "BASE") {
+			lastPrefix = firstToken;
+			lastPrefixLine = i;
+		}
+	}
+	if (lastPrefix == null) {
+		cm.replaceRange("PREFIX " + prefix, {line: 0});
+	} else {
+		var previousIndent = getIndentFromLine(cm, lastPrefixLine);
+		cm.replaceRange("\n" + previousIndent + "PREFIX " + prefix, {line: lastPrefixLine});
+	}
+	
+}
+
+/**
+ * Get the used indentation for a certain line
+ * @param cm
+ * @param line
+ * @param charNumber
+ * @returns
+ */
+function getIndentFromLine(cm, line, charNumber) {
+	if (charNumber == undefined) charNumber = 1;
+	var token = cm.getTokenAt({line : line,ch : charNumber});
+	if (token == null || token == undefined || token.className != "sp-ws") {
+		return "";
+	} else {
+		return token.string + getIndentFromLine(cm, line, token.end+1);
+	}
+}
