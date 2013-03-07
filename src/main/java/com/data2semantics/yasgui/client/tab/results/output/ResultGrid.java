@@ -68,7 +68,7 @@ public class ResultGrid extends ListGrid {
 		setFixedRecordHeights(false);
 		setWrapCells(true);
 		setCanResizeFields(true);
-		queryPrefixes = Helper.getPrefixesFromQuery(view.getSelectedTabSettings().getQueryString());
+		queryPrefixes = Helper.getPrefixHashMapFromQuery(view.getSelectedTabSettings().getQueryString());
 		drawQueryResults();
 		drawExportLink(sparqlResults);
 	}

@@ -48,7 +48,7 @@ public class SimpleGrid extends HTMLPane {
 		this.view = view;
 		setWidth100();
 		setHeight100();
-		queryPrefixes = Helper.getPrefixesFromQuery(view.getSettings().getSelectedTabSettings().getQueryString());
+		queryPrefixes = Helper.getPrefixHashMapFromQuery(view.getSettings().getSelectedTabSettings().getQueryString());
 		variables = sparqlResults.getVariables();
 		solutions = sparqlResults.getBindings();
 		drawTable();
