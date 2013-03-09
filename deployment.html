@@ -91,7 +91,9 @@ body {
         "extraArgs": []
     },
     "singleEndpointMode": false,
-    "googleAnalyticsId": "UA-11111111-1"
+    "googleAnalyticsId": "UA-11111111-1",
+    "bitlyApiKey": "R_xxxxxxxxxxxxxxxxxxxxxxxxx",
+	"bitlyUsername": "SomeUserName"
 }</pre>
 				<h3>Fields in config file</h3>
 				<h4>Defaults</h4>
@@ -143,8 +145,14 @@ body {
 						used.</dd>
 					<dt>googleAnalyticsId</dt>
 					<dd>Google analytics ID. If you prefer not to use Google
-						Analytics, use an empty string
-				g</dl>
+						Analytics, use an empty string</dd>
+					<dt>bitlyUsername</dt>
+					<dd>Username for <a href="http://bitly.com" target="_blank">bitly</a> url shortener service. Used for the query permalink feature. Leaving this empty will disable the url shorten feature
+					</dd>
+					<dt>bitlyApiKey</dt>
+					<dd>API key for the bitly shortener service. Request on at <a href="http://bitly.com" target="_blank">bitly.com</a>
+					</dd>
+				</dl>
 
 
 			</div>
