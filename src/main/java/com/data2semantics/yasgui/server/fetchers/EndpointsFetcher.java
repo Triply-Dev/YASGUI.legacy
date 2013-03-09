@@ -42,11 +42,10 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 
 public class EndpointsFetcher {
 	
-	@SuppressWarnings("unused")
 	private static String ENDPOINT_MONDECA = "http://labs.mondeca.com/endpoint/ends";
 	private static String ENDPOINT_CKAN = "http://semantic.ckan.net/sparql";
 	private static String CACHE_FILENAME = "endpoints.json";
-	private static int CACHE_EXPIRES_DAYS = 14;
+	private static int CACHE_EXPIRES_DAYS = 300; //that should be more than enough
 	
 	public static String fetch(boolean forceUpdate, File cacheDir) throws JSONException, IOException {
 		String result = "";
@@ -58,13 +57,19 @@ public class EndpointsFetcher {
 		
 		if (forceUpdate || Helper.needUpdating(cacheFile, CACHE_EXPIRES_DAYS)) {
 			try {
-				result = getEndpointsAsJsonArrayString();
+				result = getEndpointsAsJsonArrayString(ENDPOINT_CKAN, getCkanQuery());
 				if (result.length() > 0) {
 					cacheFile.createNewFile();
 					Helper.writeFile(cacheFile, result);
+				} else {
+					result = getEndpointsAsJsonArrayString(ENDPOINT_MONDECA, getMondecaQuery());
+					if (result.length() > 0) {
+						cacheFile.createNewFile();
+						Helper.writeFile(cacheFile, result);
+					}
 				}
 			} catch (Exception e) {
-				//probably endpoints problems with ckan or mondeca... just use our cached version
+				//probably endpoints problems with ckan or mondeca... just use our cached version (even if forceupdate is set or file is stale...)
 				if (cacheFile.exists()) {
 					result = Helper.readFile(cacheFile);
 				}
@@ -87,19 +92,19 @@ public class EndpointsFetcher {
 	 * @return
 	 * @throws JSONException
 	 */
-	private static String getEndpointsAsJsonArrayString() throws JSONException {
+	private static String getEndpointsAsJsonArrayString(String endpoint, String query) throws JSONException {
 		JSONArray endpoints = new JSONArray();
-		ResultSet resultSet = SparqlService.query(ENDPOINT_CKAN, getCkanQuery());
+		ResultSet resultSet = SparqlService.query(endpoint, query);
 		while (resultSet.hasNext()) {
-			JSONObject endpoint = new JSONObject();
+			JSONObject endpointObject = new JSONObject();
 			
 			QuerySolution querySolution = resultSet.next();
 			Iterator<String> varNames = querySolution.varNames();
 			while (varNames.hasNext()) {
 				String varName = varNames.next();
-				endpoint.put(varName, getBindingValueAsString(querySolution.get(varName)));
+				endpointObject.put(varName, getBindingValueAsString(querySolution.get(varName)));
 			}
-			endpoints.put(endpoint);
+			endpoints.put(endpointObject);
 		}
 		
 		
@@ -117,7 +122,6 @@ public class EndpointsFetcher {
 		}
 	}
 	
-	@SuppressWarnings("unused")
 	private static String getMondecaQuery() {
 		return "PREFIX xsd:<http://www.w3.org/2001/XMLSchema#>\n" + 
 				"PREFIX dcterms:<http://purl.org/dc/terms/>\n" + 
