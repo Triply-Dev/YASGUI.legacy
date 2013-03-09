@@ -34,6 +34,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.data2semantics.yasgui.shared.Output;
+import com.data2semantics.yasgui.shared.SettingKeys;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
@@ -43,17 +44,6 @@ import com.google.gwt.user.client.Window;
 public class TabSettings extends JSONObject {
 	private Defaults defaults;
 	private Settings mainSettings;
-	/**
-	 * KEYS
-	 */
-	public static String ENDPOINT = "endpoint";
-	public static String QUERY_STRING = "query";
-	public static String TAB_TITLE = "tabTitle";
-	public static String OUTPUT_FORMAT = "outputFormat";
-	public static String CONTENT_TYPE_SELECT = "contentTypeSelect";
-	public static String CONTENT_TYPE_CONSTRUCT = "contentTypeConstruct";
-	public static String EXTRA_QUERY_ARGS = "extraArgs";
-	public static String REQUEST_METHOD = "requestMethod";
 
 	public TabSettings(Settings mainSettings) {
 		this.defaults = mainSettings.getDefaults();
@@ -70,13 +60,13 @@ public class TabSettings extends JSONObject {
 				//we used to have queryFormat as key for query string (yes, a bug).
 				//for backwards compatability, store this as query string
 				//can remove this a couple of versions onwards
-				put(QUERY_STRING, jsonObject.get(key));
-			} else if (key.equals(OUTPUT_FORMAT)) {
+				put(SettingKeys.QUERY_STRING, jsonObject.get(key));
+			} else if (key.equals(SettingKeys.OUTPUT_FORMAT)) {
 				//we used to have a valid output format value 'json', which is replace by 'rawResponse'. 
 				//for backwards compatability, store it under the new value
 				//can remove this in a couple of version onwards
-				if (jsonObject.get(OUTPUT_FORMAT).isString().stringValue().equals("json")) {
-					put(OUTPUT_FORMAT, new JSONString(Output.OUTPUT_RAW_RESPONSE));
+				if (jsonObject.get(SettingKeys.OUTPUT_FORMAT).isString().stringValue().equals("json")) {
+					put(SettingKeys.OUTPUT_FORMAT, new JSONString(Output.OUTPUT_RAW_RESPONSE));
 				} else {
 					put(key, jsonObject.get(key));
 				}
@@ -95,19 +85,19 @@ public class TabSettings extends JSONObject {
 		Iterator<String> iterator = parameters.keySet().iterator();
 		while (iterator.hasNext()) {
 			String key = iterator.next();
-			if (key.equals(QUERY_STRING)) {
+			if (key.equals(SettingKeys.QUERY_STRING)) {
 				setQueryString(parameters.get(key).get(0));
-			} else if (key.equals(ENDPOINT)) {
+			} else if (key.equals(SettingKeys.ENDPOINT)) {
 				setEndpoint(parameters.get(key).get(0));
-			} else if (key.equals(TAB_TITLE)) {
+			} else if (key.equals(SettingKeys.TAB_TITLE)) {
 				setTabTitle(parameters.get(key).get(0));
-			} else if (key.equals(OUTPUT_FORMAT)) {
+			} else if (key.equals(SettingKeys.OUTPUT_FORMAT)) {
 				setOutputFormat(parameters.get(key).get(0));
-			} else if (key.equals(CONTENT_TYPE_CONSTRUCT)) {
+			} else if (key.equals(SettingKeys.CONTENT_TYPE_CONSTRUCT)) {
 				setConstructContentType(parameters.get(key).get(0));
-			} else if (key.equals(CONTENT_TYPE_SELECT)) {
+			} else if (key.equals(SettingKeys.CONTENT_TYPE_SELECT)) {
 				setSelectContentType(parameters.get(key).get(0));
-			} else if (key.equals(REQUEST_METHOD)) {
+			} else if (key.equals(SettingKeys.REQUEST_METHOD)) {
 				setRequestMethod(parameters.get(key).get(0));
 			} else if (!key.startsWith("gwt.")) {
 				//all other parameter keys are added as extra query arguments 
@@ -141,19 +131,19 @@ public class TabSettings extends JSONObject {
 			setRequestMethod(defaults.getDefaultRequestMethod());
 		}
 		if (getQueryArgs().size() == 0) {
-			put(EXTRA_QUERY_ARGS, defaults.getDefaultQueryArgs());
+			put(SettingKeys.EXTRA_QUERY_ARGS, defaults.getDefaultQueryArgs());
 		}
 	}
 
 	public void setRequestMethod(String requestMethod) {
-		put(REQUEST_METHOD, new JSONString(requestMethod));
+		put(SettingKeys.REQUEST_METHOD, new JSONString(requestMethod));
 		
 	}
 
 	public String getRequestMethod() {
 		String requestMethod = null;
-		if (containsKey(REQUEST_METHOD)) {
-			requestMethod = get(REQUEST_METHOD).isString().stringValue();
+		if (containsKey(SettingKeys.REQUEST_METHOD)) {
+			requestMethod = get(SettingKeys.REQUEST_METHOD).isString().stringValue();
 		}
 		return requestMethod;
 	}
@@ -164,78 +154,78 @@ public class TabSettings extends JSONObject {
 			//do this, because otherwise when config on server changes to single endpoint mode, we don't want old (cached) endpoints in settings still being used
 			//instead, we just want to use one: the default
 			endpoint = defaults.getDefaultEndpoint();
-		} else if (containsKey(ENDPOINT)) {
-			endpoint = get(ENDPOINT).isString().stringValue();
+		} else if (containsKey(SettingKeys.ENDPOINT)) {
+			endpoint = get(SettingKeys.ENDPOINT).isString().stringValue();
 		}
 		return endpoint;
 	}
 
 	public void setEndpoint(String endpoint) {
-		put(ENDPOINT, new JSONString(endpoint));
+		put(SettingKeys.ENDPOINT, new JSONString(endpoint));
 	}
 
 	public String getQueryString() {
 		String queryString = null;
-		if (containsKey(QUERY_STRING)) {
-			queryString = get(QUERY_STRING).isString().stringValue();
+		if (containsKey(SettingKeys.QUERY_STRING)) {
+			queryString = get(SettingKeys.QUERY_STRING).isString().stringValue();
 		}
 		return queryString;
 	}
 
 	public void setQueryString(String queryString) {
-		put(QUERY_STRING, new JSONString(queryString));
+		put(SettingKeys.QUERY_STRING, new JSONString(queryString));
 	}
 
 	public void setTabTitle(String tabTitle) {
-		put(TAB_TITLE, new JSONString(tabTitle));
+		put(SettingKeys.TAB_TITLE, new JSONString(tabTitle));
 	}
 
 	public String getTabTitle() {
 		String title = null;
-		if (containsKey(TAB_TITLE)) {
-			title = get(TAB_TITLE).isString().stringValue();
+		if (containsKey(SettingKeys.TAB_TITLE)) {
+			title = get(SettingKeys.TAB_TITLE).isString().stringValue();
 		}
 		return title;
 	}
 	public void setOutputFormat(String outputFormat) {
-		put(OUTPUT_FORMAT, new JSONString(outputFormat));
+		put(SettingKeys.OUTPUT_FORMAT, new JSONString(outputFormat));
 	}
 	
 	public String getOutputFormat() {
 		String format = null;
-		if (containsKey(OUTPUT_FORMAT)) {
-			format = get(OUTPUT_FORMAT).isString().stringValue();
+		if (containsKey(SettingKeys.OUTPUT_FORMAT)) {
+			format = get(SettingKeys.OUTPUT_FORMAT).isString().stringValue();
 		}
 		return format;
 	}
 	
 	public void setSelectContentType(String contentType) {
-		put(CONTENT_TYPE_SELECT, new JSONString(contentType));
+		put(SettingKeys.CONTENT_TYPE_SELECT, new JSONString(contentType));
 	}
 	
 	public String getSelectContentType() {
 		String contentType = "";
-		if (containsKey(CONTENT_TYPE_SELECT)) {
-			 contentType = get(CONTENT_TYPE_SELECT).isString().stringValue();
+		if (containsKey(SettingKeys.CONTENT_TYPE_SELECT)) {
+			 contentType = get(SettingKeys.CONTENT_TYPE_SELECT).isString().stringValue();
 		}
 		return contentType;
 	}
 	public void setConstructContentType(String contentType) {
-		put(CONTENT_TYPE_CONSTRUCT, new JSONString(contentType));
+		put(SettingKeys.CONTENT_TYPE_CONSTRUCT, new JSONString(contentType));
 	}
 	
 	public String getConstructContentType() {
 		String contentType = "";
-		if (containsKey(CONTENT_TYPE_CONSTRUCT)) {
-			contentType = get(CONTENT_TYPE_CONSTRUCT).isString().stringValue();
+		if (containsKey(SettingKeys.CONTENT_TYPE_CONSTRUCT)) {
+			contentType = get(SettingKeys.CONTENT_TYPE_CONSTRUCT).isString().stringValue();
 		}
 		return contentType;
 	}
 	
 	public HashMap<String, String> getQueryArgs() {
 		HashMap<String, String> args = new HashMap<String, String>();
-		if (containsKey(EXTRA_QUERY_ARGS)) {
-			JSONArray argsArray = get(EXTRA_QUERY_ARGS).isArray();
+		if (containsKey(SettingKeys.EXTRA_QUERY_ARGS)) {
+			JSONArray argsArray = get(SettingKeys.EXTRA_QUERY_ARGS).isArray();
 			if (argsArray != null) {
 				for (int i = 0; i < argsArray.size(); i++) {
 					JSONObject argObject = argsArray.get(i).isObject();
@@ -272,16 +262,16 @@ public class TabSettings extends JSONObject {
 	}
 	public void addQueryArg(String key, String value) {
 		JSONArray argsArray;
-		if (!containsKey(EXTRA_QUERY_ARGS)) {
+		if (!containsKey(SettingKeys.EXTRA_QUERY_ARGS)) {
 			argsArray = new JSONArray();
 		} else {
-			argsArray = get(EXTRA_QUERY_ARGS).isArray();
+			argsArray = get(SettingKeys.EXTRA_QUERY_ARGS).isArray();
 		}
 		JSONObject argObject = new JSONObject();
 		argObject.put("key", new JSONString(key));
 		argObject.put("value", new JSONString(value));
 		argsArray.set(argsArray.size(), argObject);
-		put(EXTRA_QUERY_ARGS, argsArray);
+		put(SettingKeys.EXTRA_QUERY_ARGS, argsArray);
 	}
 	public void resetAndaddQueryArgs(HashMap<String, String> args) {
 		JSONArray argsArray = new JSONArray();
@@ -291,7 +281,7 @@ public class TabSettings extends JSONObject {
 			argObject.put("value", new JSONString(arg.getValue()));
 			argsArray.set(argsArray.size(), argObject);
 		}
-		put(EXTRA_QUERY_ARGS, argsArray);
+		put(SettingKeys.EXTRA_QUERY_ARGS, argsArray);
 
 	}
 	

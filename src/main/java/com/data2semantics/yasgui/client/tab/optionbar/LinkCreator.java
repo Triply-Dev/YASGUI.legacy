@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.TreeMap;
 import com.smartgwt.client.types.TitleOrientation;
 import com.smartgwt.client.widgets.AnimationCallback;
+import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Window;
@@ -40,6 +41,7 @@ import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
+import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.data2semantics.yasgui.client.View;
@@ -47,16 +49,17 @@ import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
 import com.data2semantics.yasgui.client.helpers.properties.TooltipText;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
-import com.data2semantics.yasgui.client.settings.TabSettings;
+import com.data2semantics.yasgui.shared.SettingKeys;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class LinkCreator extends ImgButton {
 	private static final int TOOLTIP_VERSION_LINK = 2;
 	private View view;
 	private Window window;
-	private static int WINDOW_WIDTH = 200;
+	private static int WINDOW_WIDTH = 220;
 	private static int WINDOW_HEIGHT = 170;
 	private static int ICON_WIDTH = 25;
 	private static int ICON_HEIGHT = 25;
@@ -106,8 +109,16 @@ public class LinkCreator extends ImgButton {
 		layout.addMember(spacer1);
 		
 		layout.addMember(getLinkText());
-
-		layout.addMember(getLinkOptions());
+		
+		HLayout belowLink = new HLayout();
+		belowLink.setMargin(4);
+		belowLink.addMember(getLinkOptions());
+		
+		if (view.getSettings().getBitlyUsername() != null && view.getSettings().getBitlyUsername().length() > 0) {
+			belowLink.addMember(getShortenLinkButton());
+		}
+		
+		layout.addMember(belowLink);
 		
 		LayoutSpacer spacer2 = new LayoutSpacer();
 		spacer2.setHeight100();
@@ -116,11 +127,30 @@ public class LinkCreator extends ImgButton {
 		Scheduler.get().scheduleDeferred(new ScheduledCommand(){
 			@Override
 			public void execute() {
-				updateLink();
+				updateLinkWithQueryArgs();
 				
 			}});
 		
 		return layout;
+	}
+
+	private Button getShortenLinkButton() {
+		Button button = new Button("Shorten link");
+		button.setWidth(75);
+		button.addClickHandler(new ClickHandler(){
+			@Override
+			public void onClick(ClickEvent event) {
+				view.getRemoteService().getShortUrl(urlTextBox.getValueAsString(), new AsyncCallback<String>() {
+					public void onFailure(Throwable caught) {
+						view.onError(caught.getMessage());
+					}
+
+					public void onSuccess(String shortUrl) {
+						updateLink(shortUrl);
+					}
+				});
+			}});
+		return button;
 	}
 
 	private Canvas getLinkText() {
@@ -160,19 +190,19 @@ public class LinkCreator extends ImgButton {
 		tabTitle = new CheckboxItem("tabTitle", "tab title");
 		tabTitle.addChangedHandler(new ChangedHandler() {
 			public void onChanged(ChangedEvent event) {
-				updateLink();
+				updateLinkWithQueryArgs();
 			}
 		});
 		outputFormat = new CheckboxItem("outputFormat", "output format");
 		outputFormat.addChangedHandler(new ChangedHandler() {
 			public void onChanged(ChangedEvent event) {
-				updateLink();
+				updateLinkWithQueryArgs();
 			}
 		});
 		requestOptions = new CheckboxItem("requestOptions", "request options");
 		requestOptions.addChangedHandler(new ChangedHandler() {
 			public void onChanged(ChangedEvent event) {
-				updateLink();
+				updateLinkWithQueryArgs();
 			}
 		});
 
@@ -182,13 +212,16 @@ public class LinkCreator extends ImgButton {
 		return form;
 	}
 	
-	private void updateLink() {
+	private void updateLinkWithQueryArgs() {
 		TreeMap<String, String> args = getQueryArgs();
-		final String url = getLink(args);
+		updateLink(getLink(args));
+	}
+
+	private void updateLink(final String newUrl) {
 		urlTextBoxAnim.animateFade(20, new AnimationCallback(){
 			@Override
 			public void execute(boolean earlyFinish) {
-				urlTextBox.setValue(url);
+				urlTextBox.setValue(newUrl);
 				urlTextBoxAnim.animateFade(100, new AnimationCallback(){
 					@Override
 					public void execute(boolean earlyFinish) {
@@ -199,14 +232,14 @@ public class LinkCreator extends ImgButton {
 	
 	private TreeMap<String, String> getQueryArgs() {
 		TreeMap<String, String> args = new TreeMap<String, String>();
-		if ((Boolean)query.getValueAsBoolean()) args.put(TabSettings.QUERY_STRING, view.getSelectedTabSettings().getQueryString());
-		if ((Boolean)endpoint.getValueAsBoolean()) args.put(TabSettings.ENDPOINT, view.getSelectedTabSettings().getEndpoint());
-		if ((Boolean)outputFormat.getValueAsBoolean()) args.put(TabSettings.OUTPUT_FORMAT, view.getSelectedTabSettings().getOutputFormat());
-		if ((Boolean)tabTitle.getValueAsBoolean()) args.put(TabSettings.TAB_TITLE, view.getSelectedTabSettings().getTabTitle());
+		if ((Boolean)query.getValueAsBoolean()) args.put(SettingKeys.QUERY_STRING, view.getSelectedTabSettings().getQueryString());
+		if ((Boolean)endpoint.getValueAsBoolean()) args.put(SettingKeys.ENDPOINT, view.getSelectedTabSettings().getEndpoint());
+		if ((Boolean)outputFormat.getValueAsBoolean()) args.put(SettingKeys.OUTPUT_FORMAT, view.getSelectedTabSettings().getOutputFormat());
+		if ((Boolean)tabTitle.getValueAsBoolean()) args.put(SettingKeys.TAB_TITLE, view.getSelectedTabSettings().getTabTitle());
 		if ((Boolean)requestOptions.getValueAsBoolean()) {
-			args.put(TabSettings.CONTENT_TYPE_SELECT, view.getSelectedTabSettings().getSelectContentType());
-			args.put(TabSettings.CONTENT_TYPE_CONSTRUCT, view.getSelectedTabSettings().getConstructContentType());
-			args.put(TabSettings.REQUEST_METHOD, view.getSelectedTabSettings().getRequestMethod());
+			args.put(SettingKeys.CONTENT_TYPE_SELECT, view.getSelectedTabSettings().getSelectContentType());
+			args.put(SettingKeys.CONTENT_TYPE_CONSTRUCT, view.getSelectedTabSettings().getConstructContentType());
+			args.put(SettingKeys.REQUEST_METHOD, view.getSelectedTabSettings().getRequestMethod());
 			args.putAll(view.getSelectedTabSettings().getQueryArgs());
 		}
 		return args;

@@ -12,5 +12,7 @@
 		"extraArgs": []
 	},
 	"singleEndpointMode": false,
-	"googleAnalyticsId": ""
+	"googleAnalyticsId": "",
+	"bitlyApiKey": "",
+	"bitlyUsername": ""
 }

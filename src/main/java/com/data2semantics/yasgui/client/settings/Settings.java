@@ -29,6 +29,9 @@ package com.data2semantics.yasgui.client.settings;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
+
+import com.data2semantics.yasgui.client.helpers.JsonHelper;
+import com.data2semantics.yasgui.shared.SettingKeys;
 import com.data2semantics.yasgui.shared.exceptions.SettingsException;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONBoolean;
@@ -37,19 +40,10 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 
-public class Settings extends JSONObject {
+public class Settings extends JsonHelper {
 	private ArrayList<TabSettings> tabArray = new ArrayList<TabSettings>();
 	private Defaults defaults;
-	/**
-	 * KEYS
-	 */
-	private static String SELECTED_TAB_NUMBER = "selectedTabNumber";
-	private static String DEFAULTS = "defaults";
-	public static String TAB_SETTINGS = "tabSettings";
-	private static String SINGLE_ENDPOINT_MODE = "singleEndpointMode";
-	private static String GOOGLE_ANALYTICS_ID = "googleAnalyticsId";
-	private static String TRACKING_CONSENT = "trackingConsent";
-	private static String TRACKING_QUERIES_CONSENT = "trackingQueriesConsent";
+
 	
 	
 	/**
@@ -75,13 +69,13 @@ public class Settings extends JSONObject {
 	public void addToSettings(JSONObject jsonObject) {
 		Set<String> keys = jsonObject.keySet();
 		for (String key : keys) {
-			if (key.equals(Settings.TAB_SETTINGS)) {
+			if (key.equals(SettingKeys.TAB_SETTINGS)) {
 				JSONArray jsonArray = jsonObject.get(key).isArray();
 				for (int i = 0; i < jsonArray.size(); i++) {
 					//Add as TabSettings to tab arraylist
 					tabArray.add(new TabSettings(this, jsonArray.get(i).isObject()));
 				}
-			} else if (key.equals(Settings.DEFAULTS)) {
+			} else if (key.equals(SettingKeys.DEFAULTS)) {
 				defaults = new Defaults(jsonObject.get(key).isObject());
 			} else {
 				put(key, jsonObject.get(key));
@@ -96,15 +90,15 @@ public class Settings extends JSONObject {
 	
 	public boolean inSingleEndpointMode() {
 		boolean singleEndpointMode = false;
-		if (containsKey(SINGLE_ENDPOINT_MODE)) {
-			singleEndpointMode = get(SINGLE_ENDPOINT_MODE).isBoolean().booleanValue();
+		if (containsKey(SettingKeys.SINGLE_ENDPOINT_MODE)) {
+			singleEndpointMode = get(SettingKeys.SINGLE_ENDPOINT_MODE).isBoolean().booleanValue();
 		}
 		return singleEndpointMode;
 	}
 
 	
 	public void setSelectedTabNumber(int selectedTabNumber) {
-		put(SELECTED_TAB_NUMBER, new JSONNumber(selectedTabNumber));
+		put(SettingKeys.SELECTED_TAB_NUMBER, new JSONNumber(selectedTabNumber));
 	}
 	
 	public void addTabSettings(TabSettings tabSettings) {
@@ -117,7 +111,7 @@ public class Settings extends JSONObject {
 	
 	
 	public int getSelectedTabNumber() {
-		int selectedTab = (int)get(SELECTED_TAB_NUMBER).isNumber().doubleValue();
+		int selectedTab = (int)get(SettingKeys.SELECTED_TAB_NUMBER).isNumber().doubleValue();
 		if (selectedTab >= tabArray.size()) {
 			//Something is wrong, tab does not exist. take last tab
 			selectedTab = tabArray.size()-1;
@@ -142,43 +136,46 @@ public class Settings extends JSONObject {
 	}
 	
 	public String getGoogleAnalyticsId() {
-		String id = "";
-		if (containsKey(GOOGLE_ANALYTICS_ID)) {
-			id = get(GOOGLE_ANALYTICS_ID).isString().stringValue();
-		}
+		String id = getString(SettingKeys.GOOGLE_ANALYTICS_ID);
 		return id;
 	}
 	
 	public boolean useGoogleAnalytics() {
-		return (getGoogleAnalyticsId().length() > 0 && getTrackingConsent());
+		String analyticsId = getGoogleAnalyticsId();
+		return (analyticsId != null && analyticsId.length() > 0 && getTrackingConsent());
 	}
 	
 	public void setTrackingConsent(boolean consent) {
-		put(TRACKING_CONSENT, JSONBoolean.getInstance(consent));
+		put(SettingKeys.TRACKING_CONSENT, JSONBoolean.getInstance(consent));
 	}
 	
 	public boolean getTrackingConsent() {
 		boolean consent = true;
-		if (containsKey(TRACKING_CONSENT)) {
-			consent = get(TRACKING_CONSENT).isBoolean().booleanValue();
+		if (containsKey(SettingKeys.TRACKING_CONSENT)) {
+			consent = get(SettingKeys.TRACKING_CONSENT).isBoolean().booleanValue();
 		}
 		return consent;
 	}
 	
 	public void setTrackingQueryConsent(boolean consent) {
-		put(TRACKING_QUERIES_CONSENT, JSONBoolean.getInstance(consent));
+		put(SettingKeys.TRACKING_QUERIES_CONSENT, JSONBoolean.getInstance(consent));
 	}
 	
 	public boolean getTrackingQueryConsent() {
 		boolean consent = true;
-		if (containsKey(TRACKING_QUERIES_CONSENT)) {
-			consent = get(TRACKING_QUERIES_CONSENT).isBoolean().booleanValue();
+		if (containsKey(SettingKeys.TRACKING_QUERIES_CONSENT)) {
+			consent = get(SettingKeys.TRACKING_QUERIES_CONSENT).isBoolean().booleanValue();
 		}
 		return consent;
 	}
 	
 	public boolean cookieConsentAnswered() {
-		return (containsKey(TRACKING_CONSENT) && containsKey(TRACKING_QUERIES_CONSENT));
+		return (containsKey(SettingKeys.TRACKING_CONSENT) && containsKey(SettingKeys.TRACKING_QUERIES_CONSENT));
+	}
+	
+	public String getBitlyUsername() {
+		String username = getString(SettingKeys.BITLY_USERNAME);
+		return username;
 	}
 	
 	
@@ -191,7 +188,7 @@ public class Settings extends JSONObject {
 		for(int i = 0; i < tabArray.size(); i++) {
 			jsonArray.set(i, (JSONObject)tabArray.get(i));
 		}
-		put(TAB_SETTINGS, jsonArray);
+		put(SettingKeys.TAB_SETTINGS, jsonArray);
 		
 		return super.toString();
 	}

@@ -27,6 +27,8 @@ package com.data2semantics.yasgui.client.settings;
  */
 
 import java.util.Set;
+
+import com.data2semantics.yasgui.shared.SettingKeys;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 
@@ -40,8 +42,8 @@ public class Defaults extends JSONObject {
 	}
 	public String getDefaultEndpoint() {
 		String endpoint = null;
-		if (containsKey(TabSettings.ENDPOINT)) {
-			endpoint = get(TabSettings.ENDPOINT).isString().stringValue();
+		if (containsKey(SettingKeys.ENDPOINT)) {
+			endpoint = get(SettingKeys.ENDPOINT).isString().stringValue();
 		}
 		return endpoint;
 	}
@@ -49,32 +51,32 @@ public class Defaults extends JSONObject {
 
 	public String getDefaultQueryString() {
 		String queryString = null;
-		if (containsKey(TabSettings.QUERY_STRING)) {
-			queryString = get(TabSettings.QUERY_STRING).isString().stringValue();
+		if (containsKey(SettingKeys.QUERY_STRING)) {
+			queryString = get(SettingKeys.QUERY_STRING).isString().stringValue();
 		}
 		return queryString;
 	}
 
 	public String getDefaultTabTitle() {
 		String title = null;
-		if (containsKey(TabSettings.TAB_TITLE)) {
-			title = get(TabSettings.TAB_TITLE).isString().stringValue();
+		if (containsKey(SettingKeys.TAB_TITLE)) {
+			title = get(SettingKeys.TAB_TITLE).isString().stringValue();
 		}
 		return title;
 	}
 	
 	public String getDefaultOutputFormat() {
 		String format = null;
-		if (containsKey(TabSettings.OUTPUT_FORMAT)) {
-			format = get(TabSettings.OUTPUT_FORMAT).isString().stringValue();
+		if (containsKey(SettingKeys.OUTPUT_FORMAT)) {
+			format = get(SettingKeys.OUTPUT_FORMAT).isString().stringValue();
 		}
 		return format;
 	}
 	
 	public String getDefaultSelectContentType() {
 		String contentType = "";
-		if (containsKey(TabSettings.CONTENT_TYPE_SELECT)) {
-			 contentType = get(TabSettings.CONTENT_TYPE_SELECT).isString().stringValue();
+		if (containsKey(SettingKeys.CONTENT_TYPE_SELECT)) {
+			 contentType = get(SettingKeys.CONTENT_TYPE_SELECT).isString().stringValue();
 		}
 		return contentType;
 	}
@@ -82,24 +84,24 @@ public class Defaults extends JSONObject {
 	
 	public String getDefaultConstructContentType() {
 		String contentType = "";
-		if (containsKey(TabSettings.CONTENT_TYPE_CONSTRUCT)) {
-			contentType = get(TabSettings.CONTENT_TYPE_CONSTRUCT).isString().stringValue();
+		if (containsKey(SettingKeys.CONTENT_TYPE_CONSTRUCT)) {
+			contentType = get(SettingKeys.CONTENT_TYPE_CONSTRUCT).isString().stringValue();
 		}
 		return contentType;
 	}
 	
 	public String getDefaultRequestMethod() {
 		String requestMethod = "";
-		if (containsKey(TabSettings.REQUEST_METHOD)) {
-			requestMethod = get(TabSettings.REQUEST_METHOD).isString().stringValue();
+		if (containsKey(SettingKeys.REQUEST_METHOD)) {
+			requestMethod = get(SettingKeys.REQUEST_METHOD).isString().stringValue();
 		}
 		return requestMethod;
 	}
 	
 	public JSONArray getDefaultQueryArgs() {
 		JSONArray args = null;
-		if (containsKey(TabSettings.EXTRA_QUERY_ARGS)) {
-			args = get(TabSettings.EXTRA_QUERY_ARGS).isArray();
+		if (containsKey(SettingKeys.EXTRA_QUERY_ARGS)) {
+			args = get(SettingKeys.EXTRA_QUERY_ARGS).isArray();
 		}
 		return args;
 	}

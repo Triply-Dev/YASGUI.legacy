@@ -38,6 +38,7 @@ import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.client.tab.optionbar.EndpointDataSource;
 import com.data2semantics.yasgui.shared.Endpoints;
+import com.data2semantics.yasgui.shared.SettingKeys;
 import com.data2semantics.yasgui.shared.StaticConfig;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.data2semantics.yasgui.shared.exceptions.SettingsException;
@@ -118,8 +119,8 @@ public class View extends VLayout {
 	}
 	
 	private void processUrlParameters(boolean newUser) {
-		String query = Window.Location.getParameter(TabSettings.QUERY_STRING);
-		String endpoint = Window.Location.getParameter(TabSettings.ENDPOINT);
+		String query = Window.Location.getParameter(SettingKeys.QUERY_STRING);
+		String endpoint = Window.Location.getParameter(SettingKeys.ENDPOINT);
 		if (query != null && endpoint != null && query.length() > 0 && endpoint.length() > 0) {
 			if (newUser) {
 				//If we are a new user, just show the results in the same query tab. Otherwise, show in a new query tab
