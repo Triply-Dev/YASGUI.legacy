@@ -50,9 +50,24 @@ function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader,
 	};
 	var uri;
 	onQueryStart();
+	
+	
 	if (corsEnabled[endpoint]) {
 		uri = endpoint;
 	} else {
+		if (endpoint.match(/https*:\/\/[localhost|127].*/) != null) {
+			//we are trying to access a local endpoint via the proxy: this won't work...
+			var errorString = "You are trying to execute a query on an endpoint installed on your local computer. ";
+			errorString += "However, this endpoint is not <a href=\"http://enable-cors.org/\" target=\"_blank\">CORS enabled</a>, which is required for local endpoints.<br>";
+			errorString += "Documentation on how to enable CORS for some endpoints:<ul>" +
+					"<li><a href=\"http://4store.org/trac/wiki/SparqlServer\" target=\"_blank\">4store</a></li>" +
+					"<li><a href=\"http://www.openlinksw.com/dataspace/doc/dav/wiki/Main/VirtTipsAndTricksGuideCORSSetup\" target=\"_blank\">virtuoso</a></li>" +
+					"<li>OpenRDF Sesame: not possible yet (see <a href=\"https://openrdf.atlassian.net/browse/SES-1757\" target=\"_blank\">this issue</a>)" +
+					"</ul>";
+			
+			onQueryError(errorString);
+			return;
+		}
 		//query via proxy
 		ajaxData['endpoint'] = endpoint;
 		ajaxData['requestMethod'] = requestMethod;
@@ -110,7 +125,6 @@ function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader,
 function checkCorsEnabled(endpoint) {
 	//Only perform check if it hasnt been done already
 	if (corsEnabled[endpoint] == null) {
-		//Start off assuming it is not cors enabled
 		$.ajax({
 			url : endpoint,
 			method : 'get',
@@ -235,4 +249,15 @@ function getIndentFromLine(cm, line, charNumber) {
 	} else {
 		return token.string + getIndentFromLine(cm, line, token.end+1);
 	}
+}
+
+if (typeof String.prototype.startsWith != 'function') {
+	  String.prototype.startsWith = function (str){
+	    return this.slice(0, str.length) == str;
+	  };
+}
+if (typeof String.prototype.endsWith != 'function') {
+	  String.prototype.endsWith = function (str){
+	    return this.slice(-str.length) == str;
+	  };
 }
