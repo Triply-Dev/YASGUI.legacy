@@ -32,28 +32,64 @@ import java.io.FileReader;
 import java.io.IOException;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
+import com.data2semantics.yasgui.shared.SettingKeys;
 
 /**
  * Servlet implementation class ConfigServlet
  */
 public class ConfigFetcher {
-	private static String CONFIG_FILE = "/config/config.json";
-
-	public static String getJson(String path) throws FileNotFoundException, IOException {
+	private static String CONFIG_FILE = "config/config.json";
+	
+	/**
+	 * check whether config json string is defined and parsable. if so, return the string
+	 * 
+	 * @param path
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public static String getJson(String path) throws IOException {
 		String jsonString;
+		try {
+			JSONObject jsonObject = getJsonObject(path);
+			jsonObject = removeInfo(jsonObject);
+			jsonString = jsonObject.toString();
+		} catch (IOException e) {
+			throw e; 
+		} catch (Exception e) {
+			throw new IOException("Unable to parse config file on server", e);
+		}
+			
+		return jsonString;
+	}
+	
+	public static JSONObject getJsonObject(String path) throws Exception {
 		File configFile = new File( path + CONFIG_FILE);
 		if (!configFile.exists()) {
 			throw new IOException("Unable to load config file from server. Trying to load: " + configFile.getAbsolutePath());
 		} else {
-			jsonString = IOUtils.toString(new FileReader(configFile));
+			String jsonString = IOUtils.toString(new FileReader(configFile));
 			try {
-				new JSONObject(jsonString);
+				return new JSONObject(jsonString);
 			} catch (Exception e) {
-				throw new IOException("Unable to parse config file on server", e);
+				throw new Exception("Unable to parse config file on server", e);
 			}
-			
 		}
-		return jsonString;
 	}
-
+	
+	
+	
+	/**
+	 * We send this config to clientside. remove setting only used on serverside, and possible sensitive (e.g. api keys)
+	 * 
+	 * @param jsonObject
+	 * @return
+	 */
+	public static JSONObject removeInfo(JSONObject jsonObject) {
+		//only remove api key. keep username there, so we can assume that whenever username is set, the api key is set as well
+		if (jsonObject.has(SettingKeys.BITLY_API_KEY)) jsonObject.remove(SettingKeys.BITLY_API_KEY);
+		return jsonObject;
+	}
+	
+	
 }

@@ -37,4 +37,5 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface YasguiService extends RemoteService {
 	String fetchPrefixes(boolean forceUpdate) throws IllegalArgumentException, FetchException;
 	String fetchEndpoints(boolean forceUpdate) throws IllegalArgumentException, FetchException;
+	String getShortUrl(String forceUpdate) throws IllegalArgumentException, FetchException;
 }

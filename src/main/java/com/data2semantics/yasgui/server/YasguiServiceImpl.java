@@ -27,11 +27,20 @@ package com.data2semantics.yasgui.server;
  */
 
 import java.io.File;
+
+import javax.servlet.ServletContext;
+
+import org.json.JSONObject;
+
 import com.data2semantics.yasgui.client.YasguiService;
+import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
 import com.data2semantics.yasgui.server.fetchers.EndpointsFetcher;
 import com.data2semantics.yasgui.server.fetchers.PrefixesFetcher;
+import com.data2semantics.yasgui.shared.SettingKeys;
 import com.data2semantics.yasgui.shared.exceptions.FetchException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.rosaloves.bitlyj.*;
+import static com.rosaloves.bitlyj.Bitly.*;
 
 /**
  * The server side implementation of the RPC service.
@@ -48,6 +57,21 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 			throw new FetchException("Unable to fetch prefixes", e);
 		}
 		return prefixes;
+	}
+	
+	public String getShortUrl(String longUrlString) throws IllegalArgumentException, FetchException {
+		String shortUrl;
+		try {
+			ServletContext servletContext = this.getServletContext();
+			JSONObject config = ConfigFetcher.getJsonObject(servletContext.getRealPath(""));
+			String bitlyApiKey = config.getString(SettingKeys.BITLY_API_KEY);
+			String bitlyUsername = config.getString(SettingKeys.BITLY_USERNAME);
+			Url url = as(bitlyUsername, bitlyApiKey).call(shorten(longUrlString));
+			shortUrl = url.getShortUrl();
+		} catch (Exception e) {
+			throw new FetchException("Unable to create short url", e);
+		}
+		return shortUrl;
 	}
 	
 	
