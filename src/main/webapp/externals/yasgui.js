@@ -55,15 +55,16 @@ function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader,
 	if (corsEnabled[endpoint]) {
 		uri = endpoint;
 	} else {
-		if (endpoint.match(/https*:\/\/[localhost|127].*/) != null) {
+		if (corsEnabled[endpoint] == false && endpoint.match(/https*:\/\/[localhost|127].*/) != null) {
 			//we are trying to access a local endpoint via the proxy: this won't work...
-			var errorString = "You are trying to execute a query on an endpoint installed on your local computer. ";
-			errorString += "However, this endpoint is not <a href=\"http://enable-cors.org/\" target=\"_blank\">CORS enabled</a>, which is required for local endpoints.<br>";
-			errorString += "Documentation on how to enable CORS for some endpoints:<ul>" +
+			var errorString = "You are trying to execute a query on an endpoint installed on your local computer.<br>" +
+					"This only works when the endpoint is <a href=\"http://enable-cors.org/\" target=\"_blank\">CORS enabled</a> or when the endpoint is accessible on the same port as YASGUI (i.e. port 80).<br>" +
+					"Documentation on how to enable CORS for some endpoints:<ul>" +
 					"<li><a href=\"http://4store.org/trac/wiki/SparqlServer\" target=\"_blank\">4store</a></li>" +
 					"<li><a href=\"http://www.openlinksw.com/dataspace/doc/dav/wiki/Main/VirtTipsAndTricksGuideCORSSetup\" target=\"_blank\">virtuoso</a></li>" +
 					"<li>OpenRDF Sesame: not possible yet (see <a href=\"https://openrdf.atlassian.net/browse/SES-1757\" target=\"_blank\">this issue</a>)" +
-					"</ul>";
+					"</ul>" +
+					"Another option is setting the endpoint to run using port 80";
 			
 			onQueryError(errorString);
 			return;
