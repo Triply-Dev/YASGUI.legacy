@@ -222,7 +222,9 @@ public class LinkCreator extends ImgButton {
 	}
 
 	private void updateLink(final String newUrl) {
-		shortenUrlButton.setDisabled(false);
+		if (view.getSettings().getBitlyUsername() != null && view.getSettings().getBitlyUsername().length() > 0) {
+			shortenUrlButton.setDisabled(false);
+		}
 		urlTextBoxAnim.animateFade(20, new AnimationCallback(){
 			@Override
 			public void execute(boolean earlyFinish) {
