@@ -86,7 +86,6 @@ public class View extends VLayout {
 		
 		
 		if (!settings.inSingleEndpointMode()) {
-			endpointDataSource = new EndpointDataSource(this);
 			initEndpointDataSource(false);
 		}
 		setAutocompletePrefixes(false);
@@ -311,6 +310,7 @@ public class View extends VLayout {
 	 * @param forceUpdate
 	 */
 	public void initEndpointDataSource(boolean forceUpdate) {
+		endpointDataSource = new EndpointDataSource(this);
 		String endpoints = LocalStorageHelper.getEndpointsFromLocalStorage();
 		if (forceUpdate || endpoints == null || endpoints.length() == 0) {
 			// get endpoint data from server
@@ -375,8 +375,7 @@ public class View extends VLayout {
 			Record[] newRecords = new Record[records.length+1];
 			newRecords[0] = listGridRecord;
 			System.arraycopy(records, 0, newRecords, 1, records.length);
-			endpointDataSource.setCacheData(newRecords);
-			
+			endpointDataSource = new EndpointDataSource(this, newRecords);
 			
 			if (Storage.isSupported()) {
 				//we have html5. add it to local storage as well so we keep it persistent between sessions
