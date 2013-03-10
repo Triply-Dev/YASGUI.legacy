@@ -27,6 +27,8 @@ package com.data2semantics.yasgui.server;
  */
 
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 
@@ -48,12 +50,13 @@ import static com.rosaloves.bitlyj.Bitly.*;
 @SuppressWarnings("serial")
 public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiService {
 	public static String CACHE_DIR = "/cache";
-	
+	private final static Logger LOGGER = Logger.getLogger(YasguiServiceImpl.class.getName()); 
 	public String fetchPrefixes(boolean forceUpdate) throws IllegalArgumentException, FetchException {
 		String prefixes = "";
 		try {
 			prefixes = PrefixesFetcher.fetch(forceUpdate, new File(getServletContext().getRealPath(CACHE_DIR))); 
 		} catch (Exception e) {
+			LOGGER.log(Level.SEVERE, "exception", e);
 			throw new FetchException("Unable to fetch prefixes", e);
 		}
 		return prefixes;
@@ -63,12 +66,16 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 		String shortUrl;
 		try {
 			ServletContext servletContext = this.getServletContext();
-			JSONObject config = ConfigFetcher.getJsonObject(servletContext.getRealPath(""));
+			JSONObject config = ConfigFetcher.getJsonObject(servletContext.getRealPath("/"));
 			String bitlyApiKey = config.getString(SettingKeys.BITLY_API_KEY);
 			String bitlyUsername = config.getString(SettingKeys.BITLY_USERNAME);
+			LOGGER.info("issuing bitly call for url " + longUrlString);
 			Url url = as(bitlyUsername, bitlyApiKey).call(shorten(longUrlString));
+			LOGGER.info("bitly call done");
 			shortUrl = url.getShortUrl();
+			LOGGER.info("retrieved short url: " + shortUrl);
 		} catch (Exception e) {
+			LOGGER.log(Level.SEVERE, "exception", e);
 			throw new FetchException("Unable to create short url", e);
 		}
 		return shortUrl;
@@ -80,6 +87,7 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 		try {
 			endpoints = EndpointsFetcher.fetch(forceUpdate, new File(getServletContext().getRealPath(CACHE_DIR))); 
 		} catch (Exception e) {
+			LOGGER.log(Level.SEVERE, "exception", e);
 			throw new FetchException("Unable to fetch endpoints: " + e.getMessage() + "\n", e);
 		}
 		return endpoints;
