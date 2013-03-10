@@ -57,14 +57,14 @@ function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader,
 	} else {
 		if (corsEnabled[endpoint] == false && endpoint.match(/https*:\/\/[localhost|127].*/) != null) {
 			//we are trying to access a local endpoint via the proxy: this won't work...
-			var errorString = "You are trying to execute a query on an endpoint installed on your local computer.<br>" +
+			var errorString = "You are trying to send a query to an endpoint installed on your local computer.<br>" +
 					"This only works when the endpoint is <a href=\"http://enable-cors.org/\" target=\"_blank\">CORS enabled</a> or when the endpoint is accessible on the same port as YASGUI (i.e. port 80).<br>" +
 					"Documentation on how to enable CORS for some endpoints:<ul>" +
 					"<li><a href=\"http://4store.org/trac/wiki/SparqlServer\" target=\"_blank\">4store</a></li>" +
 					"<li><a href=\"http://www.openlinksw.com/dataspace/doc/dav/wiki/Main/VirtTipsAndTricksGuideCORSSetup\" target=\"_blank\">virtuoso</a></li>" +
 					"<li>OpenRDF Sesame: not possible yet (see <a href=\"https://openrdf.atlassian.net/browse/SES-1757\" target=\"_blank\">this issue</a>)" +
 					"</ul>" +
-					"Another option is setting the endpoint to run using port 80";
+					"Instead, you can also configure the endpoint to run via port 80 (the same as YASGUI)";
 			
 			onQueryError(errorString);
 			return;
