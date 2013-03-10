@@ -37,6 +37,7 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 import com.smartgwt.client.data.DataSource;
+import com.smartgwt.client.data.Record;
 import com.smartgwt.client.data.fields.DataSourceTextField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
@@ -63,6 +64,11 @@ public class EndpointDataSource extends DataSource {
 		
 		setCacheAllData(true);
 		setClientOnly(true);
+	}
+	
+	public EndpointDataSource(View view, Record[] records) {
+		this(view);
+		setCacheData(records);
 	}
 	
 	public void addEndpointsFromJson(String jsonString) throws Exception {
