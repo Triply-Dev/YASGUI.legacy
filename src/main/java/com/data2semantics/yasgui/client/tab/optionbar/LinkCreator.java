@@ -71,6 +71,7 @@ public class LinkCreator extends ImgButton {
 	private CheckboxItem requestOptions;
 	private TextItem urlTextBox;
 	private Canvas urlTextBoxAnim;
+	private Button shortenUrlButton;
 	
 	public LinkCreator(View view) {
 		this.view = view;
@@ -115,7 +116,7 @@ public class LinkCreator extends ImgButton {
 		belowLink.addMember(getLinkOptions());
 		
 		if (view.getSettings().getBitlyUsername() != null && view.getSettings().getBitlyUsername().length() > 0) {
-			belowLink.addMember(getShortenLinkButton());
+			belowLink.addMember(getShortenUrlButton());
 		}
 		
 		layout.addMember(belowLink);
@@ -134,12 +135,13 @@ public class LinkCreator extends ImgButton {
 		return layout;
 	}
 
-	private Button getShortenLinkButton() {
-		Button button = new Button("Shorten link");
-		button.setWidth(75);
-		button.addClickHandler(new ClickHandler(){
+	private Button getShortenUrlButton() {
+		shortenUrlButton = new Button("Shorten url");
+		shortenUrlButton.setWidth(75);
+		shortenUrlButton.addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
+				view.getElements().onLoadingStart("Fetching short url");
 				view.getRemoteService().getShortUrl(urlTextBox.getValueAsString(), new AsyncCallback<String>() {
 					public void onFailure(Throwable caught) {
 						view.onError(caught.getMessage());
@@ -147,10 +149,12 @@ public class LinkCreator extends ImgButton {
 
 					public void onSuccess(String shortUrl) {
 						updateLink(shortUrl);
+						shortenUrlButton.setDisabled(true);
+						view.getElements().onLoadingFinish();
 					}
 				});
 			}});
-		return button;
+		return shortenUrlButton;
 	}
 
 	private Canvas getLinkText() {
@@ -218,6 +222,7 @@ public class LinkCreator extends ImgButton {
 	}
 
 	private void updateLink(final String newUrl) {
+		shortenUrlButton.setDisabled(false);
 		urlTextBoxAnim.animateFade(20, new AnimationCallback(){
 			@Override
 			public void execute(boolean earlyFinish) {
