@@ -112,7 +112,7 @@ public class EndpointSearch extends ImgButton {
 		searchGrid.addRecordClickHandler(new RecordClickHandler(){
 			@Override
 			public void onRecordClick(RecordClickEvent event) {
-				view.getSelectedTab().getEndpointInput().storeEndpoint(event.getRecord().getAttributeAsString(Endpoints.KEY_ENDPOINT));
+				view.getSelectedTab().getEndpointInput().setEndpoint(event.getRecord().getAttributeAsString(Endpoints.KEY_ENDPOINT));
 				window.destroy();
 			}});
 		searchGrid.setFixedRecordHeights(false);
