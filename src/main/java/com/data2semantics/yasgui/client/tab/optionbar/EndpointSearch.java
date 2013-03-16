@@ -101,10 +101,8 @@ public class EndpointSearch extends ImgButton {
 				String cellValue = record.getAttribute(colName);
 				
 				if (cellValue != null) {
-					if (colName.equals(Endpoints.KEY_TITLE) || colName.equals(Endpoints.KEY_DESCRIPTION)) {
-						return StringUtil.asHTML(cellValue);
-					} else if (colName.equals(Endpoints.KEY_ENDPOINT)) {
-						return "<a href=\"" + cellValue + "\" target=\"_blank\">" + cellValue + "</a>";
+					if (colName.equals(Endpoints.KEY_TITLE) || colName.equals(Endpoints.KEY_DESCRIPTION) || colName.equals(Endpoints.KEY_ENDPOINT)) {
+						return "<span style='cursor:pointer;'>" + StringUtil.asHTML(cellValue) + "</span>";
 					} else if (colName.equals(Endpoints.KEY_DATASETURI) && cellValue.length() > 0) {
 						return "<a href=\"" + cellValue + "\" target=\"_blank\"><img src=\"images/icons/fugue/information.png\"/ width=\"16\" height=\"16\"></a>";
 					}
