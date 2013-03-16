@@ -260,7 +260,7 @@ public class QueryConfigMenu extends IconMenuButton {
 	}
 
 	public void showTooltips(int fromVersionId) {
-		if (fromVersionId < TOOLTIP_VERSION_QUERY_CONFIG) {
+		if (!view.getSettings().inSingleEndpointMode() && fromVersionId < TOOLTIP_VERSION_QUERY_CONFIG) {
 			TooltipProperties tProp = new TooltipProperties();
 			tProp.setId(getDOM().getId());
 			tProp.setContent(TooltipText.QUERY_CONFIG_MENU);
