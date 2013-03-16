@@ -37,10 +37,12 @@ import com.data2semantics.yasgui.shared.Endpoints;
 import com.smartgwt.client.data.AdvancedCriteria;
 import com.smartgwt.client.data.Criterion;
 import com.smartgwt.client.types.Autofit;
+import com.smartgwt.client.types.Cursor;
 import com.smartgwt.client.types.OperatorId;
 import com.smartgwt.client.types.TextMatchStyle;
 import com.smartgwt.client.types.TitleOrientation;
 import com.smartgwt.client.util.StringUtil;
+import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ComboBoxItem;
 import com.smartgwt.client.widgets.form.fields.FormItemCriteriaFunction;
@@ -174,6 +176,7 @@ public class EndpointInput extends DynamicForm {
 	
 	private void initPickList() {
 		pickListProperties = new ListGrid();
+		
 		pickListProperties.setAutoFitData(Autofit.VERTICAL);
 		pickListProperties.setHoverWidth(300);
 		ArrayList<ListGridField> fields = new ArrayList<ListGridField>();
@@ -181,7 +184,6 @@ public class EndpointInput extends DynamicForm {
 		
 		fields.add(datasetTitle);
 		fields.add(new ListGridField(Endpoints.KEY_ENDPOINT, "Endpoint"));
-//		fields.add(new ListGridField(Endpoints.KEY_TITLE, "Title"));
 		fields.add(new ListGridField(Endpoints.KEY_DATASETURI, " ", COL_WIDTH_MORE_INFO));
 		
 		setPickListFieldsForComboBox(fields);
@@ -211,11 +213,8 @@ public class EndpointInput extends DynamicForm {
 				String cellValue = record.getAttribute(colName);
 				
 				if (cellValue != null) {
-					if (colName.equals(Endpoints.KEY_TITLE)) {
-//						return "<div style=\"width: " + COL_WIDTH_DATASET_TITLE + "\">" + cellValue + "</div>";
-						return cellValue;
-					} else if (colName.equals(Endpoints.KEY_ENDPOINT)) {
-						return "<a href=\"" + cellValue + "\" target=\"_blank\">" + cellValue + "</a>";
+					if (colName.equals(Endpoints.KEY_TITLE) || colName.equals(Endpoints.KEY_ENDPOINT)) {
+						return "<span style='cursor:pointer;'>" + cellValue + "</span>";
 					} else if (colName.equals(Endpoints.KEY_DATASETURI) && cellValue.length() > 0) {
 						return "<a href=\"" + cellValue + "\" target=\"_blank\"><img src=\"images/icons/fugue/information.png\"/ width=\"16\" height=\"16\"></a>";
 					}
