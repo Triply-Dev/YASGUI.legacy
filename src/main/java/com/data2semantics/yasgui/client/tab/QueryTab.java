@@ -193,7 +193,7 @@ public class QueryTab extends Tab {
 		
 	}
 	private void showSearchIconTooltip(int fromVersionId) {
-		if (fromVersionId < TOOLTIP_VERSION_SEARCH_ICON) {
+		if (searchIcon != null && fromVersionId < TOOLTIP_VERSION_SEARCH_ICON) {
 			TooltipProperties tProp = new TooltipProperties();
 			tProp.setId(searchIcon.getDOM().getId());
 			tProp.setContent(TooltipText.ENDPOINT_SEARCH_ICON);
