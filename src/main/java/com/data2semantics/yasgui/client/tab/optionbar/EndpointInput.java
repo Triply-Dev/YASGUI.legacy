@@ -34,12 +34,17 @@ import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.shared.Endpoints;
+import com.smartgwt.client.data.AdvancedCriteria;
+import com.smartgwt.client.data.Criterion;
 import com.smartgwt.client.types.Autofit;
+import com.smartgwt.client.types.OperatorId;
 import com.smartgwt.client.types.TextMatchStyle;
 import com.smartgwt.client.types.TitleOrientation;
 import com.smartgwt.client.util.StringUtil;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ComboBoxItem;
+import com.smartgwt.client.widgets.form.fields.FormItemCriteriaFunction;
+import com.smartgwt.client.widgets.form.fields.FormItemFunctionContext;
 import com.smartgwt.client.widgets.form.fields.events.BlurEvent;
 import com.smartgwt.client.widgets.form.fields.events.BlurHandler;
 import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
@@ -82,7 +87,6 @@ public class EndpointInput extends DynamicForm {
 	
 	private void createTextInput() {
 		endpoint = new ComboBoxItem("endpoint", "Endpoint");
-		endpoint.setTextMatchStyle(TextMatchStyle.SUBSTRING);
 		endpoint.setValueField(Endpoints.KEY_ENDPOINT);
 		endpoint.setAddUnknownValues(true);
 		endpoint.setCompleteOnTab(true);
@@ -96,7 +100,17 @@ public class EndpointInput extends DynamicForm {
 		initPickList();
 		
         endpoint.setPickListProperties(pickListProperties);
-        
+        endpoint.setPickListFilterCriteriaFunction(new FormItemCriteriaFunction(){
+			@Override
+			public AdvancedCriteria getCriteria(FormItemFunctionContext itemContext) {
+				String value = getEndpoint();
+				AdvancedCriteria criteria = new AdvancedCriteria(OperatorId.OR, new Criterion[]{
+						new Criterion(Endpoints.KEY_TITLE, OperatorId.ICONTAINS, value),
+						new Criterion(Endpoints.KEY_ENDPOINT, OperatorId.ICONTAINS, value)
+				});
+				return criteria;
+			}});
+
         setFields(endpoint);
 		endpoint.addFocusHandler(new FocusHandler() {
 			@Override
@@ -167,6 +181,7 @@ public class EndpointInput extends DynamicForm {
 		
 		fields.add(datasetTitle);
 		fields.add(new ListGridField(Endpoints.KEY_ENDPOINT, "Endpoint"));
+//		fields.add(new ListGridField(Endpoints.KEY_TITLE, "Title"));
 		fields.add(new ListGridField(Endpoints.KEY_DATASETURI, " ", COL_WIDTH_MORE_INFO));
 		
 		setPickListFieldsForComboBox(fields);
