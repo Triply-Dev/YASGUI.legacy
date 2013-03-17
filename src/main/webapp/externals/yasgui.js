@@ -97,8 +97,7 @@ function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader,
 				},
 				success : function(data, textStatus, jqXHR) {
 					onQueryFinish();
-					callback(tabId, data, jqXHR
-							.getResponseHeader('Content-Type'));
+					callback(tabId, data, jqXHR.getResponseHeader('Content-Type'));
 				},
 				error : function(jqXHR, textStatus, errorThrown) {
 					if (textStatus != "abort") {
