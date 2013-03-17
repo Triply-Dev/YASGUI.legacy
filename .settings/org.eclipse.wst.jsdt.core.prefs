@@ -1,0 +1,10 @@
+eclipse.preferences.version=1
+org.eclipse.wst.jsdt.core.compiler.codegen.inlineJsrBytecode=disabled
+org.eclipse.wst.jsdt.core.compiler.codegen.targetPlatform=1.2
+org.eclipse.wst.jsdt.core.compiler.codegen.unusedLocal=preserve
+org.eclipse.wst.jsdt.core.compiler.compliance=1.4
+org.eclipse.wst.jsdt.core.compiler.debug.lineNumber=generate
+org.eclipse.wst.jsdt.core.compiler.debug.localVariable=generate
+org.eclipse.wst.jsdt.core.compiler.debug.sourceFile=generate
+org.eclipse.wst.jsdt.core.compiler.problem.assertIdentifier=warning
+org.eclipse.wst.jsdt.core.compiler.source=1.3
