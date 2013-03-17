@@ -1,4 +1,3 @@
-
 #!/usr/bin/php
 <?php
 
@@ -8,7 +7,7 @@ $succes = checkConfigFile();
 if (!$succes) {
 	echo "Invalid commit, stopping now\n";
 }
-exit(!$succes); //0: succes, 1, otherwise
+exit((int)!$succes); //0: succes, 1, otherwise
 
 
 
@@ -17,22 +16,22 @@ function checkConfigFile() {
 	$succes = true;
 	$configFile = "/home/lrd900/code/yasgui/hookConfig.ini";
 	if (file_exists($configFile)) {
-		$ini = json_decode(file_get_contents($configFile), true);
+		$ini = parse_ini_file($configFile, true);
 		if (!$ini) {
 			echo "Unable to decode ini config file\n";
 			return false;
 		} else {
-			if (array_key_exists("dev", $ini)) {
+			if (!array_key_exists("dev", $ini)) {
 				echo "No config found for dev deployment\n";
 				return false;
 			}
-			if (array_key_exists("master", $ini)) {
+			if (!array_key_exists("master", $ini)) {
 				echo "No config found for master deployment\n";
 				return false;
 			}
-			$succes = checkArray($ini['dev']);
+			$succes = checkArray($ini["dev"]);
 			if ($succes) { //only need to check new one if previous check didnt find error
-				$succes = checkArray($ini['master']);
+				$succes = checkArray($ini["master"]);
 			}
 
 		}
