@@ -7,15 +7,15 @@
 
 
 
-$exit_status = checkConfigFile();
+$succes = checkConfigFile();
 
 
 
 
-if ($exit_status) {
+if (!$succes) {
 	echo "Invalid commit, stopping now\n";
 }
-exit((int)$exit_status); //0: succes, 1, otherwise
+exit(!$succes); //0: succes, 1, otherwise
 
 
 
