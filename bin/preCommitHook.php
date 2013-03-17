@@ -47,8 +47,6 @@ function checkConfigFile() {
 }
 
 function arrayKeyFilled($array, $key) {
-	var_export($array);
-	var_export($key);
 	return (array_key_exists($key, $array) && strlen($array[$key]) > 0);
 }
 	
