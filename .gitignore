@@ -1,4 +1,3 @@
-
 *.class
 target
 src/main/gwt-unitCache
