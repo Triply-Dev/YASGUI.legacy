@@ -1,0 +1,147 @@
+{
+    "pusher": {
+        "name": "none"
+    },
+    "compare": "https://github.com/LaurensRietveld/yasgui/compare/ea297b3b8b33...a779b6c132bf",
+    "after": "a779b6c132bfd214283d47c9887ae7504893dbe9",
+    "forced": false,
+    "head_commit": {
+        "message": "fixed firefox support for low versions",
+        "distinct": true,
+        "committer": {
+            "email": "laurens.rietveld@vu.nl",
+            "name": "Laurens Rietveld"
+        },
+        "added": [],
+        "timestamp": "2013-03-17T13:00:32-07:00",
+        "modified": [
+            "src/main/java/com/data2semantics/yasgui/client/helpers/JsMethods.java",
+            "src/main/java/com/data2semantics/yasgui/client/tab/results/output/ResultGrid.java",
+            "src/main/java/com/data2semantics/yasgui/shared/StaticConfig.java",
+            "src/main/webapp/ajax.html",
+            "src/main/webapp/externals/yasgui.js"
+        ],
+        "removed": [],
+        "url": "https://github.com/LaurensRietveld/yasgui/commit/a779b6c132bfd214283d47c9887ae7504893dbe9",
+        "author": {
+            "email": "laurens.rietveld@vu.nl",
+            "name": "Laurens Rietveld"
+        },
+        "id": "a779b6c132bfd214283d47c9887ae7504893dbe9"
+    },
+    "deleted": false,
+    "repository": {
+        "private": false,
+        "created_at": 1343561065,
+        "language": "JavaScript",
+        "has_wiki": false,
+        "size": 632,
+        "owner": {
+            "email": "laurens.rietveld@gmail.com",
+            "name": "LaurensRietveld"
+        },
+        "pushed_at": 1363550487,
+        "master_branch": "master",
+        "homepage": "http://aers.data2semantics.org/yasgui/",
+        "open_issues": 0,
+        "description": "Yet another SPARQL GUI",
+        "watchers": 4,
+        "url": "https://github.com/LaurensRietveld/yasgui",
+        "fork": false,
+        "has_issues": true,
+        "has_downloads": true,
+        "id": 5221869,
+        "stargazers": 4,
+        "forks": 2,
+        "name": "yasgui"
+    },
+    "before": "ea297b3b8b336b3622ee6e92c6d2f0b6bb6507ed",
+    "created": false,
+    "ref": "refs/heads/master",
+    "commits": [
+        {
+            "message": "initial implementation of commit hook",
+            "distinct": true,
+            "committer": {
+                "email": "laurens.rietveld@vu.nl",
+                "name": "Laurens Rietveld"
+            },
+            "added": [],
+            "timestamp": "2013-03-17T10:50:31-07:00",
+            "modified": [
+                "bin/preCommitHook.php"
+            ],
+            "removed": [],
+            "url": "https://github.com/LaurensRietveld/yasgui/commit/a47042286ce64fcb91529548cdb82ea875994d92",
+            "author": {
+                "email": "laurens.rietveld@vu.nl",
+                "name": "Laurens Rietveld"
+            },
+            "id": "a47042286ce64fcb91529548cdb82ea875994d92"
+        },
+        {
+            "message": "implemented pre commit hook",
+            "distinct": true,
+            "committer": {
+                "email": "laurens.rietveld@vu.nl",
+                "name": "Laurens Rietveld"
+            },
+            "added": [],
+            "timestamp": "2013-03-17T10:52:41-07:00",
+            "modified": [
+                "bin/preCommitHook.php"
+            ],
+            "removed": [],
+            "url": "https://github.com/LaurensRietveld/yasgui/commit/2a0bf639acbdc08eab78aeafb81e642ec8e654b8",
+            "author": {
+                "email": "laurens.rietveld@vu.nl",
+                "name": "Laurens Rietveld"
+            },
+            "id": "2a0bf639acbdc08eab78aeafb81e642ec8e654b8"
+        },
+        {
+            "message": "implemented pre commit hook",
+            "distinct": true,
+            "committer": {
+                "email": "laurens.rietveld@vu.nl",
+                "name": "Laurens Rietveld"
+            },
+            "added": [],
+            "timestamp": "2013-03-17T10:53:21-07:00",
+            "modified": [
+                "bin/preCommitHook.php"
+            ],
+            "removed": [],
+            "url": "https://github.com/LaurensRietveld/yasgui/commit/1a435f7182e58fb5e6642332a735e42fbe58d7b7",
+            "author": {
+                "email": "laurens.rietveld@vu.nl",
+                "name": "Laurens Rietveld"
+            },
+            "id": "1a435f7182e58fb5e6642332a735e42fbe58d7b7"
+        },
+        {
+            "message": "fixed firefox support for low versions",
+            "distinct": true,
+            "committer": {
+                "email": "laurens.rietveld@vu.nl",
+                "name": "Laurens Rietveld"
+            },
+            "added": [],
+            "timestamp": "2013-03-17T13:00:32-07:00",
+            "modified": [
+                "src/main/java/com/data2semantics/yasgui/client/helpers/JsMethods.java",
+                "src/main/java/com/data2semantics/yasgui/client/tab/results/output/ResultGrid.java",
+                "src/main/java/com/data2semantics/yasgui/shared/StaticConfig.java",
+                "src/main/webapp/ajax.html",
+                "src/main/webapp/externals/yasgui.js"
+            ],
+            "removed": [],
+            "url": "https://github.com/LaurensRietveld/yasgui/commit/a779b6c132bfd214283d47c9887ae7504893dbe9",
+            "author": {
+                "email": "laurens.rietveld@vu.nl",
+                "name": "Laurens Rietveld"
+            },
+            "id": "a779b6c132bfd214283d47c9887ae7504893dbe9"
+        }
+    ]
+}
