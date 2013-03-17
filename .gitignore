@@ -1,13 +1,12 @@
 *.class
-.classpath
 target
 src/main/gwt-unitCache
 src/main/webapp/WEB-INF/classes/
 src/main/webapp/WEB-INF/lib
 src/main/webapp/Yasgui
 src/main/webapp/WEB-INF/deploy
-.settings
 www-test
 gwt-unitCache
 junitTest
 compileAndDeploy.sh
+/bin
