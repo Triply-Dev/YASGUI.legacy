@@ -70,7 +70,9 @@ public class ResultGrid extends ListGrid {
 		setCanResizeFields(true);
 		queryPrefixes = Helper.getPrefixHashMapFromQuery(view.getSelectedTabSettings().getQueryString());
 		drawQueryResults();
-		drawExportLink(sparqlResults);
+		if (JsMethods.stringToDownloadSupported()) {
+			drawExportLink(sparqlResults);
+		}
 	}
 	
 	/**

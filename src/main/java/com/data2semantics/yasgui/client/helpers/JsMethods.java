@@ -400,17 +400,27 @@ public class JsMethods {
 			supported = false;
 		}
 		
-		if (supported && Blob == undefined) {
+		if (supported && $wnd.Blob == undefined) {
 			supported = false;
+		}
+		
+		//in versions < ff 13, blob constructor is missing. check!
+		if (supported) {
+			try {
+				var blob = new $wnd.Blob(["text"], {type: "text/html"});
+			} catch (err) {
+				supported = false;
+			}
 		}
 		return supported;
 	}-*/;
+	
 	public static native String stringToUrl(String string, String contentType) /*-{
 		url = "";
 		windowUrl = $wnd.window.URL || $wnd.window.webkitURL || $wnd.window.mozURL || $wnd.window.msURL;
 
-		if (windowUrl && Blob) {
-			var blob = new Blob([string], {type: contentType});
+		if (windowUrl && $wnd.Blob) {
+			var blob = new $wnd.Blob([string], {type: contentType});
 			url = windowUrl.createObjectURL(blob);
 		}
 		return url;
