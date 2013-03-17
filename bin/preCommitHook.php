@@ -3,13 +3,17 @@
 
 //most important thing: is our config parsable, and are sensitive things such as api keys excluded?
 $succes = checkConfigFile();
-
+if ($succes) {
+	$succes = checkJsonConfigFiles();
+}
 if (!$succes) {
 	echo "Invalid commit, stopping now\n";
 }
 exit((int)!$succes); //0: succes, 1, otherwise
 
-
+function checkJsonConfigFiles() {
+	return true;
+}
 
 
 function checkConfigFile() {
@@ -28,10 +32,6 @@ function checkConfigFile() {
 			if (!array_key_exists("master", $ini)) {
 				echo "No config found for master deployment\n";
 				return false;
-			}
-			$succes = checkArray($ini["dev"]);
-			if ($succes) { //only need to check new one if previous check didnt find error
-				$succes = checkArray($ini["master"]);
 			}
 
 		}

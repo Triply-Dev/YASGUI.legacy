@@ -10,9 +10,16 @@ if (strlen($payload)) {
 	if (!$json) mailError("Unable to decode json");
 	
 	var_export($json);
+	if ($json['ref'] === "refs/heads/master") {
+		processMaster();
+	} else if ($json['ref'] === "refs/heads/dev") {
+		
+	}
 } 
 
-
+function processMaster() {
+	
+}
 
 function mailError($error) {
 	echo $error."\n";exit;
