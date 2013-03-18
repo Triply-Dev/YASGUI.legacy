@@ -358,51 +358,53 @@ public class View extends VLayout {
 	 * @param endpoint
 	 */
 	public void checkAndAddEndpointToDs(String endpoint) {
-		Record[] records = endpointDataSource.getCacheData();
-		boolean exists = false;
-		for (Record record:records) {
-			String recordEndpoint = record.getAttribute(Endpoints.KEY_ENDPOINT);
-			if (recordEndpoint != null && recordEndpoint.equals(endpoint)) {
-				exists = true;
-				break;
+		if (!getSettings().inSingleEndpointMode()) {
+			Record[] records = endpointDataSource.getCacheData();
+			boolean exists = false;
+			for (Record record:records) {
+				String recordEndpoint = record.getAttribute(Endpoints.KEY_ENDPOINT);
+				if (recordEndpoint != null && recordEndpoint.equals(endpoint)) {
+					exists = true;
+					break;
+				}
 			}
-		}
-		
-		if (!exists) {
-			//Ok, so endpoint is not in our datasource. let's add it
-			ListGridRecord listGridRecord = new ListGridRecord();
-			listGridRecord.setAttribute(Endpoints.KEY_ENDPOINT, endpoint);
-			Record[] newRecords = new Record[records.length+1];
-			newRecords[0] = listGridRecord;
-			System.arraycopy(records, 0, newRecords, 1, records.length);
-			endpointDataSource = new EndpointDataSource(this, newRecords);
 			
-			if (Storage.isSupported()) {
-				//we have html5. add it to local storage as well so we keep it persistent between sessions
-				String endpointsJsonString = LocalStorageHelper.getEndpointsFromLocalStorage();
-				if (endpointsJsonString == null) {
-					//There are no endpoints in our storage. 
-					//This is kinda strange, but lets create a json array with this new endpoint anyway
-					JSONArray jsonArray = new JSONArray();
-					JSONObject newEndpointObject = new JSONObject();
-					newEndpointObject.put(Endpoints.KEY_ENDPOINT, new JSONString(endpoint));
-					jsonArray.set(0, newEndpointObject);
-					LocalStorageHelper.setEndpoints(jsonArray.toString());
-				} else {
-					//Prepend the new endpoint to the array in our json object
-					JSONValue jsonVal = JSONParser.parseStrict(endpointsJsonString);
-					if (jsonVal != null) {
-						JSONArray endpoints = jsonVal.isArray();
-						JSONArray newEndpointsArray = new JSONArray();
+			if (!exists) {
+				//Ok, so endpoint is not in our datasource. let's add it
+				ListGridRecord listGridRecord = new ListGridRecord();
+				listGridRecord.setAttribute(Endpoints.KEY_ENDPOINT, endpoint);
+				Record[] newRecords = new Record[records.length+1];
+				newRecords[0] = listGridRecord;
+				System.arraycopy(records, 0, newRecords, 1, records.length);
+				endpointDataSource = new EndpointDataSource(this, newRecords);
+				
+				if (Storage.isSupported()) {
+					//we have html5. add it to local storage as well so we keep it persistent between sessions
+					String endpointsJsonString = LocalStorageHelper.getEndpointsFromLocalStorage();
+					if (endpointsJsonString == null) {
+						//There are no endpoints in our storage. 
+						//This is kinda strange, but lets create a json array with this new endpoint anyway
+						JSONArray jsonArray = new JSONArray();
 						JSONObject newEndpointObject = new JSONObject();
 						newEndpointObject.put(Endpoints.KEY_ENDPOINT, new JSONString(endpoint));
-						newEndpointsArray.set(0, newEndpointObject);
-						if (endpoints != null) {
-							for (int i = 0; i < endpoints.size(); i++) {
-								newEndpointsArray.set(newEndpointsArray.size(), endpoints.get(i));
+						jsonArray.set(0, newEndpointObject);
+						LocalStorageHelper.setEndpoints(jsonArray.toString());
+					} else {
+						//Prepend the new endpoint to the array in our json object
+						JSONValue jsonVal = JSONParser.parseStrict(endpointsJsonString);
+						if (jsonVal != null) {
+							JSONArray endpoints = jsonVal.isArray();
+							JSONArray newEndpointsArray = new JSONArray();
+							JSONObject newEndpointObject = new JSONObject();
+							newEndpointObject.put(Endpoints.KEY_ENDPOINT, new JSONString(endpoint));
+							newEndpointsArray.set(0, newEndpointObject);
+							if (endpoints != null) {
+								for (int i = 0; i < endpoints.size(); i++) {
+									newEndpointsArray.set(newEndpointsArray.size(), endpoints.get(i));
+								}
 							}
+							LocalStorageHelper.setEndpoints(newEndpointsArray.toString());
 						}
-						LocalStorageHelper.setEndpoints(newEndpointsArray.toString());
 					}
 				}
 			}
