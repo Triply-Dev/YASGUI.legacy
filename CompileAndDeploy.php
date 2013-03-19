@@ -26,9 +26,9 @@ function compileAndDeploy($deployConfig) {
 }
 
 function pull() {
-	$result = shell_exec("git pull");
+	$result = shell_exec("git pull 2> errorOutput.txt");
 	if ($result === null) {
-		Helper::mailError(__FILE__, __LINE__, "Unable to pull from git");
+		Helper::mailError(__FILE__, __LINE__, "Unable to pull from git: \n".file_get_contents("errorOutput.txt"));
 		exit;
 	}
 }
@@ -39,9 +39,9 @@ function package() {
 		Helper::mailError(__FILE__, __LINE__, "Unable to compile ".$argv[1]." project: \n".file_get_contents("errorOutput.txt"));
 		exit;
 	}
-	if ($succes) $succes = shell_exec("mvn package");
+	if ($succes) $succes = shell_exec("mvn package 2> errorOutput.txt");
 	if (!$succes) {
-		Helper::mailError(__FILE__, __LINE__, "Unable to compile ".$argv[1]." project");
+		Helper::mailError(__FILE__, __LINE__, "Unable to compile ".$argv[1]." project: \n".file_get_contents("errorOutput.txt"));
 		exit;
 	}
 }
@@ -49,7 +49,7 @@ function package() {
 function getWarFile() {
 	$warFiles = glob("target/*.war");
 	if (count($warFiles) != 1) {
-		Helper::mailError(__FILE__, __LINE__, "Invalid number of war files after compilating (".count($warFiles).")");
+		Helper::mailError(__FILE__, __LINE__, "Invalid number of war files after compiling (".count($warFiles).")");
 		exit;
 	}
 	return (reset($warFiles));
