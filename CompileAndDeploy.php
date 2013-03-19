@@ -27,7 +27,7 @@ function compileAndDeploy($deployConfig) {
 
 function pull() {
 	if (shell_exec("git pull") === null) {
-		Helper::mailError(__FILE__, __LINE__, "Unable to pull ".$argv[1]." from git");
+		Helper::mailError(__FILE__, __LINE__, "Unable to pull from git");
 		exit;
 	}
 }

@@ -18,6 +18,11 @@ if (strlen($payload)) {
 		shell_exec("./CompileAndDeploy.php master");
 	} else if ($json['ref'] === "refs/heads/dev") {
 		
+	} else if ($json[ref] === "refs/heads/deployment-git-hook") {
+		$result = shell_exec("git pull");
+		if ($result == null) {
+			Helper::mailError(__FILE__, __LINE__, "Failed to update git hook code: ".$result);
+		}
 	}
 } 
 
