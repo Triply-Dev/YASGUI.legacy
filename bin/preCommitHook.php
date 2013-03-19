@@ -2,45 +2,57 @@
 <?php
 
 //most important thing: is our config parsable, and are sensitive things such as api keys excluded?
-$succes = checkConfigFile();
-if ($succes) {
-	$succes = checkJsonConfigFiles();
-}
-if (!$succes) {
+checkConfigFile();
+checkJsonConfigFiles();
+exit(0); //0: succes, 1, otherwise
+
+function exitNow() {
 	echo "Invalid commit, stopping now\n";
+	exit(1);
 }
-exit((int)!$succes); //0: succes, 1, otherwise
-
 function checkJsonConfigFiles() {
-	return true;
+	$jsonFiles = glob("*.json");
+	foreach ($jsonFiles as $jsonFile) {
+		checkJsonConfigFile($jsonFile);
+	}
 }
 
+function checkJsonConfigFile($file) {
+	$jsonArray = json_decode(file_get_contents($file), true);
+	if ($jsonArray == null) {
+		echo "Unable to decode json file ".$file."\n";
+	}
+	checkArray($jsonArray);
+}
 
 function checkConfigFile() {
-	$succes = true;
 	$configFile = "/home/lrd900/code/yasgui/hookConfig.ini";
 	if (file_exists($configFile)) {
 		$ini = parse_ini_file($configFile, true);
 		if (!$ini) {
 			echo "Unable to decode ini config file\n";
-			return false;
+			exitNow();
 		} else {
 			if (!array_key_exists("dev", $ini)) {
 				echo "No config found for dev deployment\n";
-				return false;
+				exitNow();
 			}
 			if (!array_key_exists("master", $ini)) {
 				echo "No config found for master deployment\n";
-				return false;
+				exitNow();
+			}
+			foreach ($ini['mail'] as $key => $mailConfig) {
+				if (strlen($mailConfig)) {
+					echo "Setting ". $key. " in ini mail config is set to ".$mailConfig.". Leave this empty instead.\n";
+					exitNow();
+				}
 			}
 
 		}
 	} else {
 		echo "Config file not found\n";
-		return false;
+		exitNow();
 	}
-	
-	return $succes;
 }
 
 function arrayKeyFilled($array, $key) {
@@ -50,17 +62,16 @@ function checkArray($array) {
 	$succes = true;
 	if (arrayKeyFilled($array, "bitlyApiKey")) {
 		echo "The bitly api key is still in the config file.\n";
-		return false;
+		exitNow();
 	}
 	if (arrayKeyFilled($array, "bitlyUsername")) {
 		echo "The bitly username is still in the config file.\n";
-		return false;
+		exitNow();
 	}
 	if (arrayKeyFilled($array, "googleAnalyticsId")) {
 		echo "The google analytics id is still in the config file.\n";
-		return false;
+		exitNow();
 	}
-	return $succes;
 }
 	
 	
