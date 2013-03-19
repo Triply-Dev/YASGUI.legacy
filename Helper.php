@@ -26,7 +26,12 @@ class Helper {
 	}
 	
 	static function getConfig() {
-		return parse_ini_file(__DIR__."/hookConfig.ini", true);
+		$config = parse_ini_file(__DIR__."/hookConfig.ini", true);
+		if ($config == null || !is_array($config) || count($config) == 0) {
+			Helper::mailError(__FILE__, __LINE__, "Unable to load hook config ini file");
+			exit;
+		}
+		return $config;
 	}
 	
 	static function mailError($file, $line, $error) {
@@ -37,5 +42,7 @@ class Helper {
 	
 		$body .= "</body></html>";
 		Helper::sendMail("Error in ".basename(__FILE__), $body);
+// 		echo $error."\n";
+// 		file_put_contents("error.txt", $error);
 	}
 }

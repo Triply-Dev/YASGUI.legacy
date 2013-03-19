@@ -1,40 +1,29 @@
 <?php
+include 'Helper.php';
 error_reporting(1);
 // $deploymentConfig = parse_init_file("hookConfig.ini", true);
+
+$i = 0;
+
+
 $payload = $_POST['payload'];
 
 $payload = file_get_contents("payload.json");
 
 if (strlen($payload)) {
 	$json = json_decode($payload, true);
-	if (!$json) mailError("Unable to decode json");
+	if (!$json) Helper::mailError(__FILE__, __LINE__, "Unable to decode json");
 	
-	var_export($json);
 	if ($json['ref'] === "refs/heads/master") {
-		processMaster();
+		shell_exec("CompileAndDeploy.php");
 	} else if ($json['ref'] === "refs/heads/dev") {
 		
 	}
 } 
 
-function processMaster() {
-	
-}
 
-function mailError($error) {
-	echo $error."\n";exit;
-}
 
-//add mail function faulure notification and stuff
 
-//parse json
 
-//if commit on dev
-////pull result
-////build
-////parse/replace/store config values
-////copy to tomcat
-
-//if commit on master
 
 
