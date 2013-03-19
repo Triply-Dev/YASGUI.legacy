@@ -26,7 +26,8 @@ function compileAndDeploy($deployConfig) {
 }
 
 function pull() {
-	if (shell_exec("git pull") === null) {
+	$result = shell_exec("git pull");
+	if ($result === null) {
 		Helper::mailError(__FILE__, __LINE__, "Unable to pull from git");
 		exit;
 	}
@@ -34,6 +35,10 @@ function pull() {
 
 function package() {
 	$succes = shell_exec("mvn clean");
+	if (!$succes) {
+		Helper::mailError(__FILE__, __LINE__, "Unable to compile ".$argv[1]." project");
+		exit;
+	}
 	if ($succes) $succes = shell_exec("mvn package");
 	if (!$succes) {
 		Helper::mailError(__FILE__, __LINE__, "Unable to compile ".$argv[1]." project");
