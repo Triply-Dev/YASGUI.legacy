@@ -35,14 +35,15 @@ function pull() {
 }
 
 function package() {
+	global $argv;
 	$succes = shell_exec("mvn clean 2> errorOutput.txt");
 	if (!$succes) {
 		Helper::mailError(__FILE__, __LINE__, "Unable to compile ".$argv[1]." project: \n".file_get_contents("errorOutput.txt"));
 		exit;
 	}
 	if ($succes) $succes = shell_exec("mvn package 2> errorOutput.txt");
-	if (!$succes) {
-		Helper::mailError(__FILE__, __LINE__, "Unable to compile ".$argv[1]." project: \n".file_get_contents("errorOutput.txt"));
+	if (!$succes || strpos($succes, "BUILD FAILURE")) {
+		Helper::mailError(__FILE__, __LINE__, "Unable to compile ".$argv[1]." project: \n".file_get_contents("errorOutput.txt")."\n".$succes);
 		exit;
 	}
 }
