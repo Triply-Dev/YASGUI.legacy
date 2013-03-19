@@ -34,9 +34,9 @@ function pull() {
 }
 
 function package() {
-	$succes = shell_exec("mvn clean");
+	$succes = shell_exec("mvn clean 2> errorOutput.txt");
 	if (!$succes) {
-		Helper::mailError(__FILE__, __LINE__, "Unable to compile ".$argv[1]." project");
+		Helper::mailError(__FILE__, __LINE__, "Unable to compile ".$argv[1]." project: \n".file_get_contents("errorOutput.txt"));
 		exit;
 	}
 	if ($succes) $succes = shell_exec("mvn package");
