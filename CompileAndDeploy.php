@@ -50,7 +50,7 @@ function package() {
 function getWarFile() {
 	$warFiles = glob("target/*.war");
 	if (count($warFiles) != 1) {
-		Helper::mailError(__FILE__, __LINE__, "Invalid number of war files after compiling (dir: ".getcwd()."/".$warFiles.", count: ".count($warFiles).")");
+		Helper::mailError(__FILE__, __LINE__, "Invalid number of war files after compiling (dir: ".getcwd()."/target/*.war, count: ".count($warFiles).")");
 		exit;
 	}
 	return (reset($warFiles));
