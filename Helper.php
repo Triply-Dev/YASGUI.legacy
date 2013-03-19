@@ -35,14 +35,14 @@ class Helper {
 	}
 	
 	static function mailError($file, $line, $error) {
-		$body = "<html><body>";
-		$body .= "File: ".$file." (line ". $line .")<br>";
-		$body .= "Time: ".date("Y-m-d H:i:s")."<br>";
-		$body .= "Error: <strong>".$error."</strong><br>";
+ 		$body = "<html><body>";
+ 		$body .= "File: ".$file." (line ". $line .")<br>";
+ 		$body .= "Time: ".date("Y-m-d H:i:s")."<br>";
+ 		$body .= "Error: <strong>".$error."</strong><br>";
 	
-		$body .= "</body></html>";
-		Helper::sendMail("Error in ".basename(__FILE__), $body);
-// 		echo $error."\n";
-// 		file_put_contents("error.txt", $error);
+ 		$body .= "</body></html>";
+ 		Helper::sendMail("Error in ".basename(__FILE__), $body);
+//		echo $error."\n";
+//		file_put_contents(__DIR__."/error.txt", $error."\n", FILE_APPEND);
 	}
 }

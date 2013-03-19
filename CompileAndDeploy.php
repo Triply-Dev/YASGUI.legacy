@@ -3,7 +3,7 @@
 include_once __DIR__.'/Helper.php';
 $config = Helper::getConfig();
 if (count($argv) > 1) {
-	if ($argv[1] === "dev" || $argv[1] === "master") {
+	if (in_array($argv[1], explode(",", $config['deployments']))) {
 		compileAndDeploy($config[$argv[1]]);
 	} else {
 		Helper::mailError(__FILE__, __LINE__, "Invalid script argument");
@@ -16,13 +16,13 @@ if (count($argv) > 1) {
 
 function compileAndDeploy($deployConfig) {
 	chdir($deployConfig['git']);
-	pull();
-	package();
+ 	pull();
+ 	package();
 	$warFile = getWarFile();
 	$yasguiDir = unzipWarFile($warFile);
 	updateConfig($yasguiDir, $deployConfig);
 	deployToTomcat($yasguiDir, $deployConfig);
-	Helper::sendMail("Deployed to ".$argv[1], "Succesfully deployed YASGUI");
+ 	Helper::sendMail("Deployed to ".$argv[1], "Succesfully deployed YASGUI");
 }
 
 function pull() {
@@ -50,13 +50,13 @@ function getWarFile() {
 	return (reset($warFiles));
 }
 function unzipWarFile($warFile) {
-	$destination = "target/unzipped";
+	$destination = "/tmp/".$argv[1].time()."_".rand();
 	if (file_exists($destination)) {
 		Helper::mailError(__FILE__, __LINE__, "Target dir to unzip war in already exists. Something is wrong... (".$destination.")");
 		exit;
 	}
 	$result = shell_exec("unzip ".$warFile." -d ".$destination);
-	if ($result == null || count(scandir($destination)) <= 2) {
+	if ($result == null || !file_exists($destination) || count(scandir($destination)) <= 2) {
 		Helper::mailError(__FILE__, __LINE__, "Failed to unzip compiled war file ".$warFile);
 		exit;
 	}
@@ -93,15 +93,35 @@ function getUpdatedConfig($dir, $deployConfig) {
 }
 function deployToTomcat($yasguiDir, $deployConfig) {
 	$to = $deployConfig['tomcat'];
+	
+	/**
+	 * Remove current deployment
+	 */
 	if (strlen($to) && file_exists($to) && strpos($to, "tomcat")) {
 		//be very sure we arent deleting other stuff
 		shell_exec("rm -rf ".$to);
+		if (file_exists($to)) {
+			Helper::mailError(__FILE__, __LINE__, "Unable to remove previously deployed yasgui dir: ".$to.". It still exists!");
+			exit;
+		}
 	}
+	if (!file_exists($yasguiDir)) {
+		Helper::mailError(__FILE__, __LINE__, "We have no directory to copy. Something is wrong!");
+		exit;
+	}
+	
+	/**
+	Deploy new dir
+	 */
 	$result = shell_exec("cp -r ".$yasguiDir." ".$to);
-	if (!$result) {
+	if (!file_exists($to)) {
 		Helper::mailError(__FILE__, __LINE__, "Failed to copy yasgui to tomcat dir");
 		exit;
 	}
 	
+	/**
+	 * Set proper permissions
+	 */
+	shell_exec("chmod -R 775 ".$to);
 }
 
