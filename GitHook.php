@@ -1,5 +1,5 @@
 <?php
-chdir("/home/lrd900/code/yasgui");
+chdir("/home/lrd900/gitCode/yasgui_deploy");
 include 'Helper.php';
 error_reporting(1);
 
