@@ -15,6 +15,7 @@ if (count($argv) > 1) {
 
 
 function compileAndDeploy($deployConfig) {
+	global $argv;
 	chdir($deployConfig['git']);
  	pull();
  	package();
@@ -22,7 +23,7 @@ function compileAndDeploy($deployConfig) {
 	$yasguiDir = unzipWarFile($warFile);
 	updateConfig($yasguiDir, $deployConfig);
 	deployToTomcat($yasguiDir, $deployConfig);
- 	Helper::sendMail("Deployed to ".$argv[1], "Succesfully deployed YASGUI");
+ 	Helper::sendMail("Succesfully deployed YASGUI as ".$argv[1], "Succesfully deployed YASGUI as ".$argv[1]);
 }
 
 function pull() {
@@ -49,7 +50,7 @@ function package() {
 function getWarFile() {
 	$warFiles = glob("target/*.war");
 	if (count($warFiles) != 1) {
-		Helper::mailError(__FILE__, __LINE__, "Invalid number of war files after compiling (".count($warFiles).")");
+		Helper::mailError(__FILE__, __LINE__, "Invalid number of war files after compiling (dir: ".getcwd()."/".$warFiles.", count: ".count($warFiles).")");
 		exit;
 	}
 	return (reset($warFiles));
