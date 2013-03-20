@@ -18,7 +18,7 @@ if (strlen($payload)) {
 		executeIfReady("./CompileAndDeploy.php master");
 	} else if ($json['ref'] === "refs/heads/dev") {
 		
-	} else if ($json[ref] === "refs/heads/deployment-git-hook") {
+	} else if ($json['ref'] === "refs/heads/deployment-git-hook") {
 		Helper::execWithError("git stash", __FILE__, __LINE__, "Unable to stash changes of git hook code");
 		Helper::execWithError("git pull", __FILE__, __LINE__, "Unable to pull git hub code");
 		Helper::execWithError("git stash pop", __FILE__, __LINE__, "Unable to apply stashed changes of git code");
