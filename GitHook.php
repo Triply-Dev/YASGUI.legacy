@@ -22,6 +22,7 @@ if (strlen($payload)) {
 		Helper::execWithError("git stash", __FILE__, __LINE__, "Unable to stash changes of git hook code");
 		Helper::execWithError("git pull", __FILE__, __LINE__, "Unable to pull git hub code");
 		Helper::execWithError("git stash pop", __FILE__, __LINE__, "Unable to apply stashed changes of git code");
+		Helper::sendMail("Succesfully updated commit hook code", "Succesfully updated commit hook code");
 	}
 } 
 
