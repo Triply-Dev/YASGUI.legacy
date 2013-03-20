@@ -38,7 +38,7 @@ function executeIfReady($command) {
 		sleep(10);
 		executeIfReady($command);
 	} else {
-		shell_exec($command ." &");
+		shell_exec($command ." > /dev/null 2>&1 &");
 	}
 }
 function getNumProcesses($cmd) {
