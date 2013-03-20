@@ -45,4 +45,12 @@ class Helper {
 //		echo $error."\n";
 //		file_put_contents(__DIR__."/error.txt", $error."\n", FILE_APPEND);
 	}
+	
+	static function execWithError($cmd, $file, $line, $errorMsg) {
+		$result = shell_exec($cmd."  2> errorOutput.txt");
+		if ($result == null) {
+			Helper::mailError($file, $line, $errorMsg."\n".file_get_contents("errorOutput.txt"));
+			exit;
+		}
+	}
 }
