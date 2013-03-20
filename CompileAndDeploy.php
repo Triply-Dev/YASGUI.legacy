@@ -109,7 +109,7 @@ function deployToTomcat($yasguiDir, $deployConfig) {
 		//be very sure we arent deleting other stuff
 		shell_exec("rm -rf ".$to);
 		//there are files which are created by tomcat which we can't delete. just move the dir, and use crontab to delete files later
-		shell_exec("mv ".$to." ".$config['shell']['trashDir']);
+		shell_exec("mv ".$to." ".$config['shell']['trashDir']."/".time());
 		if (file_exists($to)) {
 			Helper::mailError(__FILE__, __LINE__, "Unable to remove previously deployed yasgui dir: ".$to.". It still exists!");
 			exit;
