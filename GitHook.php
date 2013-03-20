@@ -4,11 +4,7 @@ include 'Helper.php';
 error_reporting(1);
 
 $i = 0;
-
-
 $payload = $_POST['payload'];
-
-$payload = file_get_contents("payload.json");
 
 if (strlen($payload)) {
 	$json = json_decode($payload, true);
