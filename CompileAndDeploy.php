@@ -120,7 +120,7 @@ function deployToTomcat($yasguiDir, $deployConfig) {
 	/**
 	Deploy new dir
 	 */
-	$result = shell_exec("cp -r ".$yasguiDir." ".$to);
+	$result = shell_exec("mv ".$yasguiDir." ".$to);
 	if (!file_exists($to)) {
 		Helper::mailError(__FILE__, __LINE__, "Failed to copy yasgui to tomcat dir");
 		exit;
