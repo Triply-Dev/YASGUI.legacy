@@ -42,7 +42,7 @@ function executeIfReady($command) {
 	}
 }
 function getNumProcesses($cmd) {
-	return shell_exec("ps aux | grep '/[u]usr/bin/php ".$cmd."' | wc -l");
+	return shell_exec("ps aux | grep '/[u]sr/bin/php ".$cmd."' | wc -l");
 }
 
 
