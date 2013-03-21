@@ -74,6 +74,12 @@ public class JsMethods {
 						$wnd.CodeMirror.simpleHint(cm, $wnd.CodeMirror.prefixHint);
 						$wnd.appendPrefixIfNeeded(cm);
 					},
+					onFocus: function(cm) {
+						$wnd.saveTabTitle();
+					},
+					onGutterClick: function(cm) {
+						$wnd.saveTabTitle();
+					},
 					extraKeys : {
 						"Ctrl-Space" : "autocomplete",
 						"Ctrl-D" : "deleteLines",
