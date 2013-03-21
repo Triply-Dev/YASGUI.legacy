@@ -140,12 +140,17 @@ public class ViewElements {
 		queryLoading.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				view.cancelQuery();
+				cancelQuery();
 			}
 		});
 		queryLoading.setShowRollOver(false);
 		queryLoading.setShowDown(false);
 		queryLoading.draw();
+	}
+	
+	public void cancelQuery() {
+		JsMethods.cancelQuery();
+		onQueryFinish();
 	}
 	
 	/**

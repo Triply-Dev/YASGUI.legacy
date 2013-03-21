@@ -144,7 +144,7 @@ public class LinkCreator extends ImgButton {
 				view.getElements().onLoadingStart("Fetching short url");
 				view.getRemoteService().getShortUrl(urlTextBox.getValueAsString(), new AsyncCallback<String>() {
 					public void onFailure(Throwable caught) {
-						view.onError(caught.getMessage());
+						view.getElements().onError(caught.getMessage());
 					}
 
 					public void onSuccess(String shortUrl) {

@@ -26,9 +26,6 @@ package com.data2semantics.yasgui.client.helpers;
  * #L%
  */
 
-import com.data2semantics.yasgui.client.View;
-import com.data2semantics.yasgui.client.ViewElements;
-
 public class JsMethods {
 	
 	/**
@@ -238,56 +235,7 @@ public class JsMethods {
 	}-*/;
 	
 	
-	/**
-	 * Add view methods to JS, use this for situation where a non-static GWT method needs to be called
-	 * 
-	 * @param view
-	 */
-	public static native void declareCallableViewMethods(View view, ViewElements viewElements) /*-{
-		var view = view; 
-		$wnd.drawResults = function(tabId, resultString, contentType) {
-			view.@com.data2semantics.yasgui.client.View::drawResults(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(tabId, resultString, contentType);
-		}
-		$wnd.onError = function(errorMsg) {
-			viewElements.@com.data2semantics.yasgui.client.ViewElements::onError(Ljava/lang/String;)(errorMsg);
-		}
-		$wnd.onLoadingStart = function(message) {
-			viewElements.@com.data2semantics.yasgui.client.ViewElements::onLoadingStart(Ljava/lang/String;)(message);
-		}
-		$wnd.onLoadingFinish = function() {
-			viewElements.@com.data2semantics.yasgui.client.ViewElements::onLoadingFinish()();
-		}
-		$wnd.onQueryStart = function() {
-			viewElements.@com.data2semantics.yasgui.client.ViewElements::onQueryStart()();
-		}
-		$wnd.onQueryFinish = function() {
-			viewElements.@com.data2semantics.yasgui.client.ViewElements::onQueryFinish()();
-		}
-		$wnd.clearQueryResult = function() {
-			view.@com.data2semantics.yasgui.client.View::resetQueryResult()();
-		}
-		$wnd.storeQueryInCookie = function() {
-			view.@com.data2semantics.yasgui.client.View::storeQueryInCookie()();
-		}
-		$wnd.onQueryError = function(errorMsg) {
-			viewElements.@com.data2semantics.yasgui.client.ViewElements::onQueryError(Ljava/lang/String;)(errorMsg);
-		}
-		$wnd.showPlayButton = function(queryValid) {
-			viewElements.@com.data2semantics.yasgui.client.ViewElements::showPlayButton(Ljava/lang/String;)(queryValid);
-		}
-		$wnd.adjustQueryInputForContent = function() {
-			view.@com.data2semantics.yasgui.client.View::adjustQueryInputForContent()();
-		}
-		$wnd.setQueryType = function(queryType) {
-			view.@com.data2semantics.yasgui.client.View::setQueryType(Ljava/lang/String;)(queryType);
-		}
-		$wnd.storeSettings = function() {
-			view.@com.data2semantics.yasgui.client.View::storeSettings()();
-		}
-		$wnd.cancelQuery = function() {
-			view.@com.data2semantics.yasgui.client.View::cancelQuery()();
-		}
-	}-*/;
+	
 	
 	
 	

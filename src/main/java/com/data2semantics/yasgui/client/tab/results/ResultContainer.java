@@ -167,7 +167,7 @@ public class ResultContainer extends VLayout {
 		reset();
 		String queryType = JsMethods.getQueryType(view.getSelectedTab().getQueryTextArea().getInputId());
 		if (!queryTypes.containsKey(queryType)) {
-			view.onError("No valid query type detected for this query");
+			view.getElements().onError("No valid query type detected for this query");
 			return;
 		}
 		int queryMode = queryTypes.get(queryType);
@@ -197,7 +197,7 @@ public class ResultContainer extends VLayout {
 		} catch (SparqlEmptyException e) {
 			setResultMessage(ICON_WRONG, e.getMessage());
 		} catch (Exception e) {
-			view.onError(e);
+			view.getElements().onError(e);
 			
 		} 
 	}
