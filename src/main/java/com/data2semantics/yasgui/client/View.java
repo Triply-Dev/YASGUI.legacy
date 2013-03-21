@@ -67,6 +67,8 @@ public class View extends VLayout {
 	private ViewElements viewElements;
 	private Footer footer;
 	private Settings settings = new Settings();
+	@SuppressWarnings("unused")
+	private CallableJsMethods jsEvents;
 	
 	public View() {
 		boolean newUser = false;
@@ -77,7 +79,7 @@ public class View extends VLayout {
 		retrieveSettings();
 		
 		viewElements = new ViewElements(this);
-		
+		jsEvents = new CallableJsMethods(this);
 		processVersionChanges();
 		if (getSettings().useGoogleAnalytics()) {
 			GoogleAnalytics.init(getSettings().getGoogleAnalyticsId());
@@ -106,6 +108,8 @@ public class View extends VLayout {
 		}
 		
 		processUrlParameters(newUser);
+		
+		
 	}
 	
 	private void setViewLayout() {
@@ -162,7 +166,7 @@ public class View extends VLayout {
 				settings.initDefaultTab();
 			}
 		} catch (IOException e) {
-			onError(e);
+			getElements().onError(e.getMessage());
 		}
 	}
 	
@@ -193,14 +197,13 @@ public class View extends VLayout {
 				queryTabs.showTooltips(fromVersionId);
 				getSelectedTab().showTooltips(fromVersionId);
 			} catch (ElementIdException e) {
-				onError(e);
+				getElements().onError(e);
 			}
 		}
 	}
 	
 	private void initJs() {
 		JsMethods.setTabBarProperties(QueryTabs.INDENT_TABS);
-		JsMethods.declareCallableViewMethods(this, viewElements);
 		JsMethods.setProxyUriInVar(GWT.getModuleBaseURL() + "sparql");
 		JsMethods.setQtipZIndex(ZIndexes.HELP_TOOLTIPS);
 	}
@@ -235,47 +238,13 @@ public class View extends VLayout {
 		try {
 			tabSettings = getSettings().getSelectedTabSettings();
 		} catch (SettingsException e) {
-			onError(e.getMessage());
+			getElements().onError(e.getMessage());
 		}
 		return tabSettings;
 	}
 
 	public QueryTab getSelectedTab() {
 		return (QueryTab) queryTabs.getSelectedTab();
-	}
-	
-	/**
-	 * Draw json or xml results
-	 * Keep this method in the view object, so that it is easily callable from js
-	 * 
-	 * @param tabId Tab id to draw results in. 
-	 * Pass this, so when you switch tabs just after clicking the query button, the results still gets drawn in the proper tab
-	 * @param resultString
-	 * @param contentType Content type of query result
-	 */
-	public void drawResults(String tabId, String resultString, String contentType) {
-		QueryTab tab = (QueryTab)queryTabs.getTab(tabId);
-		if (tab == null) {
-			onError("No tab to draw results in");
-		}
-		tab.getResultContainer().processResult(resultString, contentType);
-	}
-	
-	/**
-	 * Clear current query result table 
-	 * Keep this method in the view object, so that it is easily callable from js
-	 */
-	public void resetQueryResult() {
-		getSelectedTab().getResultContainer().reset();
-	}
-	
-	/**
-	 * Get query string from text area, set it in settings, and store in cookie
-	 */
-	public void storeQueryInCookie() {
-		String query = getSelectedTab().getQueryTextArea().getQuery();
-		getSelectedTabSettings().setQueryString(query);
-		LocalStorageHelper.storeSettingsInCookie(getSettings());
 	}
 	
 	/**
@@ -290,7 +259,7 @@ public class View extends VLayout {
 			viewElements.onLoadingStart("Fetching prefixes");
 			getRemoteService().fetchPrefixes(forceUpdate, new AsyncCallback<String>() {
 				public void onFailure(Throwable caught) {
-					onError(caught.getMessage());
+					getElements().onError(caught.getMessage());
 				}
 	
 				public void onSuccess(String prefixes) {
@@ -317,7 +286,7 @@ public class View extends VLayout {
 			viewElements.onLoadingStart("Fetching endpoint data");
 			getRemoteService().fetchEndpoints(forceUpdate, new AsyncCallback<String>() {
 				public void onFailure(Throwable caught) {
-					onError(caught);
+					getElements().onError(caught);
 				}
 				public void onSuccess(String endpoints) {
 					if (endpoints.length() > 0) {
@@ -325,11 +294,11 @@ public class View extends VLayout {
 						try {
 							endpointDataSource.addEndpointsFromJson(endpoints);
 						} catch (Exception e) {
-							onError(e.getMessage());
+							getElements().onError(e.getMessage());
 						}
 						
 					} else {
-						onError("Failed to retrieve list of endpoints from server");
+						getElements().onError("Failed to retrieve list of endpoints from server");
 					}
 					viewElements.onLoadingFinish();
 				}
@@ -338,7 +307,7 @@ public class View extends VLayout {
 			try {
 				endpointDataSource.addEndpointsFromJson(endpoints);
 			} catch (Exception e) {
-				onError(e);
+				getElements().onError(e.getMessage());
 			}
 		}
 	}
@@ -410,35 +379,4 @@ public class View extends VLayout {
 			}
 		}
 	}
-	
-	public void setQueryType(String queryType) {
-		getSelectedTab().setQueryType(queryType);
-	}
-	
-	/**
-	 * @see ViewElements#onError(String)
-	 */
-	public void onError(String error) {
-		getElements().onError(error);
-	}
-	
-	
-	/**
-	 * @see ViewElements#onError()Throwable
-	 */
-	public void onError(Throwable e) {
-		getElements().onError(e);
-	}
-	
-	public void adjustQueryInputForContent() {
-		getSelectedTab().getQueryTextArea().adjustForContent(true);
-	}
-	public void storeSettings() {
-		LocalStorageHelper.storeSettingsInCookie(getSettings());
-	}
-	public void cancelQuery() {
-		JsMethods.cancelQuery();
-		viewElements.onQueryFinish();
-	}
-
 }
