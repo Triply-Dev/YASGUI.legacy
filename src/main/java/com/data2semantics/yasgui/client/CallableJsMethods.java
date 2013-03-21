@@ -92,6 +92,10 @@ public class CallableJsMethods {
 		view.getElements().showPlayButton(queryValid);
 	}
 	
+	public void saveTabTitle() {
+		view.getTabs().saveTabTitle();
+	}
+	
 	/**
 	 * Add view methods to JS, use this for situations where a non-static GWT method needs to be called
 	 * 
@@ -140,6 +144,9 @@ public class CallableJsMethods {
 		}
 		$wnd.cancelQuery = function() {
 			viewJs.@com.data2semantics.yasgui.client.CallableJsMethods::cancelQuery()();
+		}
+		$wnd.saveTabTitle = function() {
+			viewJs.@com.data2semantics.yasgui.client.CallableJsMethods::saveTabTitle()();
 		}
 	}-*/;
 }
