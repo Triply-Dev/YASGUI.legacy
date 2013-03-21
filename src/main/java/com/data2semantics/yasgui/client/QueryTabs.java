@@ -55,6 +55,8 @@ import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
 import com.smartgwt.client.widgets.tab.events.CloseClickHandler;
 import com.smartgwt.client.widgets.tab.events.TabCloseClickEvent;
+import com.smartgwt.client.widgets.tab.events.TabDeselectedEvent;
+import com.smartgwt.client.widgets.tab.events.TabDeselectedHandler;
 import com.smartgwt.client.widgets.tab.events.TabSelectedEvent;
 import com.smartgwt.client.widgets.tab.events.TabSelectedHandler;
 import com.smartgwt.client.widgets.tab.events.TabTitleChangedEvent;
@@ -79,7 +81,15 @@ public class QueryTabs extends TabSet {
 		setWidth100();
 		setHeight100();
 		setCanEditTabTitles(true);
-		
+		setTitleEditorTopOffset(5);
+		setTitleEditorLeftOffset(5);
+		addTabDeselectedHandler(new TabDeselectedHandler(){
+			//this works for within smartgwt. on codemirror focus needs separate event though
+			@Override
+			public void onTabDeselected(TabDeselectedEvent event) {
+				saveTabTitle();
+				
+			}});
 		setTitleEditEvent(TabTitleEditEvent.DOUBLECLICK);
 		setTabsFromSettings();
 		selectTab(view.getSettings().getSelectedTabNumber());
