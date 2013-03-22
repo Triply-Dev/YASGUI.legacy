@@ -33,6 +33,7 @@ import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.properties.ExternalLinks;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
@@ -214,6 +215,21 @@ public class ViewElements {
 	}
 	
 	/**
+	 * Show the error window for a trowable. Prints the complete stack trace
+	 * @param throwable
+	 */
+	public void onError(Throwable e) {
+		String errorMsg;
+		if (GWT.isProdMode()) {
+			errorMsg = e.getMessage();
+		} else {
+			errorMsg = Helper.getStackTraceAsString(e);
+			errorMsg += "\nCaused by:\n" + Helper.getCausesStackTraceAsString(e);
+		}
+		
+		onError(errorMsg);
+	}
+	/**
 	 * Modal popup window to show on error
 	 * 
 	 * @param error
@@ -292,17 +308,6 @@ public class ViewElements {
 		window.draw();
 	}
 	
-
-	/**
-	 * Show the error window for a trowable. Prints the complete stack trace
-	 * @param throwable
-	 */
-	public void onError(Throwable e) {
-		onLoadingFinish();
-		String stackTraceString = Helper.getStackTraceAsString(e);
-		stackTraceString += Helper.getCausesStackTraceAsString(e);
-		onError(stackTraceString);
-	}
 	
 	public void checkHtml5() {
 		if (LocalStorageHelper.newUser()) {
