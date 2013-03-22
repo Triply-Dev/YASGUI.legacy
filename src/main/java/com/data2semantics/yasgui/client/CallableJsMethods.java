@@ -53,6 +53,7 @@ public class CallableJsMethods {
 	 */
 	public void drawResults(String tabId, String resultString, String contentType) {
 		QueryTab tab = (QueryTab)view.getTabs().getTab(tabId);
+		view.getTabs().selectTab(tabId);
 		if (tab == null) {
 			view.getElements().onError("No tab to draw results in");
 		}
