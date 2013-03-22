@@ -166,7 +166,7 @@ public class View extends VLayout {
 				settings.initDefaultTab();
 			}
 		} catch (IOException e) {
-			getElements().onError(e.getMessage());
+			getElements().onError(e);
 		}
 	}
 	
@@ -238,7 +238,7 @@ public class View extends VLayout {
 		try {
 			tabSettings = getSettings().getSelectedTabSettings();
 		} catch (SettingsException e) {
-			getElements().onError(e.getMessage());
+			getElements().onError(e);
 		}
 		return tabSettings;
 	}
@@ -259,7 +259,7 @@ public class View extends VLayout {
 			viewElements.onLoadingStart("Fetching prefixes");
 			getRemoteService().fetchPrefixes(forceUpdate, new AsyncCallback<String>() {
 				public void onFailure(Throwable caught) {
-					getElements().onError(caught.getMessage());
+					getElements().onError(caught);
 				}
 	
 				public void onSuccess(String prefixes) {
@@ -294,7 +294,7 @@ public class View extends VLayout {
 						try {
 							endpointDataSource.addEndpointsFromJson(endpoints);
 						} catch (Exception e) {
-							getElements().onError(e.getMessage());
+							getElements().onError(e);
 						}
 						
 					} else {
@@ -307,7 +307,7 @@ public class View extends VLayout {
 			try {
 				endpointDataSource.addEndpointsFromJson(endpoints);
 			} catch (Exception e) {
-				getElements().onError(e.getMessage());
+				getElements().onError(e);
 			}
 		}
 	}
