@@ -31,13 +31,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
-
 import org.json.JSONObject;
-
 import com.data2semantics.yasgui.client.YasguiService;
 import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
-import com.data2semantics.yasgui.server.fetchers.EndpointsFetcher;
 import com.data2semantics.yasgui.server.fetchers.PrefixesFetcher;
+import com.data2semantics.yasgui.server.fetchers.endpoints.EndpointsFetcher;
 import com.data2semantics.yasgui.shared.SettingKeys;
 import com.data2semantics.yasgui.shared.exceptions.FetchException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
