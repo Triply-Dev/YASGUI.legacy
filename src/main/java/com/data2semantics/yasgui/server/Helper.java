@@ -39,6 +39,7 @@ import java.util.Date;
 
 public class Helper {
 	public final static void writeFile(File file, String content) throws IOException {
+		file.createNewFile();
 		BufferedWriter out = new BufferedWriter(new FileWriter(file));
 		out.write(content);
 		out.close();
