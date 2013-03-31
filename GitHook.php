@@ -18,6 +18,7 @@ if (strlen($payload)) {
 		executeIfReady("./CompileAndDeploy.php master");
 	} else if ($json['ref'] === "refs/heads/dev") {
 		executeIfReady("./CompileAndDeploy.php dev");
+		executeIfReady("./CompileAndDeploy.php singlemode");
 	} else if ($json['ref'] === "refs/heads/deployment-git-hook") {
 		Helper::execWithError("git stash", __FILE__, __LINE__, "Unable to stash changes of git hook code");
 		Helper::execWithError("git pull", __FILE__, __LINE__, "Unable to pull git hub code");
