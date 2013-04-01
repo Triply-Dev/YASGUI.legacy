@@ -4,7 +4,12 @@ include_once __DIR__.'/Helper.php';
 $config = Helper::getConfig();
 if (count($argv) > 1) {
 	if (in_array($argv[1], explode(",", $config['deployments']))) {
-		compileAndDeploy($config[$argv[1]]);
+		$deployConfig = $config[$argv[1]];
+		if ($deployConfig) {
+			compileAndDeploy($config[$argv[1]]);
+		} else {
+			Helper::mailError(__FILE__, __LINE__, "couldnt find configuration for ".$argv[1]." in hookConfig.ini");
+		}
 	} else {
 		Helper::mailError(__FILE__, __LINE__, "Invalid script argument");
 	}
