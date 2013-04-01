@@ -168,9 +168,10 @@ function appendPrefixIfNeeded(cm) {
 	var cur = cm.getCursor();
 	var token = cm.getTokenAt(cur);
 	if (token.className == "sp-prefixed" && endsWith(token.string, ":") && cur.ch == token.end) {
-		//check previous token isnt PREFIX
+		//check first token isnt PREFIX, and previous token isnt a '<' (i.e. we are in a uri)
 		var firstToken = getNextNonWsToken(cm, cur.line);
-		if (firstToken.string != "PREFIX") {
+		var previousToken = cm.getTokenAt({line: cur.line, ch: token.start});//needs to be null (beginning of line), or whitespace
+		if (firstToken.string != "PREFIX" && (previousToken.className == "sp-ws" || previousToken.className == null)) {
 			//check whether it isnt defined already (saves us from looping through the array)
 			var currentPrefix = token.string;
 			var queryPrefixes = getPrefixesFromQuery(cm);
