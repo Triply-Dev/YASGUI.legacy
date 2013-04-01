@@ -104,12 +104,12 @@ function getUpdatedConfig($dir, $deployConfig) {
 	}
 	
 	$jsonConfigArray = json_decode(file_get_contents($jsonConfig), true);
-	if ($jsonConfigArray == null) {
+	if (!(is_array($jsonConfigArray) && count($jsonConfigArray))) {
 		Helper::mailError(__FILE__, __LINE__, "Unable to parse file as json (".$jsonConfig.")");
 		exit;
 	}
 	$overWriteJsonConfigArray = json_decode(file_get_Contents($overWriteJsonConfig), true);
-	if ($jsonConfigArray == null) {
+	if (!(is_array($overWriteJsonConfigArray) && count($jsonConfigArray))) {
 		Helper::mailError(__FILE__, __LINE__, "Unable to parse file as json (".$overWriteJsonConfig.")");
 		exit;
 	}
