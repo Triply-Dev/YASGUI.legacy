@@ -31,6 +31,6 @@ import java.io.Serializable;
 public class StaticConfig implements Serializable {
 	private static final long serialVersionUID = 1L;
 	//YASGUI versions
-	public static int VERSION_ID = 4;
-	public static String VERSION = "13.03d";
+	public static int VERSION_ID = 5;
+	public static String VERSION = "13.04a";
 }
