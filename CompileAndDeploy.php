@@ -5,8 +5,8 @@ $config = Helper::getConfig();
 if (count($argv) > 1) {
 	if (in_array($argv[1], explode(",", $config['deployments']))) {
 		$deployConfig = $config[$argv[1]];
-		if ($deployConfig) {
-			compileAndDeploy($config[$argv[1]]);
+		if (is_array($deployConfig) && count($deployConfig)) {
+			compileAndDeploy($deployConfig);
 		} else {
 			Helper::mailError(__FILE__, __LINE__, "couldnt find configuration for ".$argv[1]." in hookConfig.ini");
 		}
