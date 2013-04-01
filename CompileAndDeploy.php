@@ -9,12 +9,15 @@ if (count($argv) > 1) {
 			compileAndDeploy($deployConfig);
 		} else {
 			Helper::mailError(__FILE__, __LINE__, "couldnt find configuration for ".$argv[1]." in hookConfig.ini");
+			exit;
 		}
 	} else {
 		Helper::mailError(__FILE__, __LINE__, "Invalid script argument");
+		exit;
 	}
 } else {
 	Helper::mailError(__FILE__, __LINE__, "Not enough arguments");
+	exit;
 }
 
 
@@ -76,7 +79,16 @@ function unzipWarFile($warFile) {
 }
 function updateConfig($dir, $deployConfig) {
 	$newConfig = getUpdatedConfig($dir, $deployConfig);
-	file_put_contents($dir."/config/config.json", json_encode($newConfig,JSON_UNESCAPED_SLASHES));
+	if (is_array($newConfig) && count($newConfig)) {
+		file_put_contents($dir."/config/config.json", json_encode($newConfig,JSON_UNESCAPED_SLASHES));
+		if (!file_exists($dir."/config/config.json")) {
+			Helper::mailError(__FILE__, __LINE__, "unable to store new json config file");
+			exit;
+		}
+	} else {
+		Helper::mailError(__FILE__, __LINE__, "unable to get updated config array");
+		exit;
+	}
 }
 
 function getUpdatedConfig($dir, $deployConfig) {
