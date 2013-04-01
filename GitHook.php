@@ -34,7 +34,7 @@ function executeIfReady($command) {
 		Helper::mailError(__FILE__, __LINE__, "We waited too long for other processes to finish. Just stop trying to deploy. Number of processes still running: ".getNumProcesses($command));
 		exit;
 	}
-	$numProcs = getNumProcesses($command);
+	$numProcs = getNumProcesses(reset(explode(" ", $command))); 
 	if ($numProcs > 0) {
 		sleep(10);
 		executeIfReady($command);
