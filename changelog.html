@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" media="screen"
+	href="css/bootstrap.min.css">
+<style type="text/css">
+body {
+	padding-top: 60px;
+	padding-bottom: 40px;
+}
+</style>
+<link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+<meta charset='utf-8' />
+<meta http-equiv="X-UA-Compatible" content="chrome=1" />
+<meta name="description" content="How to deploy YASGUI on a server" />
+
+
+<link rel="stylesheet" type="text/css" media="screen"
+	href="css/yasgui.css">
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<title>YASGUI: Releases</title>
+</head>
+
+<body>
+	<div class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<div class="nav-collapse">
+					<ul class="nav">
+						<li><a href="index.html">About YASGUI</a></li>
+						<li><a href="deployment.html">Local Deployment</a></li>
+						<li class="active"><a href="changelog.html">Releases</a></li>
+						<li><a href="http://laurensrietveld.nl">About me</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+		<div class="row">
+			<div class="span9 offset1">
+			<p>
+						<a class="btn btn-primary btn-large"
+							href="http://yasgui.laurensrietveld.nl" target="_blank"><i
+							class="icon-share-alt icon-white"></i>Try latest stable version (V13.04)</a> 
+						<a class="btn btn-large btn-info"
+							href="http://dev.yasgui.laurensrietveld.nl" target="_blank"><i
+							class="icon-share-alt icon-white"></i>Try unstable development build</a>
+					</p>
+				<h3><a href="http://github.com/LaurensRietveld/yasgui/tree/v13.04a" target="_blank">V13.04</a></h3>
+				<ul>
+					<li>Automatically add prefix if it used in query, not declared yet, and available in prefix list from prefix.cc</li>
+					<li>Improved endpoint fetching. Take advantage of all the extensive CKAN endpoint information, but filter the results using Mondeca.</li>
+					<li>Improved error handling: show error msg (not stacktrace) in production mode</li>
+					<li>[<a href="https://github.com/LaurensRietveld/yasgui/issues/82" target="_blank">#82</a>] Fixed support for running yasgui in single endpoint mode</li>
+					<li>Fixed support for firefox versions &lt; 12</li>
+					<li>Improved endpoint search and autocompletion interface</li>
+					<li>Added elaborate error message when user tries to query cors-disabled endpoint on localhost</li>
+					<li>Use of actual flint sparql grammar now, instead of slightly modified own version</li>
+				</ul>
+				<h3><a href="http://github.com/LaurensRietveld/yasgui/tree/v13.02d" target="_blank">V13.02</a></h3>
+				YASGUI is actively developed since july 2012. However, maintenance of the changelog only started from this point (february 2013) onwards.
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl."
+				: "http://www.");
+		document
+				.write(unescape("%3Cscript src='"
+						+ gaJsHost
+						+ "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+		try {
+			var pageTracker = _gat._getTracker("UA-35569470-2");
+			pageTracker._trackPageview();
+		} catch (err) {
+		}
+	</script>
+
+
+</body>
+</html>
