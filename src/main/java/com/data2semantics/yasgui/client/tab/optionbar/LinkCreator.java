@@ -28,7 +28,6 @@ package com.data2semantics.yasgui.client.tab.optionbar;
 
 import java.util.Iterator;
 import java.util.TreeMap;
-import com.smartgwt.client.types.TitleOrientation;
 import com.smartgwt.client.widgets.AnimationCallback;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.Canvas;
@@ -37,10 +36,7 @@ import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
-import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
-import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -60,15 +56,10 @@ public class LinkCreator extends ImgButton {
 	private View view;
 	private Window window;
 	private static int WINDOW_WIDTH = 220;
-	private static int WINDOW_HEIGHT = 170;
+	private static int WINDOW_HEIGHT = 85;
 	private static int ICON_WIDTH = 25;
 	private static int ICON_HEIGHT = 25;
 	private static int ANIMATE_SPEED = 100;
-	private CheckboxItem query;
-	private CheckboxItem endpoint;
-	private CheckboxItem tabTitle;
-	private CheckboxItem outputFormat;
-	private CheckboxItem requestOptions;
 	private TextItem urlTextBox;
 	private Canvas urlTextBoxAnim;
 	private Button shortenUrlButton;
@@ -113,7 +104,7 @@ public class LinkCreator extends ImgButton {
 		
 		HLayout belowLink = new HLayout();
 		belowLink.setMargin(4);
-		belowLink.addMember(getLinkOptions());
+//		belowLink.addMember(getLinkOptions());
 		
 		if (view.getSettings().getBitlyUsername() != null && view.getSettings().getBitlyUsername().length() > 0) {
 			belowLink.addMember(getShortenUrlButton());
@@ -178,43 +169,7 @@ public class LinkCreator extends ImgButton {
 		return urlTextBoxAnim;
 	}
 
-	private DynamicForm getLinkOptions() {
-		DynamicForm form = new DynamicForm();
-		form.setWidth100();
-		form.setTitleOrientation(TitleOrientation.RIGHT);
-
-		query = new CheckboxItem("query");
-		query.setValue(true);
-		query.setDisabled(true);
-
-		endpoint = new CheckboxItem("endpoint");
-		endpoint.setValue(true);
-		endpoint.setDisabled(true);
-
-		tabTitle = new CheckboxItem("tabTitle", "tab title");
-		tabTitle.addChangedHandler(new ChangedHandler() {
-			public void onChanged(ChangedEvent event) {
-				updateLinkWithQueryArgs();
-			}
-		});
-		outputFormat = new CheckboxItem("outputFormat", "output format");
-		outputFormat.addChangedHandler(new ChangedHandler() {
-			public void onChanged(ChangedEvent event) {
-				updateLinkWithQueryArgs();
-			}
-		});
-		requestOptions = new CheckboxItem("requestOptions", "request options");
-		requestOptions.addChangedHandler(new ChangedHandler() {
-			public void onChanged(ChangedEvent event) {
-				updateLinkWithQueryArgs();
-			}
-		});
-
-
-		form.setFields(query, endpoint, tabTitle, outputFormat, requestOptions);
-
-		return form;
-	}
+	
 	
 	private void updateLinkWithQueryArgs() {
 		TreeMap<String, String> args = getQueryArgs();
@@ -239,16 +194,14 @@ public class LinkCreator extends ImgButton {
 	
 	private TreeMap<String, String> getQueryArgs() {
 		TreeMap<String, String> args = new TreeMap<String, String>();
-		if ((Boolean)query.getValueAsBoolean()) args.put(SettingKeys.QUERY_STRING, view.getSelectedTabSettings().getQueryString());
-		if ((Boolean)endpoint.getValueAsBoolean()) args.put(SettingKeys.ENDPOINT, view.getSelectedTabSettings().getEndpoint());
-		if ((Boolean)outputFormat.getValueAsBoolean()) args.put(SettingKeys.OUTPUT_FORMAT, view.getSelectedTabSettings().getOutputFormat());
-		if ((Boolean)tabTitle.getValueAsBoolean()) args.put(SettingKeys.TAB_TITLE, view.getSelectedTabSettings().getTabTitle());
-		if ((Boolean)requestOptions.getValueAsBoolean()) {
-			args.put(SettingKeys.CONTENT_TYPE_SELECT, view.getSelectedTabSettings().getSelectContentType());
-			args.put(SettingKeys.CONTENT_TYPE_CONSTRUCT, view.getSelectedTabSettings().getConstructContentType());
-			args.put(SettingKeys.REQUEST_METHOD, view.getSelectedTabSettings().getRequestMethod());
-			args.putAll(view.getSelectedTabSettings().getQueryArgs());
-		}
+		args.put(SettingKeys.QUERY_STRING, view.getSelectedTabSettings().getQueryString());
+		args.put(SettingKeys.ENDPOINT, view.getSelectedTabSettings().getEndpoint());
+		args.put(SettingKeys.OUTPUT_FORMAT, view.getSelectedTabSettings().getOutputFormat());
+		args.put(SettingKeys.TAB_TITLE, view.getSelectedTabSettings().getTabTitle());
+		args.put(SettingKeys.CONTENT_TYPE_SELECT, view.getSelectedTabSettings().getSelectContentType());
+		args.put(SettingKeys.CONTENT_TYPE_CONSTRUCT, view.getSelectedTabSettings().getConstructContentType());
+		args.put(SettingKeys.REQUEST_METHOD, view.getSelectedTabSettings().getRequestMethod());
+		args.putAll(view.getSelectedTabSettings().getQueryArgs());
 		return args;
 	}
 	
