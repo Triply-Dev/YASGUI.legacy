@@ -103,7 +103,7 @@ public class View extends VLayout {
 		
 		getElements().checkHtml5();
 		
-		if (!settings.cookieConsentAnswered() && !Helper.isCrawler()) {
+		if (settings.useGoogleAnalytics() && !settings.cookieConsentAnswered() && !Helper.isCrawler()) {
 			getElements().askCookieConsent();
 		}
 		

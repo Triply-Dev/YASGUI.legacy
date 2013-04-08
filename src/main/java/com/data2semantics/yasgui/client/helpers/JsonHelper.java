@@ -57,13 +57,19 @@ import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 
 public class JsonHelper extends JSONObject {
-	
+
+	/**
+	 * Gets string from json object
+	 * 
+	 * @param key
+	 * @return null if string is empty, or key is not found
+	 */
 	protected String getString(String key) {
 		String result = null;
 		if (containsKey(key)) {
 			JSONValue resultValue = get(key);
 			JSONString resultString = resultValue.isString();
-			if (resultString != null) {
+			if (resultString != null && resultString.stringValue().length() > 0) {
 				result = resultString.stringValue();
 			}
 		}
