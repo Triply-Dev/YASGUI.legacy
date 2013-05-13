@@ -175,7 +175,7 @@ function appendPrefixIfNeeded(cm) {
 			//check whether it isnt defined already (saves us from looping through the array)
 			var currentPrefix = token.string;
 			var queryPrefixes = getPrefixesFromQuery(cm);
-			if ($.inArray(currentPrefix, queryPrefixes) == -1) {
+			if (queryPrefixes.length == 0 || $.inArray(currentPrefix, queryPrefixes) == -1) {
 				for (var i = 0; i < prefixes.length; i++) {
 					var prefix = prefixes[i].substring(0, currentPrefix.length);
 					if (prefix == currentPrefix) {
@@ -227,7 +227,7 @@ function appendToPrefixes(cm, prefix) {
 		}
 	}
 	if (lastPrefix == null) {
-		cm.replaceRange("PREFIX " + prefix, {line: 0});
+		cm.replaceRange("PREFIX " + prefix + "\n", {line: 0, ch:0});
 	} else {
 		var previousIndent = getIndentFromLine(cm, lastPrefixLine);
 		cm.replaceRange("\n" + previousIndent + "PREFIX " + prefix, {line: lastPrefixLine});
