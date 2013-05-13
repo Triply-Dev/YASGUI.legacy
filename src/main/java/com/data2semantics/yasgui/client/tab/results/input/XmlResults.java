@@ -152,10 +152,20 @@ public class XmlResults implements SparqlResults{
 	
 	private HashMap<String, String> extractValuesFromXmlNode(Node xmlNode, String[] attributes) {
 		HashMap<String, String> rdfNode = new HashMap<String, String>();
-		rdfNode.put("value", xmlNode.getFirstChild().getNodeValue());
-		for (String attribute: attributes) {
-			String attributeValue = ((Element)xmlNode).getAttribute(attribute);
-			if (attributeValue != null) rdfNode.put(attribute, attributeValue);
+		Node firstChild = xmlNode.getFirstChild();
+		if (firstChild != null) {
+			String value = firstChild.getNodeValue();
+			if (value != null) {
+				rdfNode.put("value", value);
+				for (String attribute: attributes) {
+					String attributeValue = ((Element)xmlNode).getAttribute(attribute);
+					if (attributeValue != null) rdfNode.put(attribute, attributeValue);
+				}
+			}
+		}
+		//we want to set something at least.. just put empty string in there if value still isnt set
+		if (rdfNode.size() == 0) {
+			rdfNode.put("value", "");
 		}
 		return rdfNode;
 	}
