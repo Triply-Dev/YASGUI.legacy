@@ -111,7 +111,7 @@ function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader,
 							errorMsg = "Error querying endpoint: "
 									+ jqXHR.status + " - " + errorThrown;
 						}
-						onQueryError(errorMsg);
+						onQueryError(tabId, errorMsg);
 					}
 				},
 			});

@@ -111,8 +111,8 @@ public class CallableJsMethods {
 		view.getElements().onQueryFinish();
 	}
 	
-	public void onQueryError(String message) {
-		view.getElements().onQueryError(message);
+	public void onQueryError(String tabId, String message) {
+		view.getElements().onQueryError(tabId, message);
 	}
 	
 	public void showPlayButton(String queryValid) {
@@ -154,8 +154,8 @@ public class CallableJsMethods {
 		$wnd.storeQueryInCookie = function() {
 			viewJs.@com.data2semantics.yasgui.client.CallableJsMethods::storeQueryInCookie()();
 		}
-		$wnd.onQueryError = function(errorMsg) {
-			viewJs.@com.data2semantics.yasgui.client.CallableJsMethods::onQueryError(Ljava/lang/String;)(errorMsg);
+		$wnd.onQueryError = function(tabId, errorMsg) {
+			viewJs.@com.data2semantics.yasgui.client.CallableJsMethods::onQueryError(Ljava/lang/String;Ljava/lang/String;)(tabId, errorMsg);
 		}
 		$wnd.showPlayButton = function(queryValid) {
 			viewJs.@com.data2semantics.yasgui.client.CallableJsMethods::showPlayButton(Ljava/lang/String;)(queryValid);
