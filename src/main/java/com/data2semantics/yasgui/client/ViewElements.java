@@ -241,6 +241,8 @@ public class ViewElements {
 		label.setMargin(4);
 		label.setHeight100();
 		window.addItem(label);
+		window.setIsModal(true);
+		window.setDismissOnOutsideClick(true);
 		window.draw();
 	}
 	
