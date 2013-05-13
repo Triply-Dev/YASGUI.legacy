@@ -37,6 +37,7 @@ import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.properties.ExternalLinks;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
 import com.data2semantics.yasgui.client.tab.QueryTab;
+import com.data2semantics.yasgui.shared.SettingKeys;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Position;
@@ -229,11 +230,12 @@ public class ViewElements {
 	 */
 	public void onError(Throwable e) {
 		String errorMsg;
-		if (GWT.isProdMode()) {
-			errorMsg = e.getMessage();
-		} else {
+		
+		if (Helper.inDebugMode()) {
 			errorMsg = Helper.getStackTraceAsString(e);
 			errorMsg += "\nCaused by:\n" + Helper.getCausesStackTraceAsString(e);
+		} else {
+			errorMsg = e.getMessage();
 		}
 		
 		onError(errorMsg);

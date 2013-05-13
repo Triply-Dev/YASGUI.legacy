@@ -56,6 +56,7 @@ import java.util.HashMap;
 import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Window;
@@ -193,5 +194,30 @@ public class Helper {
 		MatchResult matcher = regExp.exec(userAgent);
 		boolean matchFound = (matcher != null);
 		return matchFound;
+	}
+
+	/**
+	 * We are in debug mode when we are not in production mode, or when we have a debug url parameter set to 1
+	 * @return
+	 */
+	public static boolean inDebugMode() {
+		int debugValue = 0;
+		if (!GWT.isProdMode()) {
+			debugValue = 1;
+		} else {
+			String value = Window.Location.getParameter("DEBUG");
+			if (value == null)
+				value = Window.Location.getParameter("debug");
+			if (value == null)
+				value = Window.Location.getParameter("Debug");
+			if (value != null) {
+				try {
+					debugValue = Integer.parseInt(value);
+				} catch (Exception e) {
+					// not an integer. ignore, and don't use debug mode
+				}
+			}
+		}
+		return (debugValue == 1? true: false);
 	}
 }
