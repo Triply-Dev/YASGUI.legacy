@@ -95,36 +95,7 @@ public class ViewElements {
 		queryButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				if (JsMethods.stringToDownloadSupported()) {
-					view.getSelectedTab().getDownloadLink().showDisabledIcon();
-				}
-				String tabId = view.getSelectedTab().getID();
-				String endpoint = view.getSelectedTabSettings().getEndpoint();
-				String queryString = view.getSelectedTabSettings().getQueryString();
-				
-				String mainAcceptHeader;
-				if (view.getSelectedTab().getQueryType().equals("CONSTRUCT")) {
-					//Change content type automatically for construct queries
-					mainAcceptHeader = view.getSelectedTabSettings().getConstructContentType();
-				} else {
-					mainAcceptHeader = view.getSelectedTabSettings().getSelectContentType();
-				}
-				String acceptHeaders = Helper.getAcceptHeaders(mainAcceptHeader);
-			
-				String argsString = view.getSelectedTabSettings().getQueryArgsAsJsonString();
-				String requestMethod = view.getSelectedTabSettings().getRequestMethod();
-				
-				
-				
-				JsMethods.query(tabId, queryString, endpoint, acceptHeaders, argsString, requestMethod);
-				view.checkAndAddEndpointToDs(endpoint);
-				if (view.getSettings().useGoogleAnalytics() && view.getSettings().getTrackingQueryConsent()) {
-					GoogleAnalyticsEvent endpointEvent = new GoogleAnalyticsEvent("sparql", "endpoint");
-					endpointEvent.setOptLabel(endpoint);
-					GoogleAnalyticsEvent queryEvent = new GoogleAnalyticsEvent("sparql", "query");
-					queryEvent.setOptLabel(queryString);
-					GoogleAnalytics.trackEvents(endpointEvent, queryEvent);
-				}
+				executeQuery();
 			}
 		});
 		
@@ -156,6 +127,39 @@ public class ViewElements {
 	public void cancelQuery() {
 		JsMethods.cancelQuery();
 		onQueryFinish();
+	}
+	
+	public void executeQuery() {
+		if (JsMethods.stringToDownloadSupported()) {
+			view.getSelectedTab().getDownloadLink().showDisabledIcon();
+		}
+		String tabId = view.getSelectedTab().getID();
+		String endpoint = view.getSelectedTabSettings().getEndpoint();
+		String queryString = view.getSelectedTabSettings().getQueryString();
+		
+		String mainAcceptHeader;
+		if (view.getSelectedTab().getQueryType().equals("CONSTRUCT")) {
+			//Change content type automatically for construct queries
+			mainAcceptHeader = view.getSelectedTabSettings().getConstructContentType();
+		} else {
+			mainAcceptHeader = view.getSelectedTabSettings().getSelectContentType();
+		}
+		String acceptHeaders = Helper.getAcceptHeaders(mainAcceptHeader);
+	
+		String argsString = view.getSelectedTabSettings().getQueryArgsAsJsonString();
+		String requestMethod = view.getSelectedTabSettings().getRequestMethod();
+		
+		
+		
+		JsMethods.query(tabId, queryString, endpoint, acceptHeaders, argsString, requestMethod);
+		view.checkAndAddEndpointToDs(endpoint);
+		if (view.getSettings().useGoogleAnalytics() && view.getSettings().getTrackingQueryConsent()) {
+			GoogleAnalyticsEvent endpointEvent = new GoogleAnalyticsEvent("sparql", "endpoint");
+			endpointEvent.setOptLabel(endpoint);
+			GoogleAnalyticsEvent queryEvent = new GoogleAnalyticsEvent("sparql", "query");
+			queryEvent.setOptLabel(queryString);
+			GoogleAnalytics.trackEvents(endpointEvent, queryEvent);
+		}
 	}
 	
 	/**
