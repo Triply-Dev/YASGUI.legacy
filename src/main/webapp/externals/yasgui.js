@@ -150,8 +150,8 @@ function endsWith(str, suffix) {
 }
 function getNextNonWsToken(cm, lineNumber, charNumber) {
 	if (charNumber == undefined) charNumber = 1;
-	token = cm.getTokenAt({line : lineNumber,ch : charNumber});
-	if (token == null || token == undefined) {
+	var token = cm.getTokenAt({line : lineNumber,ch : charNumber});
+	if (token == null || token == undefined || token.end < charNumber) {
 		return null;
 	}
 	if (token.className == "sp-ws") {
