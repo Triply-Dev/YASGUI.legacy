@@ -111,6 +111,10 @@ public class CallableJsMethods {
 		view.getElements().onQueryFinish();
 	}
 	
+	public void executeQuery() {
+		view.getElements().executeQuery();
+	}
+	
 	public void onQueryError(String tabId, String message) {
 		view.getElements().onQueryError(tabId, message);
 	}
@@ -171,6 +175,9 @@ public class CallableJsMethods {
 		}
 		$wnd.cancelQuery = function() {
 			viewJs.@com.data2semantics.yasgui.client.CallableJsMethods::cancelQuery()();
+		}
+		$wnd.executeQuery = function() {
+			viewJs.@com.data2semantics.yasgui.client.CallableJsMethods::executeQuery()();
 		}
 		$wnd.saveTabTitle = function() {
 			viewJs.@com.data2semantics.yasgui.client.CallableJsMethods::saveTabTitle()();

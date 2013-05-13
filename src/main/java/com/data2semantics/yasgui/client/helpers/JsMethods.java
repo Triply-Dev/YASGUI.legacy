@@ -86,6 +86,7 @@ public class JsMethods {
 						"Ctrl-/" : "commentLines",
 						"Ctrl-Alt-Down" : "copyLineDown",
 						"Ctrl-Alt-Up" : "copyLineUp",
+//						"Ctrl-Enter" : "executeQuery"
 					},
 					onHighlightComplete : function(cm) {
 						$wnd.checkSyntax(cm);

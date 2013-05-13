@@ -1,6 +1,9 @@
 CodeMirror.commands.autocomplete = function(cm) {
 	CodeMirror.simpleHint(cm, CodeMirror.prefixHint);
 };
+CodeMirror.commands.executeQuery = function(cm) {
+	
+};
 //Make sure deleteLine also -removes- the line
 CodeMirror.commands.deleteLines = function(cm) {
 	var startLine = cm.getCursor(true).line;
