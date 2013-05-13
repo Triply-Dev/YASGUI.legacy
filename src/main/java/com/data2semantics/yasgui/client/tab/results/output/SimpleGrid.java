@@ -66,6 +66,7 @@ public class SimpleGrid extends HTMLPane {
 
 	private void drawHeader() {
 		html += "<thead><tr class=\"simpleTable\">";
+		html += "<th>#</th>";
 		for (String variable: variables) {
 			html += "<th>" + StringUtil.asHTML(variable) + "</th>";
 		}
@@ -74,8 +75,10 @@ public class SimpleGrid extends HTMLPane {
 
 	private void drawRows() {
 		html += "<tbody>";
+		int rowId = 1;
 		for (HashMap<String, HashMap<String, String>> bindings: solutions) {
 			html += "<tr>";
+			html += "<td>" + Integer.toString(rowId) + "</td>";
 			for (String variable: variables) {
 				html += "<td>";
 				if (bindings.containsKey(variable)) {
@@ -93,6 +96,7 @@ public class SimpleGrid extends HTMLPane {
 				html += "</td>";
 			}
 			html += "</tr>";
+			rowId++;
 		}
 		html += "</tbody>";
 	}
