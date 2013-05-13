@@ -2,11 +2,6 @@
   CodeMirror.simpleHint = function(editor, getHints) {
     // We want a single cursor position.
     if (editor.somethingSelected()) return;
-    //don't show completion if the token is empty
-    var tempToken = editor.getTokenAt(editor.getCursor());
-    
-    //We want to process empty tokens (see if the token before is relevant)
-    //if(!(/[\S]/gi.test(tempToken.string))) return;
 
     var result = getHints(editor);
     if (!result || !result.list.length) return;
