@@ -135,7 +135,7 @@ public class ResultContainer extends VLayout {
 			//assuming select query here (no construct)
 			resultFormat = detectContentType(resultString);
 			if (resultFormat == 0) {
-				view.getElements().onQueryError("Unable to detect content type<br><br>" + resultString);
+				view.getElements().onQueryError(queryTab.getID(), "Unable to detect content type<br><br>" + resultString);
 				return;
 			}
 		} else if (contentType.contains("sparql-results+json")) {
@@ -146,7 +146,7 @@ public class ResultContainer extends VLayout {
 			//assuming select query here (no construct)
 			resultFormat = detectContentType(resultString);
 			if (resultFormat == 0) {
-				view.getElements().onQueryError("Unable to parse results with content type " + contentType + ".<br><br>" + resultString);
+				view.getElements().onQueryError(queryTab.getID(), "Unable to parse results with content type " + contentType + ".<br><br>" + resultString);
 				return;
 			}
 		}

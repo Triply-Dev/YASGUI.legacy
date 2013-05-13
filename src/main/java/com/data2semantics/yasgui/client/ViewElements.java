@@ -26,6 +26,9 @@ package com.data2semantics.yasgui.client;
  * #L%
  */
 
+import java.util.HashMap;
+import java.util.Map.Entry;
+
 import com.data2semantics.yasgui.client.helpers.GoogleAnalytics;
 import com.data2semantics.yasgui.client.helpers.GoogleAnalyticsEvent;
 import com.data2semantics.yasgui.client.helpers.Helper;
@@ -33,6 +36,7 @@ import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.properties.ExternalLinks;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
+import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Position;
@@ -209,9 +213,10 @@ public class ViewElements {
 		queryLoading.hide();
 	}
 	
-	public void onQueryError(String error) {
+	public void onQueryError(String tabId, String error) {
 		onQueryFinish();
-		onQueryError(error, view.getSelectedTabSettings().getEndpoint(), view.getSelectedTabSettings().getQueryString());
+		QueryTab tab = (QueryTab)view.getTabs().getTab(tabId);
+		onQueryError(error, tab.getTabSettings().getEndpoint(), tab.getTabSettings().getQueryString(), tab.getTabSettings().getQueryArgs());
 	}
 	
 	/**
@@ -270,8 +275,9 @@ public class ViewElements {
 	 * @param error Html error msg
 	 * @param endpoint Used endpoint
 	 * @param query Used query
+	 * @param args 
 	 */
-	public void onQueryError(String error, final String endpoint, final String query) {
+	public void onQueryError(String error, final String endpoint, final String query, final HashMap<String, String> args) {
 		final Window window = getErrorWindow();
 		window.setZIndex(ZIndexes.MODAL_WINDOWS);
 		VLayout vLayout = new VLayout();
@@ -289,6 +295,9 @@ public class ViewElements {
 			@Override
 			public void onClick(ClickEvent event) {
 				String url = endpoint + "?query=" + URL.encodeQueryString(query);
+				for (Entry<String, String> entry : args.entrySet()) {
+				    url += "&" + entry.getKey() + "=" + URL.encodeQueryString(entry.getValue());
+				}
 				com.google.gwt.user.client.Window.open(url, "_blank", null);
 			}});
 		executeQuery.setWidth(200);

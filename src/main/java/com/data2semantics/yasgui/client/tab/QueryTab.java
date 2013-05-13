@@ -235,4 +235,5 @@ public class QueryTab extends Tab {
 	public DownloadLink getDownloadLink() {
 		return this.downloadLink;
 	}
+	
 }
