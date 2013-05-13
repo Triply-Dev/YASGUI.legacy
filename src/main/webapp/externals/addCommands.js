@@ -2,7 +2,7 @@ CodeMirror.commands.autocomplete = function(cm) {
 	CodeMirror.simpleHint(cm, CodeMirror.prefixHint);
 };
 CodeMirror.commands.executeQuery = function(cm) {
-	
+	executeQuery();
 };
 //Make sure deleteLine also -removes- the line
 CodeMirror.commands.deleteLines = function(cm) {

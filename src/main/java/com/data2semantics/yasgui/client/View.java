@@ -28,6 +28,8 @@ package com.data2semantics.yasgui.client;
 
 import java.io.IOException;
 import java.util.logging.Logger;
+
+import com.data2semantics.yasgui.client.helpers.CallableJsMethods;
 import com.data2semantics.yasgui.client.helpers.GoogleAnalytics;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;

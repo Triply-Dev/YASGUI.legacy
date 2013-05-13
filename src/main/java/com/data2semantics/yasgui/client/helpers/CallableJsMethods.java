@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.client;
+package com.data2semantics.yasgui.client.helpers;
 
 /*
  * #%L
@@ -26,7 +26,7 @@ package com.data2semantics.yasgui.client;
  * #L%
  */
 
-import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
+import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 
 public class CallableJsMethods {
@@ -135,52 +135,52 @@ public class CallableJsMethods {
 	public static native void declareCallableViewMethods(CallableJsMethods viewJs) /*-{
 		var view = view; 
 		$wnd.drawResults = function(tabId, resultString, contentType) {
-			viewJs.@com.data2semantics.yasgui.client.CallableJsMethods::drawResults(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(tabId, resultString, contentType);
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::drawResults(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(tabId, resultString, contentType);
 		}
 		$wnd.onError = function(errorMsg) {
-			viewJs.@com.data2semantics.yasgui.client.CallableJsMethods::onError(Ljava/lang/String;)(errorMsg);
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::onError(Ljava/lang/String;)(errorMsg);
 		}
 		$wnd.onLoadingStart = function(message) {
-			viewJs.@com.data2semantics.yasgui.client.CallableJsMethods::onLoadingStart(Ljava/lang/String;)(message);
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::onLoadingStart(Ljava/lang/String;)(message);
 		}
 		$wnd.onLoadingFinish = function() {
-			viewJs.@com.data2semantics.yasgui.client.CallableJsMethods::onLoadingFinish()();
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::onLoadingFinish()();
 		}
 		$wnd.onQueryStart = function() {
-			viewJs.@com.data2semantics.yasgui.client.CallableJsMethods::onQueryStart()();
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::onQueryStart()();
 		}
 		$wnd.onQueryFinish = function() {
-			viewJs.@com.data2semantics.yasgui.client.CallableJsMethods::onQueryFinish()();
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::onQueryFinish()();
 		}
 		$wnd.clearQueryResult = function() {
-			viewJs.@com.data2semantics.yasgui.client.CallableJsMethods::resetQueryResult()();
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::resetQueryResult()();
 		}
 		$wnd.storeQueryInCookie = function() {
-			viewJs.@com.data2semantics.yasgui.client.CallableJsMethods::storeQueryInCookie()();
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::storeQueryInCookie()();
 		}
 		$wnd.onQueryError = function(tabId, errorMsg) {
-			viewJs.@com.data2semantics.yasgui.client.CallableJsMethods::onQueryError(Ljava/lang/String;Ljava/lang/String;)(tabId, errorMsg);
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::onQueryError(Ljava/lang/String;Ljava/lang/String;)(tabId, errorMsg);
 		}
 		$wnd.showPlayButton = function(queryValid) {
-			viewJs.@com.data2semantics.yasgui.client.CallableJsMethods::showPlayButton(Ljava/lang/String;)(queryValid);
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::showPlayButton(Ljava/lang/String;)(queryValid);
 		}
 		$wnd.adjustQueryInputForContent = function() {
-			viewJs.@com.data2semantics.yasgui.client.CallableJsMethods::adjustQueryInputForContent()();
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::adjustQueryInputForContent()();
 		}
 		$wnd.setQueryType = function(queryType) {
-			viewJs.@com.data2semantics.yasgui.client.CallableJsMethods::setQueryType(Ljava/lang/String;)(queryType);
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::setQueryType(Ljava/lang/String;)(queryType);
 		}
 		$wnd.storeSettings = function() {
-			viewJs.@com.data2semantics.yasgui.client.CallableJsMethods::storeSettings()();
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::storeSettings()();
 		}
 		$wnd.cancelQuery = function() {
-			viewJs.@com.data2semantics.yasgui.client.CallableJsMethods::cancelQuery()();
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::cancelQuery()();
 		}
 		$wnd.executeQuery = function() {
-			viewJs.@com.data2semantics.yasgui.client.CallableJsMethods::executeQuery()();
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::executeQuery()();
 		}
 		$wnd.saveTabTitle = function() {
-			viewJs.@com.data2semantics.yasgui.client.CallableJsMethods::saveTabTitle()();
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::saveTabTitle()();
 		}
 	}-*/;
 }
