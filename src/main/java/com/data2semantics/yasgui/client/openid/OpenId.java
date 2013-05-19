@@ -120,7 +120,7 @@ public class OpenId {
 		url = StaticConfig.OPEN_ID_SERVLET + "?logOut=1&appBaseUrl="
 				+ URL.encode(GWT.getHostPageBaseURL());
 		if (!GWT.isProdMode()) {
-			url += "dev.jsp&" + StaticConfig.DEBUG_ARGUMENT_KEY + "="
+			url += StaticConfig.DEBUG_FILE + "&" + StaticConfig.DEBUG_ARGUMENT_KEY + "="
 					+ StaticConfig.DEBUG_ARGUMENT_VALUE;
 		}
 		Window.Location.assign(url);
@@ -131,14 +131,14 @@ public class OpenId {
 	}
 
 	private void drawSessionWidgetLoggedIn(UserDetails details) {
-		String text = details.getCookieName();
+		String text = details.getFirstName() + " " + details.getLastName();
 		
 		String html = "<span class='footerText'>" + text + "</span>&nbsp;<span class='footerTextLink'>(log out)</span>";
 		HTMLFlow htmlFlow = new HTMLFlow(html);
 		htmlFlow.setAlign(Alignment.CENTER);
 		htmlFlow.setMargin(3);
 		htmlFlow.setCanSelectText(true);
-		htmlFlow.setWidth(text.length() * 7);
+		htmlFlow.setWidth(text.length() * 8);
 		htmlFlow.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
