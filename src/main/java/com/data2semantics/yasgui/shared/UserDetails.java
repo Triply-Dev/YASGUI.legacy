@@ -32,26 +32,47 @@ public class UserDetails implements Serializable {
 	private static final long serialVersionUID = -7506950527106295667L;
 	private String cookieName;
 	private String uniqueOpenId;
-	public void setCookieName(String cookieName) {
-		this.cookieName = cookieName;
-		
-	}
-	public void setUniqueOpenId(String uniqueOpenId) {
+	private String firstName;
+	private String lastName;
+	private int userId;
+	private String openId;
+	public void setUniqueId(String uniqueOpenId) {
 		this.uniqueOpenId = uniqueOpenId;
 	}
 	
-	public String getCookieName() {
-		return cookieName;
-	}
-	public String getUniqueOpenId() {
+	public String getUniqueId() {
 		return uniqueOpenId;
 	}
 	
 	public boolean isLoggedIn() {
-		return (getCookieName() != null && getUniqueOpenId() != null);
+		return (getOpenId() != null && getUniqueId() != null);
 	}
 	
 	public String toString() {
 		return "uniqueOid: " + uniqueOpenId + "\n" + "cookie name: " + cookieName;
+	}
+	public String getFirstName() {
+		return firstName;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName.trim();
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName.trim();
+	}
+	public int getUserId() {
+		return userId;
+	}
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+	public void setOpenId(String identifier) {
+		this.openId = identifier;
+	}
+	public String getOpenId() {
+		return this.openId;
 	}
 }

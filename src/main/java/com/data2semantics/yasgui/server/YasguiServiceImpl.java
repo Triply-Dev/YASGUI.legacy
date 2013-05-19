@@ -34,6 +34,7 @@ import javax.servlet.ServletContext;
 import org.json.JSONObject;
 
 import com.data2semantics.yasgui.client.services.YasguiService;
+import com.data2semantics.yasgui.server.db.DbConnection;
 import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
 import com.data2semantics.yasgui.server.fetchers.PrefixesFetcher;
 import com.data2semantics.yasgui.server.fetchers.endpoints.EndpointsFetcher;
@@ -83,11 +84,13 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 	
 	public String fetchEndpoints(boolean forceUpdate) throws IllegalArgumentException, FetchException {
 		String endpoints = "";
+		DbConnection connection = null;
 		try {
-			endpoints = EndpointsFetcher.fetch(forceUpdate, new File(getServletContext().getRealPath(CACHE_DIR))); 
+			connection = new DbConnection(ConfigFetcher.getJsonObject(getServletContext().getRealPath("/")));
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "exception", e);
-			throw new FetchException("Unable to fetch endpoints: " + e.getMessage() + "\n", e);
+			e.printStackTrace();
+		} finally {
+			if (connection != null) connection.close();
 		}
 		return endpoints;
 	}

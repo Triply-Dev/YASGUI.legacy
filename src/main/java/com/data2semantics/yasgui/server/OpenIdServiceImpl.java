@@ -26,15 +26,23 @@ package com.data2semantics.yasgui.server;
  * #L%
  */
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.data2semantics.yasgui.client.services.OpenIdService;
+import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
 import com.data2semantics.yasgui.server.openid.OpenIdServlet;
 import com.data2semantics.yasgui.shared.LoginResult;
 import com.data2semantics.yasgui.shared.UserDetails;
+import com.data2semantics.yasgui.shared.exceptions.OpenIdException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
@@ -44,27 +52,41 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class OpenIdServiceImpl extends RemoteServiceServlet implements OpenIdService {
 	private final static Logger LOGGER = Logger.getLogger(OpenIdServiceImpl.class.getName());
 	
-	public LoginResult login(String appBaseUrl, boolean inDebugMode, String openIdURL) {
+	public LoginResult login(String appBaseUrl, boolean inDebugMode, String openIdURL) throws OpenIdException {
 		LOGGER.info("trying to log in for " + openIdURL);
 		HttpServletRequest request = getThreadLocalRequest();
 		LOGGER.info("we have the request. now pass it on to openid servlet");
-		UserDetails userDetails = OpenIdServlet.getRequestUserInfo(request);
-		System.out.println(userDetails.toString());
-		LoginResult loginResult = new LoginResult();
-		if (userDetails.isLoggedIn()) {
-			loginResult.setIsLoggedIn(true);
-		} else {
-			LOGGER.info("not logged in");
-			//not logged in
-			loginResult.setIsLoggedIn(false);
-			loginResult.setAuthenticationLink(OpenIdServlet.getAuthenticationURL(openIdURL, appBaseUrl, inDebugMode));
+		try {
+			JSONObject config = ConfigFetcher.getJsonObject(getServletContext().getRealPath("/"));
+			UserDetails userDetails = OpenIdServlet.getRequestUserInfo(config, request);
+			System.out.println(userDetails.toString());
+			LoginResult loginResult = new LoginResult();
+			if (userDetails.isLoggedIn()) {
+				loginResult.setIsLoggedIn(true);
+			} else {
+				LOGGER.info("not logged in");
+				//not logged in
+				loginResult.setIsLoggedIn(false);
+				loginResult.setAuthenticationLink(OpenIdServlet.getAuthenticationURL(openIdURL, appBaseUrl, inDebugMode));
+			}
+			return loginResult;
+		} catch (Exception e) {
+			throw new OpenIdException("unable to log in: " + e.getMessage());
 		}
-		return loginResult;
+		
 	}
-	public UserDetails getCurrentUser() {
-		return OpenIdServlet.getRequestUserInfo(getThreadLocalRequest());
+	public UserDetails getCurrentUser() throws OpenIdException {
+		UserDetails details = new UserDetails();
+		try {
+			JSONObject config = ConfigFetcher.getJsonObject(getServletContext().getRealPath("/"));
+			details = OpenIdServlet.getRequestUserInfo(config, getThreadLocalRequest());
+		} catch (Exception e) {
+			//do nothing. just use empty user details
+			e.printStackTrace();
+		}
+		return details;
 	}
-	public void logout() {
+	public void logout() throws OpenIdException {
 //		getThreadLocalRequest().getSession().removeAttribute("app-openid-identifier");
 //		getThreadLocalRequest().getSession().removeAttribute("app-openid-uniqueid");
 		

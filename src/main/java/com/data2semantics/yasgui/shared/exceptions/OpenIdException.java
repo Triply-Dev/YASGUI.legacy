@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.client.services;
+package com.data2semantics.yasgui.shared.exceptions;
 
 /*
  * #%L
@@ -26,18 +26,19 @@ package com.data2semantics.yasgui.client.services;
  * #L%
  */
 
-import com.data2semantics.yasgui.shared.LoginResult;
-import com.data2semantics.yasgui.shared.UserDetails;
-import com.data2semantics.yasgui.shared.exceptions.OpenIdException;
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import java.io.Serializable;
 
-/**
- * The client side stub for the RPC service.
- */
-@RemoteServiceRelativePath("OpenIdService")
-public interface OpenIdService extends RemoteService {
-	  LoginResult login(String appBaseUrl, boolean inDebugMode, String openIdURL) throws OpenIdException;
-	  UserDetails getCurrentUser() throws OpenIdException;
-	  void logout() throws OpenIdException;
+public class OpenIdException extends RuntimeException implements Serializable { 
+	
+	public OpenIdException(){}
+	public OpenIdException(String message) {
+		super(message);
+	}
+
+	public OpenIdException(String message, Throwable e) {
+		super(message, e);
+	}
+
+	private static final long serialVersionUID = 1L;
+	
 }
