@@ -113,7 +113,7 @@ public class Footer extends HLayout {
 		Label yasguiVersion = new Label("Yasgui " + StaticConfig.VERSION);
 		yasguiVersion.setAlign(Alignment.CENTER);
 		yasguiVersion.setMargin(3);
-		yasguiVersion.setStyleName("footerText");
+		yasguiVersion.setStyleName("footerTextLink");
 		yasguiVersion.setWrap(false);
 		yasguiVersion.setCanSelectText(true);
 		yasguiVersion.addClickHandler(new ClickHandler() {

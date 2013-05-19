@@ -31,9 +31,6 @@ import java.io.Serializable;
 public class Prefix implements Serializable {
 	private String prefix;
 	private String uri;
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	public Prefix(){}
 	public Prefix(String prefix, String uri) {
