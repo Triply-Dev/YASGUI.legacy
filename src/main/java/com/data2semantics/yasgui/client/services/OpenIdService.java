@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.shared;
+package com.data2semantics.yasgui.client.services;
 
 /*
  * #%L
@@ -26,16 +26,17 @@ package com.data2semantics.yasgui.shared;
  * #L%
  */
 
-import java.io.Serializable;
+import com.data2semantics.yasgui.shared.LoginResult;
+import com.data2semantics.yasgui.shared.UserDetails;
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-public class StaticConfig implements Serializable {
-	private static final long serialVersionUID = 1L;
-	//YASGUI versions
-	public static int VERSION_ID = 6;
-	public static String VERSION = "13.05a";
-	public static String OPEN_ID_SERVLET = "Yasgui/openId";
-	public static String DEBUG_ARGUMENT_KEY = "gwt.codesvr";
-	public static String DEBUG_ARGUMENT_VALUE = "127.0.0.1:9997";
-	
-	public static String OPEN_ID_PROVIDER_IMG_PATH = "icons/openid/";
+/**
+ * The client side stub for the RPC service.
+ */
+@RemoteServiceRelativePath("OpenIdService")
+public interface OpenIdService extends RemoteService {
+	  LoginResult login(String appBaseUrl, boolean inDebugMode, String openIdURL);
+	  UserDetails getCurrentUser();
+	  void logout();
 }
