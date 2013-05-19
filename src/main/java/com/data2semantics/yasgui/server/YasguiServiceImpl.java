@@ -32,7 +32,8 @@ import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 import org.json.JSONObject;
-import com.data2semantics.yasgui.client.YasguiService;
+
+import com.data2semantics.yasgui.client.services.YasguiService;
 import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
 import com.data2semantics.yasgui.server.fetchers.PrefixesFetcher;
 import com.data2semantics.yasgui.server.fetchers.endpoints.EndpointsFetcher;
@@ -89,5 +90,11 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 			throw new FetchException("Unable to fetch endpoints: " + e.getMessage() + "\n", e);
 		}
 		return endpoints;
+	}
+	
+	public String authenticate(String service) throws IllegalArgumentException, FetchException {
+		System.out.println("Df");
+		return "";
+		
 	}
 }

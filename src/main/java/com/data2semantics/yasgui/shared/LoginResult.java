@@ -1,5 +1,7 @@
 package com.data2semantics.yasgui.shared;
 
+import java.io.Serializable;
+
 /*
  * #%L
  * YASGUI
@@ -26,16 +28,23 @@ package com.data2semantics.yasgui.shared;
  * #L%
  */
 
-import java.io.Serializable;
-
-public class StaticConfig implements Serializable {
-	private static final long serialVersionUID = 1L;
-	//YASGUI versions
-	public static int VERSION_ID = 6;
-	public static String VERSION = "13.05a";
-	public static String OPEN_ID_SERVLET = "Yasgui/openId";
-	public static String DEBUG_ARGUMENT_KEY = "gwt.codesvr";
-	public static String DEBUG_ARGUMENT_VALUE = "127.0.0.1:9997";
+public class LoginResult implements Serializable{
+	private static final long serialVersionUID = -9007505940768649210L;
+	private boolean loggedIn;
+	private String authenticationService;
+	public LoginResult() {}
 	
-	public static String OPEN_ID_PROVIDER_IMG_PATH = "icons/openid/";
+	public void setIsLoggedIn(boolean loggedIn) {
+		this.loggedIn = loggedIn;
+	}
+	
+	public void setAuthenticationLink(String authenticationService) {
+		this.authenticationService = authenticationService;
+	}
+	public boolean isLoggedIn() {
+		return loggedIn;
+	}
+	public String getAuthenticationLink() {
+		return this.authenticationService;
+	}
 }

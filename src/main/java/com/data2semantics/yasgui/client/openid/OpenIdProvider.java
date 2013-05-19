@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.client;
+package com.data2semantics.yasgui.client.openid;
 
 /*
  * #%L
@@ -26,16 +26,12 @@ package com.data2semantics.yasgui.client;
  * #L%
  */
 
-import com.data2semantics.yasgui.shared.exceptions.FetchException;
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-/**
- * The client side stub for the RPC service.
- */
-@RemoteServiceRelativePath("YasguiService")
-public interface YasguiService extends RemoteService {
-	String fetchPrefixes(boolean forceUpdate) throws IllegalArgumentException, FetchException;
-	String fetchEndpoints(boolean forceUpdate) throws IllegalArgumentException, FetchException;
-	String getShortUrl(String forceUpdate) throws IllegalArgumentException, FetchException;
+public interface OpenIdProvider {
+	public String getName();
+	public String getUrl();
+	public boolean requireUsername();
+	public String getImageLocation();
+	public int getMaxIconHeight();
+	
 }
