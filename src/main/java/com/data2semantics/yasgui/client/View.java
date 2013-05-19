@@ -35,6 +35,9 @@ import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
+import com.data2semantics.yasgui.client.openid.OpenId;
+import com.data2semantics.yasgui.client.services.OpenIdServiceAsync;
+import com.data2semantics.yasgui.client.services.YasguiServiceAsync;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.QueryTab;
@@ -64,6 +67,7 @@ import com.smartgwt.client.widgets.layout.VLayout;
 public class View extends VLayout {
 	private Logger logger = Logger.getLogger("");
 	private YasguiServiceAsync remoteService = YasguiServiceAsync.Util.getInstance();
+	private OpenIdServiceAsync openIdService = OpenIdServiceAsync.Util.getInstance();
 	private EndpointDataSource endpointDataSource;
 	private QueryTabs queryTabs;
 	private ViewElements viewElements;
@@ -71,7 +75,7 @@ public class View extends VLayout {
 	private Settings settings = new Settings();
 	@SuppressWarnings("unused")
 	private CallableJsMethods jsEvents;
-	
+	private OpenId openId;
 	public View() {
 		boolean newUser = false;
 		if (LocalStorageHelper.newUser()) newUser = true;
@@ -82,6 +86,10 @@ public class View extends VLayout {
 		
 		viewElements = new ViewElements(this);
 		jsEvents = new CallableJsMethods(this);
+		
+		openId = new OpenId(this);
+		
+		
 		processVersionChanges();
 		if (getSettings().useGoogleAnalytics()) {
 			GoogleAnalytics.init(getSettings().getGoogleAnalyticsId());
@@ -219,6 +227,10 @@ public class View extends VLayout {
 
 	public YasguiServiceAsync getRemoteService() {
 		return remoteService;
+	}
+	
+	public OpenIdServiceAsync getOpenIdService() {
+		return openIdService;
 	}
 
 	public Logger getLogger() {
@@ -380,5 +392,9 @@ public class View extends VLayout {
 				}
 			}
 		}
+	}
+
+	public OpenId getOpenId() {
+		return this.openId;
 	}
 }

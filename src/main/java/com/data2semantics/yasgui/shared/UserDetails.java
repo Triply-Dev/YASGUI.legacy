@@ -1,5 +1,7 @@
 package com.data2semantics.yasgui.shared;
 
+import java.io.Serializable;
+
 /*
  * #%L
  * YASGUI
@@ -26,16 +28,30 @@ package com.data2semantics.yasgui.shared;
  * #L%
  */
 
-import java.io.Serializable;
-
-public class StaticConfig implements Serializable {
-	private static final long serialVersionUID = 1L;
-	//YASGUI versions
-	public static int VERSION_ID = 6;
-	public static String VERSION = "13.05a";
-	public static String OPEN_ID_SERVLET = "Yasgui/openId";
-	public static String DEBUG_ARGUMENT_KEY = "gwt.codesvr";
-	public static String DEBUG_ARGUMENT_VALUE = "127.0.0.1:9997";
+public class UserDetails implements Serializable {
+	private static final long serialVersionUID = -7506950527106295667L;
+	private String cookieName;
+	private String uniqueOpenId;
+	public void setCookieName(String cookieName) {
+		this.cookieName = cookieName;
+		
+	}
+	public void setUniqueOpenId(String uniqueOpenId) {
+		this.uniqueOpenId = uniqueOpenId;
+	}
 	
-	public static String OPEN_ID_PROVIDER_IMG_PATH = "icons/openid/";
+	public String getCookieName() {
+		return cookieName;
+	}
+	public String getUniqueOpenId() {
+		return uniqueOpenId;
+	}
+	
+	public boolean isLoggedIn() {
+		return (getCookieName() != null && getUniqueOpenId() != null);
+	}
+	
+	public String toString() {
+		return "uniqueOid: " + uniqueOpenId + "\n" + "cookie name: " + cookieName;
+	}
 }
