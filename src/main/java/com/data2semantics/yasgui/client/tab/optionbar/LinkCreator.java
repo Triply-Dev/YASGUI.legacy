@@ -28,6 +28,8 @@ package com.data2semantics.yasgui.client.tab.optionbar;
 
 import java.util.Iterator;
 import java.util.TreeMap;
+
+import com.smartgwt.client.types.Positioning;
 import com.smartgwt.client.widgets.AnimationCallback;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.Canvas;
@@ -60,6 +62,8 @@ public class LinkCreator extends ImgButton {
 	private static int ICON_WIDTH = 25;
 	private static int ICON_HEIGHT = 25;
 	private static int ANIMATE_SPEED = 100;
+	private static int OFFSET_TOP = 105;
+	public static int OFFSET_RIGHT = 20;
 	private TextItem urlTextBox;
 	private Canvas urlTextBoxAnim;
 	private Button shortenUrlButton;
@@ -67,7 +71,10 @@ public class LinkCreator extends ImgButton {
 	public LinkCreator(View view) {
 		this.view = view;
 		setSrc("link.png");
-
+		setPosition(Positioning.ABSOLUTE);
+		setTop(OFFSET_TOP);
+		changeHorizontalOffset();
+		setZIndex(ZIndexes.TAB_CONTROLS);
 		setWidth(ICON_WIDTH);
 		setHeight(ICON_HEIGHT);
 		setShowDown(false);
@@ -246,5 +253,14 @@ public class LinkCreator extends ImgButton {
 			tProp.setAt(TooltipProperties.POS_BOTTOM_CENTER);
 			Helper.drawTooltip(tProp);
 		}
+	}
+	
+	/**
+	 * called on initiation, as well as window resize
+	 * @param offset
+	 */
+	public void changeHorizontalOffset() {
+		int windowWidth = com.google.gwt.user.client.Window.getClientWidth();
+		setLeft(windowWidth - ICON_WIDTH - OFFSET_RIGHT);//compensate for smargwt scrollbar, so subtract some more
 	}
 }
