@@ -37,11 +37,14 @@ import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.properties.ExternalLinks;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
 import com.data2semantics.yasgui.client.tab.QueryTab;
+import com.data2semantics.yasgui.client.tab.optionbar.LinkCreator;
 import com.data2semantics.yasgui.shared.SettingKeys;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.storage.client.Storage;
 import com.smartgwt.client.types.Alignment;
@@ -65,6 +68,7 @@ public class ViewElements {
 	private View view;
 	private ImgButton queryButton;
 	private ImgButton queryLoading;
+	private LinkCreator linkCreator;
 	public static String DEFAULT_LOADING_MESSAGE = "Loading...";
 	private static int QUERY_BUTTON_POS_TOP = 5;
 	private static int QUERY_BUTTON_POS_LEFT = 5;
@@ -462,6 +466,20 @@ public class ViewElements {
 		
 		consentWindow.addItem(windowCanvas);
 		consentWindow.draw();
+	}
+	
+	public void drawOptionsInQueryField() {
+		linkCreator = new LinkCreator(view);
+		com.google.gwt.user.client.Window.addResizeHandler(new ResizeHandler() {
+
+			@Override
+			public void onResize(ResizeEvent event) {
+				linkCreator.changeHorizontalOffset();
+			}
+			
+		});
+		linkCreator.changeHorizontalOffset();
+		linkCreator.draw();
 	}
 	
 }

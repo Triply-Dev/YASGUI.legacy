@@ -77,7 +77,7 @@ public class QueryTab extends Tab {
 		
 		queryTextArea = new QueryTextArea(view, this);
 		vLayout.addMember(queryTextArea);
-
+		
 		vLayout.addMember(queryResultContainer);
 		setPane(vLayout);
 		setContextMenu();
@@ -110,9 +110,6 @@ public class QueryTab extends Tab {
 		LayoutSpacer spacer = new LayoutSpacer();
 		spacer.setWidth100();
 		queryOptions.addMember(spacer);
-		
-		linkCreator = new LinkCreator(view);
-		queryOptions.addMember(linkCreator);
 		
 		return queryOptions;
 	}
