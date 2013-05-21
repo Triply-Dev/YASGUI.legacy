@@ -39,6 +39,8 @@ import com.data2semantics.yasgui.client.tab.optionbar.EndpointSearch;
 import com.data2semantics.yasgui.client.tab.optionbar.LinkCreator;
 import com.data2semantics.yasgui.client.tab.optionbar.OutputSelection;
 import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
+import com.data2semantics.yasgui.client.tab.optionbar.bookmarks.BookmarkedQueries;
+import com.data2semantics.yasgui.client.tab.optionbar.bookmarks.BookmarksDataSource;
 import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.smartgwt.client.types.VerticalAlignment;
@@ -64,6 +66,7 @@ public class QueryTab extends Tab {
 	private EndpointSearch searchIcon;
 	private QueryConfigMenu queryConfigMenu;
 	private DownloadLink downloadLink;
+	private BookmarkedQueries bookmarkedQueries;
 	private String queryType;
 	private LinkCreator linkCreator;
 	public QueryTab(View view, TabSettings tabSettings) {
@@ -114,6 +117,8 @@ public class QueryTab extends Tab {
 		linkCreator = new LinkCreator(view);
 		queryOptions.addMember(linkCreator);
 		
+		bookmarkedQueries = new BookmarkedQueries(view);
+		queryOptions.addMember(bookmarkedQueries);
 		return queryOptions;
 	}
 
@@ -235,5 +240,13 @@ public class QueryTab extends Tab {
 	public DownloadLink getDownloadLink() {
 		return this.downloadLink;
 	}
-	
+	public void setQueryString(String queryString) {
+		queryTextArea.setQuery(queryString);
+	}
+	public void setEndpoint(String endpoint) {
+		endpointInput.setEndpoint(endpoint);
+	}
+	public BookmarkedQueries getBookmarkedQueries() {
+		return this.bookmarkedQueries;
+	}
 }

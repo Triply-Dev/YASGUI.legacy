@@ -38,6 +38,17 @@ span.CodeMirror-matchhighlight {
 	min-height:300px;
 }
 
+/*Custom stuff for the codemirror query input. This makes sure resizing doesnt mess up things*/
+.bookmarkCm {
+	height: auto !important;
+}
+.bookmarkScrollCm {
+	overflow-y: hidden;
+ 	overflow-x: auto;
+ 	height: auto !important;
+}
+
+
 /*Custom stuff for the codemirror box used for displaying raw query results*/
 .resultCm {
 	height: 100%;

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataSource ID="DataSourceId">
+	<fields>
+		<field title="ID" name="id" type="text" required="true"
+			primaryKey="true" />
+		<field title="Creator" name="creator" type="text" valueXPath="creator/displayName" />
+		<field title="Name" name="name" type="text" />
+		<field title="Description" name="description" type="text" />
+		<field title="Bla Bla" name="blabla" type="text" />
+	</fields>
+	<serverObject className="DMIPackage.DMIHandler" />
+	<generate-with>
+		<when-type-assignable />
+	</generate-with>
+</DataSource>
