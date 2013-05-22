@@ -100,14 +100,9 @@ public class OpenId {
 						if (result.isLoggedIn()) {
 							view.getLogger().severe("logged in");
 						} else {
-							view.getLogger().severe(
-									"redirect to "
-											+ result.getAuthenticationLink());
 							// redirect user to login page
 							Window.Location.assign(result
 									.getAuthenticationLink());
-							// Window.open(result.getAuthenticationLink(), "",
-							// "");
 						}
 
 					}
@@ -131,7 +126,7 @@ public class OpenId {
 	}
 
 	private void drawSessionWidgetLoggedIn(UserDetails details) {
-		String text = details.getFirstName() + " " + details.getLastName();
+		String text = details.getDisplayName();
 		
 		String html = "<span class='footerText'>" + text + "</span>&nbsp;<span class='footerTextLink'>(log out)</span>";
 		HTMLFlow htmlFlow = new HTMLFlow(html);
@@ -155,7 +150,7 @@ public class OpenId {
 		sessionLabel.setStyleName("footerTextLink");
 		sessionLabel.setWrap(false);
 		sessionLabel.setCanSelectText(true);
-		sessionLabel.setWidth(text.length() * 6);
+		sessionLabel.setWidth(text.length() * 8);
 
 		sessionLabel.setPosition(Positioning.ABSOLUTE);
 		sessionLabel.addClickHandler(new ClickHandler() {

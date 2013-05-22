@@ -223,10 +223,8 @@ public class BookmarkedQueries extends ImgButton {
 	public void updateQuery(String inputId, String query) {
 		ListGridRecord[] records = listGrid.getRecords();
 		for (ListGridRecord record:records) {
-			view.getLogger().severe("in for loop for " + inputId);
 			BookmarkRecord brecord = (BookmarkRecord)record;
 			if (brecord.getInputId().equals(inputId)) {
-				view.getLogger().severe("setting query");
 				brecord.setQuery(query);
 			}
 		}
@@ -240,7 +238,6 @@ public class BookmarkedQueries extends ImgButton {
 		ListGridRecord[] records = listGrid.getRecords();
 		for (ListGridRecord record: records) {
 			if (listGrid.isExpanded(record)) {
-				view.getLogger().severe("setting height to " + height);
 				listGrid.getCurrentExpansionComponent(record).setHeight(height);
 			}
 		}

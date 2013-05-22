@@ -38,5 +38,5 @@ public interface YasguiService extends RemoteService {
 	String fetchPrefixes(boolean forceUpdate) throws IllegalArgumentException, FetchException;
 	String fetchEndpoints(boolean forceUpdate) throws IllegalArgumentException, FetchException;
 	String getShortUrl(String forceUpdate) throws IllegalArgumentException, FetchException;
-	String authenticate(String service) throws IllegalArgumentException, FetchException;
+	void addBookmark(String title, String endpoint, String query) throws IllegalArgumentException, FetchException;
 }

@@ -33,6 +33,7 @@ import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
 import com.data2semantics.yasgui.client.helpers.properties.TooltipText;
 import com.data2semantics.yasgui.client.settings.TabSettings;
+import com.data2semantics.yasgui.client.tab.optionbar.AddToBookmarks;
 import com.data2semantics.yasgui.client.tab.optionbar.DownloadLink;
 import com.data2semantics.yasgui.client.tab.optionbar.EndpointInput;
 import com.data2semantics.yasgui.client.tab.optionbar.EndpointSearch;
@@ -40,7 +41,6 @@ import com.data2semantics.yasgui.client.tab.optionbar.LinkCreator;
 import com.data2semantics.yasgui.client.tab.optionbar.OutputSelection;
 import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
 import com.data2semantics.yasgui.client.tab.optionbar.bookmarks.BookmarkedQueries;
-import com.data2semantics.yasgui.client.tab.optionbar.bookmarks.BookmarksDataSource;
 import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.smartgwt.client.types.VerticalAlignment;
@@ -67,6 +67,7 @@ public class QueryTab extends Tab {
 	private QueryConfigMenu queryConfigMenu;
 	private DownloadLink downloadLink;
 	private BookmarkedQueries bookmarkedQueries;
+	private AddToBookmarks addToBookmarks;
 	private String queryType;
 	private LinkCreator linkCreator;
 	public QueryTab(View view, TabSettings tabSettings) {
@@ -119,6 +120,9 @@ public class QueryTab extends Tab {
 		
 		bookmarkedQueries = new BookmarkedQueries(view);
 		queryOptions.addMember(bookmarkedQueries);
+		
+		addToBookmarks = new AddToBookmarks(view);
+		queryOptions.addMember(addToBookmarks);
 		return queryOptions;
 	}
 

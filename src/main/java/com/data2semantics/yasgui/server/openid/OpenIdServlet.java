@@ -1,6 +1,6 @@
 package com.data2semantics.yasgui.server.openid;
 
-import com.data2semantics.yasgui.server.db.DbConnection;
+import com.data2semantics.yasgui.server.db.DbHelper;
 import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
 import com.data2semantics.yasgui.shared.StaticConfig;
 import com.data2semantics.yasgui.shared.UserDetails;
@@ -115,8 +115,8 @@ public final class OpenIdServlet extends HttpServlet implements RemoteService {
 		userDetails.setUniqueId(HttpCookies.getCookieValue(request, uniqueIdCookieName));
 		if (userDetails.getOpenId() != null && userDetails.getUniqueId() != null) {
 			//get more info
-			DbConnection dbCon = new DbConnection(config);
-			userDetails = dbCon.getUserDetails(userDetails);
+			DbHelper db = new DbHelper(config, request);
+			userDetails = db.getUserDetails(userDetails);
 		}
 		
 		
@@ -150,6 +150,7 @@ public final class OpenIdServlet extends HttpServlet implements RemoteService {
 			try {
 				authenticate(request, response);
 			} catch (Exception e) {
+				e.printStackTrace();
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 			}
 		}
@@ -159,6 +160,7 @@ public final class OpenIdServlet extends HttpServlet implements RemoteService {
 			try {
 				verify(request, response);
 			} catch (Exception e) {
+				e.printStackTrace();
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 			}
 		}
@@ -231,14 +233,22 @@ public final class OpenIdServlet extends HttpServlet implements RemoteService {
 			}
 			AuthRequest authReq = manager.authenticate(discovered, returnUrl, null);
 			FetchRequest fetch = FetchRequest.createFetchRequest();
-			fetch.addAttribute("FirstName", "http://schema.openid.net/namePerson/first", true);
-			fetch.addAttribute("LastName", "http://schema.openid.net/namePerson/last", true);
-			// fetch.addAttribute("Email",
-			// "http://schema.openid.net/contact/email", true);
+			fetch.addAttribute("oiFirstName", "http://schema.openid.net/namePerson/first", true);
+			fetch.addAttribute("oiLastName", "http://schema.openid.net/namePerson/last", true);
+			fetch.addAttribute("aFirstName", "http://axschema.org/namePerson/first", true);
+			fetch.addAttribute("aLastName", "http://axschema.org/namePerson/last", true);
+			fetch.addAttribute("aFullName", "http://axschema.org/namePerson", true);
+			fetch.addAttribute("aNickName", "http://axschema.org/namePerson/friendly", true);
+			fetch.addAttribute("oiNickName", "http://openid.net/schema/namePerson/friendly", true);
+			fetch.addAttribute("aEmail", "http://axschema.org/contact/email", true);
+			fetch.addAttribute("oiEmail", "http://schema.openid.net/contact/email", true);
+			
+			
 			authReq.addExtension(fetch);
 			// redirect to OpenID for authentication
 			response.sendRedirect(authReq.getDestinationUrl(true));
 		} catch (OpenIDException e) {
+			e.printStackTrace();
 			throw new ServletException("Login string probably caused an error. loginString = " + loginString, e);
 		}
 	}
@@ -306,8 +316,7 @@ public final class OpenIdServlet extends HttpServlet implements RemoteService {
 
 					if (ext instanceof FetchResponse) {
 						FetchResponse fetchResp = (FetchResponse) ext;
-						userDetails.setFirstName(fetchResp.getAttributeValue("FirstName"));
-						userDetails.setLastName(fetchResp.getAttributeValue("LastName"));
+						userDetails = addAttributes(fetchResp, userDetails);
 					}
 
 				}
@@ -324,6 +333,31 @@ public final class OpenIdServlet extends HttpServlet implements RemoteService {
 		} catch (OpenIDException e) {
 			throw new ServletException("Could not verify identity", e);
 		}
+	}
+
+	private UserDetails addAttributes(FetchResponse fetchResp, UserDetails userDetails) {
+		if (fetchResp.getAttributeValue("aFirstName") != null) {
+			userDetails.setFirstName(fetchResp.getAttributeValue("aFirstName"));
+		} else {
+			userDetails.setFirstName(fetchResp.getAttributeValue("oiFirstName"));
+		}
+		if (fetchResp.getAttributeValue("aLastName") != null) {
+			userDetails.setLastName(fetchResp.getAttributeValue("aLastName"));
+		} else {
+			userDetails.setLastName(fetchResp.getAttributeValue("oiLastName"));
+		}
+		if (fetchResp.getAttributeValue("aEmail") != null) {
+			userDetails.setEmail(fetchResp.getAttributeValue("aEmail"));
+		} else {
+			userDetails.setEmail(fetchResp.getAttributeValue("oiEmail"));
+		}
+		userDetails.setFullName(fetchResp.getAttributeValue("aFullName"));
+		if (fetchResp.getAttributeValue("aNickName") != null) {
+			userDetails.setNickName(fetchResp.getAttributeValue("aNickName"));
+		} else {
+			userDetails.setNickName(fetchResp.getAttributeValue("oiNickName"));
+		}
+		return userDetails;
 	}
 
 }

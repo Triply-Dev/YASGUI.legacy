@@ -34,7 +34,7 @@ import javax.servlet.ServletContext;
 import org.json.JSONObject;
 
 import com.data2semantics.yasgui.client.services.YasguiService;
-import com.data2semantics.yasgui.server.db.DbConnection;
+import com.data2semantics.yasgui.server.db.DbHelper;
 import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
 import com.data2semantics.yasgui.server.fetchers.PrefixesFetcher;
 import com.data2semantics.yasgui.server.fetchers.endpoints.EndpointsFetcher;
@@ -84,20 +84,27 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 	
 	public String fetchEndpoints(boolean forceUpdate) throws IllegalArgumentException, FetchException {
 		String endpoints = "";
-		DbConnection connection = null;
 		try {
-			connection = new DbConnection(ConfigFetcher.getJsonObject(getServletContext().getRealPath("/")));
+			endpoints = EndpointsFetcher.fetch(forceUpdate, new File(getServletContext().getRealPath(CACHE_DIR)));
 		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (connection != null) connection.close();
+			throw new FetchException("unable to fetch endpoints", e);
 		}
+		
 		return endpoints;
 	}
 	
-	public String authenticate(String service) throws IllegalArgumentException, FetchException {
-		System.out.println("Df");
-		return "";
-		
+
+	@Override
+	public void addBookmark(String title, String endpoint, String query) throws IllegalArgumentException, FetchException {
+		DbHelper db = null;
+		try {
+			db = new DbHelper(ConfigFetcher.getJsonObject(getServletContext().getRealPath("/")), getThreadLocalRequest());
+			db.addBookmark(title, endpoint, query);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new FetchException(e.getMessage(), e);
+		} finally {
+			if (db != null) db.close();
+		}
 	}
 }
