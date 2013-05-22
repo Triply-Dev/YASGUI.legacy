@@ -1,5 +1,6 @@
 package com.data2semantics.yasgui.client.tab.optionbar.bookmarks;
 
+import com.data2semantics.yasgui.shared.Bookmark;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 public class BookmarkRecord extends ListGridRecord {
@@ -12,8 +13,13 @@ public class BookmarkRecord extends ListGridRecord {
 	
     public BookmarkRecord() {
     }
-
-    public BookmarkRecord(String bookmarkId, String title, String endpoint, String query) {
+    public BookmarkRecord(Bookmark bookmark) {
+       	setBookmarkId(bookmark.getBookmarkId());
+        setTitle(bookmark.getTitle());
+        setEndpoint(bookmark.getEndpoint());
+        setQuery(bookmark.getQuery());
+    }
+    public BookmarkRecord(int bookmarkId, String title, String endpoint, String query) {
     	setBookmarkId(bookmarkId);
         setTitle(title);
         setEndpoint(endpoint);
@@ -48,12 +54,17 @@ public class BookmarkRecord extends ListGridRecord {
     public String getQuery() {
         return getAttributeAsString(KEY_QUERY);
     }
-    public void setBookmarkId(String bookmarkId) {
+    public void setBookmarkId(int bookmarkId) {
     	setAttribute(KEY_ID, bookmarkId);
     }
     
-    public String getBookmarkId() {
-    	return getAttributeAsString(KEY_ID);
+    public int getBookmarkId() {
+    	String idString = getAttributeAsString(KEY_ID);
+    	int id = -1;
+    	if (idString == null || idString.length() == 0) {
+    		id = Integer.parseInt(idString);
+    	}
+    	return id;
     }
     
     public String getQueryAsTextArea(String query) {
@@ -63,5 +74,13 @@ public class BookmarkRecord extends ListGridRecord {
     public String getInputId() {
     	return getBookmarkId() + APPEND_INPUT_ID;
     }
-
+    public Bookmark toBookmark() {
+    	Bookmark bookmark = new Bookmark();
+    	bookmark.setQuery(getQuery());
+    	bookmark.setEndpoint(getEndpoint());
+    	bookmark.setTitle(getTitle());
+    	bookmark.setBookmarkId(getBookmarkId());
+    	return bookmark;
+    }
+    
 }

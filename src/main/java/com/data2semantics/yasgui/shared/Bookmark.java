@@ -1,4 +1,6 @@
-package com.data2semantics.yasgui.client.services;
+package com.data2semantics.yasgui.shared;
+
+import java.io.Serializable;
 
 /*
  * #%L
@@ -26,20 +28,35 @@ package com.data2semantics.yasgui.client.services;
  * #L%
  */
 
-import com.data2semantics.yasgui.shared.Bookmark;
-import com.data2semantics.yasgui.shared.exceptions.FetchException;
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-
-/**
- * The client side stub for the RPC service.
- */
-@RemoteServiceRelativePath("YasguiService")
-public interface YasguiService extends RemoteService {
-	String fetchPrefixes(boolean forceUpdate) throws IllegalArgumentException, FetchException;
-	String fetchEndpoints(boolean forceUpdate) throws IllegalArgumentException, FetchException;
-	String getShortUrl(String forceUpdate) throws IllegalArgumentException, FetchException;
-	void addBookmark(Bookmark bookmark) throws IllegalArgumentException, FetchException;
-	void storeBookmarks(Bookmark[] bookmarks) throws IllegalArgumentException, FetchException;
-	Bookmark[] getBookmarks() throws IllegalArgumentException, FetchException;
+public class Bookmark implements Serializable {
+	private static final long serialVersionUID = 2804222255866238153L;
+	
+	private int bookmarkId;
+	private String title;
+	private String query;
+	private String endpoint;
+	public void setBookmarkId(int bookmarkId) {
+		this.bookmarkId = bookmarkId;
+	}
+	public int getBookmarkId() {
+		return this.bookmarkId;
+	}
+	public String getEndpoint() {
+		return endpoint;
+	}
+	public void setEndpoint(String endpoint) {
+		this.endpoint = endpoint;
+	}
+	public String getQuery() {
+		return query;
+	}
+	public void setQuery(String query) {
+		this.query = query;
+	}
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
 }

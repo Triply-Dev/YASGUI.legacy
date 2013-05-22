@@ -27,24 +27,18 @@ package com.data2semantics.yasgui.client.tab.optionbar;
  */
 
 import com.smartgwt.client.widgets.Button;
-import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
-import com.smartgwt.client.widgets.events.HoverEvent;
-import com.smartgwt.client.widgets.events.HoverHandler;
-import com.smartgwt.client.widgets.events.MouseOverEvent;
-import com.smartgwt.client.widgets.events.MouseOverHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.data2semantics.yasgui.client.View;
-import com.data2semantics.yasgui.client.helpers.JsMethods;
-import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
+import com.data2semantics.yasgui.shared.Bookmark;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class AddToBookmarks extends ImgButton {
@@ -57,6 +51,7 @@ public class AddToBookmarks extends ImgButton {
 	private static int ICON_WIDTH = 25;
 	private static int ICON_HEIGHT = 25;
 	private static String ICON_ADD = "icons/fugue/plus-button.png";
+	@SuppressWarnings("unused")
 	private static String ICON_LOADING = "loading.gif";
 	
 	
@@ -115,16 +110,16 @@ public class AddToBookmarks extends ImgButton {
         bookmarkButton.setWidth(60);
         bookmarkButton.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event) {
-				
-				String endpoint = null;
+				Bookmark bookmark = new Bookmark();
 				if (includeEndpoint.getValueAsBoolean()) {
-					endpoint = view.getSelectedTabSettings().getEndpoint();
+					bookmark.setEndpoint(view.getSelectedTabSettings().getEndpoint());
 				}
-				String query = view.getSelectedTabSettings().getQueryString();
-				String title = bookmarkTitle.getValueAsString();
+				bookmark.setQuery(view.getSelectedTabSettings().getQueryString());
+				bookmark.setTitle(bookmarkTitle.getValueAsString());
+				
 				window.clear();
 				setSrc("ICON_LOADING");
-				view.getRemoteService().addBookmark(title, endpoint, query, new AsyncCallback<Void>() {
+				view.getRemoteService().addBookmark(bookmark, new AsyncCallback<Void>() {
 					public void onFailure(Throwable caught) {
 						view.getElements().onError(caught);
 					}

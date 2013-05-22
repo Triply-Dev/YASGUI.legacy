@@ -117,7 +117,8 @@ public class UserDetails implements Serializable {
 		} else if (getEmail() != null) {
 			return getEmail();
 		} else {
-			return Helper.getBaseDomain(getOpenId());
+			String baseDomain = Helper.getBaseDomain(getOpenId());
+			return baseDomain.substring(0, baseDomain.lastIndexOf('.'));
 		}
 	}
 }
