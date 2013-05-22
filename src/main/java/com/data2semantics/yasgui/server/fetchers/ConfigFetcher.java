@@ -30,7 +30,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.ParseException;
+
 import org.apache.commons.io.IOUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 import com.data2semantics.yasgui.shared.SettingKeys;
 
@@ -63,17 +66,13 @@ public class ConfigFetcher {
 		return jsonString;
 	}
 	
-	public static JSONObject getJsonObject(String path) throws Exception {
+	public static JSONObject getJsonObject(String path) throws ParseException, JSONException, FileNotFoundException, IOException {
 		File configFile = new File( path + CONFIG_FILE);
 		if (!configFile.exists()) {
 			throw new IOException("Unable to load config file from server. Trying to load: " + configFile.getAbsolutePath());
 		} else {
 			String jsonString = IOUtils.toString(new FileReader(configFile));
-			try {
-				return new JSONObject(jsonString);
-			} catch (Exception e) {
-				throw new Exception("Unable to parse config file on server", e);
-			}
+			return new JSONObject(jsonString);
 		}
 	}
 	
@@ -88,6 +87,11 @@ public class ConfigFetcher {
 	public static JSONObject removeInfo(JSONObject jsonObject) {
 		//only remove api key. keep username there, so we can assume that whenever username is set, the api key is set as well
 		if (jsonObject.has(SettingKeys.BITLY_API_KEY)) jsonObject.remove(SettingKeys.BITLY_API_KEY);
+		
+		//remove all mysql things. don't want this on clientside
+		if (jsonObject.has(SettingKeys.MYSQL_HOST)) jsonObject.remove(SettingKeys.MYSQL_HOST);
+		if (jsonObject.has(SettingKeys.MYSQL_PASSWORD)) jsonObject.remove(SettingKeys.MYSQL_PASSWORD);
+		if (jsonObject.has(SettingKeys.MYSQL_USERNAME)) jsonObject.remove(SettingKeys.MYSQL_USERNAME);
 		return jsonObject;
 	}
 	

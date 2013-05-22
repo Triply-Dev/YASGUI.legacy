@@ -14,5 +14,8 @@
 	"singleEndpointMode": false,
 	"googleAnalyticsId": "",
 	"bitlyApiKey": "",
-	"bitlyUsername": ""
+	"bitlyUsername": "",
+	"mysqlUsername": "",
+	"mysqlPassword": "",
+	"mysqlHost": ""
 }

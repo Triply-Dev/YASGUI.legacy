@@ -33,6 +33,18 @@ function checkConfigFile() {
 				echo "The google analytics id is still in the config file.\n";		
 				return false;
 			}
+			if (arrayKeyFilled($json, "mysqlUsername")) {
+				echo "the mysql username is still in config file.\n";		
+				return false;
+			}
+			if (arrayKeyFilled($json, "mysqlPassword")) {
+				echo "the mysql password is still in config file.\n";		
+				return false;
+			}
+			if (arrayKeyFilled($json, "mysqlHost")) {
+				echo "the mysql host is still in config file.\n";		
+				return false;
+			}
 			if ($json['singleEndpointMode']) {
 				echo "Committing config in single endpoint mode! Shouldnt be the case\n";
 				return false;

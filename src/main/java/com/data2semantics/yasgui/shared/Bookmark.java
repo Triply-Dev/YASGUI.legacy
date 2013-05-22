@@ -1,5 +1,7 @@
 package com.data2semantics.yasgui.shared;
 
+import java.io.Serializable;
+
 /*
  * #%L
  * YASGUI
@@ -26,29 +28,35 @@ package com.data2semantics.yasgui.shared;
  * #L%
  */
 
-import java.io.Serializable;
-
-public class Prefix implements Serializable {
-	private String prefix;
-	private String uri;
-	private static final long serialVersionUID = 1L;
-	public Prefix(){}
-	public Prefix(String prefix, String uri) {
-		this.prefix = prefix;
-		this.uri = uri;
-	}
-	public String getPrefix() {
-		return prefix;
-	}
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
-	}
-	public String getUri() {
-		return uri;
-	}
-	public void setUri(String uri) {
-		this.uri = uri;
-	}
+public class Bookmark implements Serializable {
+	private static final long serialVersionUID = 2804222255866238153L;
 	
-	
+	private int bookmarkId;
+	private String title;
+	private String query;
+	private String endpoint;
+	public void setBookmarkId(int bookmarkId) {
+		this.bookmarkId = bookmarkId;
+	}
+	public int getBookmarkId() {
+		return this.bookmarkId;
+	}
+	public String getEndpoint() {
+		return endpoint;
+	}
+	public void setEndpoint(String endpoint) {
+		this.endpoint = endpoint;
+	}
+	public String getQuery() {
+		return query;
+	}
+	public void setQuery(String query) {
+		this.query = query;
+	}
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
 }

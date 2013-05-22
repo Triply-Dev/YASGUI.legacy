@@ -28,6 +28,8 @@ package com.data2semantics.yasgui.client.helpers;
 
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.tab.QueryTab;
+import com.data2semantics.yasgui.client.tab.optionbar.bookmarks.BookmarkRecord;
+import com.data2semantics.yasgui.client.tab.optionbar.bookmarks.BookmarkedQueries;
 
 public class CallableJsMethods {
 	private View view;
@@ -51,6 +53,10 @@ public class CallableJsMethods {
 		view.getSelectedTab().getQueryTextArea().adjustForContent(true);
 	}
 	
+	public void adjustBookmarkQueryInputForContent(int height) {
+		view.getSelectedTab().getBookmarkedQueries().adjustQueryInputForContent(height);
+	}
+	
 	/**
 	 * Get query string from text area, set it in settings, and store in cookie
 	 */
@@ -58,6 +64,17 @@ public class CallableJsMethods {
 		String query = view.getSelectedTab().getQueryTextArea().getQuery();
 		view.getSelectedTabSettings().setQueryString(query);
 		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+	}
+	
+	/**
+	 * Get query string from text area, set it in settings, and store in cookie
+	 */
+	public void updateBookmarkedQuery(String inputId) {
+		JsMethods.saveCodeMirror(inputId);
+		String query = JsMethods.getValueUsingId(inputId);
+		BookmarkedQueries bookmarkedQueries = view.getSelectedTab().getBookmarkedQueries();
+//		String bookmarkId = bookmarkedQueries.getBookmarkId(inputId);
+		bookmarkedQueries.updateQuery(inputId, query);
 	}
 	
 	/**
@@ -158,6 +175,9 @@ public class CallableJsMethods {
 		$wnd.storeQueryInCookie = function() {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::storeQueryInCookie()();
 		}
+		$wnd.updateBookmarkedQuery = function(inputId) {
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::updateBookmarkedQuery(Ljava/lang/String;)(inputId);
+		}
 		$wnd.onQueryError = function(tabId, errorMsg) {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::onQueryError(Ljava/lang/String;Ljava/lang/String;)(tabId, errorMsg);
 		}
@@ -166,6 +186,9 @@ public class CallableJsMethods {
 		}
 		$wnd.adjustQueryInputForContent = function() {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::adjustQueryInputForContent()();
+		}
+		$wnd.adjustBookmarkQueryInputForContent = function(height) {
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::adjustBookmarkQueryInputForContent(I)(height);
 		}
 		$wnd.setQueryType = function(queryType) {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::setQueryType(Ljava/lang/String;)(queryType);

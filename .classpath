@@ -6,7 +6,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry including="**/*.java" kind="src" path="target/generated-sources/gwt">
+	<classpathentry including="**/**/*.java|**/*.java" kind="src" path="target/generated-sources/gwt">
 		<attributes>
 			<attribute name="ignore_optional_problems" value="true"/>
 		</attributes>

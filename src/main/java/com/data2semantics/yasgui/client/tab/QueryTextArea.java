@@ -110,6 +110,9 @@ public class QueryTextArea extends HTMLPane {
 	public String getInputId() {
 		return this.inputId;
 	}
-	
+
+	public void setQuery(String queryString) {
+		JsMethods.setCodemirrorContent(this.inputId, queryString);
+	}
 
 }
