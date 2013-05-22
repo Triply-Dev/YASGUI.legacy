@@ -89,7 +89,7 @@ public class JsMethods {
 						"Ctrl-Enter" : "executeQuery"
 					},
 					onHighlightComplete : function(cm) {
-						$wnd.checkSyntax(cm);
+						$wnd.checkSyntax(cm, true);
 						$wnd.setQueryType(cm.getStateAfter().queryType);
 						height = $wnd.sparqlHighlight[queryInputId].getWrapperElement().offsetHeight;
 						if ($wnd.sparqlHighlightHeight[queryInputId]) {
@@ -112,6 +112,61 @@ public class JsMethods {
 					//use jquery for this (a bit easier). for this element, find scroll class, and append another class
 					$wnd.$("#"+queryInputId).next().find($wnd.$(".CodeMirror-scroll")).addClass("queryScrollCm");
 				}
+			}
+		} else {
+			$wnd.onError("no text area for input id: " + queryInputId);
+		}
+	}-*/;
+	
+	/**
+	 * Initialize and atatch codemirror to a text area
+	 * 
+	 * @param queryInputId Id of text area to attach codemirror to
+	 */
+	public static native void attachCodeMirrorToBookmarkedQuery(String queryInputId) /*-{
+		var qInput = $doc.getElementById(queryInputId);
+		if (qInput) {
+			$wnd.sparqlHighlight[queryInputId] = $wnd.CodeMirror.fromTextArea(qInput, {
+				mode : "application/x-sparql-query",
+				tabMode : "indent",
+				lineNumbers : true,
+				matchBrackets : true,
+				fixedGutter: true,
+				viewportMargin: Infinity,
+				onCursorActivity : function() {
+					$wnd.sparqlHighlight[queryInputId]
+							.matchHighlight("CodeMirror-matchhighlight");
+				},
+				onChange : function(cm) {
+					$wnd.CodeMirror.simpleHint(cm, $wnd.CodeMirror.prefixHint);
+					$wnd.appendPrefixIfNeeded(cm);
+					
+				},
+				extraKeys : {
+					"Ctrl-Space" : "autocomplete",
+					"Ctrl-D" : "deleteLines",
+					"Ctrl-/" : "commentLines",
+					"Ctrl-Alt-Down" : "copyLineDown",
+					"Ctrl-Alt-Up" : "copyLineUp",
+					"Ctrl-Enter" : "executeQuery"
+				},
+				onHighlightComplete : function(cm) {
+					$wnd.checkSyntax(cm, false);
+					$wnd.setQueryType(cm.getStateAfter().queryType);
+					$wnd.updateBookmarkCmHeight(queryInputId);
+					
+				},
+				onBlur: function() {
+					$wnd.updateBookmarkedQuery(queryInputId);
+				},
+			});
+			$wnd.updateBookmarkCmHeight(queryInputId);
+			//Append another classname to the codemirror div, so we can set width and height via css
+			if (qInput.nextSibling != null && qInput.nextSibling.className == "CodeMirror") {
+				qInput.nextSibling.className = "CodeMirror bookmarkCm";
+				scrollElement = qInput.nextSibling.getElementsByClassName("CodeMirror-scroll");
+				//use jquery for this (a bit easier). for this element, find scroll class, and append another class
+				$wnd.$("#"+queryInputId).next().find($wnd.$(".CodeMirror-scroll")).addClass("bookmarkScrollCm");
 			}
 		} else {
 			$wnd.onError("no text area for input id: " + queryInputId);
@@ -197,6 +252,15 @@ public class JsMethods {
 	 */
 	public static native void saveCodeMirror(String id) /*-{
 		$wnd.sparqlHighlight[id].save();
+	}-*/;
+	
+	/**
+	 * Set content of codemirror
+	 * 
+	 * @param id Id of codemirror instance
+	 */
+	public static native void setCodemirrorContent(String id, String content) /*-{
+		$wnd.sparqlHighlight[id].setValue(content);
 	}-*/;
 	
 	/**
@@ -395,6 +459,10 @@ public class JsMethods {
 	
 	public static native String getUserAgent() /*-{
 		return $wnd.navigator.userAgent;
+	}-*/;
+
+	public static native void resetHeightSetting(String inputId) /*-{
+		$wnd.sparqlHighlightHeight[inputId] = null;
 	}-*/;
 	
 	

@@ -10,40 +10,72 @@
 		<servlet-name>yasguiService</servlet-name>
 		<servlet-class>com.data2semantics.yasgui.server.YasguiServiceImpl</servlet-class>
 	</servlet>
-	<servlet-mapping>
-		<servlet-name>yasguiService</servlet-name>
-		<url-pattern>/Yasgui/YasguiService</url-pattern>
-	</servlet-mapping>
+
 
 	<servlet>
 		<servlet-name>sparqlServlet</servlet-name>
 		<servlet-class>com.data2semantics.yasgui.server.servlets.SparqlServlet</servlet-class>
 	</servlet>
-	
+
+	<servlet>
+		<servlet-name>openIdServlet</servlet-name>
+		<servlet-class>com.data2semantics.yasgui.server.openid.OpenIdServlet</servlet-class>
+	</servlet>
+
+
+
+
+
+	<servlet>
+		<servlet-name>openIdService</servlet-name>
+		<servlet-class>com.data2semantics.yasgui.server.OpenIdServiceImpl</servlet-class>
+	</servlet>
+
+
+	<servlet-mapping>
+		<servlet-name>yasguiService</servlet-name>
+		<url-pattern>/Yasgui/YasguiService</url-pattern>
+	</servlet-mapping>
+
 	<servlet-mapping>
 		<servlet-name>sparqlServlet</servlet-name>
 		<url-pattern>/Yasgui/sparql</url-pattern>
 	</servlet-mapping>
-	<servlet>
-		<servlet-name>jUnitHostImpl</servlet-name>
-		<servlet-class>com.google.gwt.junit.server.JUnitHostImpl</servlet-class>
-	</servlet>
 	<servlet-mapping>
-		<servlet-name>jUnitHostImpl</servlet-name>
-		<url-pattern>/Yasgui/junithost/*</url-pattern>
+		<servlet-name>openIdServlet</servlet-name>
+		<url-pattern>/Yasgui/openId</url-pattern>
 	</servlet-mapping>
 
+
 	<servlet-mapping>
-		<servlet-name>jUnitHostImpl</servlet-name>
-		<url-pattern>/com.data2semantics.yasgui.YasguiJUnit/junithost/*</url-pattern>
+		<servlet-name>openIdService</servlet-name>
+		<url-pattern>/Yasgui/OpenIdService</url-pattern>
 	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>yasguiService</servlet-name>
-		<url-pattern>/com.data2semantics.yasgui.YasguiJUnit/Yasgui/YasguiService</url-pattern>
-	</servlet-mapping>
+
 	<!-- Default page to serve -->
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
-
+	<security-constraint>
+		<display-name>excluded</display-name>
+		<web-resource-collection>
+			<web-resource-name>No Access</web-resource-name>
+			<url-pattern>/config/*</url-pattern>
+		</web-resource-collection>
+		<web-resource-collection>
+			<web-resource-name>No Access</web-resource-name>
+			<url-pattern>/config/*</url-pattern>
+			<http-method>DELETE</http-method>
+			<http-method>PUT</http-method>
+			<http-method>HEAD</http-method>
+			<http-method>OPTIONS</http-method>
+			<http-method>TRACE</http-method>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<auth-constraint />
+		<user-data-constraint>
+			<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
 </web-app>

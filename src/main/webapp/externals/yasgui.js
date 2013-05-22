@@ -252,6 +252,21 @@ function getIndentFromLine(cm, line, charNumber) {
 	}
 }
 
+
+function updateBookmarkCmHeight(queryInputId) {
+	cmHeight = sparqlHighlight[queryInputId].getWrapperElement().offsetHeight;
+	console.log(cmHeight);
+	if (sparqlHighlightHeight[queryInputId]) {
+		if (cmHeight != sparqlHighlightHeight[queryInputId]) {
+			sparqlHighlightHeight[queryInputId] = cmHeight;
+			adjustBookmarkQueryInputForContent(cmHeight);
+		}
+	} else {
+		sparqlHighlightHeight[queryInputId] = cmHeight;
+	}
+}
+
+
 if (typeof String.prototype.startsWith != 'function') {
 	  String.prototype.startsWith = function (str){
 	    return this.slice(0, str.length) == str;
@@ -262,3 +277,5 @@ if (typeof String.prototype.endsWith != 'function') {
 	    return this.slice(-str.length) == str;
 	  };
 }
+
+

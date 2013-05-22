@@ -53,7 +53,10 @@ public class SettingKeys implements Serializable {
 	public static String EXTRA_QUERY_ARGS = "extraArgs";
 	public static String REQUEST_METHOD = "requestMethod";
 	
-	//other (not used clientside)
+	//other (not used clientside) (actually, not accessible from clientside for security reasons)
 	public static String BITLY_API_KEY = "bitlyApiKey";
 	public static String BITLY_USERNAME = "bitlyUsername";
+	public static String MYSQL_USERNAME = "mysqlUsername";
+	public static String MYSQL_PASSWORD = "mysqlPassword";
+	public static String MYSQL_HOST = "mysqlHost";
 }

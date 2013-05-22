@@ -32,10 +32,13 @@ import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 import org.json.JSONObject;
-import com.data2semantics.yasgui.client.YasguiService;
+
+import com.data2semantics.yasgui.client.services.YasguiService;
+import com.data2semantics.yasgui.server.db.DbHelper;
 import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
 import com.data2semantics.yasgui.server.fetchers.PrefixesFetcher;
 import com.data2semantics.yasgui.server.fetchers.endpoints.EndpointsFetcher;
+import com.data2semantics.yasgui.shared.Bookmark;
 import com.data2semantics.yasgui.shared.SettingKeys;
 import com.data2semantics.yasgui.shared.exceptions.FetchException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -83,11 +86,53 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 	public String fetchEndpoints(boolean forceUpdate) throws IllegalArgumentException, FetchException {
 		String endpoints = "";
 		try {
-			endpoints = EndpointsFetcher.fetch(forceUpdate, new File(getServletContext().getRealPath(CACHE_DIR))); 
+			endpoints = EndpointsFetcher.fetch(forceUpdate, new File(getServletContext().getRealPath(CACHE_DIR)));
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "exception", e);
-			throw new FetchException("Unable to fetch endpoints: " + e.getMessage() + "\n", e);
+			throw new FetchException("unable to fetch endpoints", e);
 		}
+		
 		return endpoints;
+	}
+	
+
+	@Override
+	public void addBookmark(Bookmark bookmark) throws IllegalArgumentException, FetchException {
+		DbHelper db = null;
+		try {
+			db = new DbHelper(ConfigFetcher.getJsonObject(getServletContext().getRealPath("/")), getThreadLocalRequest());
+			db.addBookmarks(bookmark);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new FetchException(e.getMessage(), e);
+		} finally {
+			if (db != null) db.close();
+		}
+	}
+
+	public void storeBookmarks(Bookmark[] bookmarks) throws IllegalArgumentException, FetchException {
+		DbHelper db = null;
+		try {
+			db = new DbHelper(ConfigFetcher.getJsonObject(getServletContext().getRealPath("/")), getThreadLocalRequest());
+			db.clearBookmarks();
+			db.addBookmarks(bookmarks);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new FetchException(e.getMessage(), e);
+		} finally {
+			if (db != null) db.close();
+		}
+	}
+
+	public Bookmark[] getBookmarks() throws IllegalArgumentException, FetchException {
+		DbHelper db = null;
+		try {
+			db = new DbHelper(ConfigFetcher.getJsonObject(getServletContext().getRealPath("/")), getThreadLocalRequest());
+			return db.getBookmarks();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new FetchException(e.getMessage(), e);
+		} finally {
+			if (db != null) db.close();
+		}
 	}
 }

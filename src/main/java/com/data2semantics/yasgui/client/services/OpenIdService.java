@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.shared;
+package com.data2semantics.yasgui.client.services;
 
 /*
  * #%L
@@ -26,29 +26,18 @@ package com.data2semantics.yasgui.shared;
  * #L%
  */
 
-import java.io.Serializable;
+import com.data2semantics.yasgui.shared.LoginResult;
+import com.data2semantics.yasgui.shared.UserDetails;
+import com.data2semantics.yasgui.shared.exceptions.OpenIdException;
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-public class Prefix implements Serializable {
-	private String prefix;
-	private String uri;
-	private static final long serialVersionUID = 1L;
-	public Prefix(){}
-	public Prefix(String prefix, String uri) {
-		this.prefix = prefix;
-		this.uri = uri;
-	}
-	public String getPrefix() {
-		return prefix;
-	}
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
-	}
-	public String getUri() {
-		return uri;
-	}
-	public void setUri(String uri) {
-		this.uri = uri;
-	}
-	
-	
+/**
+ * The client side stub for the RPC service.
+ */
+@RemoteServiceRelativePath("OpenIdService")
+public interface OpenIdService extends RemoteService {
+	  LoginResult login(String appBaseUrl, boolean inDebugMode, String openIdURL) throws OpenIdException;
+	  UserDetails getCurrentUser() throws OpenIdException;
+	  void logout() throws OpenIdException;
 }

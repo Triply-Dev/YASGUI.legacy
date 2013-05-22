@@ -1,5 +1,7 @@
 package com.data2semantics.yasgui.shared;
 
+import java.io.Serializable;
+
 /*
  * #%L
  * YASGUI
@@ -26,29 +28,23 @@ package com.data2semantics.yasgui.shared;
  * #L%
  */
 
-import java.io.Serializable;
-
-public class Prefix implements Serializable {
-	private String prefix;
-	private String uri;
-	private static final long serialVersionUID = 1L;
-	public Prefix(){}
-	public Prefix(String prefix, String uri) {
-		this.prefix = prefix;
-		this.uri = uri;
-	}
-	public String getPrefix() {
-		return prefix;
-	}
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
-	}
-	public String getUri() {
-		return uri;
-	}
-	public void setUri(String uri) {
-		this.uri = uri;
+public class LoginResult implements Serializable{
+	private static final long serialVersionUID = -9007505940768649210L;
+	private boolean loggedIn;
+	private String authenticationService;
+	public LoginResult() {}
+	
+	public void setIsLoggedIn(boolean loggedIn) {
+		this.loggedIn = loggedIn;
 	}
 	
-	
+	public void setAuthenticationLink(String authenticationService) {
+		this.authenticationService = authenticationService;
+	}
+	public boolean isLoggedIn() {
+		return loggedIn;
+	}
+	public String getAuthenticationLink() {
+		return this.authenticationService;
+	}
 }

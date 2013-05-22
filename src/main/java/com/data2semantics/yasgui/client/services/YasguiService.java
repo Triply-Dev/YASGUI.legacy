@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.shared;
+package com.data2semantics.yasgui.client.services;
 
 /*
  * #%L
@@ -26,29 +26,20 @@ package com.data2semantics.yasgui.shared;
  * #L%
  */
 
-import java.io.Serializable;
+import com.data2semantics.yasgui.shared.Bookmark;
+import com.data2semantics.yasgui.shared.exceptions.FetchException;
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-public class Prefix implements Serializable {
-	private String prefix;
-	private String uri;
-	private static final long serialVersionUID = 1L;
-	public Prefix(){}
-	public Prefix(String prefix, String uri) {
-		this.prefix = prefix;
-		this.uri = uri;
-	}
-	public String getPrefix() {
-		return prefix;
-	}
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
-	}
-	public String getUri() {
-		return uri;
-	}
-	public void setUri(String uri) {
-		this.uri = uri;
-	}
-	
-	
+/**
+ * The client side stub for the RPC service.
+ */
+@RemoteServiceRelativePath("YasguiService")
+public interface YasguiService extends RemoteService {
+	String fetchPrefixes(boolean forceUpdate) throws IllegalArgumentException, FetchException;
+	String fetchEndpoints(boolean forceUpdate) throws IllegalArgumentException, FetchException;
+	String getShortUrl(String forceUpdate) throws IllegalArgumentException, FetchException;
+	void addBookmark(Bookmark bookmark) throws IllegalArgumentException, FetchException;
+	void storeBookmarks(Bookmark[] bookmarks) throws IllegalArgumentException, FetchException;
+	Bookmark[] getBookmarks() throws IllegalArgumentException, FetchException;
 }

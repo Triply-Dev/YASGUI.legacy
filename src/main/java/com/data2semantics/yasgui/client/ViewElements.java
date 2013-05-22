@@ -50,7 +50,9 @@ import com.google.gwt.storage.client.Storage;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Positioning;
+import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Button;
+import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.ImgButton;
@@ -72,17 +74,46 @@ public class ViewElements {
 	public static String DEFAULT_LOADING_MESSAGE = "Loading...";
 	private static int QUERY_BUTTON_POS_TOP = 5;
 	private static int QUERY_BUTTON_POS_LEFT = 5;
+	private static int SESSION_CANVAS_TOP = 2;
+	private static int SESSION_CANVAS_LEFT = 60;
 	private static int CONSENT_WINDOW_HEIGHT = 130;
 	private static int CONSENT_WINDOW_WIDTH = 750;
 	private static int CONSENT_BUTTON_HEIGHT = 40;
 	private static int CONSENT_BUTTON_WIDTH = 175;
 	private Window consentWindow;
 	private Label loading;
+	private HLayout sessionCanvas = new HLayout();
 	public ViewElements(View view) {
 		this.view = view;
 		addLogo();
 		initLoadingWidget();
 		addQueryButton();
+		addSessionCanvas();
+	}
+	
+	public void addSessionCanvas() {
+		sessionCanvas.setPosition(Positioning.ABSOLUTE);
+		sessionCanvas.setTop(SESSION_CANVAS_TOP);
+		sessionCanvas.setLeft(SESSION_CANVAS_LEFT);
+		sessionCanvas.setHeight(16);
+		sessionCanvas.setWidth(300);
+		sessionCanvas.setAlign(Alignment.LEFT);
+		sessionCanvas.setAlign(VerticalAlignment.TOP);
+		sessionCanvas.setZIndex(ZIndexes.TAB_CONTROLS);
+		sessionCanvas.draw();
+	}
+	
+	public void updateSessionCanvas(Canvas... newChildren) {
+		//first remove children
+		Canvas[] children = sessionCanvas.getChildren();
+		for (Canvas child: children) {
+			sessionCanvas.removeChild(child);
+		}
+		//and add new ones
+		for (Canvas child: newChildren) {
+			sessionCanvas.addMember(child);
+		}
+		
 	}
 	
 	/**

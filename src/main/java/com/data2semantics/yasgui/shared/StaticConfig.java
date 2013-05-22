@@ -30,7 +30,13 @@ import java.io.Serializable;
 
 public class StaticConfig implements Serializable {
 	private static final long serialVersionUID = 1L;
+	public static final String DEBUG_FILE = "dev.jsp";
 	//YASGUI versions
 	public static int VERSION_ID = 6;
 	public static String VERSION = "13.05a";
+	public static String OPEN_ID_SERVLET = "Yasgui/openId";
+	public static String DEBUG_ARGUMENT_KEY = "gwt.codesvr";
+	public static String DEBUG_ARGUMENT_VALUE = "127.0.0.1:9997";
+	
+	public static String OPEN_ID_PROVIDER_IMG_PATH = "icons/openid/";
 }
