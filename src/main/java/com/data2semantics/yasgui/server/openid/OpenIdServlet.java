@@ -187,7 +187,7 @@ public final class OpenIdServlet extends HttpServlet implements RemoteService {
 				verify(request, response);
 			} catch (Exception e) {
 				e.printStackTrace();
-				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+//				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 			}
 		}
 	}
