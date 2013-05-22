@@ -38,6 +38,7 @@ import com.data2semantics.yasgui.server.db.DbHelper;
 import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
 import com.data2semantics.yasgui.server.fetchers.PrefixesFetcher;
 import com.data2semantics.yasgui.server.fetchers.endpoints.EndpointsFetcher;
+import com.data2semantics.yasgui.shared.Bookmark;
 import com.data2semantics.yasgui.shared.SettingKeys;
 import com.data2semantics.yasgui.shared.exceptions.FetchException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -95,11 +96,38 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 	
 
 	@Override
-	public void addBookmark(String title, String endpoint, String query) throws IllegalArgumentException, FetchException {
+	public void addBookmark(Bookmark bookmark) throws IllegalArgumentException, FetchException {
 		DbHelper db = null;
 		try {
 			db = new DbHelper(ConfigFetcher.getJsonObject(getServletContext().getRealPath("/")), getThreadLocalRequest());
-			db.addBookmark(title, endpoint, query);
+			db.addBookmarks(bookmark);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new FetchException(e.getMessage(), e);
+		} finally {
+			if (db != null) db.close();
+		}
+	}
+
+	public void storeBookmarks(Bookmark[] bookmarks) throws IllegalArgumentException, FetchException {
+		DbHelper db = null;
+		try {
+			db = new DbHelper(ConfigFetcher.getJsonObject(getServletContext().getRealPath("/")), getThreadLocalRequest());
+			db.clearBookmarks();
+			db.addBookmarks(bookmarks);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new FetchException(e.getMessage(), e);
+		} finally {
+			if (db != null) db.close();
+		}
+	}
+
+	public Bookmark[] getBookmarks() throws IllegalArgumentException, FetchException {
+		DbHelper db = null;
+		try {
+			db = new DbHelper(ConfigFetcher.getJsonObject(getServletContext().getRealPath("/")), getThreadLocalRequest());
+			return db.getBookmarks();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new FetchException(e.getMessage(), e);

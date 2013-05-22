@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONException;
@@ -13,6 +15,7 @@ import org.json.JSONObject;
 
 import com.data2semantics.yasgui.server.openid.HttpCookies;
 import com.data2semantics.yasgui.server.openid.OpenIdServlet;
+import com.data2semantics.yasgui.shared.Bookmark;
 import com.data2semantics.yasgui.shared.UserDetails;
 import com.data2semantics.yasgui.shared.exceptions.OpenIdException;
 
@@ -102,18 +105,35 @@ public class DbHelper {
 		return userDetails;
 	}
 
-	public void addBookmark(String title, String endpoint, String query) throws SQLException {
+//	public void addBookmark(Bookmark bookmark) throws SQLException {
+//		int userId = getUserId(HttpCookies.getCookieValue(request, OpenIdServlet.uniqueIdCookieName));
+//		
+//		PreparedStatement insert = connect.prepareStatement("INSERT into Bookmarks  " +
+//				"(Id, UserId, Title, Endpoint, Query) " +
+//				"values (default, ?, ?, ?, ?)");
+//		insert.setInt(1, userId);
+//		insert.setString(2, bookmark.getTitle());
+//		insert.setString(3, bookmark.getEndpoint());
+//		insert.setString(4, bookmark.getQuery());
+//		insert.executeUpdate();
+//		insert.close();
+//	}
+	
+	public Bookmark[] getBookmarks() throws SQLException {
 		int userId = getUserId(HttpCookies.getCookieValue(request, OpenIdServlet.uniqueIdCookieName));
-		
-		PreparedStatement insert = connect.prepareStatement("INSERT into Queries  " +
-				"(QueryId, UserId, Title, Endpoint, Query) " +
-				"values (default, ?, ?, ?, ?)");
-		insert.setInt(1, userId);
-		insert.setString(2, title);
-		insert.setString(3, endpoint);
-		insert.setString(4, query);
-		insert.executeUpdate();
-		insert.close();
+		ArrayList<Bookmark> bookmarks = new ArrayList<Bookmark>();
+		PreparedStatement preparedStatement = connect.prepareStatement("SELECT Id, Endpoint, Query, Title FROM Bookmarks WHERE UserId = ?");
+		preparedStatement.setInt(1, userId);
+		ResultSet result = preparedStatement.executeQuery();
+		while (result.next()) {
+			Bookmark bookmark = new Bookmark();
+			bookmark.setBookmarkId(result.getInt("Id"));
+			bookmark.setEndpoint(result.getString("Endpoint"));
+			bookmark.setQuery(result.getString("Query"));
+			bookmark.setTitle(result.getString("Title"));
+			bookmarks.add(bookmark);
+		}
+		return bookmarks.toArray(new Bookmark[bookmarks.size()]);
 	}
 
 
@@ -138,5 +158,33 @@ public class DbHelper {
 			throw new OpenIdException("User does not exist in database");
 		}
 		return userId;
+	}
+	public void clearBookmarks() throws SQLException {
+		int userId = getUserId(HttpCookies.getCookieValue(request, OpenIdServlet.uniqueIdCookieName));
+		PreparedStatement preparedStatement = connect.prepareStatement("DELETE FROM Bookmarks WHERE UserId = ?");
+		preparedStatement.setInt(1, userId);
+		preparedStatement.execute();
+		
+	}
+	public void addBookmarks(Bookmark... bookmarks) throws SQLException {
+		int userId = getUserId(HttpCookies.getCookieValue(request, OpenIdServlet.uniqueIdCookieName));
+        PreparedStatement insert = connect.prepareStatement("INSERT into Bookmarks  " +
+				"(Id, UserId, Title, Endpoint, Query) " +
+				"values (default, ?, ?, ?, ?)");
+        int i = 0;
+        for (Bookmark bookmark: bookmarks) {
+        	i++;
+    		insert.setInt(1, userId);
+    		insert.setString(2, bookmark.getTitle());
+    		insert.setString(3, bookmark.getEndpoint());
+    		insert.setString(4, bookmark.getQuery());
+    		
+            insert.addBatch();
+            if ((i + 1) % 1000 == 0) {
+                insert.executeBatch(); // Execute every 1000 items
+            }
+        }
+        insert.executeBatch();
+		
 	}
 }

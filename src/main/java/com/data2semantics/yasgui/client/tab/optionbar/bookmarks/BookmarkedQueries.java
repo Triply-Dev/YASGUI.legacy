@@ -26,6 +26,8 @@ package com.data2semantics.yasgui.client.tab.optionbar.bookmarks;
  * #L%
  */
 
+import java.util.ArrayList;
+
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.ExpansionMode;
 import com.smartgwt.client.types.ListGridEditEvent;
@@ -39,6 +41,8 @@ import com.smartgwt.client.widgets.events.VisibilityChangedHandler;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
+import com.smartgwt.client.widgets.grid.events.ChangedEvent;
+import com.smartgwt.client.widgets.grid.events.ChangedHandler;
 import com.smartgwt.client.widgets.grid.events.RecordCollapseEvent;
 import com.smartgwt.client.widgets.grid.events.RecordCollapseHandler;
 import com.smartgwt.client.widgets.grid.events.RecordExpandEvent;
@@ -48,8 +52,10 @@ import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
+import com.data2semantics.yasgui.shared.Bookmark;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class BookmarkedQueries extends ImgButton {
 	private View view;
@@ -61,7 +67,7 @@ public class BookmarkedQueries extends ImgButton {
 	private HLayout rollOverCanvas;
 	private BookmarkRecord rollOverRecord;
 	private ListGrid listGrid;
-
+	private boolean somethingChanged = false;
 	public BookmarkedQueries(View view) {
 		this.view = view;
 		setSrc("link.png");
@@ -79,29 +85,41 @@ public class BookmarkedQueries extends ImgButton {
 		addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				window = new Window();
-				window.setZIndex(ZIndexes.MODAL_WINDOWS);
-				window.setTitle("Bookmarked queries");
-				window.setIsModal(true);
-				window.setDismissOnOutsideClick(true);
-				window.setAutoCenter(true);
-				window.setWidth(WINDOW_WIDTH);
-				window.setHeight(WINDOW_HEIGHT);
-				window.setShowMinimizeButton(false);
-				window.addItem(getWindowContent());
-				window.addVisibilityChangedHandler(new VisibilityChangedHandler() {
-					
-					@Override
-					public void onVisibilityChanged(VisibilityChangedEvent event) {
-						storeRecords();
-						
+				view.getElements().onLoadingStart("loading bookmarks");
+				view.getRemoteService().getBookmarks(new AsyncCallback<Bookmark[]>() {
+					public void onFailure(Throwable caught) {
+						view.getElements().onError(caught);
+					}
+		
+					public void onSuccess(Bookmark[] bookmarks) {
+						view.getElements().onLoadingFinish();
+						somethingChanged = false;
+						window = new Window();
+						window.setZIndex(ZIndexes.MODAL_WINDOWS);
+						window.setTitle("Bookmarked queries");
+						window.setIsModal(true);
+						window.setDismissOnOutsideClick(true);
+						window.setAutoCenter(true);
+						window.setWidth(WINDOW_WIDTH);
+						window.setHeight(WINDOW_HEIGHT);
+						window.setShowMinimizeButton(false);
+						window.addItem(getWindowContent(bookmarks));
+						window.addVisibilityChangedHandler(new VisibilityChangedHandler() {
+							@Override
+							public void onVisibilityChanged(VisibilityChangedEvent event) {
+								if (somethingChanged) {
+									storeRecords();
+								}
+							}
+						});
+						window.draw();
 					}
 				});
-				window.draw();
+				
 			}
 		});
 	}
-	private ListGrid getWindowContent() {
+	private ListGrid getWindowContent(Bookmark[] bookmarks) {
 		
 		listGrid = new ListGrid() {
 			@Override
@@ -131,6 +149,7 @@ public class BookmarkedQueries extends ImgButton {
 					delImg.addClickHandler(new ClickHandler() {
 						public void onClick(ClickEvent event) {
 							listGrid.removeData(rollOverRecord);
+							somethingChanged = true;
 						}
 					});
 
@@ -144,6 +163,7 @@ public class BookmarkedQueries extends ImgButton {
 					addImg.setWidth(16);
 					addImg.addClickHandler(new ClickHandler() {
 						public void onClick(ClickEvent event) {
+							
 							String endpoint = rollOverRecord.getEndpoint();
 							String query = rollOverRecord.getQuery();
 							view.getSelectedTabSettings().setEndpoint(endpoint);
@@ -196,22 +216,39 @@ public class BookmarkedQueries extends ImgButton {
 			}});
 		ListGridField titleField = new ListGridField(BookmarkRecord.KEY_TITLE, "Title");
 		ListGridField endpointField = new ListGridField(BookmarkRecord.KEY_ENDPOINT, "Endpoint");
+		endpointField.addChangedHandler(new ChangedHandler(){
+			@Override
+			public void onChanged(ChangedEvent event) {
+				somethingChanged = true;
+				
+			}});
+		titleField.addChangedHandler(new ChangedHandler(){
+			@Override
+			public void onChanged(ChangedEvent event) {
+				somethingChanged = true;
+				
+			}});
 		listGrid.setFields(titleField, endpointField);
 
 		listGrid.setCanEdit(true);
 		listGrid.setEditEvent(ListGridEditEvent.CLICK);
 		listGrid.setEditByCell(true);
-
-		listGrid.setData(getTestRecords());
+		
+		listGrid.setData(getRecords(bookmarks));
 
 		return listGrid;
 	}
 
 	
-	private BookmarkRecord[] getTestRecords() {
-		return new BookmarkRecord[] { new BookmarkRecord("1", "title", "endpoin", "SELECT * \n{?x ?Y ?h} \nLIMIT 10"),
-				new BookmarkRecord("2", "title2", "endpoin2", "SELECT * {?x ?Y ?h} LIMIT 10"),
-				new BookmarkRecord("3", "title3", "endpoin3", "SELECT * {?x ?Y ?h} LIMIT 10"), };
+	private BookmarkRecord[] getRecords(Bookmark[] bookmarks) {
+//		return new BookmarkRecord[] { new BookmarkRecord(1, "title", "endpoin", "SELECT * \n{?x ?Y ?h} \nLIMIT 10"),
+//				new BookmarkRecord(2, "title2", "endpoin2", "SELECT * {?x ?Y ?h} LIMIT 10"),
+//				new BookmarkRecord(3, "title3", "endpoin3", "SELECT * {?x ?Y ?h} LIMIT 10"), };
+		ArrayList<BookmarkRecord> records = new ArrayList<BookmarkRecord>();
+		for (Bookmark bookmark: bookmarks) {
+			records.add(new BookmarkRecord(bookmark));
+		}
+		return records.toArray(new BookmarkRecord[records.size()]);
 	}
 	
 	
@@ -226,6 +263,7 @@ public class BookmarkedQueries extends ImgButton {
 			BookmarkRecord brecord = (BookmarkRecord)record;
 			if (brecord.getInputId().equals(inputId)) {
 				brecord.setQuery(query);
+				somethingChanged = true;
 			}
 		}
 	}
@@ -249,6 +287,23 @@ public class BookmarkedQueries extends ImgButton {
 	}
 	
 	private void storeRecords() {
+		view.getElements().onLoadingStart("updating bookmarks");
+		ListGridRecord[] records = listGrid.getRecords();
+		ArrayList<Bookmark> bookmarks = new ArrayList<Bookmark>();
+		for (ListGridRecord record: records) {
+			bookmarks.add(((BookmarkRecord)record).toBookmark());
+		}
+		
+		view.getRemoteService().storeBookmarks(bookmarks.toArray(new Bookmark[bookmarks.size()]), new AsyncCallback<Void>() {
+			public void onFailure(Throwable caught) {
+				view.getElements().onError(caught);
+			}
+
+			public void onSuccess(Void result) {
+				view.getElements().onLoadingFinish();
+			}
+		});
+		
 		
 	}
 
