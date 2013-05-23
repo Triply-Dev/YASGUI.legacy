@@ -41,6 +41,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.data2semantics.yasgui.server.Helper;
 import com.data2semantics.yasgui.server.openid.HttpCookies;
 import com.data2semantics.yasgui.server.openid.OpenIdServlet;
 import com.data2semantics.yasgui.shared.Bookmark;
@@ -102,10 +103,10 @@ public class DbHelper {
 			update.executeUpdate();
 			update.close();
 		} else {
-			// insert
+			// new user, so insert
 			PreparedStatement insert = connect.prepareStatement("INSERT into Users  " +
 					"(OpenId, UniqueId, FirstName, LastName, FullName, NickName, Email, LastLogin) " +
-					"values (?, ?, ?, ?, ?, ?, ?, default)");
+					"values (?, ?, ?, ?, ?, ?, ?, default)", Statement.RETURN_GENERATED_KEYS);
 			insert.setString(1, userDetails.getOpenId());
 			insert.setString(2, userDetails.getUniqueId());
 			insert.setString(3, userDetails.getFirstName());
@@ -114,9 +115,41 @@ public class DbHelper {
 			insert.setString(6, userDetails.getNickName());
 			insert.setString(7, userDetails.getEmail());
 			insert.executeUpdate();
+			ResultSet rs = insert.getGeneratedKeys();
+			int userId = -1;
+			if (rs.next()) {
+			  userId = rs.getInt(1);
+			}
 			insert.close();
+			
+			//so we have a new user, store default bookmarks as well
+			storeDefaultBookmarks(userId);
 		}
 		preparedStatement.close();
+	}
+	
+	private void storeDefaultBookmarks(int userId) throws SQLException {
+		if (userId >= 0) {
+			ArrayList<Bookmark> bookmarks = Helper.getDefaultBookmarksFromConfig(config);
+			PreparedStatement insert = connect.prepareStatement("INSERT into Bookmarks  " +
+					"(Id, UserId, Title, Endpoint, Query) " +
+					"values (default, ?, ?, ?, ?)");
+	        int i = 0;
+	        for (Bookmark bookmark: bookmarks) {
+	        	i++;
+	    		insert.setInt(1, userId);
+	    		insert.setString(2, bookmark.getTitle());
+	    		insert.setString(3, bookmark.getEndpoint());
+	    		insert.setString(4, bookmark.getQuery());
+	    		
+	            insert.addBatch();
+	            if ((i + 1) % 1000 == 0) {
+	                insert.executeBatch(); // Execute every 1000 items
+	            }
+	        }
+	        insert.executeBatch();
+	        insert.close();
+		}
 	}
 
 	public UserDetails getUserDetails(UserDetails userDetails) throws SQLException {
