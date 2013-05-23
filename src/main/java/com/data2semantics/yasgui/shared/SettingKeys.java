@@ -59,4 +59,7 @@ public class SettingKeys implements Serializable {
 	public static String MYSQL_USERNAME = "mysqlUsername";
 	public static String MYSQL_PASSWORD = "mysqlPassword";
 	public static String MYSQL_HOST = "mysqlHost";
+	
+	//inferred settings
+	public static String DB_SET = "dbSet";
 }

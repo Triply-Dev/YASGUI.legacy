@@ -86,8 +86,9 @@ public class View extends VLayout {
 		
 		viewElements = new ViewElements(this);
 		jsEvents = new CallableJsMethods(this);
-		
-		openId = new OpenId(this);
+		if (getSettings().isDbSet()) {
+			openId = new OpenId(this);
+		}
 		
 		
 		processVersionChanges();
@@ -396,5 +397,10 @@ public class View extends VLayout {
 
 	public OpenId getOpenId() {
 		return this.openId;
+	}
+	
+	public void loggedInCallback() {
+		getSelectedTab().getBookmarkedQueries().setEnabled();
+		getSelectedTab().getAddToBookmarks().setEnabled();
 	}
 }
