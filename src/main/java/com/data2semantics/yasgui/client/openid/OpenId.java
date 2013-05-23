@@ -99,8 +99,7 @@ public class OpenId {
 				new AsyncCallback<LoginResult>() {
 
 					public void onFailure(Throwable caught) {
-						// viewElements.onError("error " + caught.getMessage());
-						view.getLogger().severe("error!");
+						view.getElements().onError("error " + caught.getMessage());
 					}
 
 					public void onSuccess(LoginResult result) {

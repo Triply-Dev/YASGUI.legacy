@@ -85,12 +85,7 @@ public class BookmarkRecord extends ListGridRecord {
     }
     
     public int getBookmarkId() {
-    	String idString = getAttributeAsString(KEY_ID);
-    	int id = -1;
-    	if (idString == null || idString.length() == 0) {
-    		id = Integer.parseInt(idString);
-    	}
-    	return id;
+    	return getAttributeAsInt(KEY_ID);
     }
     
     public String getQueryAsTextArea(String query) {

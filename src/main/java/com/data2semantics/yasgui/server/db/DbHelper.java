@@ -32,10 +32,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -185,13 +187,23 @@ public class DbHelper {
 		}
 		return userId;
 	}
-	public void clearBookmarks() throws SQLException {
-		int userId = getUserId(HttpCookies.getCookieValue(request, OpenIdServlet.uniqueIdCookieName));
-		PreparedStatement preparedStatement = connect.prepareStatement("DELETE FROM Bookmarks WHERE UserId = ?");
-		preparedStatement.setInt(1, userId);
-		preparedStatement.execute();
-		
+	public void clearBookmarks(int... bookmarkIds) throws SQLException{
+		if (bookmarkIds.length > 0) {
+			int userId = getUserId(HttpCookies.getCookieValue(request, OpenIdServlet.uniqueIdCookieName));
+			Statement statement = connect.createStatement();
+			String ids = "";
+			boolean hasItemBefore = false;
+			for (int bookmarkId: bookmarkIds) {
+				if (hasItemBefore) ids += ", ";
+				ids += bookmarkId;
+				hasItemBefore = true;
+			}
+			String query = "DELETE FROM Bookmarks WHERE UserId = " + userId + " AND Id IN (" + ids + ")";
+			statement.execute(query);
+			statement.close();
+		}
 	}
+
 	public void addBookmarks(Bookmark... bookmarks) throws SQLException {
 		int userId = getUserId(HttpCookies.getCookieValue(request, OpenIdServlet.uniqueIdCookieName));
         PreparedStatement insert = connect.prepareStatement("INSERT into Bookmarks  " +
@@ -211,6 +223,32 @@ public class DbHelper {
             }
         }
         insert.executeBatch();
+        insert.close();
 		
+	}
+	public void updateBookmarks(Bookmark... bookmarks) throws SQLException {
+		int userId = getUserId(HttpCookies.getCookieValue(request, OpenIdServlet.uniqueIdCookieName));
+        PreparedStatement insert = connect.prepareStatement("UPDATE Bookmarks  " +
+				"SET Title = ?, " +
+				"Endpoint = ?, " +
+				"Query = ? " +
+				"WHERE UserId = ? " +
+				"AND Id = ?");
+        int i = 0;
+        for (Bookmark bookmark: bookmarks) {
+        	i++;
+    		
+    		insert.setString(1, bookmark.getTitle());
+    		insert.setString(2, bookmark.getEndpoint());
+    		insert.setString(3, bookmark.getQuery());
+    		insert.setInt(4, userId);
+    		insert.setInt(5, bookmark.getBookmarkId());
+            insert.addBatch();
+            if ((i + 1) % 1000 == 0) {
+                insert.executeBatch(); // Execute every 1000 items
+            }
+        }
+        insert.executeBatch();
+		insert.close();
 	}
 }
