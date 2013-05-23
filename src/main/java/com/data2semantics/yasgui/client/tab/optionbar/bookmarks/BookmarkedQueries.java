@@ -30,9 +30,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.types.Cursor;
 import com.smartgwt.client.types.ExpansionMode;
 import com.smartgwt.client.types.ListGridEditEvent;
 import com.smartgwt.client.widgets.Canvas;
+import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -58,72 +60,91 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class BookmarkedQueries extends ImgButton {
+public class BookmarkedQueries extends Img {
 	private View view;
 	private Window window;
 	private static int WINDOW_WIDTH = 700;
 	private static int WINDOW_HEIGHT = 500;
 	private static int ICON_WIDTH = 25;
 	private static int ICON_HEIGHT = 25;
+	private static String ICON = "link.png";
 	private HLayout rollOverCanvas;
+	private boolean enabled = false;
 	private BookmarkRecord rollOverRecord;
 	private ListGrid listGrid;
 	private HashMap<Integer,BookmarkRecord> updatedRecords;//hashmap, so we have a unique set of records
 	private ArrayList<BookmarkRecord> deletedRecords = new ArrayList<BookmarkRecord>();
 	public BookmarkedQueries(View view) {
 		this.view = view;
-		setSrc("link.png");
-
+		setSrc(ICON);
+		if (view.getOpenId() == null || !view.getOpenId().isLoggedIn()) {
+			setDisabled();
+		} else {
+			setEnabled();
+		}
 		setWidth(ICON_WIDTH);
 		setHeight(ICON_HEIGHT);
 		setShowDown(false);
 		setShowRollOver(false);
 		
 		addWindowSetup();
-		
-
+	}
+	
+	public void setEnabled() {
+		enabled = true;
+		setSrc(ICON);
+		setTooltip("show bookmarks");
+		setCursor(Cursor.POINTER);
+	}
+	
+	public void setDisabled() {
+		enabled = false;
+		setSrc(ICON);
+		setTooltip("log in to use your bookmarks");
+		setCursor(Cursor.DEFAULT);
 	}
 	private void addWindowSetup() {
 		addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				view.getElements().onLoadingStart("loading bookmarks");
-				view.getRemoteService().getBookmarks(new AsyncCallback<Bookmark[]>() {
-					public void onFailure(Throwable caught) {
-						view.getElements().onError(caught);
-					}
-		
-					public void onSuccess(Bookmark[] bookmarks) {
-						updatedRecords = new HashMap<Integer, BookmarkRecord>();
-						deletedRecords = new ArrayList<BookmarkRecord>();
-						view.getElements().onLoadingFinish();
-						window = new Window();
-						window.setZIndex(ZIndexes.MODAL_WINDOWS);
-						window.setTitle("Bookmarked queries");
-						window.setIsModal(true);
-						window.setDismissOnOutsideClick(true);
-						window.setAutoCenter(true);
-						window.setWidth(WINDOW_WIDTH);
-						window.setHeight(WINDOW_HEIGHT);
-						window.setShowMinimizeButton(false);
-						window.addItem(getWindowContent(bookmarks));
-						window.addVisibilityChangedHandler(new VisibilityChangedHandler() {
-							@Override
-							public void onVisibilityChanged(VisibilityChangedEvent event) {
-								storeCurrentTextArea();//to make sure currently edited query bookmark is stored as well
-								if (updatedRecords.size() > 0) {
-									updateRecords(new ArrayList<BookmarkRecord>(updatedRecords.values()));
+				if (enabled) {
+					view.getElements().onLoadingStart("loading bookmarks");
+					view.getRemoteService().getBookmarks(new AsyncCallback<Bookmark[]>() {
+						public void onFailure(Throwable caught) {
+							view.getElements().onError(caught);
+						}
+			
+						public void onSuccess(Bookmark[] bookmarks) {
+							updatedRecords = new HashMap<Integer, BookmarkRecord>();
+							deletedRecords = new ArrayList<BookmarkRecord>();
+							view.getElements().onLoadingFinish();
+							window = new Window();
+							window.setZIndex(ZIndexes.MODAL_WINDOWS);
+							window.setTitle("Bookmarked queries");
+							window.setIsModal(true);
+							window.setDismissOnOutsideClick(true);
+							window.setAutoCenter(true);
+							window.setWidth(WINDOW_WIDTH);
+							window.setHeight(WINDOW_HEIGHT);
+							window.setShowMinimizeButton(false);
+							window.addItem(getWindowContent(bookmarks));
+							window.addVisibilityChangedHandler(new VisibilityChangedHandler() {
+								@Override
+								public void onVisibilityChanged(VisibilityChangedEvent event) {
+									storeCurrentTextArea();//to make sure currently edited query bookmark is stored as well
+									if (updatedRecords.size() > 0) {
+										updateRecords(new ArrayList<BookmarkRecord>(updatedRecords.values()));
+									}
+									if (deletedRecords.size() > 0) {
+										deleteRecords(deletedRecords);
+									}
+									resetVariables();
 								}
-								if (deletedRecords.size() > 0) {
-									deleteRecords(deletedRecords);
-								}
-								resetVariables();
-							}
-						});
-						window.draw();
-					}
-				});
-				
+							});
+							window.draw();
+						}
+					});
+				}
 			}
 		});
 	}

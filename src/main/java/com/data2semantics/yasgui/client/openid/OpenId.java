@@ -58,6 +58,7 @@ public class OpenId {
 	View view;
 	private static int WINDOW_WIDTH = 800;
 	private static int WINDOW_HEIGHT = 200;
+	private boolean loggedIn = false;
 	private ArrayList<OpenIdProvider> providers;
 	public OpenId(View view) {
 		getProviders();
@@ -83,9 +84,12 @@ public class OpenId {
 			public void onSuccess(UserDetails details) {
 				if (details.isLoggedIn()) {
 					drawSessionWidgetLoggedIn(details);
-
+					view.loggedInCallback();
+					loggedIn = true;
+					
 				} else {
 					drawSessionWidgetLogin();
+					loggedIn = false;
 				}
 			}
 
@@ -104,7 +108,7 @@ public class OpenId {
 
 					public void onSuccess(LoginResult result) {
 						if (result.isLoggedIn()) {
-							view.getLogger().severe("logged in");
+							view.getLogger().severe("already logged in");
 						} else {
 							// redirect user to login page
 							Window.Location.assign(result
@@ -125,6 +129,7 @@ public class OpenId {
 					+ StaticConfig.DEBUG_ARGUMENT_VALUE;
 		}
 		Window.Location.assign(url);
+		loggedIn = false;
 	}
 
 	public void updateSessionInfo() {
@@ -132,6 +137,7 @@ public class OpenId {
 	}
 
 	private void drawSessionWidgetLoggedIn(UserDetails details) {
+		loggedIn = true;
 		String text = details.getDisplayName();
 		
 		String html = "<span class='footerText'>" + text + "</span>&nbsp;<span class='footerTextLink'>(log out)</span>";
@@ -268,5 +274,9 @@ public class OpenId {
 		providers.add(new ProviderGoogle());
 		providers.add(new ProviderYahoo());
 		providers.add(new ProviderOpenId());
+	}
+	
+	public boolean isLoggedIn() {
+		return loggedIn;
 	}
 }

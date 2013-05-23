@@ -117,12 +117,14 @@ public class QueryTab extends Tab {
 		
 		linkCreator = new LinkCreator(view);
 		queryOptions.addMember(linkCreator);
-		
-		bookmarkedQueries = new BookmarkedQueries(view);
-		queryOptions.addMember(bookmarkedQueries);
-		
-		addToBookmarks = new AddToBookmarks(view);
-		queryOptions.addMember(addToBookmarks);
+		if (view.getSettings().isDbSet()) {
+			bookmarkedQueries = new BookmarkedQueries(view);
+			queryOptions.addMember(bookmarkedQueries);
+		}
+		if (view.getSettings().isDbSet()) {
+			addToBookmarks = new AddToBookmarks(view);
+			queryOptions.addMember(addToBookmarks);
+		}
 		return queryOptions;
 	}
 
@@ -252,5 +254,8 @@ public class QueryTab extends Tab {
 	}
 	public BookmarkedQueries getBookmarkedQueries() {
 		return this.bookmarkedQueries;
+	}
+	public AddToBookmarks getAddToBookmarks() {
+		return this.addToBookmarks;
 	}
 }

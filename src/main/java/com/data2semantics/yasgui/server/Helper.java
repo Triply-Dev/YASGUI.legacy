@@ -37,6 +37,9 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Date;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Helper {
 	public final static void writeFile(File file, String content) throws IOException {
 		file.createNewFile();
@@ -81,6 +84,10 @@ public class Helper {
 			}
 		}
 		return updateFile;
+	}
+	
+	public static boolean containsKey(JSONObject json, String key) throws JSONException {
+		return (json.has(key) && json.getString(key).length() > 0);
 	}
 
 }
