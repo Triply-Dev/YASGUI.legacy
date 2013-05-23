@@ -17,5 +17,29 @@
 	"bitlyUsername": "",
 	"mysqlUsername": "",
 	"mysqlPassword": "",
-	"mysqlHost": ""
+	"mysqlHost": "",
+	"defaultBookmarks": [
+		{
+			"title": "German musicians born in berling",
+			"endpoint": "http://dbpedia.org/sparql",
+			"query": "PREFIX dbo: <http://dbpedia.org/ontology/>
+
+SELECT ?name ?birth ?description ?person WHERE {
+     ?person dbo:birthPlace :Berlin .
+     ?person <http://purl.org/dc/terms/subject> <http://dbpedia.org/resource/Category:German_musicians> .
+     ?person dbo:birthDate ?birth .
+     ?person foaf:name ?name .
+     ?person rdfs:comment ?description .
+     FILTER (LANG(?description) = 'en') .
+}
+ORDER BY ?name"
+		},
+		{
+			"title": "Get 10 triples",
+			"endpoint": "",
+			"query": "SELECT * WHERE {
+	?s ?p ?o
+}"
+		}
+	]
 }

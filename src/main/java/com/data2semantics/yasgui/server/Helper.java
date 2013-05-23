@@ -35,10 +35,15 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
 import java.util.Date;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.data2semantics.yasgui.shared.Bookmark;
+import com.data2semantics.yasgui.shared.SettingKeys;
 
 public class Helper {
 	public final static void writeFile(File file, String content) throws IOException {
@@ -88,6 +93,26 @@ public class Helper {
 	
 	public static boolean containsKey(JSONObject json, String key) throws JSONException {
 		return (json.has(key) && json.getString(key).length() > 0);
+	}
+	
+	public static ArrayList<Bookmark> getDefaultBookmarksFromConfig(JSONObject config) {
+		ArrayList<Bookmark> list = new ArrayList<Bookmark>();
+		try {
+			JSONArray array = config.getJSONArray(SettingKeys.DEFAULT_BOOKMARKS);
+			for (int i = 0; i < array.length(); i++) {
+				JSONObject bookmarkObject = array.getJSONObject(i);
+				Bookmark bookmark = new Bookmark();
+				bookmark.setEndpoint(bookmarkObject.getString("endpoint"));
+				bookmark.setQuery(bookmarkObject.getString("query"));
+				bookmark.setTitle(bookmarkObject.getString("title"));
+				list.add(bookmark);
+			}
+		} catch (Exception e) {
+			//probably no default bookmarks defined
+			e.printStackTrace();
+		}
+		
+		return list;
 	}
 
 }
