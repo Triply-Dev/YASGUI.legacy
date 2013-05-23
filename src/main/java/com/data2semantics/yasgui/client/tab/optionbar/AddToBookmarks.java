@@ -127,7 +127,6 @@ public class AddToBookmarks extends ImgButton {
 
 					@Override
 					public void onSuccess(Void result) {
-						view.getLogger().severe("succes!");
 						setSrc(ICON_ADD);
 					}
 				});

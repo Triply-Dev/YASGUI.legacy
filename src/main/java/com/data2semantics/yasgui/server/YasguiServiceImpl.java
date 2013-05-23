@@ -109,12 +109,11 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 		}
 	}
 
-	public void storeBookmarks(Bookmark[] bookmarks) throws IllegalArgumentException, FetchException {
+	public Bookmark[] getBookmarks() throws IllegalArgumentException, FetchException {
 		DbHelper db = null;
 		try {
 			db = new DbHelper(ConfigFetcher.getJsonObject(getServletContext().getRealPath("/")), getThreadLocalRequest());
-			db.clearBookmarks();
-			db.addBookmarks(bookmarks);
+			return db.getBookmarks();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new FetchException(e.getMessage(), e);
@@ -123,11 +122,26 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 		}
 	}
 
-	public Bookmark[] getBookmarks() throws IllegalArgumentException, FetchException {
+	@Override
+	public void updateBookmarks(Bookmark[] bookmarks) throws IllegalArgumentException, FetchException {
 		DbHelper db = null;
 		try {
 			db = new DbHelper(ConfigFetcher.getJsonObject(getServletContext().getRealPath("/")), getThreadLocalRequest());
-			return db.getBookmarks();
+			db.updateBookmarks(bookmarks);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new FetchException(e.getMessage(), e);
+		} finally {
+			if (db != null) db.close();
+		}
+	}
+
+	@Override
+	public void deleteBookmarks(int[] bookmarkIds) throws IllegalArgumentException, FetchException {
+		DbHelper db = null;
+		try {
+			db = new DbHelper(ConfigFetcher.getJsonObject(getServletContext().getRealPath("/")), getThreadLocalRequest());
+			db.clearBookmarks(bookmarkIds);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new FetchException(e.getMessage(), e);
