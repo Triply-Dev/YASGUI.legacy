@@ -200,9 +200,11 @@ public class BookmarkedQueries extends Img {
 						public void onClick(ClickEvent event) {
 							String endpoint = rollOverRecord.getEndpoint();
 							String query = rollOverRecord.getQuery();
-							view.getSelectedTabSettings().setEndpoint(endpoint);
+							if (endpoint != null && endpoint.length() > 0) {
+								view.getSelectedTabSettings().setEndpoint(endpoint);
+								view.getSelectedTab().setEndpoint(endpoint);
+							}
 							view.getSelectedTabSettings().setQueryString(query);
-							view.getSelectedTab().setEndpoint(endpoint);
 							view.getSelectedTab().setQueryString(query);
 							LocalStorageHelper.storeSettingsInCookie(view.getSettings());
 							window.destroy();
@@ -248,21 +250,25 @@ public class BookmarkedQueries extends Img {
 				
 			}});
 		ListGridField titleField = new ListGridField(BookmarkRecord.KEY_TITLE, "Title");
-		ListGridField endpointField = new ListGridField(BookmarkRecord.KEY_ENDPOINT, "Endpoint");
-		endpointField.addChangedHandler(new ChangedHandler(){
-			@Override
-			public void onChanged(ChangedEvent event) {
-				BookmarkRecord record = (BookmarkRecord)(listGrid.getRecord(event.getRowNum()));
-				updatedRecords.put(record.getBookmarkId(), record);
-			}});
 		titleField.addChangedHandler(new ChangedHandler(){
 			@Override
 			public void onChanged(ChangedEvent event) {
 				BookmarkRecord record = (BookmarkRecord)(listGrid.getRecord(event.getRowNum()));
 				updatedRecords.put(record.getBookmarkId(), record);
 			}});
-		listGrid.setFields(titleField, endpointField);
-
+		
+		if (!view.getSettings().inSingleEndpointMode()) {
+			ListGridField endpointField = new ListGridField(BookmarkRecord.KEY_ENDPOINT, "Endpoint");
+			endpointField.addChangedHandler(new ChangedHandler(){
+				@Override
+				public void onChanged(ChangedEvent event) {
+					BookmarkRecord record = (BookmarkRecord)(listGrid.getRecord(event.getRowNum()));
+					updatedRecords.put(record.getBookmarkId(), record);
+				}});
+			listGrid.setFields(titleField, endpointField);
+		} else {
+			listGrid.setFields(titleField);
+		}
 		listGrid.setCanEdit(true);
 		listGrid.setEditEvent(ListGridEditEvent.CLICK);
 		listGrid.setEditByCell(true);
