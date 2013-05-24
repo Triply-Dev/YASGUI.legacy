@@ -53,6 +53,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -78,7 +79,7 @@ public final class OpenIdServlet extends HttpServlet implements RemoteService {
 
 		String createUniqueIdForUser(JSONObject config, String loginString) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException;
 
-		void saveIdentifierForUniqueId(JSONObject jsonObject, UserDetails userDetails) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException;
+		void saveIdentifierForUniqueId(File configDir, UserDetails userDetails) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException;
 	}
 
 	private static Callback callback = new OpenIdCallback();
@@ -134,14 +135,15 @@ public final class OpenIdServlet extends HttpServlet implements RemoteService {
 	 * @throws JSONException 
 	 * @throws FileNotFoundException 
 	 * @throws ClassNotFoundException 
+	 * @throws ParseException 
 	 */
-	public static UserDetails getRequestUserInfo(JSONObject config, HttpServletRequest request) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException {
+	public static UserDetails getRequestUserInfo(File configDir, HttpServletRequest request) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
 		UserDetails userDetails = new UserDetails();
 		userDetails.setOpenId(HttpCookies.getCookieValue(request, openIdCookieName));
 		userDetails.setUniqueId(HttpCookies.getCookieValue(request, uniqueIdCookieName));
 		if (userDetails.getOpenId() != null && userDetails.getUniqueId() != null) {
 			//get more info
-			DbHelper db = new DbHelper(config, request);
+			DbHelper db = new DbHelper(configDir, request);
 			userDetails = db.getUserDetails(userDetails);
 		}
 		
@@ -348,7 +350,7 @@ public final class OpenIdServlet extends HttpServlet implements RemoteService {
 				}
 				HttpCookies.setCookie(request, response, openIdCookieName, id.getIdentifier());
 				
-				callback.saveIdentifierForUniqueId(ConfigFetcher.getJsonObject(getServletContext().getRealPath("/")), userDetails);
+				callback.saveIdentifierForUniqueId(new File(getServletContext().getRealPath("/")), userDetails);
 			}
 			String url = callback.getLoginURL();
 			if (request.getParameter(StaticConfig.DEBUG_ARGUMENT_KEY) != null) {

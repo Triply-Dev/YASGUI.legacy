@@ -26,9 +26,11 @@ package com.data2semantics.yasgui.server.openid;
  * #L%
  */
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -57,9 +59,9 @@ public class OpenIdCallback implements Callback{
 		String rand = RandomStringUtils.randomAlphanumeric(12);
 		return rand;
 	}
-	public void saveIdentifierForUniqueId(JSONObject config, UserDetails userDetails) throws ClassNotFoundException, FileNotFoundException, SQLException, IOException, org.json.JSONException {
+	public void saveIdentifierForUniqueId(File configDir, UserDetails userDetails) throws ClassNotFoundException, FileNotFoundException, SQLException, IOException, org.json.JSONException, ParseException {
 //		System.out.println("saved unique Id: " + userDetails.getUniqueId());
-		DbHelper db = new DbHelper(config);
+		DbHelper db = new DbHelper(configDir);
 		db.storeUserInfo(userDetails);
 //		LOGGER.info("unique ID: " + uniqueId );
 	}
