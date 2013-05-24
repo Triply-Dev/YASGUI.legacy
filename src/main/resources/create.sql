@@ -1,20 +1,4 @@
--- phpMyAdmin SQL Dump
--- version 3.5.8.1deb1
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Generation Time: May 23, 2013 at 10:29 AM
--- Server version: 5.5.31-0ubuntu0.13.04.1
--- PHP Version: 5.4.9-4ubuntu2
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
-
---
--- Database: `YASGUI`
---
-CREATE DATABASE `YASGUI` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `YASGUI`;
 
 -- --------------------------------------------------------
 
