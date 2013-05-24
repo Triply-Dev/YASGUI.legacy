@@ -442,7 +442,7 @@ public class ViewElements {
 		noQueriesButton.setWidth(CONSENT_BUTTON_WIDTH);
 		noQueriesButton.setHeight(CONSENT_BUTTON_HEIGHT);
 		noQueriesButton.setShowRollOver(true);  
-		noQueriesButton.setIcon(Icons.CHECKMARK);
+		noQueriesButton.setIcon(Icons.CHECK_CROSS);
 		noQueriesButton.setIconOrientation("left");  
 		noQueriesButton.addClickHandler(new ClickHandler() {
 			@Override
@@ -461,7 +461,7 @@ public class ViewElements {
 		noButton.setShowRollOver(true);  
 		noButton.setWidth(CONSENT_BUTTON_WIDTH);
 		noButton.setHeight(CONSENT_BUTTON_HEIGHT);
-		noButton.setIcon(Icons.CHECK_CROSS);
+		noButton.setIcon(Icons.CROSS);
 		noButton.setIconOrientation("left");  
 		noButton.addClickHandler(new ClickHandler() {
 			@Override
