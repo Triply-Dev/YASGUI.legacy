@@ -43,7 +43,8 @@ import com.data2semantics.yasgui.shared.SettingKeys;
  * Servlet implementation class ConfigServlet
  */
 public class ConfigFetcher {
-	private static String CONFIG_FILE = "config/config.json";
+	public static String CONFIG_DIR = "/config/";
+	private static String CONFIG_FILE = "config.json";
 	
 	/**
 	 * check whether config json string is defined and parsable. if so, return the string
@@ -70,7 +71,15 @@ public class ConfigFetcher {
 	}
 	
 	public static JSONObject getJsonObject(String path) throws ParseException, JSONException, FileNotFoundException, IOException {
-		File configFile = new File( path + CONFIG_FILE);
+		File configFile = new File( path + CONFIG_DIR + CONFIG_FILE);
+		return getJsonObjectFromFile(configFile);
+	}
+	
+	public static JSONObject getJsonObject(File path) throws ParseException, JSONException, FileNotFoundException, IOException {
+		File configFile = new File( path.getAbsolutePath() + CONFIG_DIR + CONFIG_FILE);
+		return getJsonObjectFromFile(configFile);
+	}
+	private static JSONObject getJsonObjectFromFile(File configFile) throws IOException, JSONException {
 		if (!configFile.exists()) {
 			throw new IOException("Unable to load config file from server. Trying to load: " + configFile.getAbsolutePath());
 		} else {

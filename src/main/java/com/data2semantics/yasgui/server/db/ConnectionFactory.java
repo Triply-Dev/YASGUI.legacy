@@ -27,28 +27,29 @@ package com.data2semantics.yasgui.server.db;
  */
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
 import com.data2semantics.yasgui.shared.SettingKeys;
 
 public class ConnectionFactory  {
-	private static String DB_NAME = "YASGUI";
-
 	
-	
-	public static Connection getConnection(JSONObject config) throws JSONException, ClassNotFoundException, SQLException,
-	FileNotFoundException, IOException {
+	public static Connection getConnection(File configDir) throws JSONException, ClassNotFoundException, SQLException,
+	FileNotFoundException, IOException, ParseException {
+		JSONObject config = ConfigFetcher.getJsonObject(configDir);
 		Connection connect = null;
 		try {
 			connect = connect(config.getString(SettingKeys.MYSQL_HOST) + "/" + config.getString(SettingKeys.MYSQL_DB), config.getString(SettingKeys.MYSQL_USERNAME),
@@ -58,9 +59,8 @@ public class ConnectionFactory  {
 			//connect without db selector, create db, and create new connector
 			connect = connect(config.getString(SettingKeys.MYSQL_HOST), config.getString(SettingKeys.MYSQL_USERNAME),
 					config.getString(SettingKeys.MYSQL_PASSWORD));
-			updateDatabase(connect, config.getString(SettingKeys.MYSQL_DB));
-			connect = connect(config.getString(SettingKeys.MYSQL_HOST) + "/" + config.getString(SettingKeys.MYSQL_USERNAME), config.getString(SettingKeys.MYSQL_USERNAME),
-					config.getString(SettingKeys.MYSQL_PASSWORD));
+			connect = updateDatabase(connect, config, configDir);
+			
 		}
 		return connect;
 	}
@@ -73,33 +73,34 @@ public class ConnectionFactory  {
 
 	}
 
-	private static void updateDatabase(Connection connect, String dbName) throws FileNotFoundException, IOException, SQLException {
+	private static Connection updateDatabase(Connection connect, JSONObject config, File configDir) throws FileNotFoundException, IOException, SQLException, JSONException, ClassNotFoundException {
+		String dbName = config.getString(SettingKeys.MYSQL_DB);
 		if (!databaseExists(connect, dbName)) {
 			createDatabase(connect, dbName);
+			connect.close();
+			connect = connect(config.getString(SettingKeys.MYSQL_HOST) + "/" + config.getString(SettingKeys.MYSQL_DB), config.getString(SettingKeys.MYSQL_USERNAME),
+					config.getString(SettingKeys.MYSQL_PASSWORD));
+			
+			System.out.println("connected to " + config.getString(SettingKeys.MYSQL_HOST) + "/" + config.getString(SettingKeys.MYSQL_DB));
 			
 			ScriptRunner runner = new ScriptRunner(connect, false, true);
 			String filename = "create.sql";
-			InputStream fileStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(filename);
-			if (fileStream == null) {
-				throw new FileNotFoundException("Could not find resource for " + filename);
-			}
+			FileInputStream fileStream = new FileInputStream(configDir.getAbsolutePath() + "/" + ConfigFetcher.CONFIG_DIR + filename);
 			runner.runScript(new BufferedReader(new InputStreamReader(fileStream, "UTF-8")));
 		}
+		return connect;
 	}
 	
 	private static void createDatabase(Connection connect, String dbName) throws SQLException {
 		Statement statement = connect.createStatement();
 		statement.executeUpdate("CREATE DATABASE `" + dbName + "` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci");
 		statement.close();
-		Statement useStatement = connect.createStatement();
-		useStatement.executeUpdate("USE `" + dbName + "`");
-		useStatement.close();
 	}
 
-	private static boolean databaseExists(Connection connect, String DbName) throws SQLException {
+	private static boolean databaseExists(Connection connect, String dbName) throws SQLException {
 		Statement statement = connect.createStatement();
 		ResultSet resultSet = statement.executeQuery("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '"
-				+ DB_NAME + "'");
+				+ dbName + "'");
 		boolean exists = resultSet.next();
 		statement.close();
 		resultSet.close();

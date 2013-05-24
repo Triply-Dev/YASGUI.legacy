@@ -192,7 +192,6 @@ public class OpenId {
 
 	private HLayout drawProviders() {
 		HLayout hlayout = new HLayout();
-//		hlayout.getElement().getStyle().setMarginTop(3, Unit.PX);
 		hlayout.setHeight(WINDOW_HEIGHT - 40);
 		hlayout.setAlign(Alignment.CENTER);
 		LayoutSpacer iconSpacer = new LayoutSpacer();
@@ -222,7 +221,7 @@ public class OpenId {
 				Img providerImg = new Img(provider.getImageLocation(), width, height);
 				if (provider.getUrl() == null) {
 					
-					providerImg.addClickHandler(new ClickHandler(){
+					providerContainer.addClickHandler(new ClickHandler(){
 						public void onClick(ClickEvent event) {
 							if (providerContainer.getMembers().length == 2) {//might be added already
 								HLayout formLayout = new HLayout();
