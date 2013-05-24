@@ -153,7 +153,7 @@ public class DbHelper {
 		}
 	}
 
-	public UserDetails getUserDetails(UserDetails userDetails) throws SQLException {
+	public UserDetails getUserDetails(UserDetails userDetails) throws SQLException, OpenIdException {
 		PreparedStatement preparedStatement = connect
 				.prepareStatement("SELECT Id, FirstName, LastName, FullName, NickName, Email FROM Users WHERE UniqueId = ?");
 		preparedStatement.setString(1, userDetails.getUniqueId());
@@ -165,6 +165,8 @@ public class DbHelper {
 			userDetails.setFullName(result.getString("FullName"));
 			userDetails.setNickName(result.getString("NickName"));
 			userDetails.setEmail(result.getString("Email"));
+		} else {
+			throw new OpenIdException("User not found in database");
 		}
 		result.close();
 		return userDetails;
@@ -197,7 +199,7 @@ public class DbHelper {
 		}
 	}
 	
-	public int getUserId(String uniqueId) throws SQLException {
+	public int getUserId(String uniqueId) throws SQLException, OpenIdException {
 		PreparedStatement preparedStatement = connect.prepareStatement("SELECT Id FROM Users WHERE UniqueId = ?");
 		preparedStatement.setString(1, uniqueId);
 		int userId = -1;
@@ -211,7 +213,7 @@ public class DbHelper {
 		}
 		return userId;
 	}
-	public void clearBookmarks(int... bookmarkIds) throws SQLException{
+	public void clearBookmarks(int... bookmarkIds) throws SQLException, OpenIdException{
 		if (bookmarkIds.length > 0) {
 			int userId = getUserId(HttpCookies.getCookieValue(request, OpenIdServlet.uniqueIdCookieName));
 			Statement statement = connect.createStatement();
@@ -228,7 +230,7 @@ public class DbHelper {
 		}
 	}
 
-	public void addBookmarks(Bookmark... bookmarks) throws SQLException {
+	public void addBookmarks(Bookmark... bookmarks) throws SQLException, OpenIdException {
 		int userId = getUserId(HttpCookies.getCookieValue(request, OpenIdServlet.uniqueIdCookieName));
         PreparedStatement insert = connect.prepareStatement("INSERT into Bookmarks  " +
 				"(Id, UserId, Title, Endpoint, Query) " +
@@ -250,7 +252,7 @@ public class DbHelper {
         insert.close();
 		
 	}
-	public void updateBookmarks(Bookmark... bookmarks) throws SQLException {
+	public void updateBookmarks(Bookmark... bookmarks) throws SQLException, OpenIdException {
 		int userId = getUserId(HttpCookies.getCookieValue(request, OpenIdServlet.uniqueIdCookieName));
         PreparedStatement insert = connect.prepareStatement("UPDATE Bookmarks  " +
 				"SET Title = ?, " +
