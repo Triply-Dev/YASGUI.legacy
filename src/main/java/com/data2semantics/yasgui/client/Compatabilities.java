@@ -28,8 +28,8 @@ package com.data2semantics.yasgui.client;
 
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
-import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
 import com.data2semantics.yasgui.client.settings.Icons;
+import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.data2semantics.yasgui.shared.StaticConfig;
 import com.google.gwt.storage.client.Storage;
 import com.smartgwt.client.types.Alignment;
@@ -113,7 +113,7 @@ public class Compatabilities extends Window {
 		draw();
 		
 		//ok, so we've shown the stuff. reload the menu button, as we might still have an exclamation mark there
-		view.getTabs().redrawConfigButton(Icons.TOOLS);
+		view.getElements().redrawConfigButton();
 	}
 	
 	private void drawHtml5LocalStorage() {

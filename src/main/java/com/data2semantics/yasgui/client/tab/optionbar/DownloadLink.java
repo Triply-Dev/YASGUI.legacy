@@ -30,8 +30,8 @@ import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
-import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
 import com.data2semantics.yasgui.client.settings.Icons;
+import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 
 public class DownloadLink extends Canvas {

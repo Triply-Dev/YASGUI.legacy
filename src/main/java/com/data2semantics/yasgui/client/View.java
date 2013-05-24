@@ -34,12 +34,12 @@ import com.data2semantics.yasgui.client.helpers.GoogleAnalytics;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
-import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
 import com.data2semantics.yasgui.client.openid.OpenId;
 import com.data2semantics.yasgui.client.services.OpenIdServiceAsync;
 import com.data2semantics.yasgui.client.services.YasguiServiceAsync;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
+import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.client.tab.optionbar.EndpointDataSource;
 import com.data2semantics.yasgui.shared.Endpoints;
@@ -65,13 +65,13 @@ import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 public class View extends VLayout {
+	private static int TOP_SPACING = 34;
 	private Logger logger = Logger.getLogger("");
 	private YasguiServiceAsync remoteService = YasguiServiceAsync.Util.getInstance();
 	private OpenIdServiceAsync openIdService = OpenIdServiceAsync.Util.getInstance();
 	private EndpointDataSource endpointDataSource;
 	private QueryTabs queryTabs;
 	private ViewElements viewElements;
-	private Footer footer;
 	private Settings settings = new Settings();
 	@SuppressWarnings("unused")
 	private CallableJsMethods jsEvents;
@@ -109,8 +109,6 @@ public class View extends VLayout {
 		queryTabs = new QueryTabs(this);
 		addMember(queryTabs);
 		
-		footer = new Footer(this);
-		addMember(footer);
 		
 		getElements().checkHtml5();
 		
@@ -128,7 +126,7 @@ public class View extends VLayout {
 		setHeight100();
 		//Setting margins on tabset messes up layout. Therefore use spacer
 		LayoutSpacer spacer = new LayoutSpacer();
-		spacer.setHeight(30);
+		spacer.setHeight(TOP_SPACING);
 		addMember(spacer);	
 	}
 	
@@ -204,8 +202,8 @@ public class View extends VLayout {
 	public void showTooltips(int fromVersionId) {
 		if (!Helper.isCrawler()) {
 			try {
-				footer.showTooltips(fromVersionId);
 				queryTabs.showTooltips(fromVersionId);
+				getElements().showTooltip(fromVersionId);
 				getSelectedTab().showTooltips(fromVersionId);
 			} catch (ElementIdException e) {
 				getElements().onError(e);

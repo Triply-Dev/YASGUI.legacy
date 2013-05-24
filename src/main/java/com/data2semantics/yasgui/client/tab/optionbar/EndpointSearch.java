@@ -45,8 +45,8 @@ import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
-import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
 import com.data2semantics.yasgui.client.settings.Icons;
+import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.data2semantics.yasgui.shared.Endpoints;
 public class EndpointSearch extends VLayout {
 	private static int ICON_WIDTH = 20;

@@ -50,6 +50,11 @@ public class Icons {
 	public static String LOADING = "icons/custom/query_loader.gif";
 	public static String QUERY_ERROR = "icons/nounproject/playSquareError.png";
 	public static String EXECUTE_QUERY = "icons/nounproject/playSquare.png";
+	public static String LOG_OUT = "icons/nounproject/logOut.png";
+	public static String LOG_IN = "icons/nounproject/logIn.png";
+	public static String QUESTION_MARK = "icons/nounproject/questionMark.png";
+	
+	public static String LOGO_GITHUB = "logos/github.jpg";
 	
 	public static String DIR_IMAGES = "images/";
 	public static String getDisabled(String icon) {

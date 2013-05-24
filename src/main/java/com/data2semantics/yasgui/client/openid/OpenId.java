@@ -3,7 +3,7 @@ package com.data2semantics.yasgui.client.openid;
 import java.util.ArrayList;
 
 import com.data2semantics.yasgui.client.View;
-import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
+import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.data2semantics.yasgui.shared.LoginResult;
 import com.data2semantics.yasgui.shared.StaticConfig;
 import com.data2semantics.yasgui.shared.UserDetails;
@@ -60,6 +60,7 @@ public class OpenId {
 	private static int WINDOW_HEIGHT = 200;
 	private boolean loggedIn = false;
 	private ArrayList<OpenIdProvider> providers;
+	private String displayName;
 	public OpenId(View view) {
 		getProviders();
 		for (OpenIdProvider provider: providers) {
@@ -138,40 +139,16 @@ public class OpenId {
 
 	private void drawSessionWidgetLoggedIn(UserDetails details) {
 		loggedIn = true;
-		String text = details.getDisplayName();
 		
-		String html = "<span class='footerText'>" + text + "</span>&nbsp;<span class='footerTextLink'>(log out)</span>";
-		HTMLFlow htmlFlow = new HTMLFlow(html);
-		htmlFlow.setAlign(Alignment.CENTER);
-		htmlFlow.setMargin(3);
-		htmlFlow.setCanSelectText(true);
-		htmlFlow.setWidth(text.length() * 8);
-		htmlFlow.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				view.getOpenId().logOut();
-			}
-		});
-		view.getElements().updateSessionCanvas(htmlFlow);
+		this.displayName = details.getDisplayName();
+		view.getElements().redrawConfigButton();
+	}
+	
+	public String getDisplayName() {
+		return this.displayName;
 	}
 	private void drawSessionWidgetLogin() {
-		String text = "login";
-		Label sessionLabel = new Label(text);
-		sessionLabel.setAlign(Alignment.CENTER);
-		sessionLabel.setMargin(3);
-		sessionLabel.setStyleName("footerTextLink");
-		sessionLabel.setWrap(false);
-		sessionLabel.setCanSelectText(true);
-		sessionLabel.setWidth(text.length() * 8);
-
-		sessionLabel.setPosition(Positioning.ABSOLUTE);
-		sessionLabel.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				view.getOpenId().showOpenIdProviders();
-			}
-		});
-		view.getElements().updateSessionCanvas(sessionLabel);
+		view.getElements().redrawConfigButton();
 	}
 
 	public void showOpenIdProviders() {
@@ -185,6 +162,7 @@ public class OpenId {
 		window.setWidth(WINDOW_WIDTH);
 		window.setHeight(WINDOW_HEIGHT);
 		window.setShowMinimizeButton(false);
+		window.setShowTitle(false);
 		window.setAutoCenter(true);
 		window.addItem(drawProviders());
 		window.draw();
