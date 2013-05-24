@@ -46,12 +46,17 @@ import com.data2semantics.yasgui.server.Helper;
 public class PrefixesFetcher {
 	public static String CACHE_FILENAME = "prefixes.json";
 	public static String PREFIX_CC_URL = "http://prefix.cc/popular/all.file.json";
-	private static int CACHE_EXPIRES_DAYS = 1;//cache expires after 1 day
+	private static int CACHE_EXPIRES_DAYS = 10;//cache expires after 1 day
 	public static String fetch(boolean forceUpdate, File cacheDir) throws URISyntaxException, MalformedURLException, IOException, JSONException {
 		String result = "";
 		if (!cacheDir.exists()) {
-			cacheDir.mkdir();
+			boolean bool = cacheDir.mkdir();
+			if (!bool) {
+				System.out.println("could not make cache dir!!");
+			}
 			forceUpdate = true;
+			System.out.println("made cache dir " + cacheDir.getAbsolutePath());
+			
 		}
 		
 		File file = new File(cacheDir + "/" + CACHE_FILENAME);
