@@ -47,7 +47,7 @@ public class Icons {
 	public static String TOOLS = "icons/nounproject/tools.png";
 	public static String TOOLTIP = "icons/nounproject/tooltip.png";
 	public static String WARNING = "icons/nounproject/warning.png";
-	public static String LOADING = "icons/custom/query_loader.gif";
+	public static String LOADING = "icons/custom/ajax_loader.gif";
 	public static String QUERY_ERROR = "icons/nounproject/playSquareError.png";
 	public static String EXECUTE_QUERY = "icons/nounproject/playSquare.png";
 	public static String LOG_OUT = "icons/nounproject/logOut.png";

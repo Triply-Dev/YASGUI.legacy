@@ -100,7 +100,6 @@ public class DbHelper {
 			update.setString(4, userDetails.getFullName());
 			update.setString(5, userDetails.getNickName());
 			update.setString(6, userDetails.getEmail());
-			
 			update.setString(7, userDetails.getOpenId());
 			update.executeUpdate();
 			update.close();
@@ -156,31 +155,21 @@ public class DbHelper {
 
 	public UserDetails getUserDetails(UserDetails userDetails) throws SQLException {
 		PreparedStatement preparedStatement = connect
-				.prepareStatement("SELECT Id, FirstName, LastName FROM Users WHERE UniqueId = ?");
+				.prepareStatement("SELECT Id, FirstName, LastName, FullName, NickName, Email FROM Users WHERE UniqueId = ?");
 		preparedStatement.setString(1, userDetails.getUniqueId());
 		ResultSet result = preparedStatement.executeQuery();
 		if (result.next()) {
 			userDetails.setFirstName(result.getString("FirstName"));
 			userDetails.setLastName(result.getString("LastName"));
 			userDetails.setUserId(result.getInt("Id"));
+			userDetails.setFullName(result.getString("FullName"));
+			userDetails.setNickName(result.getString("NickName"));
+			userDetails.setEmail(result.getString("Email"));
 		}
 		result.close();
 		return userDetails;
 	}
 
-//	public void addBookmark(Bookmark bookmark) throws SQLException {
-//		int userId = getUserId(HttpCookies.getCookieValue(request, OpenIdServlet.uniqueIdCookieName));
-//		
-//		PreparedStatement insert = connect.prepareStatement("INSERT into Bookmarks  " +
-//				"(Id, UserId, Title, Endpoint, Query) " +
-//				"values (default, ?, ?, ?, ?)");
-//		insert.setInt(1, userId);
-//		insert.setString(2, bookmark.getTitle());
-//		insert.setString(3, bookmark.getEndpoint());
-//		insert.setString(4, bookmark.getQuery());
-//		insert.executeUpdate();
-//		insert.close();
-//	}
 	
 	public Bookmark[] getBookmarks() throws SQLException {
 		int userId = getUserId(HttpCookies.getCookieValue(request, OpenIdServlet.uniqueIdCookieName));
