@@ -148,6 +148,7 @@ public class AddToBookmarks extends Img {
 				view.getRemoteService().addBookmark(bookmark, new AsyncCallback<Void>() {
 					public void onFailure(Throwable caught) {
 						view.getElements().onError(caught);
+						setSrc(Icons.BOOKMARK_QUERY);
 					}
 		
 
