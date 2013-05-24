@@ -26,19 +26,13 @@ package com.data2semantics.yasgui.server;
  * #L%
  */
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.HashMap;
+import java.io.File;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.data2semantics.yasgui.client.services.OpenIdService;
-import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
 import com.data2semantics.yasgui.server.openid.OpenIdServlet;
 import com.data2semantics.yasgui.shared.LoginResult;
 import com.data2semantics.yasgui.shared.UserDetails;
@@ -57,14 +51,11 @@ public class OpenIdServiceImpl extends RemoteServiceServlet implements OpenIdSer
 		HttpServletRequest request = getThreadLocalRequest();
 		LOGGER.info("we have the request. now pass it on to openid servlet");
 		try {
-			JSONObject config = ConfigFetcher.getJsonObject(getServletContext().getRealPath("/"));
-			UserDetails userDetails = OpenIdServlet.getRequestUserInfo(config, request);
-			System.out.println(userDetails.toString());
+			UserDetails userDetails = OpenIdServlet.getRequestUserInfo(new File(getServletContext().getRealPath("/")), request);
 			LoginResult loginResult = new LoginResult();
 			if (userDetails.isLoggedIn()) {
 				loginResult.setIsLoggedIn(true);
 			} else {
-				LOGGER.info("not logged in");
 				//not logged in
 				loginResult.setIsLoggedIn(false);
 				loginResult.setAuthenticationLink(OpenIdServlet.getAuthenticationURL(openIdURL, appBaseUrl, inDebugMode));
@@ -78,8 +69,7 @@ public class OpenIdServiceImpl extends RemoteServiceServlet implements OpenIdSer
 	public UserDetails getCurrentUser() throws OpenIdException {
 		UserDetails details = new UserDetails();
 		try {
-			JSONObject config = ConfigFetcher.getJsonObject(getServletContext().getRealPath("/"));
-			details = OpenIdServlet.getRequestUserInfo(config, getThreadLocalRequest());
+			details = OpenIdServlet.getRequestUserInfo(new File(getServletContext().getRealPath("/")), getThreadLocalRequest());
 		} catch (Exception e) {
 			//do nothing. just use empty user details
 			e.printStackTrace();

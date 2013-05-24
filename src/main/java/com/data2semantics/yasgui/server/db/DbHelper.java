@@ -26,6 +26,7 @@ package com.data2semantics.yasgui.server.db;
  * #L%
  */
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
@@ -33,15 +34,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.data2semantics.yasgui.server.Helper;
+import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
 import com.data2semantics.yasgui.server.openid.HttpCookies;
 import com.data2semantics.yasgui.server.openid.OpenIdServlet;
 import com.data2semantics.yasgui.shared.Bookmark;
@@ -54,13 +56,13 @@ public class DbHelper {
 	private HttpServletRequest request;
 	
 	
-	public DbHelper(JSONObject config, HttpServletRequest request) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException {
-		this.connect = ConnectionFactory.getConnection(config);
-		this.config = config;
+	public DbHelper(File configDir, HttpServletRequest request) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
+		this.config = ConfigFetcher.getJsonObject(configDir);
+		this.connect = ConnectionFactory.getConnection(configDir);
 		this.request = request;
 	}
-	public DbHelper(JSONObject config) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException {
-		this(config, null);
+	public DbHelper(File configDir) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
+		this(configDir, null);
 	}
 
 	public void updateUser() {
