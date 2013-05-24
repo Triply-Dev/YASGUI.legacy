@@ -43,9 +43,6 @@ import org.json.JSONObject;
 import com.data2semantics.yasgui.shared.SettingKeys;
 
 public class ConnectionFactory  {
-	private static String DB_NAME = "YASGUI";
-
-	
 	
 	public static Connection getConnection(JSONObject config) throws JSONException, ClassNotFoundException, SQLException,
 	FileNotFoundException, IOException {
@@ -96,10 +93,10 @@ public class ConnectionFactory  {
 		useStatement.close();
 	}
 
-	private static boolean databaseExists(Connection connect, String DbName) throws SQLException {
+	private static boolean databaseExists(Connection connect, String dbName) throws SQLException {
 		Statement statement = connect.createStatement();
 		ResultSet resultSet = statement.executeQuery("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '"
-				+ DB_NAME + "'");
+				+ dbName + "'");
 		boolean exists = resultSet.next();
 		statement.close();
 		resultSet.close();
