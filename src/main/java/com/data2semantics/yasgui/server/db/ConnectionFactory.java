@@ -59,7 +59,7 @@ public class ConnectionFactory  {
 			//connect without db selector, create db, and create new connector
 			connect = connect(config.getString(SettingKeys.MYSQL_HOST), config.getString(SettingKeys.MYSQL_USERNAME),
 					config.getString(SettingKeys.MYSQL_PASSWORD));
-			updateDatabase(connect, config, configDir);
+			connect = updateDatabase(connect, config, configDir);
 			
 		}
 		return connect;
@@ -73,7 +73,7 @@ public class ConnectionFactory  {
 
 	}
 
-	private static void updateDatabase(Connection connect, JSONObject config, File configDir) throws FileNotFoundException, IOException, SQLException, JSONException, ClassNotFoundException {
+	private static Connection updateDatabase(Connection connect, JSONObject config, File configDir) throws FileNotFoundException, IOException, SQLException, JSONException, ClassNotFoundException {
 		String dbName = config.getString(SettingKeys.MYSQL_DB);
 		if (!databaseExists(connect, dbName)) {
 			createDatabase(connect, dbName);
@@ -88,6 +88,7 @@ public class ConnectionFactory  {
 			FileInputStream fileStream = new FileInputStream(configDir.getAbsolutePath() + "/" + ConfigFetcher.CONFIG_DIR + filename);
 			runner.runScript(new BufferedReader(new InputStreamReader(fileStream, "UTF-8")));
 		}
+		return connect;
 	}
 	
 	private static void createDatabase(Connection connect, String dbName) throws SQLException {
