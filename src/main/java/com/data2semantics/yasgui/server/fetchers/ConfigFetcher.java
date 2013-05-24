@@ -43,7 +43,7 @@ import com.data2semantics.yasgui.shared.SettingKeys;
  * Servlet implementation class ConfigServlet
  */
 public class ConfigFetcher {
-	private static String CONFIG_FILE = "config/config.json";
+	private static String CONFIG_FILE = "/config/config.json";
 	
 	/**
 	 * check whether config json string is defined and parsable. if so, return the string
