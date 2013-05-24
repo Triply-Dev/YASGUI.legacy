@@ -99,7 +99,7 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 	public void addBookmark(Bookmark bookmark) throws IllegalArgumentException, FetchException {
 		DbHelper db = null;
 		try {
-			db = new DbHelper(ConfigFetcher.getJsonObject(getServletContext().getRealPath("/")), getThreadLocalRequest());
+			db = new DbHelper(new File(getServletContext().getRealPath("/")), getThreadLocalRequest());
 			db.addBookmarks(bookmark);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -112,7 +112,7 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 	public Bookmark[] getBookmarks() throws IllegalArgumentException, FetchException {
 		DbHelper db = null;
 		try {
-			db = new DbHelper(ConfigFetcher.getJsonObject(getServletContext().getRealPath("/")), getThreadLocalRequest());
+			db = new DbHelper(new File(getServletContext().getRealPath("/")), getThreadLocalRequest());
 			return db.getBookmarks();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -126,7 +126,7 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 	public void updateBookmarks(Bookmark[] bookmarks) throws IllegalArgumentException, FetchException {
 		DbHelper db = null;
 		try {
-			db = new DbHelper(ConfigFetcher.getJsonObject(getServletContext().getRealPath("/")), getThreadLocalRequest());
+			db = new DbHelper(new File(getServletContext().getRealPath("/")), getThreadLocalRequest());
 			db.updateBookmarks(bookmarks);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -140,7 +140,7 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 	public void deleteBookmarks(int[] bookmarkIds) throws IllegalArgumentException, FetchException {
 		DbHelper db = null;
 		try {
-			db = new DbHelper(ConfigFetcher.getJsonObject(getServletContext().getRealPath("/")), getThreadLocalRequest());
+			db = new DbHelper(new File(getServletContext().getRealPath("/")), getThreadLocalRequest());
 			db.clearBookmarks(bookmarkIds);
 		} catch (Exception e) {
 			e.printStackTrace();
