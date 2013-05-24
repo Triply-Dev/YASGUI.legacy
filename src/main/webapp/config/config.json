@@ -15,6 +15,7 @@
 	"googleAnalyticsId": "",
 	"bitlyApiKey": "",
 	"bitlyUsername": "",
+	"mysqlDb": "",
 	"mysqlUsername": "",
 	"mysqlPassword": "",
 	"mysqlHost": "",

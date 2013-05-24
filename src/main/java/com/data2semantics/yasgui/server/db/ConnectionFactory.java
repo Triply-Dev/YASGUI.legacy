@@ -51,15 +51,15 @@ public class ConnectionFactory  {
 	FileNotFoundException, IOException {
 		Connection connect = null;
 		try {
-			connect = connect(config.getString(SettingKeys.MYSQL_HOST) + "/" + DB_NAME, config.getString(SettingKeys.MYSQL_USERNAME),
+			connect = connect(config.getString(SettingKeys.MYSQL_HOST) + "/" + config.getString(SettingKeys.MYSQL_DB), config.getString(SettingKeys.MYSQL_USERNAME),
 					config.getString(SettingKeys.MYSQL_PASSWORD));
 		} catch (SQLException e) {
 			//db probably doesnt exist.
 			//connect without db selector, create db, and create new connector
 			connect = connect(config.getString(SettingKeys.MYSQL_HOST), config.getString(SettingKeys.MYSQL_USERNAME),
 					config.getString(SettingKeys.MYSQL_PASSWORD));
-			updateDatabase(connect);
-			connect = connect(config.getString(SettingKeys.MYSQL_HOST) + "/" + DB_NAME, config.getString(SettingKeys.MYSQL_USERNAME),
+			updateDatabase(connect, config.getString(SettingKeys.MYSQL_USERNAME));
+			connect = connect(config.getString(SettingKeys.MYSQL_HOST) + "/" + config.getString(SettingKeys.MYSQL_USERNAME), config.getString(SettingKeys.MYSQL_USERNAME),
 					config.getString(SettingKeys.MYSQL_PASSWORD));
 		}
 		return connect;
@@ -73,8 +73,10 @@ public class ConnectionFactory  {
 
 	}
 
-	private static void updateDatabase(Connection connect) throws FileNotFoundException, IOException, SQLException {
-		if (!databaseExists(connect, DB_NAME)) {
+	private static void updateDatabase(Connection connect, String dbName) throws FileNotFoundException, IOException, SQLException {
+		if (!databaseExists(connect, dbName)) {
+			createDatabase(connect, dbName);
+			
 			ScriptRunner runner = new ScriptRunner(connect, false, true);
 			String filename = "create.sql";
 			InputStream fileStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(filename);
@@ -85,6 +87,14 @@ public class ConnectionFactory  {
 		}
 	}
 	
+	private static void createDatabase(Connection connect, String dbName) throws SQLException {
+		Statement statement = connect.createStatement();
+		statement.executeUpdate("CREATE DATABASE `" + dbName + "` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci");
+		statement.close();
+		Statement useStatement = connect.createStatement();
+		useStatement.executeUpdate("USE `" + dbName + "`");
+		useStatement.close();
+	}
 
 	private static boolean databaseExists(Connection connect, String DbName) throws SQLException {
 		Statement statement = connect.createStatement();
