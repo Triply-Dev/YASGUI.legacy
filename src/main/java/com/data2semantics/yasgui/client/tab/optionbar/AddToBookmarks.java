@@ -29,7 +29,6 @@ package com.data2semantics.yasgui.client.tab.optionbar;
 import com.smartgwt.client.types.Cursor;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.Img;
-import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -119,10 +118,15 @@ public class AddToBookmarks extends Img {
 		form.setTitleWidth(100);
 		bookmarkTitle = new TextItem();  
         bookmarkTitle.setTitle("Title");
-        includeEndpoint = new CheckboxItem();  
-        includeEndpoint.setTitle("Include endpoint");
-        includeEndpoint.setLabelAsTitle(true);
-        form.setItems(bookmarkTitle, includeEndpoint);
+        if (!view.getSettings().inSingleEndpointMode()) {
+	        includeEndpoint = new CheckboxItem();  
+	        includeEndpoint.setTitle("Include endpoint");
+	        includeEndpoint.setLabelAsTitle(true);
+	        form.setItems(bookmarkTitle, includeEndpoint);
+        } else {
+        	form.setItems(bookmarkTitle);
+        }
+        
         
         Button bookmarkButton = new Button("Bookmark");
         bookmarkButton.setHeight100();
@@ -130,7 +134,7 @@ public class AddToBookmarks extends Img {
         bookmarkButton.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event) {
 				Bookmark bookmark = new Bookmark();
-				if (includeEndpoint.getValueAsBoolean()) {
+				if (includeEndpoint != null  && includeEndpoint.getValueAsBoolean()) {
 					bookmark.setEndpoint(view.getSelectedTabSettings().getEndpoint());
 				}
 				bookmark.setQuery(view.getSelectedTabSettings().getQueryString());
