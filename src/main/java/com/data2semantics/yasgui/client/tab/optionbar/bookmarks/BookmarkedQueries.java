@@ -55,6 +55,7 @@ import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
+import com.data2semantics.yasgui.client.settings.Icons;
 import com.data2semantics.yasgui.shared.Bookmark;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
@@ -65,9 +66,8 @@ public class BookmarkedQueries extends Img {
 	private Window window;
 	private static int WINDOW_WIDTH = 700;
 	private static int WINDOW_HEIGHT = 500;
-	private static int ICON_WIDTH = 25;
-	private static int ICON_HEIGHT = 25;
-	private static String ICON = "link.png";
+	private static int ICON_WIDTH = 35;
+	private static int ICON_HEIGHT = 35;
 	private HLayout rollOverCanvas;
 	private boolean enabled = false;
 	private BookmarkRecord rollOverRecord;
@@ -76,7 +76,6 @@ public class BookmarkedQueries extends Img {
 	private ArrayList<BookmarkRecord> deletedRecords = new ArrayList<BookmarkRecord>();
 	public BookmarkedQueries(View view) {
 		this.view = view;
-		setSrc(ICON);
 		if (view.getOpenId() == null || !view.getOpenId().isLoggedIn()) {
 			setDisabled();
 		} else {
@@ -92,14 +91,14 @@ public class BookmarkedQueries extends Img {
 	
 	public void setEnabled() {
 		enabled = true;
-		setSrc(ICON);
+		setSrc(Icons.SHOW_BOOKMARKS);
 		setTooltip("show bookmarks");
 		setCursor(Cursor.POINTER);
 	}
 	
 	public void setDisabled() {
 		enabled = false;
-		setSrc(ICON);
+		setSrc(Icons.getDisabled(Icons.SHOW_BOOKMARKS));
 		setTooltip("log in to use your bookmarks");
 		setCursor(Cursor.DEFAULT);
 	}
@@ -177,7 +176,7 @@ public class BookmarkedQueries extends Img {
 					delImg.setShowDown(false);
 					delImg.setShowRollOver(false);
 					delImg.setLayoutAlign(Alignment.CENTER);
-					delImg.setSrc("icons/fugue/cross.png");
+					delImg.setSrc(Icons.CROSS);
 					delImg.setPrompt("delete");
 					delImg.setHeight(16);
 					delImg.setWidth(16);
@@ -192,7 +191,7 @@ public class BookmarkedQueries extends Img {
 					addImg.setShowDown(false);
 					addImg.setShowRollOver(false);
 					addImg.setLayoutAlign(Alignment.CENTER);
-					addImg.setSrc("icons/fugue/plus-button.png");
+					addImg.setSrc(Icons.ADD_TAB);
 					addImg.setPrompt("select");
 					addImg.setHeight(16);
 					addImg.setWidth(16);

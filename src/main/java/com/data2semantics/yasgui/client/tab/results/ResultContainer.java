@@ -29,6 +29,7 @@ package com.data2semantics.yasgui.client.tab.results;
 import java.util.HashMap;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
+import com.data2semantics.yasgui.client.settings.Icons;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
 import com.data2semantics.yasgui.client.tab.results.input.JsonResults;
@@ -68,8 +69,6 @@ public class ResultContainer extends VLayout {
 	public static int CONTENT_TYPE_XML = 2;
 	public static int CONTENT_TYPE_TURTLE = 3;
 	
-	private static String ICON_OK = "icons/fugue/tick.png";
-	private static String ICON_WRONG = "icons/fugue/cross.png";
 	private String contentType;
 	private View view;
 	private QueryTab queryTab;
@@ -174,7 +173,7 @@ public class ResultContainer extends VLayout {
 		
 		try {
 			if (queryMode == RESULT_TYPE_INSERT) {
-				setResultMessage(ICON_OK, "Done");
+				setResultMessage(Icons.CHECKBOX, "Done");
 			} else if (queryMode == RESULT_TYPE_BOOLEAN || queryMode == RESULT_TYPE_TABLE) {
 				String outputFormat = view.getSelectedTabSettings().getOutputFormat();
 				if (outputFormat.equals(Output.OUTPUT_RAW_RESPONSE)) {
@@ -195,7 +194,7 @@ public class ResultContainer extends VLayout {
 				}
 			}
 		} catch (SparqlEmptyException e) {
-			setResultMessage(ICON_WRONG, e.getMessage());
+			setResultMessage(Icons.CROSS, e.getMessage());
 		} catch (Exception e) {
 			view.getElements().onError(e);
 			
@@ -228,9 +227,9 @@ public class ResultContainer extends VLayout {
 	}
 	private void drawResultsAsBoolean(SparqlResults sparqlResults) {
 		if (sparqlResults.getBooleanResult()) {
-			setResultMessage(ICON_OK, "true");
+			setResultMessage(Icons.CHECKBOX, "true");
 		} else {
-			setResultMessage(ICON_WRONG, "false");
+			setResultMessage(Icons.CROSS, "false");
 		}
 	}
 	

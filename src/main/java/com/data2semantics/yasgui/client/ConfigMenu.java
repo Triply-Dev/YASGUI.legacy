@@ -28,6 +28,7 @@ package com.data2semantics.yasgui.client;
 
 import java.util.ArrayList;
 
+import com.data2semantics.yasgui.client.settings.Icons;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.ClickHandler;
@@ -39,7 +40,7 @@ public class ConfigMenu extends Menu {
 		this.view = view;
 		ArrayList<MenuItem> items = new ArrayList<MenuItem>();
 		MenuItem prefixUpdate = new MenuItem("Force prefixes update");
-		prefixUpdate.setIcon("icons/diagona/reload.png");
+		prefixUpdate.setIcon(Icons.REFRESH);
 		prefixUpdate.addClickHandler(new ClickHandler(){
 
 			@Override
@@ -49,7 +50,7 @@ public class ConfigMenu extends Menu {
 		items.add(prefixUpdate);
 		if (!view.getSettings().inSingleEndpointMode()) {
 			MenuItem endpointsUpdate = new MenuItem("Force endpoints update");
-			endpointsUpdate.setIcon("icons/diagona/reload.png");
+			endpointsUpdate.setIcon(Icons.REFRESH);
 			endpointsUpdate.addClickHandler(new ClickHandler(){
 				@Override
 				public void onClick(MenuItemClickEvent event) {
@@ -60,9 +61,9 @@ public class ConfigMenu extends Menu {
 		MenuItem compatability;
 		Compatabilities compatabilities = new Compatabilities(view);
 		if (!compatabilities.allSupported()) {
-			compatability = getCompatabilityMenu("icons/fugue/exclamation.png");
+			compatability = getCompatabilityMenu(Icons.WARNING);
 		} else {
-			compatability = getCompatabilityMenu("icons/fugue/information.png");
+			compatability = getCompatabilityMenu(Icons.INFO);
 		}
 		items.add(compatability);
 		setItems(items.toArray(new MenuItem[items.size()]));
