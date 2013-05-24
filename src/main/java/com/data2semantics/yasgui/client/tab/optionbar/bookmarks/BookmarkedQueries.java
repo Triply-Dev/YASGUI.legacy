@@ -57,6 +57,7 @@ import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.settings.Icons;
 import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.data2semantics.yasgui.shared.Bookmark;
+import com.data2semantics.yasgui.shared.exceptions.OpenIdException;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -110,7 +111,13 @@ public class BookmarkedQueries extends Img {
 					view.getElements().onLoadingStart("loading bookmarks");
 					view.getRemoteService().getBookmarks(new AsyncCallback<Bookmark[]>() {
 						public void onFailure(Throwable caught) {
-							view.getElements().onError(caught);
+							setSrc(Icons.BOOKMARK_QUERY);
+							if (caught instanceof OpenIdException) {
+								view.getElements().onError(caught.getMessage() + ". Logging out");
+								view.getOpenId().logOut();
+							} else {
+								view.getElements().onError(caught);
+							}
 						}
 			
 						public void onSuccess(Bookmark[] bookmarks) {
