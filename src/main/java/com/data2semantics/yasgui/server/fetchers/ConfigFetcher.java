@@ -71,6 +71,14 @@ public class ConfigFetcher {
 	
 	public static JSONObject getJsonObject(String path) throws ParseException, JSONException, FileNotFoundException, IOException {
 		File configFile = new File( path + CONFIG_FILE);
+		return getJsonObjectFromFile(configFile);
+	}
+	
+	public static JSONObject getJsonObject(File path) throws ParseException, JSONException, FileNotFoundException, IOException {
+		File configFile = new File( path.getAbsolutePath() + CONFIG_FILE);
+		return getJsonObjectFromFile(configFile);
+	}
+	private static JSONObject getJsonObjectFromFile(File configFile) throws IOException, JSONException {
 		if (!configFile.exists()) {
 			throw new IOException("Unable to load config file from server. Trying to load: " + configFile.getAbsolutePath());
 		} else {

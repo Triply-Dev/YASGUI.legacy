@@ -27,25 +27,29 @@ package com.data2semantics.yasgui.server.db;
  */
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
 import com.data2semantics.yasgui.shared.SettingKeys;
 
 public class ConnectionFactory  {
 	
-	public static Connection getConnection(JSONObject config) throws JSONException, ClassNotFoundException, SQLException,
-	FileNotFoundException, IOException {
+	public static Connection getConnection(File configDir) throws JSONException, ClassNotFoundException, SQLException,
+	FileNotFoundException, IOException, ParseException {
+		JSONObject config = ConfigFetcher.getJsonObject(configDir);
 		Connection connect = null;
 		try {
 			connect = connect(config.getString(SettingKeys.MYSQL_HOST) + "/" + config.getString(SettingKeys.MYSQL_DB), config.getString(SettingKeys.MYSQL_USERNAME),
@@ -55,7 +59,7 @@ public class ConnectionFactory  {
 			//connect without db selector, create db, and create new connector
 			connect = connect(config.getString(SettingKeys.MYSQL_HOST), config.getString(SettingKeys.MYSQL_USERNAME),
 					config.getString(SettingKeys.MYSQL_PASSWORD));
-			updateDatabase(connect, config);
+			updateDatabase(connect, config, configDir);
 			
 		}
 		return connect;
@@ -69,22 +73,18 @@ public class ConnectionFactory  {
 
 	}
 
-	private static void updateDatabase(Connection connect, JSONObject config) throws FileNotFoundException, IOException, SQLException, JSONException, ClassNotFoundException {
+	private static void updateDatabase(Connection connect, JSONObject config, File configDir) throws FileNotFoundException, IOException, SQLException, JSONException, ClassNotFoundException {
 		String dbName = config.getString(SettingKeys.MYSQL_DB);
 		if (!databaseExists(connect, dbName)) {
 			createDatabase(connect, dbName);
-			
-			
+						
 			connect = connect(config.getString(SettingKeys.MYSQL_HOST) + "/" + config.getString(SettingKeys.MYSQL_DB), config.getString(SettingKeys.MYSQL_USERNAME),
 					config.getString(SettingKeys.MYSQL_PASSWORD));
 			
 			
 			ScriptRunner runner = new ScriptRunner(connect, false, true);
 			String filename = "create.sql";
-			InputStream fileStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(filename);
-			if (fileStream == null) {
-				throw new FileNotFoundException("Could not find resource for " + filename);
-			}
+			FileInputStream fileStream = new FileInputStream(configDir.getAbsolutePath() + "/" + filename);
 			runner.runScript(new BufferedReader(new InputStreamReader(fileStream, "UTF-8")));
 		}
 	}
