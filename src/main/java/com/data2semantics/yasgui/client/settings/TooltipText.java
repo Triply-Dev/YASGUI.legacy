@@ -30,9 +30,9 @@ public class TooltipText {
 	public static final String GITHUB_ICON = "Found bugs? Miss any features? Submit an issue on GitHub";
 	public static String TOOLTIP_BUTTON = "Click this button to show these hints again";
 	public static String CONFIG_MENU = "<ul style=\"margin: 1px;\">" +
-			"<li>Update prefixes (e.g. after adding prefix to www.prefix.cc)</li>" +
-			"<li>Update list of endpoints from CKAN</li>" +
-			"<li>Show what YASGUI features your browser supports</li>" +
+			"<li>Update prefixes or endpoints (CKAN) list</li>" +
+			"<li>Support YASGUI features</li>" +
+			"<li>Login using OpenID</li>" +
 			"</ul>";
 	public static String TAB_SELECTION = "Double click to rename. Right click for tab options";
 	public static String ENDPOINT_SEARCH_ICON = "Search for endpoints";
@@ -43,6 +43,7 @@ public class TooltipText {
 				"<li><strong>CTRL-ALT-down</strong>: Copy line below</li>\n" + 
 				"<li><strong>CTRL-ALT-up</strong>: Copy line up</li>\n" + 
 				"<li><strong>CTRL-/</strong>: Comment line(s)</li>\n" + 
+				"<li><strong>CTRL-&lt;enter&gt;</strong>: Execute query</li>\n" + 
 			"</ul>";
 	public static String QUERY_CONFIG_MENU = "Advanced options which you normally wont need, including:" +
 			"<ul style=\"margin: 1px;\">\n" + 
@@ -51,4 +52,5 @@ public class TooltipText {
 			"<li>Change requested content (XML/JSON/Turtle)</li>\n" + 
 		"</ul>";
 	public static String LINK_GENERATOR = "Share your queries with others by <br>generating a YASGUI link for them";
+	public static String ADD_TO_BOOKMARKS = "Add queries as a bookmark (requires login)";
 }

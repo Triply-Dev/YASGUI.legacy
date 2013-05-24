@@ -64,9 +64,6 @@ public class About extends Window {
 		hLayout.addMember(leftSpacer);
 		
 		
-		
-		
-		
 		hLayout.addMember(getGithubCanvas());
 		
 		LayoutSpacer middleSpacer = new LayoutSpacer();

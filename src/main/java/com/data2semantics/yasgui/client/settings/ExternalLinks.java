@@ -28,6 +28,6 @@ package com.data2semantics.yasgui.client.settings;
 
 public class ExternalLinks {
 	public static String GITHUB_PAGE = "http://github.com/LaurensRietveld/yasgui";
-	public static String YASGUI_HTML = "http://laurensrietveld/yasgui";
+	public static String YASGUI_HTML = "http://laurensrietveld.nl/yasgui";
 	
 }

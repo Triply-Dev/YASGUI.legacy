@@ -203,7 +203,7 @@ public class View extends VLayout {
 		if (!Helper.isCrawler()) {
 			try {
 				queryTabs.showTooltips(fromVersionId);
-				getElements().showTooltip(fromVersionId);
+				getElements().showTooltips(fromVersionId);
 				getSelectedTab().showTooltips(fromVersionId);
 			} catch (ElementIdException e) {
 				getElements().onError(e);

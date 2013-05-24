@@ -72,7 +72,6 @@ public class QueryConfigMenu extends IconMenuButton {
 
 	public QueryConfigMenu(final View view) {
 		this.view = view;
-//		setIcon(Icons.TOOLS);
 		
 		mainMenu.setItems(getQueryParamMenuItem(), getAcceptHeaderMenuItem(), getRequestMethodMenuItem());
 		setMenu(mainMenu);
@@ -265,8 +264,10 @@ public class QueryConfigMenu extends IconMenuButton {
 			TooltipProperties tProp = new TooltipProperties();
 			tProp.setId(getDOM().getId());
 			tProp.setContent(TooltipText.QUERY_CONFIG_MENU);
-			tProp.setMy(TooltipProperties.POS_LEFT_CENTER);
-			tProp.setAt(TooltipProperties.POS_RIGHT_CENTER);
+			tProp.setMy(TooltipProperties.POS_TOP_CENTER);
+			tProp.setAt(TooltipProperties.POS_BOTTOM_CENTER);
+			tProp.setYOffset(0);
+			tProp.setXOffset(20);
 			Helper.drawTooltip(tProp);
 		}
 		
