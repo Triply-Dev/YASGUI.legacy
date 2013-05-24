@@ -75,7 +75,7 @@ public class ConnectionFactory  {
 			createDatabase(connect, dbName);
 			
 			
-			connect = connect(config.getString(SettingKeys.MYSQL_HOST) + "/" + config.getString(SettingKeys.MYSQL_USERNAME), config.getString(SettingKeys.MYSQL_USERNAME),
+			connect = connect(config.getString(SettingKeys.MYSQL_HOST) + "/" + config.getString(SettingKeys.MYSQL_USERNAME), config.getString(SettingKeys.MYSQL_DB),
 					config.getString(SettingKeys.MYSQL_PASSWORD));
 			
 			
