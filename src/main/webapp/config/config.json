@@ -28,7 +28,7 @@
 		{
 			"title": "Get 10 triples",
 			"endpoint": "",
-			"query": "SELECT * WHERE {\n	?s ?p ?o.\n}"
+			"query": "SELECT * WHERE {\n    ?s ?p ?o.\n}"
 		}
 	]
 }
