@@ -39,6 +39,7 @@ import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
+import com.data2semantics.yasgui.client.settings.Icons;
 import com.data2semantics.yasgui.shared.Bookmark;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -51,8 +52,6 @@ public class AddToBookmarks extends Img {
 	private static int WINDOW_HEIGHT = 70;
 	private static int ICON_WIDTH = 25;
 	private static int ICON_HEIGHT = 25;
-	private static String ICON_ADD = "icons/fugue/plus-button.png";
-	private static String ICON_LOADING = "loading.gif";
 	private boolean enabled = false;
 	
 	public AddToBookmarks(View view) {
@@ -74,14 +73,14 @@ public class AddToBookmarks extends Img {
 	
 	public void setEnabled() {
 		enabled = true;
-		setSrc(ICON_ADD);
+		setSrc(Icons.BOOKMARK_QUERY);
 		setTooltip("add query to bookmarks");
 		setCursor(Cursor.POINTER);
 	}
 	
 	public void setDisabled() {
 		enabled = false;
-		setSrc("icons/fugue/plus-button_Disabled.png");
+		setSrc(Icons.getDisabled(Icons.BOOKMARK_QUERY));
 		setTooltip("log in to use your bookmarks");
 		setCursor(Cursor.DEFAULT);
 	}
@@ -141,7 +140,7 @@ public class AddToBookmarks extends Img {
 				bookmark.setTitle(bookmarkTitle.getValueAsString());
 				
 				window.clear();
-				setSrc(ICON_LOADING);
+				setSrc(Icons.LOADING);
 				view.getRemoteService().addBookmark(bookmark, new AsyncCallback<Void>() {
 					public void onFailure(Throwable caught) {
 						view.getElements().onError(caught);
@@ -150,7 +149,7 @@ public class AddToBookmarks extends Img {
 
 					@Override
 					public void onSuccess(Void result) {
-						setSrc(ICON_ADD);
+						setSrc(Icons.BOOKMARK_QUERY);
 					}
 				});
 			}});

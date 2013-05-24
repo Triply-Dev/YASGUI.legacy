@@ -31,6 +31,7 @@ import com.smartgwt.client.widgets.HTMLFlow;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
+import com.data2semantics.yasgui.client.settings.Icons;
 import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 
 public class DownloadLink extends Canvas {
@@ -41,6 +42,7 @@ public class DownloadLink extends Canvas {
 	private Canvas disabledIcon;
 	private Canvas downloadIcon;
 	private Canvas csvIcon;
+	
 	public DownloadLink(View view) {
 		this.view = view;
 		setWidth(WIDTH);
@@ -74,7 +76,7 @@ public class DownloadLink extends Canvas {
 		HTMLFlow html = new HTMLFlow();
 		html.setWidth(WIDTH);
 		html.setHeight(HEIGHT+5);
-		String disabledIconHtml = "<img " + IMAGE_STYLE + " src='images/icons/custom/download_disabled.png'></img>";
+		String disabledIconHtml = "<img title='No results to download' " + IMAGE_STYLE + " src='" + Icons.DIR_IMAGES + Icons.getDisabled(Icons.DOWNLOAD) + "'></img>";
 		html.setContents(disabledIconHtml);
 		disabledIcon.addChild(html);
 		addChild(disabledIcon);
@@ -92,7 +94,7 @@ public class DownloadLink extends Canvas {
 		} else {
 			downloadLink += "target='_blank'";
 		}
-		downloadLink += "><img " + IMAGE_STYLE + " src='images/icons/custom/download.png'></img></a>";
+		downloadLink += "><img title='Download query response' " + IMAGE_STYLE + " src='" + Icons.DIR_IMAGES + Icons.DOWNLOAD + "'></img></a>";
 		html.setContents(downloadLink);
 		downloadIcon.addChild(html);
 		addChild(downloadIcon);
@@ -111,7 +113,7 @@ public class DownloadLink extends Canvas {
 		} else {
 			downloadLink += "target='_blank'";
 		}
-		downloadLink += "><img " + IMAGE_STYLE + " src='images/icons/custom/csv.png'></img></a>";
+		downloadLink += "><img title='Download CSV table' " + IMAGE_STYLE + " src='" + Icons.DIR_IMAGES + Icons.TABLE + "'></img></a>";
 		html.setContents(downloadLink);
 		csvIcon.addChild(html);
 		addChild(csvIcon);
@@ -128,7 +130,7 @@ public class DownloadLink extends Canvas {
 		} else {
 			downloadLink += "target='_blank'";
 		}
-		downloadLink += "><img src='images/icons/custom/download.png'></img></a>";
+		downloadLink += "><img src='" + Icons.DIR_IMAGES + Icons.DOWNLOAD + "'></img></a>";
 		return downloadLink;
 	}
 	

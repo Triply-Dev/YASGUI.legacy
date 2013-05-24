@@ -30,6 +30,7 @@ import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
 import com.data2semantics.yasgui.client.helpers.properties.ExternalLinks;
 import com.data2semantics.yasgui.client.helpers.properties.TooltipText;
+import com.data2semantics.yasgui.client.settings.Icons;
 import com.data2semantics.yasgui.shared.StaticConfig;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.google.gwt.user.client.Window;
@@ -94,12 +95,12 @@ public class Footer extends HLayout {
 	
 	private void addTooltipToggler() {
 		tooltipButton = new ImgButton();
-		tooltipButton.setSrc("icons/fugue/question-white.png");
+		tooltipButton.setSrc(Icons.TOOLTIP);
 		tooltipButton.setMargin(3);
-		tooltipButton.setHeight(20);
+		tooltipButton.setHeight(25);
 		tooltipButton.setShowRollOver(false);
 		tooltipButton.setShowDown(false);
-		tooltipButton.setWidth(20);
+		tooltipButton.setWidth(25);
 		tooltipButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {

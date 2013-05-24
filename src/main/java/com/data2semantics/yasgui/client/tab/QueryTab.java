@@ -32,6 +32,7 @@ import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
 import com.data2semantics.yasgui.client.helpers.properties.TooltipText;
+import com.data2semantics.yasgui.client.settings.Icons;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.optionbar.AddToBookmarks;
 import com.data2semantics.yasgui.client.tab.optionbar.DownloadLink;
@@ -91,6 +92,10 @@ public class QueryTab extends Tab {
 		HLayout queryOptions = new HLayout();
 		queryOptions.setDefaultLayoutAlign(VerticalAlignment.BOTTOM);
 		queryOptions.setHeight(35);
+		if (view.getSettings().isDbSet()) {
+			bookmarkedQueries = new BookmarkedQueries(view);
+			queryOptions.addMember(bookmarkedQueries);
+		}
 		if (!view.getSettings().inSingleEndpointMode()) {
 			endpointInput = new EndpointInput(view, this);
 			queryOptions.addMember(endpointInput);
@@ -118,10 +123,7 @@ public class QueryTab extends Tab {
 
 		linkCreator = new LinkCreator(view);
 		queryOptions.addMember(linkCreator);
-		if (view.getSettings().isDbSet()) {
-			bookmarkedQueries = new BookmarkedQueries(view);
-			queryOptions.addMember(bookmarkedQueries);
-		}
+
 		if (view.getSettings().isDbSet()) {
 			addToBookmarks = new AddToBookmarks(view);
 			queryOptions.addMember(addToBookmarks);
@@ -136,7 +138,7 @@ public class QueryTab extends Tab {
 		Menu menu = new Menu();
 		MenuItem copy = new MenuItem();
 		copy.setTitle("Create copy");
-		copy.setIcon("icons/fugue/document-copy.png");
+		copy.setIcon(Icons.COPY_TAB);
 		copy.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(MenuItemClickEvent event) {
@@ -150,7 +152,7 @@ public class QueryTab extends Tab {
 
 		MenuItem renameTab = new MenuItem();
 		renameTab.setTitle("Rename Tab");
-		renameTab.setIcon("icons/fugue/edit.png");
+		renameTab.setIcon(Icons.EDIT_TEXT);
 		renameTab.addClickHandler(new ClickHandler() {
 
 			@Override

@@ -40,11 +40,19 @@ import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.RecordClickEvent;
 import com.smartgwt.client.widgets.grid.events.RecordClickHandler;
+import com.smartgwt.client.widgets.layout.HLayout;
+import com.smartgwt.client.widgets.layout.LayoutSpacer;
+import com.smartgwt.client.widgets.layout.VLayout;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
+import com.data2semantics.yasgui.client.settings.Icons;
 import com.data2semantics.yasgui.shared.Endpoints;
-public class EndpointSearch extends ImgButton {
+public class EndpointSearch extends VLayout {
+	private static int ICON_WIDTH = 20;
+	private static int ICON_HEIGHT = 20;
+	private static int LAYOUT_WIDTH = 26;
+	
 	private static int WINDOW_HEIGHT = 600;
 	private static int WINDOW_WIDTH = 1000;
 	private static int COL_WIDTH_DATASET_TITLE = 150;
@@ -52,18 +60,36 @@ public class EndpointSearch extends ImgButton {
 	private ListGrid searchGrid;
 	private View view;
 	private Window window;
+	private ImgButton imgButton = new ImgButton();
 	public EndpointSearch(View view) {
 		this.view = view;
-		//Use a custom one. Setting margins on layout fucks up layout (smartgwt bug)
-		//So this image has 5px whitespace on right, en 2 px whitespace on bottom
-		setSrc("icons/custom/magnifier.png");
+		LayoutSpacer bottomSpacer = new LayoutSpacer();
+		bottomSpacer.setHeight(3);
+		LayoutSpacer topSpacer = new LayoutSpacer();
+		topSpacer.setHeight100();
 		
-		setWidth(23);
-		setHeight(20);
-		setShowDown(false);
-		setShowRollOver(false);
 		
-		addClickHandler(new ClickHandler() {
+		
+		addMembers(topSpacer, addImgButton(), bottomSpacer);
+		
+		
+	}
+	
+	private HLayout addImgButton() {
+		HLayout hLayout = new HLayout();
+		hLayout.setWidth(LAYOUT_WIDTH);
+		LayoutSpacer rSpacer = new LayoutSpacer();
+		rSpacer.setWidth100();
+		LayoutSpacer lSpacer = new LayoutSpacer();
+		lSpacer.setWidth(3);
+		imgButton.setSrc(Icons.SEARCH);
+		
+		imgButton.setWidth(ICON_WIDTH);
+		imgButton.setHeight(ICON_HEIGHT);
+		imgButton.setShowDown(false);
+		imgButton.setShowRollOver(false);
+		
+		imgButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				window = new Window();
@@ -81,7 +107,8 @@ public class EndpointSearch extends ImgButton {
 			}
 
 		});
-		
+		hLayout.addMembers(lSpacer, imgButton, rSpacer);
+		return hLayout;
 	}
 	
 	/**

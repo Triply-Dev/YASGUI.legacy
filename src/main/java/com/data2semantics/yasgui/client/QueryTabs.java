@@ -34,6 +34,7 @@ import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
 import com.data2semantics.yasgui.client.helpers.properties.TooltipText;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
+import com.data2semantics.yasgui.client.settings.Icons;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.QueryTab;
@@ -161,10 +162,11 @@ public class QueryTabs extends TabSet {
 		controls.setHeight(50);
 		
 		addTabButton = new ImgButton();
-		addTabButton.setSrc("icons/fugue/plus-button_modified.png");
+		addTabButton.setSrc(Icons.ADD_TAB);
 		addTabButton.setShowDown(false);
-		addTabButton.setShowRollOver(false);
-		addTabButton.setWidth(20);
+		addTabButton.setShowRollOver(true);
+		addTabButton.setWidth(25);
+		
 		addTabButton.setHeight(25);
 		addTabButton.setZIndex(ZIndexes.TAB_CONTROLS);//Otherwise the onclick of the tab bar is used..
 		addTabButton.addClickHandler(new ClickHandler() {
@@ -177,9 +179,9 @@ public class QueryTabs extends TabSet {
 		});
 		Compatabilities compatabilities = new Compatabilities(view);
 		if (!compatabilities.allSupported() && LocalStorageHelper.getCompatabilitiesShownVersionNumber() < Compatabilities.VERSION_NUMBER) {
-			configButton = getConfigButton("icons/fugue/exclamation.png");
+			configButton = getConfigButton(Icons.WARNING);
 		} else {
-			configButton = getConfigButton("icons/diagona/bolt.png");
+			configButton = getConfigButton(Icons.TOOLS);
 		}
 		
 		controls.setZIndex(ZIndexes.TAB_CONTROLS);

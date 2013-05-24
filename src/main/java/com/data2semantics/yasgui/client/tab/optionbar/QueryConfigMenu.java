@@ -33,6 +33,7 @@ import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
 import com.data2semantics.yasgui.client.helpers.properties.TooltipText;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
+import com.data2semantics.yasgui.client.settings.Icons;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.IButton;
@@ -71,7 +72,7 @@ public class QueryConfigMenu extends IconMenuButton {
 
 	public QueryConfigMenu(final View view) {
 		this.view = view;
-		setIcon("icons/diagona/bolt.png");
+		setIcon(Icons.TOOLS);
 		
 		mainMenu.setItems(getQueryParamMenuItem(), getAcceptHeaderMenuItem(), getRequestMethodMenuItem());
 		setMenu(mainMenu);
@@ -245,7 +246,7 @@ public class QueryConfigMenu extends IconMenuButton {
 		layout.setHeight100();
 	    IButton addButton = new IButton("Add Parameter");  
 	    addButton.setWidth(120);  
-	    addButton.setIcon("icons/fugue/plus-button.png");
+	    addButton.setIcon(Icons.ADD);
 	    addButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {

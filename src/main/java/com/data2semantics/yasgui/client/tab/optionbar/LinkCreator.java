@@ -47,6 +47,7 @@ import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
 import com.data2semantics.yasgui.client.helpers.properties.TooltipText;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
+import com.data2semantics.yasgui.client.settings.Icons;
 import com.data2semantics.yasgui.shared.SettingKeys;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -70,13 +71,13 @@ public class LinkCreator extends ImgButton {
 	
 	public LinkCreator(View view) {
 		this.view = view;
-		setSrc("link.png");
+		setSrc(Icons.LINK);
+		setWidth(ICON_WIDTH);
+		setHeight(ICON_HEIGHT);
 		setPosition(Positioning.ABSOLUTE);
 		setTop(OFFSET_TOP);
 		changeHorizontalOffset();
 		setZIndex(ZIndexes.TAB_CONTROLS);
-		setWidth(ICON_WIDTH);
-		setHeight(ICON_HEIGHT);
 		setShowDown(false);
 		setShowRollOver(false);
 

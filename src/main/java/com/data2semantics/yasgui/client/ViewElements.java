@@ -36,6 +36,7 @@ import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.properties.ExternalLinks;
 import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
+import com.data2semantics.yasgui.client.settings.Icons;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.client.tab.optionbar.LinkCreator;
 import com.data2semantics.yasgui.shared.SettingKeys;
@@ -121,7 +122,7 @@ public class ViewElements {
 	 */
 	public void addQueryButton() {
 		queryButton = new ImgButton();
-		queryButton.setSrc("icons/custom/start.png");
+		queryButton.setSrc(Icons.EXECUTE_QUERY);
 		queryButton.setHeight(48);
 		queryButton.setShowRollOver(false);
 		queryButton.setShowDown(false);
@@ -141,7 +142,7 @@ public class ViewElements {
 		queryButton.draw();
 		
 		queryLoading = new ImgButton();
-		queryLoading.setSrc("icons/custom/query_loader.gif");
+		queryLoading.setSrc(Icons.LOADING);
 		queryLoading.setPosition(Positioning.ABSOLUTE);
 		queryLoading.setTop(QUERY_BUTTON_POS_TOP);
 		queryLoading.setLeft(QUERY_BUTTON_POS_LEFT);
@@ -203,7 +204,7 @@ public class ViewElements {
 	 */
 	public void initLoadingWidget() {
 		loading = new Label();
-		loading.setIcon("loading.gif");
+		loading.setIcon(Icons.LOADING);
 		loading.setBackgroundColor("#f0f0f0");
 		loading.setBorder("1px solid #C0C3C7");
 		loading.getElement().getStyle().setPosition(Position.FIXED);
@@ -223,9 +224,11 @@ public class ViewElements {
 
 	public void showPlayButton(String queryValid) {
 		if (queryValid.equals("1")) {
-			queryButton.setSrc("icons/custom/start.png");
+			queryButton.setSrc(Icons.EXECUTE_QUERY);
+			queryButton.setShowOverCanvas(true);
 		} else {
-			queryButton.setSrc("icons/custom/start-error.png");
+			queryButton.setSrc(Icons.QUERY_ERROR);
+			queryButton.setShowOverCanvas(true);
 		}
 	}
 	public void onLoadingStart() {
@@ -424,7 +427,7 @@ public class ViewElements {
 		yesButton.setWidth(CONSENT_BUTTON_WIDTH);
         yesButton.setShowRollOver(true);  
         yesButton.setHeight(CONSENT_BUTTON_HEIGHT);
-        yesButton.setIcon("icons/fugue/tick.png");
+        yesButton.setIcon(Icons.CHECKMARK);
         yesButton.setIconOrientation("left");
         yesButton.addClickHandler(new ClickHandler() {
 			@Override
@@ -444,7 +447,7 @@ public class ViewElements {
 		noQueriesButton.setWidth(CONSENT_BUTTON_WIDTH);
 		noQueriesButton.setHeight(CONSENT_BUTTON_HEIGHT);
 		noQueriesButton.setShowRollOver(true);  
-		noQueriesButton.setIcon("icons/fugue/cross-tick.png");
+		noQueriesButton.setIcon(Icons.CHECKMARK);
 		noQueriesButton.setIconOrientation("left");  
 		noQueriesButton.addClickHandler(new ClickHandler() {
 			@Override
@@ -463,7 +466,7 @@ public class ViewElements {
 		noButton.setShowRollOver(true);  
 		noButton.setWidth(CONSENT_BUTTON_WIDTH);
 		noButton.setHeight(CONSENT_BUTTON_HEIGHT);
-		noButton.setIcon("icons/fugue/cross.png");
+		noButton.setIcon(Icons.CHECK_CROSS);
 		noButton.setIconOrientation("left");  
 		noButton.addClickHandler(new ClickHandler() {
 			@Override
