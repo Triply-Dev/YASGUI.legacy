@@ -58,7 +58,7 @@ public class ConnectionFactory  {
 			//connect without db selector, create db, and create new connector
 			connect = connect(config.getString(SettingKeys.MYSQL_HOST), config.getString(SettingKeys.MYSQL_USERNAME),
 					config.getString(SettingKeys.MYSQL_PASSWORD));
-			updateDatabase(connect, config.getString(SettingKeys.MYSQL_USERNAME));
+			updateDatabase(connect, config.getString(SettingKeys.MYSQL_DB));
 			connect = connect(config.getString(SettingKeys.MYSQL_HOST) + "/" + config.getString(SettingKeys.MYSQL_USERNAME), config.getString(SettingKeys.MYSQL_USERNAME),
 					config.getString(SettingKeys.MYSQL_PASSWORD));
 		}
