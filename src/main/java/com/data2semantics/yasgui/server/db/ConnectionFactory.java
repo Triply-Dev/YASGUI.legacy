@@ -77,10 +77,11 @@ public class ConnectionFactory  {
 		String dbName = config.getString(SettingKeys.MYSQL_DB);
 		if (!databaseExists(connect, dbName)) {
 			createDatabase(connect, dbName);
-						
+			connect.close();
 			connect = connect(config.getString(SettingKeys.MYSQL_HOST) + "/" + config.getString(SettingKeys.MYSQL_DB), config.getString(SettingKeys.MYSQL_USERNAME),
 					config.getString(SettingKeys.MYSQL_PASSWORD));
 			
+			System.out.println("connected to " + config.getString(SettingKeys.MYSQL_HOST) + "/" + config.getString(SettingKeys.MYSQL_DB));
 			
 			ScriptRunner runner = new ScriptRunner(connect, false, true);
 			String filename = "create.sql";
