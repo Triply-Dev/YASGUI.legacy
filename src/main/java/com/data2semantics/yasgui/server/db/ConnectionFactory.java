@@ -84,7 +84,7 @@ public class ConnectionFactory  {
 			
 			ScriptRunner runner = new ScriptRunner(connect, false, true);
 			String filename = "create.sql";
-			FileInputStream fileStream = new FileInputStream(configDir.getAbsolutePath() + "/" + filename);
+			FileInputStream fileStream = new FileInputStream(configDir.getAbsolutePath() + "/" + ConfigFetcher.CONFIG_DIR + filename);
 			runner.runScript(new BufferedReader(new InputStreamReader(fileStream, "UTF-8")));
 		}
 	}
