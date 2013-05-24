@@ -55,9 +55,8 @@ public class ConnectionFactory  {
 			//connect without db selector, create db, and create new connector
 			connect = connect(config.getString(SettingKeys.MYSQL_HOST), config.getString(SettingKeys.MYSQL_USERNAME),
 					config.getString(SettingKeys.MYSQL_PASSWORD));
-			updateDatabase(connect, config.getString(SettingKeys.MYSQL_DB));
-			connect = connect(config.getString(SettingKeys.MYSQL_HOST) + "/" + config.getString(SettingKeys.MYSQL_USERNAME), config.getString(SettingKeys.MYSQL_USERNAME),
-					config.getString(SettingKeys.MYSQL_PASSWORD));
+			updateDatabase(connect, config);
+			
 		}
 		return connect;
 	}
@@ -70,9 +69,15 @@ public class ConnectionFactory  {
 
 	}
 
-	private static void updateDatabase(Connection connect, String dbName) throws FileNotFoundException, IOException, SQLException {
+	private static void updateDatabase(Connection connect, JSONObject config) throws FileNotFoundException, IOException, SQLException, JSONException, ClassNotFoundException {
+		String dbName = config.getString(SettingKeys.MYSQL_DB);
 		if (!databaseExists(connect, dbName)) {
 			createDatabase(connect, dbName);
+			
+			
+			connect = connect(config.getString(SettingKeys.MYSQL_HOST) + "/" + config.getString(SettingKeys.MYSQL_USERNAME), config.getString(SettingKeys.MYSQL_USERNAME),
+					config.getString(SettingKeys.MYSQL_PASSWORD));
+			
 			
 			ScriptRunner runner = new ScriptRunner(connect, false, true);
 			String filename = "create.sql";
@@ -88,9 +93,6 @@ public class ConnectionFactory  {
 		Statement statement = connect.createStatement();
 		statement.executeUpdate("CREATE DATABASE `" + dbName + "` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci");
 		statement.close();
-		Statement useStatement = connect.createStatement();
-		useStatement.executeUpdate("USE `" + dbName + "`");
-		useStatement.close();
 	}
 
 	private static boolean databaseExists(Connection connect, String dbName) throws SQLException {
