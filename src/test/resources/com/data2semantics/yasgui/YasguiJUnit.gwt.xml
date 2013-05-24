@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+  <!-- Inherit our applications main module.                      -->
+  <inherits name='com.data2semantics.yasgui.Yasgui' />
+
+  <!-- Specify the path to any remote services.                   -->
+  <servlet path="/Yasgui/YasguiService" class="com.data2semantics.yasgui.server.YasguiServiceImpl" />
+
+</module>
