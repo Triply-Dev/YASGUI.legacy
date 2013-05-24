@@ -27,11 +27,14 @@ package com.data2semantics.yasgui.client.tab.optionbar.bookmarks;
  */
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.types.Cursor;
 import com.smartgwt.client.types.ExpansionMode;
 import com.smartgwt.client.types.ListGridEditEvent;
 import com.smartgwt.client.widgets.Canvas;
+import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -57,67 +60,99 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class BookmarkedQueries extends ImgButton {
+public class BookmarkedQueries extends Img {
 	private View view;
 	private Window window;
 	private static int WINDOW_WIDTH = 700;
 	private static int WINDOW_HEIGHT = 500;
 	private static int ICON_WIDTH = 25;
 	private static int ICON_HEIGHT = 25;
+	private static String ICON = "link.png";
 	private HLayout rollOverCanvas;
+	private boolean enabled = false;
 	private BookmarkRecord rollOverRecord;
 	private ListGrid listGrid;
-	private boolean somethingChanged = false;
+	private HashMap<Integer,BookmarkRecord> updatedRecords;//hashmap, so we have a unique set of records
+	private ArrayList<BookmarkRecord> deletedRecords = new ArrayList<BookmarkRecord>();
 	public BookmarkedQueries(View view) {
 		this.view = view;
-		setSrc("link.png");
-
+		setSrc(ICON);
+		if (view.getOpenId() == null || !view.getOpenId().isLoggedIn()) {
+			setDisabled();
+		} else {
+			setEnabled();
+		}
 		setWidth(ICON_WIDTH);
 		setHeight(ICON_HEIGHT);
 		setShowDown(false);
 		setShowRollOver(false);
 		
 		addWindowSetup();
-		
-
+	}
+	
+	public void setEnabled() {
+		enabled = true;
+		setSrc(ICON);
+		setTooltip("show bookmarks");
+		setCursor(Cursor.POINTER);
+	}
+	
+	public void setDisabled() {
+		enabled = false;
+		setSrc(ICON);
+		setTooltip("log in to use your bookmarks");
+		setCursor(Cursor.DEFAULT);
 	}
 	private void addWindowSetup() {
 		addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				view.getElements().onLoadingStart("loading bookmarks");
-				view.getRemoteService().getBookmarks(new AsyncCallback<Bookmark[]>() {
-					public void onFailure(Throwable caught) {
-						view.getElements().onError(caught);
-					}
-		
-					public void onSuccess(Bookmark[] bookmarks) {
-						view.getElements().onLoadingFinish();
-						somethingChanged = false;
-						window = new Window();
-						window.setZIndex(ZIndexes.MODAL_WINDOWS);
-						window.setTitle("Bookmarked queries");
-						window.setIsModal(true);
-						window.setDismissOnOutsideClick(true);
-						window.setAutoCenter(true);
-						window.setWidth(WINDOW_WIDTH);
-						window.setHeight(WINDOW_HEIGHT);
-						window.setShowMinimizeButton(false);
-						window.addItem(getWindowContent(bookmarks));
-						window.addVisibilityChangedHandler(new VisibilityChangedHandler() {
-							@Override
-							public void onVisibilityChanged(VisibilityChangedEvent event) {
-								if (somethingChanged) {
-									storeRecords();
+				if (enabled) {
+					view.getElements().onLoadingStart("loading bookmarks");
+					view.getRemoteService().getBookmarks(new AsyncCallback<Bookmark[]>() {
+						public void onFailure(Throwable caught) {
+							view.getElements().onError(caught);
+						}
+			
+						public void onSuccess(Bookmark[] bookmarks) {
+							updatedRecords = new HashMap<Integer, BookmarkRecord>();
+							deletedRecords = new ArrayList<BookmarkRecord>();
+							view.getElements().onLoadingFinish();
+							window = new Window();
+							window.setZIndex(ZIndexes.MODAL_WINDOWS);
+							window.setTitle("Bookmarked queries");
+							window.setIsModal(true);
+							window.setDismissOnOutsideClick(true);
+							window.setAutoCenter(true);
+							window.setWidth(WINDOW_WIDTH);
+							window.setHeight(WINDOW_HEIGHT);
+							window.setShowMinimizeButton(false);
+							window.addItem(getWindowContent(bookmarks));
+							window.addVisibilityChangedHandler(new VisibilityChangedHandler() {
+								@Override
+								public void onVisibilityChanged(VisibilityChangedEvent event) {
+									storeCurrentTextArea();//to make sure currently edited query bookmark is stored as well
+									if (updatedRecords.size() > 0) {
+										updateRecords(new ArrayList<BookmarkRecord>(updatedRecords.values()));
+									}
+									if (deletedRecords.size() > 0) {
+										deleteRecords(deletedRecords);
+									}
+									resetVariables();
 								}
-							}
-						});
-						window.draw();
-					}
-				});
-				
+							});
+							window.draw();
+						}
+					});
+				}
 			}
 		});
+	}
+	
+	private void resetVariables() {
+		JsMethods.deleteElementsWithPostfixId(BookmarkRecord.APPEND_INPUT_ID);
+		updatedRecords = new HashMap<Integer, BookmarkRecord>();
+		deletedRecords = new ArrayList<BookmarkRecord>();
 	}
 	private ListGrid getWindowContent(Bookmark[] bookmarks) {
 		
@@ -149,7 +184,7 @@ public class BookmarkedQueries extends ImgButton {
 					delImg.addClickHandler(new ClickHandler() {
 						public void onClick(ClickEvent event) {
 							listGrid.removeData(rollOverRecord);
-							somethingChanged = true;
+							deletedRecords.add(rollOverRecord);
 						}
 					});
 
@@ -163,15 +198,15 @@ public class BookmarkedQueries extends ImgButton {
 					addImg.setWidth(16);
 					addImg.addClickHandler(new ClickHandler() {
 						public void onClick(ClickEvent event) {
-							
 							String endpoint = rollOverRecord.getEndpoint();
 							String query = rollOverRecord.getQuery();
-							view.getSelectedTabSettings().setEndpoint(endpoint);
+							if (endpoint != null && endpoint.length() > 0) {
+								view.getSelectedTabSettings().setEndpoint(endpoint);
+								view.getSelectedTab().setEndpoint(endpoint);
+							}
 							view.getSelectedTabSettings().setQueryString(query);
-							view.getSelectedTab().setEndpoint(endpoint);
 							view.getSelectedTab().setQueryString(query);
 							LocalStorageHelper.storeSettingsInCookie(view.getSettings());
-							
 							window.destroy();
 						}
 					});
@@ -215,21 +250,25 @@ public class BookmarkedQueries extends ImgButton {
 				
 			}});
 		ListGridField titleField = new ListGridField(BookmarkRecord.KEY_TITLE, "Title");
-		ListGridField endpointField = new ListGridField(BookmarkRecord.KEY_ENDPOINT, "Endpoint");
-		endpointField.addChangedHandler(new ChangedHandler(){
-			@Override
-			public void onChanged(ChangedEvent event) {
-				somethingChanged = true;
-				
-			}});
 		titleField.addChangedHandler(new ChangedHandler(){
 			@Override
 			public void onChanged(ChangedEvent event) {
-				somethingChanged = true;
-				
+				BookmarkRecord record = (BookmarkRecord)(listGrid.getRecord(event.getRowNum()));
+				updatedRecords.put(record.getBookmarkId(), record);
 			}});
-		listGrid.setFields(titleField, endpointField);
-
+		
+		if (!view.getSettings().inSingleEndpointMode()) {
+			ListGridField endpointField = new ListGridField(BookmarkRecord.KEY_ENDPOINT, "Endpoint");
+			endpointField.addChangedHandler(new ChangedHandler(){
+				@Override
+				public void onChanged(ChangedEvent event) {
+					BookmarkRecord record = (BookmarkRecord)(listGrid.getRecord(event.getRowNum()));
+					updatedRecords.put(record.getBookmarkId(), record);
+				}});
+			listGrid.setFields(titleField, endpointField);
+		} else {
+			listGrid.setFields(titleField);
+		}
 		listGrid.setCanEdit(true);
 		listGrid.setEditEvent(ListGridEditEvent.CLICK);
 		listGrid.setEditByCell(true);
@@ -241,9 +280,6 @@ public class BookmarkedQueries extends ImgButton {
 
 	
 	private BookmarkRecord[] getRecords(Bookmark[] bookmarks) {
-//		return new BookmarkRecord[] { new BookmarkRecord(1, "title", "endpoin", "SELECT * \n{?x ?Y ?h} \nLIMIT 10"),
-//				new BookmarkRecord(2, "title2", "endpoin2", "SELECT * {?x ?Y ?h} LIMIT 10"),
-//				new BookmarkRecord(3, "title3", "endpoin3", "SELECT * {?x ?Y ?h} LIMIT 10"), };
 		ArrayList<BookmarkRecord> records = new ArrayList<BookmarkRecord>();
 		for (Bookmark bookmark: bookmarks) {
 			records.add(new BookmarkRecord(bookmark));
@@ -251,21 +287,22 @@ public class BookmarkedQueries extends ImgButton {
 		return records.toArray(new BookmarkRecord[records.size()]);
 	}
 	
-	
+
 	/**
 	 * Method executed on 'onBlur' of codemirror query area, to make sure our listgrid records contain the updated info 
-	 * @param inputId
-	 * @param query
 	 */
-	public void updateQuery(String inputId, String query) {
+	public void storeCurrentTextArea() {
 		ListGridRecord[] records = listGrid.getRecords();
 		for (ListGridRecord record:records) {
 			BookmarkRecord brecord = (BookmarkRecord)record;
-			if (brecord.getInputId().equals(inputId)) {
+			if (listGrid.getCurrentExpansionComponent(brecord) != null) {
+				JsMethods.saveCodeMirror(brecord.getInputId());
+				String query = JsMethods.getValueUsingId(brecord.getInputId());
 				brecord.setQuery(query);
-				somethingChanged = true;
+				updatedRecords.put(brecord.getBookmarkId(), brecord);
 			}
 		}
+		
 	}
 
 	/**
@@ -286,25 +323,41 @@ public class BookmarkedQueries extends ImgButton {
 		
 	}
 	
-	private void storeRecords() {
-		view.getElements().onLoadingStart("updating bookmarks");
-		ListGridRecord[] records = listGrid.getRecords();
+	private void updateRecords(ArrayList<BookmarkRecord> records) {
+		
+		//Filter for items which are updated -and- deleted (in that case, just delete them)
 		ArrayList<Bookmark> bookmarks = new ArrayList<Bookmark>();
-		for (ListGridRecord record: records) {
-			bookmarks.add(((BookmarkRecord)record).toBookmark());
+		for (BookmarkRecord record: records) {
+			if (deletedRecords.contains(record) == false) {
+				bookmarks.add(record.toBookmark());
+			}
 		}
 		
-		view.getRemoteService().storeBookmarks(bookmarks.toArray(new Bookmark[bookmarks.size()]), new AsyncCallback<Void>() {
+		view.getRemoteService().updateBookmarks(bookmarks.toArray(new Bookmark[bookmarks.size()]), new AsyncCallback<Void>() {
+			public void onFailure(Throwable caught) {
+				view.getElements().onError(caught);
+			}
+			public void onSuccess(Void result) {
+			}
+		});
+		
+		
+	}
+	
+	private void deleteRecords(ArrayList<BookmarkRecord> records) {
+		int[] bookmarkIds = new int[records.size()];
+		for (int i = 0; i < records.size(); i++) {
+			bookmarkIds[i] = records.get(i).getBookmarkId();
+		}
+		
+		view.getRemoteService().deleteBookmarks(bookmarkIds, new AsyncCallback<Void>() {
 			public void onFailure(Throwable caught) {
 				view.getElements().onError(caught);
 			}
 
 			public void onSuccess(Void result) {
-				view.getElements().onLoadingFinish();
 			}
 		});
-		
-		
 	}
 
 }

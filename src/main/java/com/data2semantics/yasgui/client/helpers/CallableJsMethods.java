@@ -67,14 +67,10 @@ public class CallableJsMethods {
 	}
 	
 	/**
-	 * Get query string from text area, set it in settings, and store in cookie
+	 * detect which query is open (not collapsed), and store it.
 	 */
-	public void updateBookmarkedQuery(String inputId) {
-		JsMethods.saveCodeMirror(inputId);
-		String query = JsMethods.getValueUsingId(inputId);
-		BookmarkedQueries bookmarkedQueries = view.getSelectedTab().getBookmarkedQueries();
-//		String bookmarkId = bookmarkedQueries.getBookmarkId(inputId);
-		bookmarkedQueries.updateQuery(inputId, query);
+	public void updateBookmarkedQuery() {
+		view.getSelectedTab().getBookmarkedQueries().storeCurrentTextArea();
 	}
 	
 	/**
@@ -175,8 +171,8 @@ public class CallableJsMethods {
 		$wnd.storeQueryInCookie = function() {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::storeQueryInCookie()();
 		}
-		$wnd.updateBookmarkedQuery = function(inputId) {
-			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::updateBookmarkedQuery(Ljava/lang/String;)(inputId);
+		$wnd.updateBookmarkedQuery = function() {
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::updateBookmarkedQuery()();
 		}
 		$wnd.onQueryError = function(tabId, errorMsg) {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::onQueryError(Ljava/lang/String;Ljava/lang/String;)(tabId, errorMsg);

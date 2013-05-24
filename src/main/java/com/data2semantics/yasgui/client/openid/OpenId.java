@@ -58,7 +58,15 @@ public class OpenId {
 	View view;
 	private static int WINDOW_WIDTH = 800;
 	private static int WINDOW_HEIGHT = 200;
+	private boolean loggedIn = false;
+	private ArrayList<OpenIdProvider> providers;
 	public OpenId(View view) {
+		getProviders();
+		for (OpenIdProvider provider: providers) {
+			//prefetch these. otherwise, somehow, on first load the icons arent shown..
+			com.google.gwt.user.client.ui.Image.prefetch("images/" + provider.getImageLocation());
+		}
+		
 		this.view = view;
 		drawSessionWidgetLogin();
 		// on initiation, check whether we are logged in..
@@ -76,9 +84,12 @@ public class OpenId {
 			public void onSuccess(UserDetails details) {
 				if (details.isLoggedIn()) {
 					drawSessionWidgetLoggedIn(details);
-
+					view.loggedInCallback();
+					loggedIn = true;
+					
 				} else {
 					drawSessionWidgetLogin();
+					loggedIn = false;
 				}
 			}
 
@@ -92,13 +103,12 @@ public class OpenId {
 				new AsyncCallback<LoginResult>() {
 
 					public void onFailure(Throwable caught) {
-						// viewElements.onError("error " + caught.getMessage());
-						view.getLogger().severe("error!");
+						view.getElements().onError("error " + caught.getMessage());
 					}
 
 					public void onSuccess(LoginResult result) {
 						if (result.isLoggedIn()) {
-							view.getLogger().severe("logged in");
+							view.getLogger().severe("already logged in");
 						} else {
 							// redirect user to login page
 							Window.Location.assign(result
@@ -119,6 +129,7 @@ public class OpenId {
 					+ StaticConfig.DEBUG_ARGUMENT_VALUE;
 		}
 		Window.Location.assign(url);
+		loggedIn = false;
 	}
 
 	public void updateSessionInfo() {
@@ -126,6 +137,7 @@ public class OpenId {
 	}
 
 	private void drawSessionWidgetLoggedIn(UserDetails details) {
+		loggedIn = true;
 		String text = details.getDisplayName();
 		
 		String html = "<span class='footerText'>" + text + "</span>&nbsp;<span class='footerTextLink'>(log out)</span>";
@@ -167,9 +179,9 @@ public class OpenId {
 		com.smartgwt.client.widgets.Window window = new com.smartgwt.client.widgets.Window();
 		window.setOverflow(Overflow.HIDDEN);
 		window.setZIndex(ZIndexes.MODAL_WINDOWS);
-		window.setTitle("Choose your OpenId provider");
 		window.setIsModal(true);
 		window.setDismissOnOutsideClick(true);
+		window.setShowTitle(false);
 		window.setWidth(WINDOW_WIDTH);
 		window.setHeight(WINDOW_HEIGHT);
 		window.setShowMinimizeButton(false);
@@ -179,7 +191,6 @@ public class OpenId {
 	}
 
 	private HLayout drawProviders() {
-		ArrayList<OpenIdProvider> providers = getProviders();
 		HLayout hlayout = new HLayout();
 //		hlayout.getElement().getStyle().setMarginTop(3, Unit.PX);
 		hlayout.setHeight(WINDOW_HEIGHT - 40);
@@ -194,13 +205,13 @@ public class OpenId {
 			}
 			hasItemBefore = true;
 			//use core google img class to get size of image. then pass it on the smartgwt (blegh)
-			com.google.gwt.user.client.ui.Image googleImg = new com.google.gwt.user.client.ui.Image("images/" + provider.getImageLocation());
+			com.google.gwt.user.client.ui.Image gwtImg = new com.google.gwt.user.client.ui.Image("images/" + provider.getImageLocation());
 			final VLayout providerContainer = new VLayout();
 			
 			
-			if (googleImg.getWidth() > 0 && googleImg.getHeight() > 0) {
+			if (gwtImg.getWidth() > 0 && gwtImg.getHeight() > 0) {
 				//to avoid dividing by zero
-				int width = provider.getMaxIconHeight() * (googleImg.getWidth() / googleImg.getHeight()) ;
+				int width = provider.getMaxIconHeight() * (gwtImg.getWidth() / gwtImg.getHeight()) ;
 				int height = provider.getMaxIconHeight();
 				providerContainer.setPadding(15);
 				providerContainer.setMargin(10);
@@ -258,11 +269,14 @@ public class OpenId {
 		return hlayout;
 	}
 
-	private ArrayList<OpenIdProvider> getProviders() {
-		ArrayList<OpenIdProvider> providers = new ArrayList<OpenIdProvider>();
+	private void getProviders() {
+		providers = new ArrayList<OpenIdProvider>();
 		providers.add(new ProviderGoogle());
 		providers.add(new ProviderYahoo());
 		providers.add(new ProviderOpenId());
-		return providers;
+	}
+	
+	public boolean isLoggedIn() {
+		return loggedIn;
 	}
 }

@@ -178,6 +178,15 @@ public class Settings extends JsonHelper {
 		return username;
 	}
 	
+	public boolean isDbSet() {
+		boolean dbSet = false;
+		if (containsKey(SettingKeys.DB_SET) && get(SettingKeys.DB_SET).isBoolean() != null) {
+			dbSet = get(SettingKeys.DB_SET).isBoolean().booleanValue();
+		}
+		return dbSet;
+	}
+	
+	
 	
 	/**
 	 * Returns JSON representation of this object
