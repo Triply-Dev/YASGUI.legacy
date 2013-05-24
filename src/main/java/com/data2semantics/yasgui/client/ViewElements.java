@@ -34,13 +34,14 @@ import com.data2semantics.yasgui.client.helpers.GoogleAnalyticsEvent;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
-import com.data2semantics.yasgui.client.helpers.properties.ExternalLinks;
-import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
+import com.data2semantics.yasgui.client.helpers.TooltipProperties;
+import com.data2semantics.yasgui.client.settings.ExternalLinks;
 import com.data2semantics.yasgui.client.settings.Icons;
+import com.data2semantics.yasgui.client.settings.TooltipText;
+import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.client.tab.optionbar.LinkCreator;
-import com.data2semantics.yasgui.shared.SettingKeys;
-import com.google.gwt.core.client.GWT;
+import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
@@ -56,6 +57,7 @@ import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
@@ -66,68 +68,46 @@ import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
+import com.smartgwt.client.widgets.menu.IconMenuButton;
 
 public class ViewElements {
+	private static int TOOLTIP_VERSION_MENU_CONFIG = 3;
 	private View view;
-	private ImgButton queryButton;
+	private Img queryButton;
 	private ImgButton queryLoading;
 	private LinkCreator linkCreator;
+	public IconMenuButton configButton;
 	public static String DEFAULT_LOADING_MESSAGE = "Loading...";
 	private static int QUERY_BUTTON_POS_TOP = 5;
-	private static int QUERY_BUTTON_POS_LEFT = 5;
-	private static int SESSION_CANVAS_TOP = 2;
-	private static int SESSION_CANVAS_LEFT = 60;
+	private static int QUERY_BUTTON_POS_RIGHT = 2;
 	private static int CONSENT_WINDOW_HEIGHT = 130;
 	private static int CONSENT_WINDOW_WIDTH = 750;
 	private static int CONSENT_BUTTON_HEIGHT = 40;
 	private static int CONSENT_BUTTON_WIDTH = 175;
 	private Window consentWindow;
 	private Label loading;
-	private HLayout sessionCanvas = new HLayout();
+	
 	public ViewElements(View view) {
 		this.view = view;
+		addQueryButton();
 		addLogo();
 		initLoadingWidget();
-		addQueryButton();
-		addSessionCanvas();
+		drawConfigButton();
 	}
 	
-	public void addSessionCanvas() {
-		sessionCanvas.setPosition(Positioning.ABSOLUTE);
-		sessionCanvas.setTop(SESSION_CANVAS_TOP);
-		sessionCanvas.setLeft(SESSION_CANVAS_LEFT);
-		sessionCanvas.setHeight(16);
-		sessionCanvas.setWidth(300);
-		sessionCanvas.setAlign(Alignment.LEFT);
-		sessionCanvas.setAlign(VerticalAlignment.TOP);
-		sessionCanvas.setZIndex(ZIndexes.TAB_CONTROLS);
-		sessionCanvas.draw();
-	}
-	
-	public void updateSessionCanvas(Canvas... newChildren) {
-		//first remove children
-		Canvas[] children = sessionCanvas.getChildren();
-		for (Canvas child: children) {
-			sessionCanvas.removeChild(child);
-		}
-		//and add new ones
-		for (Canvas child: newChildren) {
-			sessionCanvas.addMember(child);
-		}
-		
-	}
+
 	
 	/**
 	 * Add Query button. Position absolute, as it hovers slightly over the tabbar. Also adds a loading icon on the same place
 	 */
 	public void addQueryButton() {
 		queryButton = new ImgButton();
-		queryButton.setSrc(Icons.EXECUTE_QUERY);
+		
 		queryButton.setHeight(48);
+		queryButton.setWidth(48);
+		queryButton.setSrc(Icons.EXECUTE_QUERY);
 		queryButton.setShowRollOver(false);
 		queryButton.setShowDown(false);
-		queryButton.setWidth(48);
-		queryButton.setAlign(Alignment.CENTER);
 		queryButton.setZIndex(ZIndexes.TAB_CONTROLS);
 		queryButton.addClickHandler(new ClickHandler() {
 			@Override
@@ -135,17 +115,21 @@ public class ViewElements {
 				executeQuery();
 			}
 		});
+		queryButton.getElement().getStyle().setPosition(Position.ABSOLUTE);
+		queryButton.getElement().getStyle().setTop(QUERY_BUTTON_POS_TOP, Unit.PX);
+		queryButton.getElement().getStyle().setRight(QUERY_BUTTON_POS_RIGHT, Unit.PX);
+//		queryButton.getElement().getStyle().setCursor(Cursor.POINTER);
+		queryButton.setCursor(com.smartgwt.client.types.Cursor.POINTER);
 		
-		queryButton.setPosition(Positioning.ABSOLUTE);
-		queryButton.setTop(QUERY_BUTTON_POS_TOP);
-		queryButton.setLeft(QUERY_BUTTON_POS_LEFT);
-		queryButton.draw();
+		if (queryButton.isDrawn()) {
+			queryButton.redraw();
+		} else {
+			queryButton.draw();
+		}
 		
+
 		queryLoading = new ImgButton();
 		queryLoading.setSrc(Icons.LOADING);
-		queryLoading.setPosition(Positioning.ABSOLUTE);
-		queryLoading.setTop(QUERY_BUTTON_POS_TOP);
-		queryLoading.setLeft(QUERY_BUTTON_POS_LEFT);
 		queryLoading.hide();
 		queryLoading.setHeight(48);
 		queryLoading.setWidth(48);
@@ -158,7 +142,16 @@ public class ViewElements {
 		});
 		queryLoading.setShowRollOver(false);
 		queryLoading.setShowDown(false);
-		queryLoading.draw();
+		queryLoading.getElement().getStyle().setPosition(Position.ABSOLUTE);
+		queryLoading.getElement().getStyle().setTop(QUERY_BUTTON_POS_TOP, Unit.PX);
+		queryLoading.getElement().getStyle().setRight(QUERY_BUTTON_POS_RIGHT, Unit.PX);
+		queryLoading.getElement().getStyle().setCursor(Cursor.POINTER);
+		if (queryLoading.isDrawn()) {
+			queryLoading.redraw();
+		} else {
+			queryLoading.draw();
+		}
+		
 	}
 	
 	public void cancelQuery() {
@@ -379,24 +372,31 @@ public class ViewElements {
 	}
 	
 	public void addLogo() {
-		HTMLFlow html = new HTMLFlow();
-		html.setContents("<span style=\"font-family: 'Audiowide'; font-size: 35px;cursor:pointer;\" onclick=\"window.open('" + ExternalLinks.YASGUI_HTML +  "')\">YASGUI</span>");
+		HTMLFlow html = getLogo(31, "Show YASGUI page");
 		html.getElement().getStyle().setPosition(Position.ABSOLUTE);
-		html.getElement().getStyle().setTop(4, Unit.PX);
-		html.getElement().getStyle().setRight(8, Unit.PX);
+		html.getElement().getStyle().setTop(-2, Unit.PX);
+		html.getElement().getStyle().setLeft(4, Unit.PX);
 		html.getElement().getStyle().setCursor(Cursor.POINTER);
 		html.getElement().getStyle().setZIndex(ZIndexes.LOGO);
-		html.addClickHandler(new ClickHandler(){
-			@Override
-			public void onClick(ClickEvent event) {
-				com.google.gwt.user.client.Window.open(ExternalLinks.YASGUI_HTML, "_blank", "");
-			}});
-		html.setWidth(150);
+		
 		if (html.isDrawn()) {
 			html.redraw();
 		} else {
 			html.draw();
 		}
+	}
+	
+	public HTMLFlow getLogo(int fontSize, String title) {
+		HTMLFlow html = new HTMLFlow();
+		html.setContents("<span title='" + title + "' style=\"font-family: 'Audiowide'; font-size: " + fontSize + "px;cursor:pointer;\" onclick=\"window.open('" + ExternalLinks.YASGUI_HTML +  "')\">YASGUI</span>");
+		html.addClickHandler(new ClickHandler(){
+			@Override
+			public void onClick(ClickEvent event) {
+				com.google.gwt.user.client.Window.open(ExternalLinks.YASGUI_HTML, "_blank", "");
+			}});
+		html.setWidth(100);
+		html.setHeight(30);
+		return html;
 	}
 
 	public void askCookieConsent() {
@@ -405,7 +405,7 @@ public class ViewElements {
 		int pageHeight = com.google.gwt.user.client.Window.getClientHeight();
 		
 		
-		consentWindow.setRect((pageWidth / 2) - (CONSENT_WINDOW_WIDTH / 2), pageHeight - CONSENT_WINDOW_HEIGHT - Footer.HEIGHT, CONSENT_WINDOW_WIDTH, CONSENT_WINDOW_HEIGHT);
+		consentWindow.setRect((pageWidth / 2) - (CONSENT_WINDOW_WIDTH / 2), pageHeight - CONSENT_WINDOW_HEIGHT, CONSENT_WINDOW_WIDTH, CONSENT_WINDOW_HEIGHT);
 		
 		VLayout windowCanvas = new VLayout();
 		
@@ -515,5 +515,73 @@ public class ViewElements {
 		linkCreator.changeHorizontalOffset();
 		linkCreator.draw();
 	}
+	
+	public void drawConfigButton() {
+		Compatabilities compatabilities = new Compatabilities(view);
+		String icon  = "";
+		if (!compatabilities.allSupported() && LocalStorageHelper.getCompatabilitiesShownVersionNumber() < Compatabilities.VERSION_NUMBER) {
+			icon = Icons.WARNING;
+		} else {
+			icon = Icons.TOOLS;
+		}
+//		HLayout hLayout = new HLayout();
+//		hLayout.setPosition(Positioning.ABSOLUTE);
+//		hLayout.setTop(2);
+//		hLayout.setLeft(400);
+		
+		String label = "Configure YASGUI";
+		if (!view.getSettings().isDbSet()) {
+			//openid not supported. leave label as-is
+		} else if (view.getOpenId() != null && view.getOpenId().isLoggedIn()) {
+			label += " (" + view.getOpenId().getDisplayName() + ")";
+		} else {
+			label += " (not logged in)";
+		}
+		
+		configButton = new IconMenuButton(label);
+		configButton.getElement().getStyle().setPosition(Position.ABSOLUTE);
+		configButton.getElement().getStyle().setTop(2, Unit.PX);
+		configButton.getElement().getStyle().setRight(50, Unit.PX);
+//		configButton.setPosition(Positioning.ABSOLUTE);
+//		configButton.setTop(2);
+//		configButton.setLeft(150);
+		configButton.setIcon(icon);
+		configButton.setZIndex(ZIndexes.TAB_CONTROLS);
+		configButton.setMenu(new ConfigMenu(view));
+		configButton.setCanFocus(false);
+		configButton.addClickHandler(new ClickHandler(){
+
+			@Override
+			public void onClick(ClickEvent event) {
+				configButton.showMenu();
+			}
+			
+		});
+//		hLayout.addMember(configButton);
+//		hLayout.draw();
+		configButton.draw();
+	}
+	public void redrawConfigButton() {
+		configButton.destroy();
+		configButton = null;
+		drawConfigButton();
+	}
+	private void showConfigMenuTooltip(int fromVersionId) throws ElementIdException {
+		if (fromVersionId < TOOLTIP_VERSION_MENU_CONFIG) {
+			TooltipProperties tProp = new TooltipProperties();
+			tProp.setId(configButton.getDOM().getId());
+			tProp.setContent(TooltipText.CONFIG_MENU);
+			tProp.setMy(TooltipProperties.POS_TOP_LEFT);
+			tProp.setAt(TooltipProperties.POS_BOTTOM_CENTER);
+			Helper.drawTooltip(tProp);
+		}
+	}
+
+	public void showTooltip(int fromVersionId) {
+		showConfigMenuTooltip(fromVersionId);
+		
+	}
+	
+	
 	
 }

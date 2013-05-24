@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.client.helpers.properties;
+package com.data2semantics.yasgui.client.settings;
 
 /*
  * #%L

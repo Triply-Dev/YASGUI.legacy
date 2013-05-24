@@ -29,6 +29,7 @@ package com.data2semantics.yasgui.client;
 import java.util.ArrayList;
 
 import com.data2semantics.yasgui.client.settings.Icons;
+import com.data2semantics.yasgui.shared.StaticConfig;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.ClickHandler;
@@ -36,48 +37,110 @@ import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 
 public class ConfigMenu extends Menu {
 	private View view;
-	public ConfigMenu(final View view) {
+	ArrayList<MenuItem> items = new ArrayList<MenuItem>();
+	public ConfigMenu(View view) {
 		this.view = view;
-		ArrayList<MenuItem> items = new ArrayList<MenuItem>();
+		addOpenIdItem();
+		addRefreshSubMenu();
+		
+		addCompatabilityItem();
+		addTooltips();
+		addAboutItem();
+		
+		setItems(items.toArray(new MenuItem[items.size()]));
+	}
+	
+	private void addTooltips() {
+		MenuItem about = new MenuItem("Show help bubbles");
+		about.setIcon(Icons.TOOLTIP);
+		about.addClickHandler(new ClickHandler(){
+			public void onClick(MenuItemClickEvent event) {
+				view.showTooltips(0); //show from version 0 onwards
+			}});
+		items.add(about);
+	}
+	
+	private void addOpenIdItem() {
+		if (view.getSettings().isDbSet()) {
+			if (view.getOpenId() != null && view.getOpenId().isLoggedIn()) {
+				MenuItem logOut = new MenuItem("Log out");
+				logOut.setIcon(Icons.LOG_OUT);
+				logOut.addClickHandler(new ClickHandler(){
+					public void onClick(MenuItemClickEvent event) {
+						view.getOpenId().logOut();
+					}});
+				items.add(logOut);
+			} else {
+				MenuItem logIn = new MenuItem("Log in");
+				logIn.setIcon(Icons.LOG_IN);
+				logIn.addClickHandler(new ClickHandler(){
+					public void onClick(MenuItemClickEvent event) {
+						view.getOpenId().showOpenIdProviders();
+					}});
+				items.add(logIn);
+			}
+		}
+	}
+	
+	private void addAboutItem() {
+		MenuItem about = new MenuItem("About (version " + StaticConfig.VERSION + ")");
+		about.setIcon(Icons.QUESTION_MARK);
+		about.addClickHandler(new ClickHandler(){
+			public void onClick(MenuItemClickEvent event) {
+				new About(view);
+			}});
+		items.add(about);
+	}
+	
+	private MenuItem addCompatabilityItem() {
+		MenuItem compatability = new MenuItem("Show browser compatabilities");
+		final Compatabilities compatabilities = new Compatabilities(view);
+		if (!compatabilities.allSupported()) {
+			compatability.setIcon(Icons.WARNING);
+		} else {
+			compatability.setIcon(Icons.INFO);
+		}
+		compatability.addClickHandler(new ClickHandler(){
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				compatabilities.drawContent();
+			}});
+		return compatability;
+	}
+	
+	private void addRefreshSubMenu() {
+		
+		Menu refreshSubMenu = new Menu();  
+        
 		MenuItem prefixUpdate = new MenuItem("Force prefixes update");
-		prefixUpdate.setIcon(Icons.REFRESH);
+//		prefixUpdate.setIcon(Icons.REFRESH);
 		prefixUpdate.addClickHandler(new ClickHandler(){
 
 			@Override
 			public void onClick(MenuItemClickEvent event) {
 				view.setAutocompletePrefixes(true);
 			}});
-		items.add(prefixUpdate);
+//		items.add(prefixUpdate);
+		MenuItem endpointsUpdate = null;
 		if (!view.getSettings().inSingleEndpointMode()) {
-			MenuItem endpointsUpdate = new MenuItem("Force endpoints update");
-			endpointsUpdate.setIcon(Icons.REFRESH);
+			endpointsUpdate = new MenuItem("Force endpoints update");
+//			endpointsUpdate.setIcon(Icons.REFRESH);
 			endpointsUpdate.addClickHandler(new ClickHandler(){
 				@Override
 				public void onClick(MenuItemClickEvent event) {
 					view.initEndpointDataSource(true);
 				}});
-			items.add(endpointsUpdate);
+//			items.add(endpointsUpdate);
 		}
-		MenuItem compatability;
-		Compatabilities compatabilities = new Compatabilities(view);
-		if (!compatabilities.allSupported()) {
-			compatability = getCompatabilityMenu(Icons.WARNING);
+		if (endpointsUpdate == null) {
+			refreshSubMenu.setItems(prefixUpdate);
 		} else {
-			compatability = getCompatabilityMenu(Icons.INFO);
+			refreshSubMenu.setItems(prefixUpdate, endpointsUpdate);
 		}
-		items.add(compatability);
-		setItems(items.toArray(new MenuItem[items.size()]));
-	}
-	
-	private MenuItem getCompatabilityMenu(String icon) {
-		MenuItem compatability = new MenuItem("Show browser compatabilities");
-		compatability.setIcon(icon);
-		compatability.addClickHandler(new ClickHandler(){
-			@Override
-			public void onClick(MenuItemClickEvent event) {
-				Compatabilities compatabilities = new Compatabilities(view);
-				compatabilities.drawContent();
-			}});
-		return compatability;
+		
+		
+		MenuItem refresh = new MenuItem("Refresh Data", Icons.REFRESH); 
+		refresh.setSubmenu(refreshSubMenu);
+		items.add(refresh);
 	}
 }

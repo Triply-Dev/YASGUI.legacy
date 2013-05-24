@@ -31,9 +31,9 @@ import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
-import com.data2semantics.yasgui.client.helpers.properties.TooltipText;
-import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
 import com.data2semantics.yasgui.client.settings.Icons;
+import com.data2semantics.yasgui.client.settings.TooltipText;
+import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.IButton;
@@ -72,7 +72,7 @@ public class QueryConfigMenu extends IconMenuButton {
 
 	public QueryConfigMenu(final View view) {
 		this.view = view;
-		setIcon(Icons.TOOLS);
+//		setIcon(Icons.TOOLS);
 		
 		mainMenu.setItems(getQueryParamMenuItem(), getAcceptHeaderMenuItem(), getRequestMethodMenuItem());
 		setMenu(mainMenu);
