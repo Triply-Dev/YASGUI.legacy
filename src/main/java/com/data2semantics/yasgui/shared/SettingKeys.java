@@ -41,7 +41,7 @@ public class SettingKeys implements Serializable {
 	public static String GOOGLE_ANALYTICS_ID = "googleAnalyticsId";
 	public static String TRACKING_CONSENT = "trackingConsent";
 	public static String TRACKING_QUERIES_CONSENT = "trackingQueriesConsent";
-	
+	public static String DEFAULT_BOOKMARKS = "defaultBookmarks";
 	
 	//tabsettings object
 	public static String ENDPOINT = "endpoint";
@@ -59,4 +59,8 @@ public class SettingKeys implements Serializable {
 	public static String MYSQL_USERNAME = "mysqlUsername";
 	public static String MYSQL_PASSWORD = "mysqlPassword";
 	public static String MYSQL_HOST = "mysqlHost";
+	public static String MYSQL_DB = "mysqlDb";
+	
+	//inferred settings
+	public static String DB_SET = "dbSet";
 }

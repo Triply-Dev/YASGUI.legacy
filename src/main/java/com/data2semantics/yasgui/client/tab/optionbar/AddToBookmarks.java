@@ -26,8 +26,9 @@ package com.data2semantics.yasgui.client.tab.optionbar;
  * #L%
  */
 
+import com.smartgwt.client.types.Cursor;
 import com.smartgwt.client.widgets.Button;
-import com.smartgwt.client.widgets.ImgButton;
+import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -41,7 +42,7 @@ import com.data2semantics.yasgui.client.helpers.properties.ZIndexes;
 import com.data2semantics.yasgui.shared.Bookmark;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class AddToBookmarks extends ImgButton {
+public class AddToBookmarks extends Img {
 	private View view;
 	private Window window;
 	private CheckboxItem includeEndpoint;
@@ -51,41 +52,58 @@ public class AddToBookmarks extends ImgButton {
 	private static int ICON_WIDTH = 25;
 	private static int ICON_HEIGHT = 25;
 	private static String ICON_ADD = "icons/fugue/plus-button.png";
-	@SuppressWarnings("unused")
 	private static String ICON_LOADING = "loading.gif";
-	
+	private boolean enabled = false;
 	
 	public AddToBookmarks(View view) {
 		this.view = view;
-		
-		setSrc(ICON_ADD);
-
+		if (view.getOpenId() == null || !view.getOpenId().isLoggedIn()) {
+			setDisabled();
+		} else {
+			setEnabled();
+		}
 		setWidth(ICON_WIDTH);
 		setHeight(ICON_HEIGHT);
 		setShowDown(false);
 		setShowRollOver(false);
 		setHandlers();
 		
+		
 
 	}
 	
+	public void setEnabled() {
+		enabled = true;
+		setSrc(ICON_ADD);
+		setTooltip("add query to bookmarks");
+		setCursor(Cursor.POINTER);
+	}
+	
+	public void setDisabled() {
+		enabled = false;
+		setSrc("icons/fugue/plus-button_Disabled.png");
+		setTooltip("log in to use your bookmarks");
+		setCursor(Cursor.DEFAULT);
+	}
 
 	
 	private void setHandlers() {
 		addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				window = new Window();
-				window.setZIndex(ZIndexes.MODAL_WINDOWS);
-				window.setIsModal(true);
-				window.setDismissOnOutsideClick(true);
-				window.setShowHeader(false);
-				int left = (getAbsoluteLeft() + ICON_WIDTH) - WINDOW_WIDTH;
-				int top = getAbsoluteTop() + ICON_HEIGHT;
-				window.setRect(left, top, WINDOW_WIDTH, WINDOW_HEIGHT);
-
-				window.setShowMinimizeButton(false);
-				window.addItem(getPopupContent());
-				window.draw();
+				if (enabled) {
+					window = new Window();
+					window.setZIndex(ZIndexes.MODAL_WINDOWS);
+					window.setIsModal(true);
+					window.setDismissOnOutsideClick(true);
+					window.setShowHeader(false);
+					int left = (getAbsoluteLeft() + ICON_WIDTH) - WINDOW_WIDTH;
+					int top = getAbsoluteTop() + ICON_HEIGHT;
+					window.setRect(left, top, WINDOW_WIDTH, WINDOW_HEIGHT);
+	
+					window.setShowMinimizeButton(false);
+					window.addItem(getPopupContent());
+					window.draw();
+				}
 			}
 		});
 	}
@@ -100,10 +118,15 @@ public class AddToBookmarks extends ImgButton {
 		form.setTitleWidth(100);
 		bookmarkTitle = new TextItem();  
         bookmarkTitle.setTitle("Title");
-        includeEndpoint = new CheckboxItem();  
-        includeEndpoint.setTitle("Include endpoint");
-        includeEndpoint.setLabelAsTitle(true);
-        form.setItems(bookmarkTitle, includeEndpoint);
+        if (!view.getSettings().inSingleEndpointMode()) {
+	        includeEndpoint = new CheckboxItem();  
+	        includeEndpoint.setTitle("Include endpoint");
+	        includeEndpoint.setLabelAsTitle(true);
+	        form.setItems(bookmarkTitle, includeEndpoint);
+        } else {
+        	form.setItems(bookmarkTitle);
+        }
+        
         
         Button bookmarkButton = new Button("Bookmark");
         bookmarkButton.setHeight100();
@@ -111,14 +134,14 @@ public class AddToBookmarks extends ImgButton {
         bookmarkButton.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event) {
 				Bookmark bookmark = new Bookmark();
-				if (includeEndpoint.getValueAsBoolean()) {
+				if (includeEndpoint != null  && includeEndpoint.getValueAsBoolean()) {
 					bookmark.setEndpoint(view.getSelectedTabSettings().getEndpoint());
 				}
 				bookmark.setQuery(view.getSelectedTabSettings().getQueryString());
 				bookmark.setTitle(bookmarkTitle.getValueAsString());
 				
 				window.clear();
-				setSrc("ICON_LOADING");
+				setSrc(ICON_LOADING);
 				view.getRemoteService().addBookmark(bookmark, new AsyncCallback<Void>() {
 					public void onFailure(Throwable caught) {
 						view.getElements().onError(caught);
@@ -127,7 +150,6 @@ public class AddToBookmarks extends ImgButton {
 
 					@Override
 					public void onSuccess(Void result) {
-						view.getLogger().severe("succes!");
 						setSrc(ICON_ADD);
 					}
 				});

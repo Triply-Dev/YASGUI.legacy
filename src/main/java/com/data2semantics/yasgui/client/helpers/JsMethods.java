@@ -157,7 +157,7 @@ public class JsMethods {
 					
 				},
 				onBlur: function() {
-					$wnd.updateBookmarkedQuery(queryInputId);
+					$wnd.updateBookmarkedQuery();
 				},
 			});
 			$wnd.updateBookmarkCmHeight(queryInputId);
@@ -463,6 +463,11 @@ public class JsMethods {
 
 	public static native void resetHeightSetting(String inputId) /*-{
 		$wnd.sparqlHighlightHeight[inputId] = null;
+	}-*/;
+	public static native void deleteElementsWithPostfixId(String postfix) /*-{
+		$wnd.$('textarea[id$="' + postfix + '"]').each(function() {
+		  $wnd.$(this).remove();
+		});
 	}-*/;
 	
 	

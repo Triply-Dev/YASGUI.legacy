@@ -40,6 +40,7 @@ public interface YasguiService extends RemoteService {
 	String fetchEndpoints(boolean forceUpdate) throws IllegalArgumentException, FetchException;
 	String getShortUrl(String forceUpdate) throws IllegalArgumentException, FetchException;
 	void addBookmark(Bookmark bookmark) throws IllegalArgumentException, FetchException;
-	void storeBookmarks(Bookmark[] bookmarks) throws IllegalArgumentException, FetchException;
+	void updateBookmarks(Bookmark[] bookmarks) throws IllegalArgumentException, FetchException;
+	void deleteBookmarks(int[] bookmarkIds) throws IllegalArgumentException, FetchException;
 	Bookmark[] getBookmarks() throws IllegalArgumentException, FetchException;
 }

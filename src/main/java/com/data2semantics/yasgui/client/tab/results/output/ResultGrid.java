@@ -70,9 +70,6 @@ public class ResultGrid extends ListGrid {
 		setCanResizeFields(true);
 		queryPrefixes = Helper.getPrefixHashMapFromQuery(view.getSelectedTabSettings().getQueryString());
 		drawQueryResults();
-		if (JsMethods.stringToDownloadSupported()) {
-			drawExportLink(sparqlResults);
-		}
 	}
 	
 	/**
@@ -161,21 +158,6 @@ public class ResultGrid extends ListGrid {
 		return listGridFields;
 	}
 	
-	
-	public void drawExportLink(SparqlResults results) {
-		Csv csvParser = new Csv(view, results);
-		String url = JsMethods.stringToUrl(csvParser.getCsvString(), "text/csv");
-		String style = "style='z-index:" + Integer.toString(ZIndexes.DOWNLOAD_ICON) + ";position:absolute;right:0px;top:0px;'";
-		String downloadLink = "<a " + style + " href='" + url + "' ";
-		if (JsMethods.downloadAttributeSupported()) {
-			downloadLink += "download='" + getDownloadFilename() + "'";
-		} else {
-			downloadLink += "target='_blank'";
-		}
-		downloadLink += "><img height='24' width='24' src='images/icons/custom/csv.png'></img></a>";
-		//view.getLogger().severe(downloadLink);
-		//html.setContents(downloadLink);
-	}
 	
 	public String getDownloadFilename() {
 		String filename = view.getSelectedTabSettings().getTabTitle() + ".csv";

@@ -35,6 +35,8 @@ import java.text.ParseException;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.data2semantics.yasgui.server.Helper;
 import com.data2semantics.yasgui.shared.SettingKeys;
 
 /**
@@ -55,6 +57,7 @@ public class ConfigFetcher {
 		String jsonString;
 		try {
 			JSONObject jsonObject = getJsonObject(path);
+			jsonObject = addInfo(jsonObject);
 			jsonObject = removeInfo(jsonObject);
 			jsonString = jsonObject.toString();
 		} catch (IOException e) {
@@ -92,8 +95,24 @@ public class ConfigFetcher {
 		if (jsonObject.has(SettingKeys.MYSQL_HOST)) jsonObject.remove(SettingKeys.MYSQL_HOST);
 		if (jsonObject.has(SettingKeys.MYSQL_PASSWORD)) jsonObject.remove(SettingKeys.MYSQL_PASSWORD);
 		if (jsonObject.has(SettingKeys.MYSQL_USERNAME)) jsonObject.remove(SettingKeys.MYSQL_USERNAME);
+		if (jsonObject.has(SettingKeys.MYSQL_DB)) jsonObject.remove(SettingKeys.MYSQL_DB);
 		return jsonObject;
 	}
+	
+	/**
+	 * add info
+	 * @param jsonObject
+	 * @return
+	 * @throws JSONException 
+	 */
+	public static JSONObject addInfo(JSONObject json) throws JSONException {
+		json.put(SettingKeys.DB_SET, (Helper.containsKey(json, SettingKeys.MYSQL_HOST) &&
+				Helper.containsKey(json, SettingKeys.MYSQL_USERNAME) &&
+				Helper.containsKey(json, SettingKeys.MYSQL_DB)));
+		return json;
+	}
+	
+	
 	
 	
 }
