@@ -71,7 +71,7 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.IconMenuButton;
 
 public class ViewElements {
-	private static int TOOLTIP_VERSION_MENU_CONFIG = 3;
+	private static int TOOLTIP_VERSION_MENU_CONFIG = 7;
 	private View view;
 	private Img queryButton;
 	private ImgButton queryLoading;
@@ -389,11 +389,6 @@ public class ViewElements {
 	public HTMLFlow getLogo(int fontSize, String title) {
 		HTMLFlow html = new HTMLFlow();
 		html.setContents("<span title='" + title + "' style=\"font-family: 'Audiowide'; font-size: " + fontSize + "px;cursor:pointer;\" onclick=\"window.open('" + ExternalLinks.YASGUI_HTML +  "')\">YASGUI</span>");
-		html.addClickHandler(new ClickHandler(){
-			@Override
-			public void onClick(ClickEvent event) {
-				com.google.gwt.user.client.Window.open(ExternalLinks.YASGUI_HTML, "_blank", "");
-			}});
 		html.setWidth(100);
 		html.setHeight(30);
 		return html;
@@ -571,13 +566,13 @@ public class ViewElements {
 			TooltipProperties tProp = new TooltipProperties();
 			tProp.setId(configButton.getDOM().getId());
 			tProp.setContent(TooltipText.CONFIG_MENU);
-			tProp.setMy(TooltipProperties.POS_TOP_LEFT);
-			tProp.setAt(TooltipProperties.POS_BOTTOM_CENTER);
+			tProp.setMy(TooltipProperties.POS_RIGHT_TOP);
+			tProp.setAt(TooltipProperties.POS_LEFT_TOP);
 			Helper.drawTooltip(tProp);
 		}
 	}
 
-	public void showTooltip(int fromVersionId) {
+	public void showTooltips(int fromVersionId) {
 		showConfigMenuTooltip(fromVersionId);
 		
 	}

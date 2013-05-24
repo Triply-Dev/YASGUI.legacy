@@ -80,8 +80,8 @@ public class QueryTextArea extends HTMLPane {
 			tProp.setContent(TooltipText.QUERY_PREFIXES_AUTOCOMPLETE);
 			tProp.setMy(TooltipProperties.POS_TOP_LEFT);
 			tProp.setAt(TooltipProperties.POS_TOP_LEFT);
-			tProp.setXOffset(540);
-			tProp.setYOffset(35);
+			tProp.setXOffset(280);
+			tProp.setYOffset(50);
 			Helper.drawTooltip(tProp);
 		}
 	}
@@ -92,8 +92,9 @@ public class QueryTextArea extends HTMLPane {
 			tProp.setId(getDOM().getId());
 			tProp.setContent(TooltipText.QUERY_KEYBOARD_SHORTCUTS);
 			tProp.setMy(TooltipProperties.POS_CENTER);
-			tProp.setAt(TooltipProperties.POS_LEFT_CENTER);
-			tProp.setXOffset(200);
+			tProp.setAt(TooltipProperties.POS_RIGHT_BOTTOM);
+			tProp.setXOffset(-150);
+			tProp.setYOffset(-110);
 			Helper.drawTooltip(tProp);
 		}
 	}

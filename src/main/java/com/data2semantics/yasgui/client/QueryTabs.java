@@ -69,7 +69,7 @@ public class QueryTabs extends TabSet {
 	private static boolean STORE_SETTINGS_ON_CLOSE_DEFAULT = true;
 	private ImgButton addTabButton;
 	
-	public static int INDENT_TABS = 45; //space reserved for buttons on lhs
+	public static int INDENT_TABS = 50; //space reserved for buttons on lhs
 	private HLayout controls;
 	private LayoutSpacer controlsSpacer;
 	private static int TOOLTIP_VERSION_TAB_SELECTION = 1;
@@ -116,13 +116,14 @@ public class QueryTabs extends TabSet {
 	
 	private void showTabSelectionTooltip(int fromVersionId) throws ElementIdException {
 		if (fromVersionId < TOOLTIP_VERSION_TAB_SELECTION) {
+			view.getLogger().severe("showing tab tooltip for id " + getDOM().getId());
 			TooltipProperties tProp = new TooltipProperties();
 			tProp.setId(getDOM().getId());
 			tProp.setContent(TooltipText.TAB_SELECTION);
-			tProp.setMy(TooltipProperties.POS_BOTTOM_CENTER);
-			tProp.setAt(TooltipProperties.POS_TOP_LEFT);
-			tProp.setXOffset(169);
-			tProp.setYOffset(10);
+			tProp.setMy(TooltipProperties.POS_LEFT_CENTER);
+			tProp.setAt(TooltipProperties.POS_LEFT_CENTER);
+			tProp.setXOffset(132);
+			tProp.setYOffset(6);
 			Helper.drawTooltip(tProp);
 		}
 	}

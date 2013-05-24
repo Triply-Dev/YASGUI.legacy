@@ -120,11 +120,14 @@ public class QueryTab extends Tab {
 		spacer.setWidth100();
 		queryOptions.addMember(spacer);
 		
-
+		
 		linkCreator = new LinkCreator(view);
 		queryOptions.addMember(linkCreator);
-
+		
 		if (view.getSettings().isDbSet()) {
+			LayoutSpacer hSpacer = new LayoutSpacer();
+			hSpacer.setWidth(6);
+			queryOptions.addMember(hSpacer);
 			addToBookmarks = new AddToBookmarks(view);
 			queryOptions.addMember(addToBookmarks);
 		}
@@ -204,6 +207,9 @@ public class QueryTab extends Tab {
 		showSearchIconTooltip(fromVersionId);
 		queryConfigMenu.showTooltips(fromVersionId);
 		linkCreator.showToolTips(fromVersionId);
+		if (addToBookmarks != null) {
+			addToBookmarks.showToolTips(fromVersionId);
+		}
 		
 	}
 	private void showSearchIconTooltip(int fromVersionId) {
@@ -213,8 +219,8 @@ public class QueryTab extends Tab {
 			tProp.setContent(TooltipText.ENDPOINT_SEARCH_ICON);
 			tProp.setMy(TooltipProperties.POS_BOTTOM_CENTER);
 			tProp.setAt(TooltipProperties.POS_TOP_CENTER);
-			tProp.setYOffset(-7);
-			tProp.setXOffset(-1);
+			tProp.setYOffset(9);
+//			tProp.setXOffset(-1);
 			Helper.drawTooltip(tProp);
 		}
 	}

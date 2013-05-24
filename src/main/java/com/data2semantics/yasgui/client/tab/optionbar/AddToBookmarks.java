@@ -38,7 +38,10 @@ import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.client.helpers.Helper;
+import com.data2semantics.yasgui.client.helpers.TooltipProperties;
 import com.data2semantics.yasgui.client.settings.Icons;
+import com.data2semantics.yasgui.client.settings.TooltipText;
 import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.data2semantics.yasgui.shared.Bookmark;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -48,6 +51,7 @@ public class AddToBookmarks extends Img {
 	private Window window;
 	private CheckboxItem includeEndpoint;
 	private TextItem bookmarkTitle;
+	private static int TOOLTIP_VERSION_BOOKMARKS = 7;
 	private static int WINDOW_WIDTH = 340;
 	private static int WINDOW_HEIGHT = 70;
 	private static int ICON_WIDTH = 25;
@@ -157,6 +161,18 @@ public class AddToBookmarks extends Img {
         spacer.setWidth100();
         hlayout.addMembers(form, spacer, bookmarkButton);
 		return hlayout;
+	}
+
+	public void showToolTips(int fromVersionId) {
+		if (fromVersionId <= TOOLTIP_VERSION_BOOKMARKS) {
+			TooltipProperties tProp = new TooltipProperties();
+			tProp.setId(getDOM().getId());
+			tProp.setContent(TooltipText.ADD_TO_BOOKMARKS);
+			tProp.setMy(TooltipProperties.POS_TOP_RIGHT);
+			tProp.setAt(TooltipProperties.POS_BOTTOM_CENTER);
+			tProp.setYOffset(2);
+			Helper.drawTooltip(tProp);
+		}
 	}
 	
 

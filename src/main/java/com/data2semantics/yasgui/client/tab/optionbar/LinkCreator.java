@@ -250,8 +250,8 @@ public class LinkCreator extends ImgButton {
 			TooltipProperties tProp = new TooltipProperties();
 			tProp.setId(getDOM().getId());
 			tProp.setContent(TooltipText.LINK_GENERATOR);
-			tProp.setMy(TooltipProperties.POS_TOP_RIGHT);
-			tProp.setAt(TooltipProperties.POS_BOTTOM_CENTER);
+			tProp.setMy(TooltipProperties.POS_RIGHT_CENTER);
+			tProp.setAt(TooltipProperties.POS_LEFT_CENTER);
 			Helper.drawTooltip(tProp);
 		}
 	}
