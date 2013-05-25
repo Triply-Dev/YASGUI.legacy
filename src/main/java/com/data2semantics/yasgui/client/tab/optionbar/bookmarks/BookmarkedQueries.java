@@ -67,8 +67,8 @@ public class BookmarkedQueries extends Img {
 	private Window window;
 	private static int WINDOW_WIDTH = 700;
 	private static int WINDOW_HEIGHT = 500;
-	private static int ICON_WIDTH = 35;
-	private static int ICON_HEIGHT = 35;
+	private static int ICON_WIDTH = 33;
+	private static int ICON_HEIGHT = 27;
 	private HLayout rollOverCanvas;
 	private boolean enabled = false;
 	private BookmarkRecord rollOverRecord;
@@ -108,6 +108,7 @@ public class BookmarkedQueries extends Img {
 			@Override
 			public void onClick(ClickEvent event) {
 				if (enabled) {
+					rollOverCanvas = null;
 					view.getElements().onLoadingStart("loading bookmarks");
 					view.getRemoteService().getBookmarks(new AsyncCallback<Bookmark[]>() {
 						public void onFailure(Throwable caught) {
