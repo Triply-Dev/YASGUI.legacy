@@ -163,6 +163,9 @@ public class ViewElements {
 		if (JsMethods.stringToDownloadSupported()) {
 			view.getSelectedTab().getDownloadLink().showDisabledIcon();
 		}
+		//onblur might not always fire (will have to check that). for now, store query in settings before query execution just to be sure
+		view.getCallableJsMethods().storeQueryInCookie();
+		
 		String tabId = view.getSelectedTab().getID();
 		String endpoint = view.getSelectedTabSettings().getEndpoint();
 		String queryString = view.getSelectedTabSettings().getQueryString();

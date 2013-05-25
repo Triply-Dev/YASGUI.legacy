@@ -28,8 +28,6 @@ package com.data2semantics.yasgui.client.helpers;
 
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.tab.QueryTab;
-import com.data2semantics.yasgui.client.tab.optionbar.bookmarks.BookmarkRecord;
-import com.data2semantics.yasgui.client.tab.optionbar.bookmarks.BookmarkedQueries;
 
 public class CallableJsMethods {
 	private View view;
