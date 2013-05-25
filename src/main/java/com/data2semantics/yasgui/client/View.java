@@ -401,4 +401,9 @@ public class View extends VLayout {
 		getSelectedTab().getBookmarkedQueries().setEnabled();
 		getSelectedTab().getAddToBookmarks().setEnabled();
 	}
+
+	public CallableJsMethods getCallableJsMethods() {
+		return jsEvents;
+		
+	}
 }
