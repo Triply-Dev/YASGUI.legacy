@@ -200,7 +200,7 @@ function getPrefixesFromQuery(cm) {
 	var numLines = cm.lineCount();
 	for (var i = 0; i < numLines; i++) {
 		var firstToken = getNextNonWsToken(cm, i);
-		if (firstToken.string == "PREFIX") {
+		if (firstToken != null && firstToken.string == "PREFIX") {
 			var prefix = getNextNonWsToken(cm, i, firstToken.end + 1);
 			if (prefix.string != ":") {
 				queryPrefixes.push(prefix.string);
@@ -221,7 +221,7 @@ function appendToPrefixes(cm, prefix) {
 	var numLines = cm.lineCount();
 	for (var i = 0; i < numLines; i++) {
 		var firstToken = getNextNonWsToken(cm, i);
-		if (firstToken.string == "PREFIX" || firstToken.string == "BASE") {
+		if (firstToken != null && (firstToken.string == "PREFIX" || firstToken.string == "BASE")) {
 			lastPrefix = firstToken;
 			lastPrefixLine = i;
 		}
