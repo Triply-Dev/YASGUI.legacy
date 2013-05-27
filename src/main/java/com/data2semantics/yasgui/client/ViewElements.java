@@ -48,13 +48,9 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.http.client.URL;
-import com.google.gwt.storage.client.Storage;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
-import com.smartgwt.client.types.Positioning;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Button;
-import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.Img;
@@ -92,7 +88,7 @@ public class ViewElements {
 		addQueryButton();
 		addLogo();
 		initLoadingWidget();
-		drawConfigButton();
+		drawConfigMenu();
 	}
 	
 
@@ -154,11 +150,17 @@ public class ViewElements {
 		
 	}
 	
+	/**
+	 * Cancel query request, en redraw query icon
+	 */
 	public void cancelQuery() {
 		JsMethods.cancelQuery();
 		onQueryFinish();
 	}
 	
+	/**
+	 * execute query
+	 */
 	public void executeQuery() {
 		if (JsMethods.stringToDownloadSupported()) {
 			view.getSelectedTab().getDownloadLink().showDisabledIcon();
@@ -358,21 +360,7 @@ public class ViewElements {
 		window.setWidth(350);
 		window.draw();
 	}
-	
-	
-	public void checkHtml5() {
-		if (LocalStorageHelper.newUser()) {
-			LocalStorageHelper.setHtml5Checked();
-			boolean html5 = Storage.isSupported();
-			if (!html5) {
-				onError("Your browser does not support html5. This website will function slower without html5.<br><br> Try browsers such as Chrome 4+, Firefox 4+, Safari 4+ and Internet Explorer 8+ for better performance");
-			}
-			if (view.getSettings().useGoogleAnalytics()) {
-				GoogleAnalyticsEvent event = new GoogleAnalyticsEvent("html5", (html5? "1": "0"));
-				GoogleAnalytics.trackEvents(event);
-			}
-		}
-	}
+
 	
 	public void addLogo() {
 		HTMLFlow html = getLogo(31, "Show YASGUI page");
@@ -514,7 +502,10 @@ public class ViewElements {
 		linkCreator.draw();
 	}
 	
-	public void drawConfigButton() {
+	/**
+	 * Draw main YASGUI configuration menu
+	 */
+	public void drawConfigMenu() {
 		Compatabilities compatabilities = new Compatabilities(view);
 		String icon  = "";
 		if (!compatabilities.allSupported() && LocalStorageHelper.getCompatabilitiesShownVersionNumber() < Compatabilities.VERSION_NUMBER) {
@@ -522,10 +513,6 @@ public class ViewElements {
 		} else {
 			icon = Icons.TOOLS;
 		}
-//		HLayout hLayout = new HLayout();
-//		hLayout.setPosition(Positioning.ABSOLUTE);
-//		hLayout.setTop(2);
-//		hLayout.setLeft(400);
 		
 		String label = "Configure YASGUI";
 		if (!view.getSettings().isDbSet()) {
@@ -540,9 +527,6 @@ public class ViewElements {
 		configButton.getElement().getStyle().setPosition(Position.ABSOLUTE);
 		configButton.getElement().getStyle().setTop(2, Unit.PX);
 		configButton.getElement().getStyle().setRight(50, Unit.PX);
-//		configButton.setPosition(Positioning.ABSOLUTE);
-//		configButton.setTop(2);
-//		configButton.setLeft(150);
 		configButton.setIcon(icon);
 		configButton.setZIndex(ZIndexes.TAB_CONTROLS);
 		configButton.setMenu(new ConfigMenu(view));
@@ -555,15 +539,18 @@ public class ViewElements {
 			}
 			
 		});
-//		hLayout.addMember(configButton);
-//		hLayout.draw();
 		configButton.draw();
 	}
-	public void redrawConfigButton() {
+	
+	/**
+	 * Redraw configuration menu
+	 */
+	public void redrawConfigMenu() {
 		configButton.destroy();
 		configButton = null;
-		drawConfigButton();
+		drawConfigMenu();
 	}
+	
 	private void showConfigMenuTooltip(int fromVersionId) throws ElementIdException {
 		if (fromVersionId < TOOLTIP_VERSION_MENU_CONFIG) {
 			TooltipProperties tProp = new TooltipProperties();
@@ -577,7 +564,6 @@ public class ViewElements {
 
 	public void showTooltips(int fromVersionId) {
 		showConfigMenuTooltip(fromVersionId);
-		
 	}
 	
 	

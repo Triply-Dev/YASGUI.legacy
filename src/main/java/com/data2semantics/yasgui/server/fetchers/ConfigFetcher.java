@@ -57,7 +57,7 @@ public class ConfigFetcher {
 	public static String getJson(String path) throws IOException {
 		String jsonString;
 		try {
-			JSONObject jsonObject = getJsonObject(path);
+			JSONObject jsonObject = getJsonObjectFromPath(path);
 			jsonObject = addInfo(jsonObject);
 			jsonObject = removeInfo(jsonObject);
 			jsonString = jsonObject.toString();
@@ -70,15 +70,16 @@ public class ConfigFetcher {
 		return jsonString;
 	}
 	
-	public static JSONObject getJsonObject(String path) throws ParseException, JSONException, FileNotFoundException, IOException {
+	public static JSONObject getJsonObjectFromPath(String path) throws ParseException, JSONException, FileNotFoundException, IOException {
 		File configFile = new File( path + CONFIG_DIR + CONFIG_FILE);
 		return getJsonObjectFromFile(configFile);
 	}
 	
-	public static JSONObject getJsonObject(File path) throws ParseException, JSONException, FileNotFoundException, IOException {
+	public static JSONObject getJsonObjectFromPath(File path) throws ParseException, JSONException, FileNotFoundException, IOException {
 		File configFile = new File( path.getAbsolutePath() + CONFIG_DIR + CONFIG_FILE);
 		return getJsonObjectFromFile(configFile);
 	}
+	
 	private static JSONObject getJsonObjectFromFile(File configFile) throws IOException, JSONException {
 		if (!configFile.exists()) {
 			throw new IOException("Unable to load config file from server. Trying to load: " + configFile.getAbsolutePath());
@@ -109,7 +110,7 @@ public class ConfigFetcher {
 	}
 	
 	/**
-	 * add info
+	 * deduce information we'd like in there
 	 * @param jsonObject
 	 * @return
 	 * @throws JSONException 

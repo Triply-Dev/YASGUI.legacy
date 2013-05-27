@@ -14,12 +14,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Cursor;
 import com.smartgwt.client.types.Overflow;
-import com.smartgwt.client.types.Positioning;
 import com.smartgwt.client.types.TitleOrientation;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.Img;
-import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
@@ -73,7 +71,10 @@ public class OpenId {
 		// on initiation, check whether we are logged in..
 		updateLoginStatus();
 	}
-
+	
+	/**
+	 * Update login status, and (re)draws widget containing session info (in YASGUI config menu)
+	 */
 	private void updateLoginStatus() {
 		view.getOpenIdService().getCurrentUser(
 		new AsyncCallback<UserDetails>() {
@@ -84,13 +85,15 @@ public class OpenId {
 
 			public void onSuccess(UserDetails details) {
 				if (details.isLoggedIn()) {
-					drawSessionWidgetLoggedIn(details);
-					view.loggedInCallback();
 					loggedIn = true;
+					drawSessionWidgetLoggedIn(details);
+					loggedInCallback();
+					
 					
 				} else {
-					drawSessionWidgetLogin();
 					loggedIn = false;
+					drawSessionWidgetLogin();
+					
 				}
 			}
 
@@ -98,6 +101,10 @@ public class OpenId {
 
 	}
 
+	/**
+	 * Try to log in for a given openId service
+	 * @param openIdService
+	 */
 	public void login(String openIdService) {
 		view.getOpenIdService().login(GWT.getHostPageBaseURL(),
 				!GWT.isProdMode(), openIdService,
@@ -121,6 +128,9 @@ public class OpenId {
 				});
 	}
 
+	/**
+	 * Log out
+	 */
 	public void logOut() {
 		String url;
 		url = StaticConfig.OPEN_ID_SERVLET + "?logOut=1&appBaseUrl="
@@ -133,26 +143,37 @@ public class OpenId {
 		loggedIn = false;
 	}
 
-	public void updateSessionInfo() {
-		drawSessionWidgetLogin();
-	}
-
+	
+	/**
+	 * Redraw YASGUI config menu, to update the session info
+	 * 
+	 * @param details
+	 */
 	private void drawSessionWidgetLoggedIn(UserDetails details) {
-		loggedIn = true;
-		
 		this.displayName = details.getDisplayName();
-		view.getElements().redrawConfigButton();
+		view.getElements().redrawConfigMenu();
 	}
 	
+	/**
+	 * Get display name for this user
+	 * 
+	 * @return
+	 */
 	public String getDisplayName() {
 		return this.displayName;
 	}
+	
+	/**
+	 * Redraw YASGUI config menu, with option to log in
+	 */
 	private void drawSessionWidgetLogin() {
-		view.getElements().redrawConfigButton();
+		view.getElements().redrawConfigMenu();
 	}
-
+	
+	/**
+	 * Show openid providers in popup
+	 */
 	public void showOpenIdProviders() {
-		// Window window = new Window();
 		com.smartgwt.client.widgets.Window window = new com.smartgwt.client.widgets.Window();
 		window.setOverflow(Overflow.HIDDEN);
 		window.setZIndex(ZIndexes.MODAL_WINDOWS);
@@ -167,7 +188,11 @@ public class OpenId {
 		window.addItem(drawProviders());
 		window.draw();
 	}
-
+	
+	/**
+	 * draw provider buttons, shown in popup window
+	 * @return
+	 */
 	private HLayout drawProviders() {
 		HLayout hlayout = new HLayout();
 		hlayout.setHeight(WINDOW_HEIGHT - 40);
@@ -245,7 +270,10 @@ public class OpenId {
 		}
 		return hlayout;
 	}
-
+	
+	/**
+	 * Get the different providers we support
+	 */
 	private void getProviders() {
 		providers = new ArrayList<OpenIdProvider>();
 		providers.add(new ProviderGoogle());
@@ -253,7 +281,20 @@ public class OpenId {
 		providers.add(new ProviderOpenId());
 	}
 	
+	/**
+	 * Check whether this user is logged in
+	 * @return
+	 */
 	public boolean isLoggedIn() {
 		return loggedIn;
+	}
+	
+	
+	/**
+	 * Callback to execute when user is validated as being logged in
+	 */
+	public void loggedInCallback() {
+		view.getSelectedTab().getBookmarkedQueries().setEnabled(true);
+		view.getSelectedTab().getAddToBookmarks().setEnabled(true);
 	}
 }

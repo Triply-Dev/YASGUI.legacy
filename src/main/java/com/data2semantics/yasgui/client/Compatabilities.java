@@ -113,7 +113,7 @@ public class Compatabilities extends Window {
 		draw();
 		
 		//ok, so we've shown the stuff. reload the menu button, as we might still have an exclamation mark there
-		view.getElements().redrawConfigButton();
+		view.getElements().redrawConfigMenu();
 	}
 	
 	private void drawHtml5LocalStorage() {

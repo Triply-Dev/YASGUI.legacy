@@ -242,7 +242,7 @@ public final class OpenIdServlet extends HttpServlet implements RemoteService {
 			HttpCookies.resetCookie(request, response, uniqueIdCookieName);
 			HttpCookies.resetCookie(request, response, openIdCookieName);
 
-			String uuid = callback.createUniqueIdForUser(ConfigFetcher.getJsonObject(getServletContext().getRealPath("/")), loginString);
+			String uuid = callback.createUniqueIdForUser(ConfigFetcher.getJsonObjectFromPath(getServletContext().getRealPath("/")), loginString);
 			HttpCookies.setCookie(request, response, uniqueIdCookieName, uuid);
 
 			// perform discovery on the user-supplied identifier

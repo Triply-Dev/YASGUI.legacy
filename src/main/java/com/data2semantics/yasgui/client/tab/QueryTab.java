@@ -88,6 +88,10 @@ public class QueryTab extends Tab {
 		setContextMenu();
 	}
 	
+	/**
+	 * Get option bar for this query, e.g. endpoint input, bookmarking funcationlity, permalink, etc etc
+	 * @return
+	 */
 	private HLayout getQueryOptionBar() {
 		HLayout queryOptions = new HLayout();
 		queryOptions.setDefaultLayoutAlign(VerticalAlignment.BOTTOM);

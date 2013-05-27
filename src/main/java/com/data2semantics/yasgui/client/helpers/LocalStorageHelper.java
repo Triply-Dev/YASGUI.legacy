@@ -40,7 +40,6 @@ public class LocalStorageHelper {
 	private static String COOKIE_ENDPOINTS = "endpoints";
 	private static String COOKIE_VERSION = "version";
 	private static String COOKIE_VERSION_ID = "versionId";
-	private static String COOKIE_HTML5_CHECKED = "html5Checked";
 	private static String COOKIE_COMPATABILITIES_SHOWN = "compatabilitiesShown";
 	
 	private static String LOCAL_STORAGE_EXPIRE_SEPARATOR = "_"; //used to separate content and long value containing timestamp of insertion
@@ -49,7 +48,6 @@ public class LocalStorageHelper {
 	private static int SETTINGS_EXPIRE_DAYS = 5000;
 	private static int VERSION_EXPIRE_DAYS = 5000;
 	private static int TOOLTIPS_EXPIRE_DAYS = 5000;
-	private static int HTML5_CHECKED_EXPIRE_DAYS = 5000;
 	private static int COMPATABILITIES_SHOWN_EXPIRE_DAYS = 5000;
 	
 	
@@ -226,10 +224,6 @@ public class LocalStorageHelper {
 		return versionId;
 	}
 	
-	public static void setHtml5Checked() {
-		Cookies.setCookie(COOKIE_HTML5_CHECKED, "1", getExpireDate(HTML5_CHECKED_EXPIRE_DAYS));
-	}
-	
 	public static void setCompatabilitiesShown(int versionNumber) {
 		Cookies.setCookie(COOKIE_COMPATABILITIES_SHOWN, Integer.toString(versionNumber), getExpireDate(COMPATABILITIES_SHOWN_EXPIRE_DAYS));
 	}
@@ -246,7 +240,7 @@ public class LocalStorageHelper {
 	}
 	
 	public static boolean newUser() {
-		return (Cookies.getCookie(COOKIE_HTML5_CHECKED) == null);
+		return (Cookies.getCookie(COOKIE_VERSION_ID) == null);
 	}
 	
 	private static Date getExpireDate(int days) {

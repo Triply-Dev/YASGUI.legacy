@@ -61,11 +61,7 @@ public class AddToBookmarks extends Img {
 
 	public AddToBookmarks(View view) {
 		this.view = view;
-		if (view.getOpenId() == null || !view.getOpenId().isLoggedIn()) {
-			setDisabled();
-		} else {
-			setEnabled();
-		}
+		setEnabled(view.getOpenId() != null && view.getOpenId().isLoggedIn());
 		setWidth(ICON_WIDTH);
 		setHeight(ICON_HEIGHT);
 		setShowDown(false);
@@ -73,21 +69,27 @@ public class AddToBookmarks extends Img {
 		setHandlers();
 
 	}
-
-	public void setEnabled() {
-		enabled = true;
-		setSrc(Icons.BOOKMARK_QUERY);
-		setTooltip("add query to bookmarks");
-		setCursor(Cursor.POINTER);
+	
+	/**
+	 * Set widget enabled/disabled
+	 * @param enabled
+	 */
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+		if (enabled) {
+			setSrc(Icons.BOOKMARK_QUERY);
+			setTooltip("add query to bookmarks");
+			setCursor(Cursor.POINTER);
+		} else {
+			setSrc(Icons.getDisabled(Icons.BOOKMARK_QUERY));
+			setTooltip("log in to use your bookmarks");
+			setCursor(Cursor.DEFAULT);
+		}
 	}
 
-	public void setDisabled() {
-		enabled = false;
-		setSrc(Icons.getDisabled(Icons.BOOKMARK_QUERY));
-		setTooltip("log in to use your bookmarks");
-		setCursor(Cursor.DEFAULT);
-	}
-
+	/**
+	 * Attach icon handlers
+	 */
 	private void setHandlers() {
 		addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -108,7 +110,11 @@ public class AddToBookmarks extends Img {
 			}
 		});
 	}
-
+	
+	/**
+	 * Get content for bookmark popup
+	 * @return
+	 */
 	private HLayout getPopupContent() {
 		HLayout hlayout = new HLayout();
 		hlayout.setWidth100();
@@ -166,7 +172,11 @@ public class AddToBookmarks extends Img {
 		hlayout.addMembers(form, spacer, bookmarkButton);
 		return hlayout;
 	}
-
+	
+	/**
+	 * Show tooltips
+	 * @param fromVersionId
+	 */
 	public void showToolTips(int fromVersionId) {
 		if (fromVersionId <= TOOLTIP_VERSION_BOOKMARKS) {
 			TooltipProperties tProp = new TooltipProperties();

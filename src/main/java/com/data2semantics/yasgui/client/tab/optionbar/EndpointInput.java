@@ -38,12 +38,10 @@ import com.data2semantics.yasgui.shared.Endpoints;
 import com.smartgwt.client.data.AdvancedCriteria;
 import com.smartgwt.client.data.Criterion;
 import com.smartgwt.client.types.Autofit;
-import com.smartgwt.client.types.Cursor;
 import com.smartgwt.client.types.OperatorId;
 import com.smartgwt.client.types.TextMatchStyle;
 import com.smartgwt.client.types.TitleOrientation;
 import com.smartgwt.client.util.StringUtil;
-import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ComboBoxItem;
 import com.smartgwt.client.widgets.form.fields.FormItemCriteriaFunction;
@@ -126,7 +124,7 @@ public class EndpointInput extends DynamicForm {
 			public void onBlur(BlurEvent event) {
 				String endpoint = getEndpoint();
 				if (!latestEndpointValue.equals(endpoint)) {
-					storeEndpoint(endpoint);
+					setEndpoint(endpoint, true);
 				}
 			}
 		});
@@ -137,7 +135,7 @@ public class EndpointInput extends DynamicForm {
 				if (pickListRecordSelected == true) {
 					//only perform when item from listgrid was selected. Otherwise on every keypress we'll do lots of processing
 					pickListRecordSelected = false;
-					storeEndpoint(getEndpoint());
+					setEndpoint(getEndpoint(), true);
 				}
 			}});
 	}
@@ -159,14 +157,32 @@ public class EndpointInput extends DynamicForm {
 		return endpointString;
 	}
 	
-	public void storeEndpoint(String endpoint) {
-		JsMethods.checkCorsEnabled(endpoint);
-		view.getSettings().getSelectedTabSettings().setEndpoint(endpoint);
-		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+	
+	/**
+	 * set endpoint string
+	 * @param endpointString
+	 */
+	public void setEndpoint(String endpointString) {
+		setEndpoint(endpointString, false);
 	}
 	
-	public void setEndpoint(String endpointString) {
+	/**
+	 * set endpoint, with parameter to allow for executing callback function (e.g. store in cache and setting object)
+	 * @param endpointString
+	 */
+	public void setEndpoint(String endpointString, boolean execCallback) {
 		endpoint.setValue(endpointString);
+		if (execCallback) {
+			setEndpointCallback(endpointString);
+		}
+	}
+	
+	/**
+	 * Callback executed after setting the endpoint. Stores the endpoint in settings, and checks cors
+	 * @param endpointString
+	 */
+	public void setEndpointCallback(String endpointString) {
+		JsMethods.checkCorsEnabled(endpointString);
 		view.getSelectedTabSettings().setEndpoint(endpointString);
 		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
 	}
@@ -175,6 +191,9 @@ public class EndpointInput extends DynamicForm {
 		return this.queryTab;
 	}
 	
+	/**
+	 * Initiate the dropdown picklist (listgrid)
+	 */
 	private void initPickList() {
 		pickListProperties = new ListGrid();
 		

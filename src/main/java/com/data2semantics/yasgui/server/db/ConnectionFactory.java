@@ -47,9 +47,21 @@ import com.data2semantics.yasgui.shared.SettingKeys;
 
 public class ConnectionFactory  {
 	
+	/**
+	 * Get database connection
+	 * 
+	 * @param configDir
+	 * @return
+	 * @throws JSONException
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws ParseException
+	 */
 	public static Connection getConnection(File configDir) throws JSONException, ClassNotFoundException, SQLException,
 	FileNotFoundException, IOException, ParseException {
-		JSONObject config = ConfigFetcher.getJsonObject(configDir);
+		JSONObject config = ConfigFetcher.getJsonObjectFromPath(configDir);
 		Connection connect = null;
 		try {
 			connect = connect(config.getString(SettingKeys.MYSQL_HOST) + "/" + config.getString(SettingKeys.MYSQL_DB), config.getString(SettingKeys.MYSQL_USERNAME),
@@ -65,14 +77,34 @@ public class ConnectionFactory  {
 		return connect;
 	}
 	
-
+	/**
+	 * Connect to a DB
+	 * @param host
+	 * @param username
+	 * @param password
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	private static Connection connect(String host, String username, String password) throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.jdbc.Driver");
 		String url = "jdbc:mysql://" + host;
 		return DriverManager.getConnection(url, username, password);
 
 	}
-
+	
+	/**
+	 * Update a database. Called on an empty database. This method executes an SQL script generating the needed db tables
+	 * @param connect
+	 * @param config
+	 * @param configDir
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 * @throws JSONException
+	 * @throws ClassNotFoundException
+	 */
 	private static Connection updateDatabase(Connection connect, JSONObject config, File configDir) throws FileNotFoundException, IOException, SQLException, JSONException, ClassNotFoundException {
 		String dbName = config.getString(SettingKeys.MYSQL_DB);
 		if (!databaseExists(connect, dbName)) {
@@ -91,12 +123,25 @@ public class ConnectionFactory  {
 		return connect;
 	}
 	
+	/**
+	 * Create database
+	 * @param connect
+	 * @param dbName
+	 * @throws SQLException
+	 */
 	private static void createDatabase(Connection connect, String dbName) throws SQLException {
 		Statement statement = connect.createStatement();
 		statement.executeUpdate("CREATE DATABASE `" + dbName + "` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci");
 		statement.close();
 	}
-
+	
+	/**
+	 * Check if database exists
+	 * @param connect
+	 * @param dbName
+	 * @return
+	 * @throws SQLException
+	 */
 	private static boolean databaseExists(Connection connect, String dbName) throws SQLException {
 		Statement statement = connect.createStatement();
 		ResultSet resultSet = statement.executeQuery("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '"

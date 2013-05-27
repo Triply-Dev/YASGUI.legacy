@@ -45,14 +45,11 @@ import com.google.gwt.user.client.Command;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Side;
 import com.smartgwt.client.types.TabTitleEditEvent;
-import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
-import com.smartgwt.client.widgets.layout.VLayout;
-import com.smartgwt.client.widgets.menu.IconMenuButton;
 import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
 import com.smartgwt.client.widgets.tab.events.CloseClickHandler;
@@ -76,7 +73,6 @@ public class QueryTabs extends TabSet {
 	
 	public QueryTabs(View view) {
 		this.view = view;
-//		setTabBarThickness(28); //this way the icon menu button alligns well with the tabbar
 		setTabBarPosition(Side.TOP);
 		setTabBarAlign(Side.LEFT);
 		setOverflow(Overflow.HIDDEN);
