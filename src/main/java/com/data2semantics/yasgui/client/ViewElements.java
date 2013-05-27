@@ -29,6 +29,8 @@ package com.data2semantics.yasgui.client;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import com.data2semantics.yasgui.client.configmenu.Compatabilities;
+import com.data2semantics.yasgui.client.configmenu.ConfigMenu;
 import com.data2semantics.yasgui.client.helpers.GoogleAnalytics;
 import com.data2semantics.yasgui.client.helpers.GoogleAnalyticsEvent;
 import com.data2semantics.yasgui.client.helpers.Helper;
