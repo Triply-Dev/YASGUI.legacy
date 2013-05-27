@@ -57,20 +57,37 @@ public class Icons {
 	public static String LOGO_GITHUB = "logos/github.jpg";
 	
 	public static String DIR_IMAGES = "images/";
-	public static String getDisabled(String icon) {
+	
+	/**
+	 * Get disabled variant of path string 
+	 * @param iconPath
+	 * @return
+	 */
+	public static String getDisabled(String iconPath) {
+		return appendToBasename(iconPath, "Disabled");
+	}
+	
+	/**
+	 * Append a string to the basename. google.com/bla/bli.png, becomse google.com/bla/bli_<append>.png
+	 * 
+	 * @param iconPath
+	 * @param append
+	 * @return
+	 */
+	private static String appendToBasename(String iconPath, String append) {
 		String extension = "";
-		int lastDot = icon.lastIndexOf('.');
+		int lastDot = iconPath.lastIndexOf('.');
 		if (lastDot > 0) {
-			extension = icon.substring(lastDot + 1);
-			icon = icon.substring(0, lastDot);
+			extension = iconPath.substring(lastDot + 1);
+			iconPath = iconPath.substring(0, lastDot);
 		}
-		int lastSlash = icon.lastIndexOf("/");
+		int lastSlash = iconPath.lastIndexOf("/");
 		String path = "";
-		String basename = icon;
+		String basename = iconPath;
 		if (lastSlash > 0) {
-			basename = icon.substring(lastSlash + 1);
-			path = icon.substring(0, lastSlash);
+			basename = iconPath.substring(lastSlash + 1);
+			path = iconPath.substring(0, lastSlash);
 		}
-		return path + "/" + basename + "_Disabled." + extension;
+		return path + "/" + basename + "_" + append + "." + extension;
 	}
 }

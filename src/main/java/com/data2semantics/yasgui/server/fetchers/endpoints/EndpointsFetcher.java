@@ -92,6 +92,11 @@ public class EndpointsFetcher {
 		return result;
 	}
 	
+	/**
+	 * Get a SPARQL binding as string (naive method, but suitable for what we want: just retrieving text and URLs
+	 * @param node
+	 * @return
+	 */
 	public static String getBindingValueAsString(RDFNode node) {
 		if (node.isLiteral()) {
 			return node.asLiteral().getString();
@@ -102,13 +107,4 @@ public class EndpointsFetcher {
 		}
 	}
 	
-	public static void main(String[] args) {
-		try {
-			System.out.println(EndpointsFetcher.fetch(true, new File("bla2")).length());
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 }

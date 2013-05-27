@@ -77,33 +77,36 @@ public class BookmarkedQueries extends Img {
 	private ArrayList<BookmarkRecord> deletedRecords = new ArrayList<BookmarkRecord>();
 	public BookmarkedQueries(View view) {
 		this.view = view;
-		if (view.getOpenId() == null || !view.getOpenId().isLoggedIn()) {
-			setDisabled();
-		} else {
-			setEnabled();
-		}
+		setEnabled(view.getOpenId() != null && view.getOpenId().isLoggedIn());
 		setWidth(ICON_WIDTH);
 		setHeight(ICON_HEIGHT);
 		setShowDown(false);
 		setShowRollOver(false);
+		addHandlers();
+	}
+	
+	/**
+	 * set bookmarking functionality enabled/disabled
+	 * @param enabled
+	 */
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+		if (enabled) {
+			setSrc(Icons.SHOW_BOOKMARKS);
+			setTooltip("show bookmarks");
+			setCursor(Cursor.POINTER);
+		} else {
+			setSrc(Icons.getDisabled(Icons.SHOW_BOOKMARKS));
+			setTooltip("log in to use your bookmarks");
+			setCursor(Cursor.DEFAULT);
+		}
 		
-		addWindowSetup();
 	}
 	
-	public void setEnabled() {
-		enabled = true;
-		setSrc(Icons.SHOW_BOOKMARKS);
-		setTooltip("show bookmarks");
-		setCursor(Cursor.POINTER);
-	}
-	
-	public void setDisabled() {
-		enabled = false;
-		setSrc(Icons.getDisabled(Icons.SHOW_BOOKMARKS));
-		setTooltip("log in to use your bookmarks");
-		setCursor(Cursor.DEFAULT);
-	}
-	private void addWindowSetup() {
+	/**
+	 * attach bookmark icon handlers
+	 */
+	private void addHandlers() {
 		addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -140,7 +143,7 @@ public class BookmarkedQueries extends Img {
 								public void onVisibilityChanged(VisibilityChangedEvent event) {
 									storeCurrentTextArea();//to make sure currently edited query bookmark is stored as well
 									if (updatedRecords.size() > 0) {
-										updateRecords(new ArrayList<BookmarkRecord>(updatedRecords.values()));
+										updateBookmarks(new ArrayList<BookmarkRecord>(updatedRecords.values()));
 									}
 									if (deletedRecords.size() > 0) {
 										deleteRecords(deletedRecords);
@@ -156,11 +159,20 @@ public class BookmarkedQueries extends Img {
 		});
 	}
 	
+	/**
+	 * reset variables stored in object, and delete initiated js variables (such as codemirror objects)
+	 */
 	private void resetVariables() {
 		JsMethods.deleteElementsWithPostfixId(BookmarkRecord.APPEND_INPUT_ID);
 		updatedRecords = new HashMap<Integer, BookmarkRecord>();
 		deletedRecords = new ArrayList<BookmarkRecord>();
 	}
+	
+	/**
+	 * get listgrid to show in window
+	 * @param bookmarks
+	 * @return
+	 */
 	private ListGrid getWindowContent(Bookmark[] bookmarks) {
 		
 		listGrid = new ListGrid() {
@@ -285,7 +297,12 @@ public class BookmarkedQueries extends Img {
 		return listGrid;
 	}
 
-	
+	/**
+	 * Get bookmark objects as record objects
+	 * 
+	 * @param bookmarks
+	 * @return
+	 */
 	private BookmarkRecord[] getRecords(Bookmark[] bookmarks) {
 		ArrayList<BookmarkRecord> records = new ArrayList<BookmarkRecord>();
 		for (Bookmark bookmark: bookmarks) {
@@ -324,14 +341,23 @@ public class BookmarkedQueries extends Img {
 			}
 		}
 	}
-
+	
+	
+	/**
+	 * get bookmark id for a given input string (used for codemirror js object)
+	 * @param inputId
+	 * @return
+	 */
 	public String getBookmarkId(String inputId) {
 		return inputId.substring(0, inputId.length() - BookmarkRecord.APPEND_INPUT_ID.length());
 		
 	}
 	
-	private void updateRecords(ArrayList<BookmarkRecord> records) {
-		
+	/**
+	 * Update the bookmarks on remote server
+	 * @param records
+	 */
+	private void updateBookmarks(ArrayList<BookmarkRecord> records) {
 		//Filter for items which are updated -and- deleted (in that case, just delete them)
 		ArrayList<Bookmark> bookmarks = new ArrayList<Bookmark>();
 		for (BookmarkRecord record: records) {
@@ -339,32 +365,40 @@ public class BookmarkedQueries extends Img {
 				bookmarks.add(record.toBookmark());
 			}
 		}
-		
-		view.getRemoteService().updateBookmarks(bookmarks.toArray(new Bookmark[bookmarks.size()]), new AsyncCallback<Void>() {
-			public void onFailure(Throwable caught) {
-				view.getElements().onError(caught);
-			}
-			public void onSuccess(Void result) {
-			}
-		});
+		if (bookmarks.size() > 0) {
+			view.getRemoteService().updateBookmarks(bookmarks.toArray(new Bookmark[bookmarks.size()]), new AsyncCallback<Void>() {
+				public void onFailure(Throwable caught) {
+					view.getElements().onError(caught);
+				}
+				public void onSuccess(Void result) {
+				}
+			});
+		}
 		
 		
 	}
 	
+	/**
+	 * Delete records on remote service
+	 * 
+	 * @param records
+	 */
 	private void deleteRecords(ArrayList<BookmarkRecord> records) {
-		int[] bookmarkIds = new int[records.size()];
-		for (int i = 0; i < records.size(); i++) {
-			bookmarkIds[i] = records.get(i).getBookmarkId();
-		}
+		if (records.size() > 0) {
+			int[] bookmarkIds = new int[records.size()];
+			for (int i = 0; i < records.size(); i++) {
+				bookmarkIds[i] = records.get(i).getBookmarkId();
+			}
 		
-		view.getRemoteService().deleteBookmarks(bookmarkIds, new AsyncCallback<Void>() {
-			public void onFailure(Throwable caught) {
-				view.getElements().onError(caught);
-			}
-
-			public void onSuccess(Void result) {
-			}
-		});
+			view.getRemoteService().deleteBookmarks(bookmarkIds, new AsyncCallback<Void>() {
+				public void onFailure(Throwable caught) {
+					view.getElements().onError(caught);
+				}
+	
+				public void onSuccess(Void result) {
+				}
+			});
+		}
 	}
 
 }

@@ -73,7 +73,6 @@ public class View extends VLayout {
 	private QueryTabs queryTabs;
 	private ViewElements viewElements;
 	private Settings settings = new Settings();
-	@SuppressWarnings("unused")
 	private CallableJsMethods jsEvents;
 	private OpenId openId;
 	public View() {
@@ -109,9 +108,7 @@ public class View extends VLayout {
 		queryTabs = new QueryTabs(this);
 		addMember(queryTabs);
 		
-		
-		getElements().checkHtml5();
-		
+	
 		if (settings.useGoogleAnalytics() && !settings.cookieConsentAnswered() && !Helper.isCrawler()) {
 			getElements().askCookieConsent();
 		}
@@ -393,15 +390,19 @@ public class View extends VLayout {
 		}
 	}
 
+	/**
+	 * get openid object
+	 * @return
+	 */
 	public OpenId getOpenId() {
 		return this.openId;
 	}
-	
-	public void loggedInCallback() {
-		getSelectedTab().getBookmarkedQueries().setEnabled();
-		getSelectedTab().getAddToBookmarks().setEnabled();
-	}
 
+	
+	/**
+	 * Get java methods callable from JS
+	 * @return
+	 */
 	public CallableJsMethods getCallableJsMethods() {
 		return jsEvents;
 		

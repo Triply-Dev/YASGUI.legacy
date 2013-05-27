@@ -75,7 +75,7 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 		String shortUrl;
 		try {
 			ServletContext servletContext = this.getServletContext();
-			JSONObject config = ConfigFetcher.getJsonObject(servletContext.getRealPath("/"));
+			JSONObject config = ConfigFetcher.getJsonObjectFromPath(servletContext.getRealPath("/"));
 			String bitlyApiKey = config.getString(SettingKeys.BITLY_API_KEY);
 			String bitlyUsername = config.getString(SettingKeys.BITLY_USERNAME);
 			LOGGER.info("issuing bitly call for url " + longUrlString);

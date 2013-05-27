@@ -57,24 +57,19 @@ public class DbHelper {
 	
 	
 	public DbHelper(File configDir, HttpServletRequest request) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
-		this.config = ConfigFetcher.getJsonObject(configDir);
+		this.config = ConfigFetcher.getJsonObjectFromPath(configDir);
 		this.connect = ConnectionFactory.getConnection(configDir);
 		this.request = request;
 	}
 	public DbHelper(File configDir) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
 		this(configDir, null);
 	}
-
-	public void updateUser() {
-
-	}
-
-	public void updateUserSession() {
-
-	}
-
-
-
+	
+	/**
+	 * Store user info (either update or insert)
+	 * @param userDetails
+	 * @throws SQLException
+	 */
 	public void storeUserInfo(UserDetails userDetails) throws SQLException {
 		// check if user is already stored
 		PreparedStatement preparedStatement = connect.prepareStatement("SELECT UniqueId FROM Users WHERE OpenId = ?");
@@ -129,6 +124,11 @@ public class DbHelper {
 		preparedStatement.close();
 	}
 	
+	/**
+	 * get default bookmarks from config file, and insert them for a given user. Ran after a user has his/her first login
+	 * @param userId
+	 * @throws SQLException
+	 */
 	private void storeDefaultBookmarks(int userId) throws SQLException {
 		if (userId >= 0) {
 			ArrayList<Bookmark> bookmarks = Helper.getDefaultBookmarksFromConfig(config);
@@ -152,7 +152,14 @@ public class DbHelper {
 	        insert.close();
 		}
 	}
-
+	
+	/**
+	 * Get user details, given a certain unique user id string
+	 * @param userDetails
+	 * @return
+	 * @throws SQLException
+	 * @throws OpenIdException
+	 */
 	public UserDetails getUserDetails(UserDetails userDetails) throws SQLException, OpenIdException {
 		PreparedStatement preparedStatement = connect
 				.prepareStatement("SELECT Id, FirstName, LastName, FullName, NickName, Email FROM Users WHERE UniqueId = ?");
@@ -172,7 +179,11 @@ public class DbHelper {
 		return userDetails;
 	}
 
-	
+	/**
+	 * get bookmarks for this user (unique user id retrieved from cookie)
+	 * @return
+	 * @throws SQLException
+	 */
 	public Bookmark[] getBookmarks() throws SQLException {
 		int userId = getUserId(HttpCookies.getCookieValue(request, OpenIdServlet.uniqueIdCookieName));
 		ArrayList<Bookmark> bookmarks = new ArrayList<Bookmark>();
@@ -190,7 +201,9 @@ public class DbHelper {
 		return bookmarks.toArray(new Bookmark[bookmarks.size()]);
 	}
 
-
+	/**
+	 * handler to close db connection
+	 */
 	public void close() {
 		try {
 			connect.close();
@@ -199,6 +212,13 @@ public class DbHelper {
 		}
 	}
 	
+	/**
+	 * get user Id given a unique Id string
+	 * @param uniqueId
+	 * @return
+	 * @throws SQLException
+	 * @throws OpenIdException
+	 */
 	public int getUserId(String uniqueId) throws SQLException, OpenIdException {
 		PreparedStatement preparedStatement = connect.prepareStatement("SELECT Id FROM Users WHERE UniqueId = ?");
 		preparedStatement.setString(1, uniqueId);
@@ -213,6 +233,13 @@ public class DbHelper {
 		}
 		return userId;
 	}
+	
+	/**
+	 * Clear a number of bookmarks from the DB
+	 * @param bookmarkIds
+	 * @throws SQLException
+	 * @throws OpenIdException
+	 */
 	public void clearBookmarks(int... bookmarkIds) throws SQLException, OpenIdException{
 		if (bookmarkIds.length > 0) {
 			int userId = getUserId(HttpCookies.getCookieValue(request, OpenIdServlet.uniqueIdCookieName));
@@ -230,6 +257,12 @@ public class DbHelper {
 		}
 	}
 
+	/**
+	 * add a set of bookmarks
+	 * @param bookmarks
+	 * @throws SQLException
+	 * @throws OpenIdException
+	 */
 	public void addBookmarks(Bookmark... bookmarks) throws SQLException, OpenIdException {
 		int userId = getUserId(HttpCookies.getCookieValue(request, OpenIdServlet.uniqueIdCookieName));
         PreparedStatement insert = connect.prepareStatement("INSERT into Bookmarks  " +
@@ -252,6 +285,13 @@ public class DbHelper {
         insert.close();
 		
 	}
+	
+	/**
+	 * update a set of bookmarks
+	 * @param bookmarks
+	 * @throws SQLException
+	 * @throws OpenIdException
+	 */
 	public void updateBookmarks(Bookmark... bookmarks) throws SQLException, OpenIdException {
 		int userId = getUserId(HttpCookies.getCookieValue(request, OpenIdServlet.uniqueIdCookieName));
         PreparedStatement insert = connect.prepareStatement("UPDATE Bookmarks  " +
