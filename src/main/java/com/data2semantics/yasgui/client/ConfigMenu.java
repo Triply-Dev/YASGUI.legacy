@@ -92,20 +92,20 @@ public class ConfigMenu extends Menu {
 		items.add(about);
 	}
 	
-	private MenuItem addCompatabilityItem() {
+	private void addCompatabilityItem() {
 		MenuItem compatability = new MenuItem("Show browser compatabilities");
 		final Compatabilities compatabilities = new Compatabilities(view);
 		if (!compatabilities.allSupported()) {
 			compatability.setIcon(Icons.WARNING);
 		} else {
-			compatability.setIcon(Icons.INFO);
+			compatability.setIcon(Icons.COMPATIBLE);
 		}
 		compatability.addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(MenuItemClickEvent event) {
 				compatabilities.drawContent();
 			}});
-		return compatability;
+		items.add(compatability);
 	}
 	
 	private void addRefreshSubMenu() {
