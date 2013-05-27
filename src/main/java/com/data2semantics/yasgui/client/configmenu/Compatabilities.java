@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.client;
+package com.data2semantics.yasgui.client.configmenu;
 
 /*
  * #%L
@@ -26,6 +26,7 @@ package com.data2semantics.yasgui.client;
  * #L%
  */
 
+import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.settings.Icons;

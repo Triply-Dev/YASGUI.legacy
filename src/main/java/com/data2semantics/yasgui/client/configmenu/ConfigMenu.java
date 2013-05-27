@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.client;
+package com.data2semantics.yasgui.client.configmenu;
 
 /*
  * #%L
@@ -28,6 +28,7 @@ package com.data2semantics.yasgui.client;
 
 import java.util.ArrayList;
 
+import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.settings.Icons;
 import com.data2semantics.yasgui.shared.StaticConfig;
 import com.smartgwt.client.widgets.menu.Menu;
