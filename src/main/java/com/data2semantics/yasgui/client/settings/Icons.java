@@ -53,6 +53,7 @@ public class Icons {
 	public static String LOG_OUT = "icons/nounproject/logOut.png";
 	public static String LOG_IN = "icons/nounproject/logIn.png";
 	public static String QUESTION_MARK = "icons/nounproject/questionMark.png";
+	public static String COMPATIBLE = "icons/nounproject/compatible.png";
 	
 	public static String LOGO_GITHUB = "logos/github.jpg";
 	
