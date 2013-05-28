@@ -148,7 +148,7 @@ public class QueryTabs extends TabSet {
 		controlsSpacer.setWidth100();
 		controls.addMember(controlsSpacer);
 		controls.setWidth(INDENT_TABS - 2);
-		controls.setHeight(50);
+		controls.setHeight(27);
 		
 		
 		
