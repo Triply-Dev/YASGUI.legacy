@@ -30,7 +30,7 @@ public class Icons {
 	public static String ADD_TAB = "icons/nounproject/addPage.png";
 	public static String ADD = "icons/nounproject/add.png";
 	public static String BOOKMARK_QUERY = "icons/nounproject/bookmarkPage.png";
-	public static String SHOW_BOOKMARKS = "icons/nounproject/bookmarksWhiteBg.png";
+	public static String SHOW_BOOKMARKS = "icons/nounproject/bookmarks.png";
 	public static String CHECKBOX = "icons/nounproject/checkbox.png";
 	public static String CHECKMARK = "icons/nounproject/checkMark.png";
 	public static String CHECK_CROSS = "icons/nounproject/checkCross.png";

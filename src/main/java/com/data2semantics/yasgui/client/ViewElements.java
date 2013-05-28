@@ -55,7 +55,6 @@ import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
-import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
@@ -71,13 +70,15 @@ import com.smartgwt.client.widgets.menu.IconMenuButton;
 public class ViewElements {
 	private static int TOOLTIP_VERSION_MENU_CONFIG = 7;
 	private View view;
-	private Img queryButton;
+	private ImgButton queryButton;
 	private ImgButton queryLoading;
 	private LinkCreator linkCreator;
 	public IconMenuButton configButton;
 	public static String DEFAULT_LOADING_MESSAGE = "Loading...";
 	private static int QUERY_BUTTON_POS_TOP = 5;
 	private static int QUERY_BUTTON_POS_RIGHT = 2;
+	private static int QUERY_BUTTON_HEIGHT = 48;
+	private static int QUERY_BUTTON_WIDTH = 48;
 	private static int CONSENT_WINDOW_HEIGHT = 130;
 	private static int CONSENT_WINDOW_WIDTH = 750;
 	private static int CONSENT_BUTTON_HEIGHT = 40;
@@ -99,57 +100,52 @@ public class ViewElements {
 	 * Add Query button. Position absolute, as it hovers slightly over the tabbar. Also adds a loading icon on the same place
 	 */
 	public void addQueryButton() {
-		queryButton = new ImgButton();
-		
-		queryButton.setHeight(48);
-		queryButton.setWidth(48);
-		queryButton.setSrc(Icons.EXECUTE_QUERY);
-		queryButton.setShowRollOver(false);
-		queryButton.setShowDown(false);
-		queryButton.setZIndex(ZIndexes.TAB_CONTROLS);
-		queryButton.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				executeQuery();
-			}
-		});
-		queryButton.getElement().getStyle().setPosition(Position.ABSOLUTE);
-		queryButton.getElement().getStyle().setTop(QUERY_BUTTON_POS_TOP, Unit.PX);
-		queryButton.getElement().getStyle().setRight(QUERY_BUTTON_POS_RIGHT, Unit.PX);
-//		queryButton.getElement().getStyle().setCursor(Cursor.POINTER);
-		queryButton.setCursor(com.smartgwt.client.types.Cursor.POINTER);
-		
-		if (queryButton.isDrawn()) {
-			queryButton.redraw();
-		} else {
-			queryButton.draw();
-		}
-		
-
-		queryLoading = new ImgButton();
-		queryLoading.setSrc(Icons.LOADING);
-		queryLoading.hide();
-		queryLoading.setHeight(48);
-		queryLoading.setWidth(48);
-		queryLoading.setZIndex(ZIndexes.TAB_CONTROLS);
-		queryLoading.addClickHandler(new ClickHandler() {
+		queryLoading = getQueryIcon(Icons.LOADING, new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				cancelQuery();
 			}
 		});
-		queryLoading.setShowRollOver(false);
-		queryLoading.setShowDown(false);
-		queryLoading.getElement().getStyle().setPosition(Position.ABSOLUTE);
-		queryLoading.getElement().getStyle().setTop(QUERY_BUTTON_POS_TOP, Unit.PX);
-		queryLoading.getElement().getStyle().setRight(QUERY_BUTTON_POS_RIGHT, Unit.PX);
-		queryLoading.getElement().getStyle().setCursor(Cursor.POINTER);
+		queryLoading.hide();
+		
 		if (queryLoading.isDrawn()) {
 			queryLoading.redraw();
 		} else {
 			queryLoading.draw();
 		}
 		
+		queryButton = getQueryIcon(Icons.EXECUTE_QUERY, new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				executeQuery();
+			}
+		});
+		
+		if (queryButton.isDrawn()) {
+			queryButton.redraw();
+		} else {
+			queryButton.draw();
+		}
+	}
+	
+	
+	private ImgButton getQueryIcon(String icon, ClickHandler clickHandler) {
+		ImgButton imgButton = new ImgButton();
+		imgButton.setHeight(QUERY_BUTTON_HEIGHT);
+		imgButton.setWidth(QUERY_BUTTON_WIDTH);
+		imgButton.setSrc(icon);
+		imgButton.setShowRollOver(false);
+		imgButton.setShowDown(false);
+		imgButton.setZIndex(ZIndexes.TAB_CONTROLS);
+		imgButton.setShowOverCanvas(false);
+		imgButton.addClickHandler(clickHandler);
+		imgButton.getElement().getStyle().setPosition(Position.ABSOLUTE);
+		imgButton.getElement().getStyle().setTop(QUERY_BUTTON_POS_TOP, Unit.PX);
+		imgButton.getElement().getStyle().setRight(QUERY_BUTTON_POS_RIGHT, Unit.PX);
+		imgButton.setCursor(com.smartgwt.client.types.Cursor.POINTER);
+		imgButton.getElement().getStyle().setZIndex(ZIndexes.TAB_CONTROLS);
+		
+		return imgButton;
 	}
 	
 	/**
@@ -225,10 +221,8 @@ public class ViewElements {
 	public void showPlayButton(String queryValid) {
 		if (queryValid.equals("1")) {
 			queryButton.setSrc(Icons.EXECUTE_QUERY);
-			queryButton.setShowOverCanvas(true);
 		} else {
 			queryButton.setSrc(Icons.QUERY_ERROR);
-			queryButton.setShowOverCanvas(true);
 		}
 	}
 	public void onLoadingStart() {
@@ -541,7 +535,12 @@ public class ViewElements {
 			}
 			
 		});
-		configButton.draw();
+		if (configButton.isDrawn()) {
+			configButton.redraw();
+		} else {
+			configButton.draw();
+		}
+		
 	}
 	
 	/**
