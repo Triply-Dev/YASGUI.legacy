@@ -187,11 +187,8 @@ public class ViewElements {
 		JsMethods.query(tabId, queryString, endpoint, acceptHeaders, argsString, requestMethod);
 		view.checkAndAddEndpointToDs(endpoint);
 		if (view.getSettings().useGoogleAnalytics() && view.getSettings().getTrackingQueryConsent()) {
-			GoogleAnalyticsEvent endpointEvent = new GoogleAnalyticsEvent("sparql", "endpoint");
-			endpointEvent.setOptLabel(endpoint);
-			GoogleAnalyticsEvent queryEvent = new GoogleAnalyticsEvent("sparql", "query");
-			queryEvent.setOptLabel(queryString);
-			GoogleAnalytics.trackEvents(endpointEvent, queryEvent);
+			GoogleAnalyticsEvent queryEvent = new GoogleAnalyticsEvent(endpoint, queryString);
+			GoogleAnalytics.trackEvents(queryEvent);
 		}
 	}
 	
@@ -414,6 +411,8 @@ public class ViewElements {
         yesButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				GoogleAnalyticsEvent consentEvent = new GoogleAnalyticsEvent("consent", "yes");
+				GoogleAnalytics.trackEvents(consentEvent);
 				consentWindow.destroy();
 				view.getSettings().setTrackingConsent(true);
 				view.getSettings().setTrackingQueryConsent(true);
@@ -434,6 +433,8 @@ public class ViewElements {
 		noQueriesButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				GoogleAnalyticsEvent consentEvent = new GoogleAnalyticsEvent("consent", "yes/no");
+				GoogleAnalytics.trackEvents(consentEvent);
 				consentWindow.destroy();
 				view.getSettings().setTrackingConsent(true);
 				view.getSettings().setTrackingQueryConsent(false);
@@ -453,6 +454,8 @@ public class ViewElements {
 		noButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				GoogleAnalyticsEvent consentEvent = new GoogleAnalyticsEvent("consent", "no");
+				GoogleAnalytics.trackEvents(consentEvent);
 				consentWindow.destroy();
 				view.getSettings().setTrackingConsent(false);
 				view.getSettings().setTrackingQueryConsent(false);
