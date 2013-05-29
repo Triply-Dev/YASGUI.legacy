@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.client.tab.optionbar;
+package com.data2semantics.yasgui.client.tab.optionbar.endpoints;
 
 /*
  * #%L
@@ -236,7 +236,7 @@ public class EndpointInput extends DynamicForm {
 					if (colName.equals(Endpoints.KEY_TITLE) || colName.equals(Endpoints.KEY_ENDPOINT)) {
 						return "<span style='cursor:pointer;'>" + cellValue + "</span>";
 					} else if (colName.equals(Endpoints.KEY_DATASETURI) && cellValue.length() > 0) {
-						return "<a href='" + cellValue + "' target='_blank'><img src='" + Icons.INFO + "' width='16' height='16'></a>";
+						return "<a href='" + cellValue + "' target='_blank'><img src='" + Icons.DIR_IMAGES + Icons.INFO + "' width='16' height='16'></a>";
 					}
 				}
                 return null;

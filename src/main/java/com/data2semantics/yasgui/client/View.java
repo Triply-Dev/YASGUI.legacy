@@ -41,7 +41,7 @@ import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.data2semantics.yasgui.client.tab.QueryTab;
-import com.data2semantics.yasgui.client.tab.optionbar.EndpointDataSource;
+import com.data2semantics.yasgui.client.tab.optionbar.endpoints.EndpointDataSource;
 import com.data2semantics.yasgui.shared.Endpoints;
 import com.data2semantics.yasgui.shared.SettingKeys;
 import com.data2semantics.yasgui.shared.StaticConfig;
