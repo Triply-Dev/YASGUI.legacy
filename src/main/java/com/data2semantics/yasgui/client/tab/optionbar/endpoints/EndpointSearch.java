@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.client.tab.optionbar;
+package com.data2semantics.yasgui.client.tab.optionbar.endpoints;
 
 /*
  * #%L
