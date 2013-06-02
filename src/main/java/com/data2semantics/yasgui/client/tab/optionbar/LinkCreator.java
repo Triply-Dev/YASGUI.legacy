@@ -114,7 +114,7 @@ public class LinkCreator extends ImgButton {
 		belowLink.setMargin(4);
 //		belowLink.addMember(getLinkOptions());
 		
-		if (view.getSettings().getBitlyUsername() != null && view.getSettings().getBitlyUsername().length() > 0) {
+		if (view.getSettings().useBitly()) {
 			belowLink.addMember(getShortenUrlButton());
 		}
 		
@@ -185,7 +185,7 @@ public class LinkCreator extends ImgButton {
 	}
 
 	private void updateLink(final String newUrl) {
-		if (view.getSettings().getBitlyUsername() != null && view.getSettings().getBitlyUsername().length() > 0) {
+		if (view.getSettings().useBitly()) {
 			shortenUrlButton.setDisabled(false);
 		}
 		urlTextBoxAnim.animateFade(20, new AnimationCallback(){
