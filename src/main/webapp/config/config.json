@@ -1,5 +1,5 @@
 {
-	"__comment1": "See github wiki page for more info: http://github.com/LaurensRietveld/yasgui/wiki/Config",
+	"__comment1": "See github wiki page for more info: http://laurensrietveld.nl/yasgui/deployment.html",
 	"__comment2": "Getting exceptions after changing the json file? Make sure you have valid json here: http://jsonlint.com/",
 	"defaults": {
 		"endpoint": "http://dbpedia.org/sparql",
