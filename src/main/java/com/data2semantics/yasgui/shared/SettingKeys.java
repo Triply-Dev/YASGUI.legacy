@@ -63,4 +63,5 @@ public class SettingKeys implements Serializable {
 	
 	//inferred settings
 	public static String DB_SET = "dbSet";
+	public static String USE_BITLY = "useBitly";
 }

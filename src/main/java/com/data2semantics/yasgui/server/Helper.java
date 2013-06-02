@@ -99,13 +99,15 @@ public class Helper {
 		ArrayList<Bookmark> list = new ArrayList<Bookmark>();
 		try {
 			JSONArray array = config.getJSONArray(SettingKeys.DEFAULT_BOOKMARKS);
-			for (int i = 0; i < array.length(); i++) {
-				JSONObject bookmarkObject = array.getJSONObject(i);
-				Bookmark bookmark = new Bookmark();
-				bookmark.setEndpoint(bookmarkObject.getString("endpoint"));
-				bookmark.setQuery(bookmarkObject.getString("query"));
-				bookmark.setTitle(bookmarkObject.getString("title"));
-				list.add(bookmark);
+			if (array != null) {
+				for (int i = 0; i < array.length(); i++) {
+					JSONObject bookmarkObject = array.getJSONObject(i);
+					Bookmark bookmark = new Bookmark();
+					bookmark.setEndpoint(bookmarkObject.getString("endpoint"));
+					bookmark.setQuery(bookmarkObject.getString("query"));
+					bookmark.setTitle(bookmarkObject.getString("title"));
+					list.add(bookmark);
+				}
 			}
 		} catch (Exception e) {
 			//probably no default bookmarks defined

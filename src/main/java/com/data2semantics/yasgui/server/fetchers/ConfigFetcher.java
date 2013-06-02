@@ -98,8 +98,9 @@ public class ConfigFetcher {
 	 * @return
 	 */
 	public static JSONObject removeInfo(JSONObject jsonObject) {
-		//only remove api key. keep username there, so we can assume that whenever username is set, the api key is set as well
+		//remove all bitly stuff. not used on clientside anyway
 		if (jsonObject.has(SettingKeys.BITLY_API_KEY)) jsonObject.remove(SettingKeys.BITLY_API_KEY);
+		if (jsonObject.has(SettingKeys.BITLY_API_KEY)) jsonObject.remove(SettingKeys.BITLY_USERNAME);
 		
 		//remove all mysql things. don't want this on clientside
 		if (jsonObject.has(SettingKeys.MYSQL_HOST)) jsonObject.remove(SettingKeys.MYSQL_HOST);
@@ -110,7 +111,7 @@ public class ConfigFetcher {
 	}
 	
 	/**
-	 * deduce information we'd like in there
+	 * induce information we'd like in there
 	 * @param jsonObject
 	 * @return
 	 * @throws JSONException 
@@ -118,7 +119,10 @@ public class ConfigFetcher {
 	public static JSONObject addInfo(JSONObject json) throws JSONException {
 		json.put(SettingKeys.DB_SET, (Helper.containsKey(json, SettingKeys.MYSQL_HOST) &&
 				Helper.containsKey(json, SettingKeys.MYSQL_USERNAME) &&
+				Helper.containsKey(json, SettingKeys.MYSQL_PASSWORD) &&
 				Helper.containsKey(json, SettingKeys.MYSQL_DB)));
+		json.put(SettingKeys.USE_BITLY, (Helper.containsKey(json, SettingKeys.BITLY_API_KEY) &&
+				Helper.containsKey(json, SettingKeys.BITLY_USERNAME)));
 		return json;
 	}
 	

@@ -173,9 +173,12 @@ public class Settings extends JsonHelper {
 		return (containsKey(SettingKeys.TRACKING_CONSENT) && containsKey(SettingKeys.TRACKING_QUERIES_CONSENT));
 	}
 	
-	public String getBitlyUsername() {
-		String username = getString(SettingKeys.BITLY_USERNAME);
-		return username;
+	public boolean useBitly() {
+		boolean useBitly = false;
+		if (containsKey(SettingKeys.USE_BITLY) && get(SettingKeys.USE_BITLY).isBoolean() != null) {
+			useBitly = get(SettingKeys.USE_BITLY).isBoolean().booleanValue();
+		}
+		return useBitly;
 	}
 	
 	public boolean isDbSet() {
