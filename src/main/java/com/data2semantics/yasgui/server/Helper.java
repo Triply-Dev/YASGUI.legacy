@@ -33,6 +33,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
@@ -114,5 +116,16 @@ public class Helper {
 		
 		return list;
 	}
-
+	
+	public static String getAbsoluteRedirectPath(String endpointString, String redirect) throws URISyntaxException {
+		if (redirect.startsWith("/")) {
+			URI endpointUri = new URI(endpointString);
+			return endpointUri.getScheme() + "://" + endpointUri.getHost() + redirect;
+		} else {
+			return redirect;
+		}
+	}
+	public static void main(String[] args) throws URISyntaxException {
+		System.out.println(getAbsoluteRedirectPath("http://bla.bla2.com/woei", "/redirect/blaredir"));
+	}
 }

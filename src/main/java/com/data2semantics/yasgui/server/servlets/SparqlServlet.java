@@ -30,6 +30,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+
+import com.data2semantics.yasgui.server.Helper;
 
 public class SparqlServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -87,6 +90,19 @@ public class SparqlServlet extends HttpServlet {
 				}
 				response.sendError(endpointStatusCode, reason);
 				
+			} else if (endpointStatusCode >= 300) {
+				//redirect
+				Header[] headers = endpointResponse.getHeaders("Location");
+				if (headers.length > 0) {
+					String location = headers[0].getValue();
+					try {
+						response.sendRedirect(Helper.getAbsoluteRedirectPath(endpoint, location));
+					} catch (URISyntaxException e) {
+						response.sendError(500, "Endpoint issued a redirect, but we could not parse the given redirect location: " + location);
+					}
+				} else {
+					response.sendError(500, "Endpoint issued a redirect, but no redirect url was given");
+				}
 			} else {
 				//Header should be what we asked. It might be something else
 				//Copy response header to the new response
