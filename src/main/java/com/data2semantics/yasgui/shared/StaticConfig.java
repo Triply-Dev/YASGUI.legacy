@@ -37,6 +37,4 @@ public class StaticConfig implements Serializable {
 	public static String OPEN_ID_SERVLET = "Yasgui/openId";
 	public static String DEBUG_ARGUMENT_KEY = "gwt.codesvr";
 	public static String DEBUG_ARGUMENT_VALUE = "127.0.0.1:9997";
-	
-	public static String OPEN_ID_PROVIDER_IMG_PATH = "icons/openid/";
 }

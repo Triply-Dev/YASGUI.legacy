@@ -54,7 +54,7 @@ import com.smartgwt.client.widgets.layout.HLayout;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
-import com.data2semantics.yasgui.client.settings.Icons;
+import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.data2semantics.yasgui.shared.Bookmark;
 import com.data2semantics.yasgui.shared.exceptions.OpenIdException;
@@ -92,11 +92,11 @@ public class BookmarkedQueries extends Img {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 		if (enabled) {
-			setSrc(Icons.SHOW_BOOKMARKS);
+			setSrc(Imgs.get(Imgs.SHOW_BOOKMARKS));
 			setTooltip("show bookmarks");
 			setCursor(Cursor.POINTER);
 		} else {
-			setSrc(Icons.getDisabled(Icons.SHOW_BOOKMARKS));
+			setSrc(Imgs.getDisabled(Imgs.SHOW_BOOKMARKS));
 			setTooltip("log in to use your bookmarks");
 			setCursor(Cursor.DEFAULT);
 		}
@@ -115,7 +115,7 @@ public class BookmarkedQueries extends Img {
 					view.getElements().onLoadingStart("loading bookmarks");
 					view.getRemoteService().getBookmarks(new AsyncCallback<Bookmark[]>() {
 						public void onFailure(Throwable caught) {
-							setSrc(Icons.BOOKMARK_QUERY);
+							setSrc(Imgs.get(Imgs.BOOKMARK_QUERY));
 							if (caught instanceof OpenIdException) {
 								view.getElements().onError(caught.getMessage() + ". Logging out");
 								view.getOpenId().logOut();
@@ -196,7 +196,7 @@ public class BookmarkedQueries extends Img {
 					delImg.setShowDown(false);
 					delImg.setShowRollOver(false);
 					delImg.setLayoutAlign(Alignment.CENTER);
-					delImg.setSrc(Icons.CROSS);
+					delImg.setSrc(Imgs.get(Imgs.CROSS));
 					delImg.setPrompt("delete");
 					delImg.setHeight(16);
 					delImg.setWidth(16);
@@ -211,7 +211,7 @@ public class BookmarkedQueries extends Img {
 					addImg.setShowDown(false);
 					addImg.setShowRollOver(false);
 					addImg.setLayoutAlign(Alignment.CENTER);
-					addImg.setSrc(Icons.ADD_TAB);
+					addImg.setSrc(Imgs.get(Imgs.ADD_TAB));
 					addImg.setPrompt("select");
 					addImg.setHeight(16);
 					addImg.setWidth(16);

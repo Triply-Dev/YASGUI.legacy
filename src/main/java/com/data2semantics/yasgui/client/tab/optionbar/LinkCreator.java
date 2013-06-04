@@ -45,7 +45,7 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
-import com.data2semantics.yasgui.client.settings.Icons;
+import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.settings.TooltipText;
 import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.data2semantics.yasgui.shared.SettingKeys;
@@ -71,7 +71,7 @@ public class LinkCreator extends ImgButton {
 	
 	public LinkCreator(View view) {
 		this.view = view;
-		setSrc(Icons.LINK);
+		setSrc(Imgs.get(Imgs.LINK));
 		setWidth(ICON_WIDTH);
 		setHeight(ICON_HEIGHT);
 		setPosition(Positioning.ABSOLUTE);

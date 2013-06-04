@@ -26,7 +26,7 @@ package com.data2semantics.yasgui.client.openid;
  * #L%
  */
 
-import com.data2semantics.yasgui.shared.StaticConfig;
+import com.data2semantics.yasgui.client.settings.Imgs;
 
 public class ProviderGoogle implements OpenIdProvider{
 	private static String NAME = "google";
@@ -46,7 +46,7 @@ public class ProviderGoogle implements OpenIdProvider{
 	}
 
 	public String getImageLocation() {
-		return StaticConfig.OPEN_ID_PROVIDER_IMG_PATH + NAME + ".png";
+		return Imgs.get(Imgs.LOGO_GOOGLE);
 	}
 	public int getMaxIconHeight() {
 		return MAX_ICON_HEIGHT;

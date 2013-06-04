@@ -38,7 +38,7 @@ import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
 import com.data2semantics.yasgui.client.settings.ExternalLinks;
-import com.data2semantics.yasgui.client.settings.Icons;
+import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.settings.TooltipText;
 import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.data2semantics.yasgui.client.tab.QueryTab;
@@ -100,7 +100,7 @@ public class ViewElements {
 	 * Add Query button. Position absolute, as it hovers slightly over the tabbar. Also adds a loading icon on the same place
 	 */
 	public void addQueryButton() {
-		queryLoading = getQueryIcon(Icons.LOADING, new ClickHandler() {
+		queryLoading = getQueryIcon(Imgs.get(Imgs.LOADING), new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				cancelQuery();
@@ -114,7 +114,7 @@ public class ViewElements {
 			queryLoading.draw();
 		}
 		
-		queryButton = getQueryIcon(Icons.EXECUTE_QUERY, new ClickHandler() {
+		queryButton = getQueryIcon(Imgs.get(Imgs.EXECUTE_QUERY), new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				executeQuery();
@@ -197,7 +197,7 @@ public class ViewElements {
 	 */
 	public void initLoadingWidget() {
 		loading = new Label();
-		loading.setIcon(Icons.LOADING);
+		loading.setIcon(Imgs.get(Imgs.LOADING));
 		loading.setBackgroundColor("#f0f0f0");
 		loading.setBorder("1px solid #C0C3C7");
 		loading.getElement().getStyle().setPosition(Position.FIXED);
@@ -217,9 +217,9 @@ public class ViewElements {
 
 	public void showPlayButton(String queryValid) {
 		if (queryValid.equals("1")) {
-			queryButton.setSrc(Icons.EXECUTE_QUERY);
+			queryButton.setSrc(Imgs.get(Imgs.EXECUTE_QUERY));
 		} else {
-			queryButton.setSrc(Icons.QUERY_ERROR);
+			queryButton.setSrc(Imgs.get(Imgs.QUERY_ERROR));
 		}
 	}
 	public void onLoadingStart() {
@@ -406,7 +406,7 @@ public class ViewElements {
 		yesButton.setWidth(CONSENT_BUTTON_WIDTH);
         yesButton.setShowRollOver(true);  
         yesButton.setHeight(CONSENT_BUTTON_HEIGHT);
-        yesButton.setIcon(Icons.CHECKMARK);
+        yesButton.setIcon(Imgs.get(Imgs.CHECKMARK));
         yesButton.setIconOrientation("left");
         yesButton.addClickHandler(new ClickHandler() {
 			@Override
@@ -428,7 +428,7 @@ public class ViewElements {
 		noQueriesButton.setWidth(CONSENT_BUTTON_WIDTH);
 		noQueriesButton.setHeight(CONSENT_BUTTON_HEIGHT);
 		noQueriesButton.setShowRollOver(true);  
-		noQueriesButton.setIcon(Icons.CHECK_CROSS);
+		noQueriesButton.setIcon(Imgs.get(Imgs.CHECK_CROSS));
 		noQueriesButton.setIconOrientation("left");  
 		noQueriesButton.addClickHandler(new ClickHandler() {
 			@Override
@@ -449,7 +449,7 @@ public class ViewElements {
 		noButton.setShowRollOver(true);  
 		noButton.setWidth(CONSENT_BUTTON_WIDTH);
 		noButton.setHeight(CONSENT_BUTTON_HEIGHT);
-		noButton.setIcon(Icons.CROSS);
+		noButton.setIcon(Imgs.get(Imgs.CROSS));
 		noButton.setIconOrientation("left");  
 		noButton.addClickHandler(new ClickHandler() {
 			@Override
@@ -508,9 +508,9 @@ public class ViewElements {
 		Compatabilities compatabilities = new Compatabilities(view);
 		String icon  = "";
 		if (!compatabilities.allSupported() && LocalStorageHelper.getCompatabilitiesShownVersionNumber() < Compatabilities.VERSION_NUMBER) {
-			icon = Icons.WARNING;
+			icon = Imgs.get(Imgs.WARNING);
 		} else {
-			icon = Icons.TOOLS;
+			icon = Imgs.get(Imgs.TOOLS);
 		}
 		
 		String label = "Configure YASGUI";

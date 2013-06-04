@@ -29,7 +29,7 @@ package com.data2semantics.yasgui.client.tab.results;
 import java.util.HashMap;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
-import com.data2semantics.yasgui.client.settings.Icons;
+import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
 import com.data2semantics.yasgui.client.tab.results.input.JsonResults;
@@ -173,7 +173,7 @@ public class ResultContainer extends VLayout {
 		
 		try {
 			if (queryMode == RESULT_TYPE_INSERT) {
-				setResultMessage(Icons.CHECKBOX, "Done");
+				setResultMessage(Imgs.get(Imgs.CHECKBOX), "Done");
 			} else if (queryMode == RESULT_TYPE_BOOLEAN || queryMode == RESULT_TYPE_TABLE) {
 				String outputFormat = view.getSelectedTabSettings().getOutputFormat();
 				if (outputFormat.equals(Output.OUTPUT_RAW_RESPONSE)) {
@@ -194,7 +194,7 @@ public class ResultContainer extends VLayout {
 				}
 			}
 		} catch (SparqlEmptyException e) {
-			setResultMessage(Icons.CROSS, e.getMessage());
+			setResultMessage(Imgs.get(Imgs.CROSS), e.getMessage());
 		} catch (Exception e) {
 			view.getElements().onError(e);
 			
@@ -227,9 +227,9 @@ public class ResultContainer extends VLayout {
 	}
 	private void drawResultsAsBoolean(SparqlResults sparqlResults) {
 		if (sparqlResults.getBooleanResult()) {
-			setResultMessage(Icons.CHECKBOX, "true");
+			setResultMessage(Imgs.get(Imgs.CHECKBOX), "true");
 		} else {
-			setResultMessage(Icons.CROSS, "false");
+			setResultMessage(Imgs.get(Imgs.CROSS), "false");
 		}
 	}
 	

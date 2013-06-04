@@ -28,7 +28,7 @@ package com.data2semantics.yasgui.client.configmenu;
 
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.settings.ExternalLinks;
-import com.data2semantics.yasgui.client.settings.Icons;
+import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.smartgwt.client.types.Cursor;
 import com.smartgwt.client.widgets.Img;
@@ -81,7 +81,7 @@ public class About extends Window {
 	}
 	
 	private Img getGithubCanvas() {
-		Img imgButton = new Img(Icons.LOGO_GITHUB);
+		Img imgButton = new Img(Imgs.get(Imgs.LOGO_GITHUB));
 		imgButton.setWidth(140);
 		imgButton.setHeight(54);
 		imgButton.setCursor(Cursor.POINTER);
