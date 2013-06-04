@@ -143,6 +143,9 @@ $(document).keydown(function(e) {
 	if (code == 27) {//escape key
 		cancelQuery();
 	}
+	if ((code == 10 || code == 13) && e.ctrlKey) {
+		executeQuery();
+	}
 
 });
 function endsWith(str, suffix) {
