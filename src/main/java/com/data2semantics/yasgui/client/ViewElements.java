@@ -282,12 +282,12 @@ public class ViewElements {
 		label.setHeight100();
 		window.addItem(label);
 		window.setIsModal(true);
-		window.setDismissOnOutsideClick(true);
 		window.draw();
 	}
 	
 	private Window getErrorWindow() {
 		final Window window = new Window();
+		window.setDismissOnOutsideClick(true);
 		window.setIsModal(true);
 		window.setZIndex(ZIndexes.MODAL_WINDOWS);
 		window.setAutoSize(true);
