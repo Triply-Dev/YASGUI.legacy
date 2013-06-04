@@ -114,7 +114,6 @@ public class ResultGrid extends ListGrid {
 			field.setCellFormatter(new CellFormatter(){
 				@Override
 				public String format(Object value, ListGridRecord record, int rowNum, int colNum) {
-					view.getLogger().severe("value: " + value.toString());
 					HashMap<String, HashMap<String, String>> bindings = solutions.get(record.getAttributeAsInt(SOLUTION_ATTRIBUTE));
 					HashMap<String, String> binding = bindings.get(var);
 					String type = binding.get("type");
