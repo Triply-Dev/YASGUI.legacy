@@ -45,7 +45,7 @@ import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
-import com.data2semantics.yasgui.client.settings.Icons;
+import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.data2semantics.yasgui.shared.Endpoints;
 public class EndpointSearch extends VLayout {
@@ -82,7 +82,7 @@ public class EndpointSearch extends VLayout {
 		rSpacer.setWidth100();
 		LayoutSpacer lSpacer = new LayoutSpacer();
 		lSpacer.setWidth(3);
-		imgButton.setSrc(Icons.SEARCH);
+		imgButton.setSrc(Imgs.get(Imgs.SEARCH));
 		
 		imgButton.setWidth(ICON_WIDTH);
 		imgButton.setHeight(ICON_HEIGHT);
@@ -131,7 +131,7 @@ public class EndpointSearch extends VLayout {
 					if (colName.equals(Endpoints.KEY_TITLE) || colName.equals(Endpoints.KEY_DESCRIPTION) || colName.equals(Endpoints.KEY_ENDPOINT)) {
 						return "<span style='cursor:pointer;'>" + StringUtil.asHTML(cellValue) + "</span>";
 					} else if (colName.equals(Endpoints.KEY_DATASETURI) && cellValue.length() > 0) {
-						return "<a href=\"" + cellValue + "\" target=\"_blank\"><img src=\"images/icons/fugue/information.png\"/ width=\"16\" height=\"16\"></a>";
+						return "<a href=\"" + cellValue + "\" target=\"_blank\"><img src=\"" + Imgs.OTHER_IMAGES_DIR + Imgs.get(Imgs.INFO) + "\"/ width=\"16\" height=\"16\"></a>";
 					}
 				}
                 return null;

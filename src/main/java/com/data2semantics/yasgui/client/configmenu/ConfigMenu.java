@@ -29,7 +29,7 @@ package com.data2semantics.yasgui.client.configmenu;
 import java.util.ArrayList;
 
 import com.data2semantics.yasgui.client.View;
-import com.data2semantics.yasgui.client.settings.Icons;
+import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.shared.StaticConfig;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
@@ -53,7 +53,7 @@ public class ConfigMenu extends Menu {
 	
 	private void addTooltips() {
 		MenuItem about = new MenuItem("Show help bubbles");
-		about.setIcon(Icons.TOOLTIP);
+		about.setIcon(Imgs.get(Imgs.TOOLTIP));
 		about.addClickHandler(new ClickHandler(){
 			public void onClick(MenuItemClickEvent event) {
 				view.showTooltips(0); //show from version 0 onwards
@@ -65,7 +65,7 @@ public class ConfigMenu extends Menu {
 		if (view.getSettings().isDbSet()) {
 			if (view.getOpenId() != null && view.getOpenId().isLoggedIn()) {
 				MenuItem logOut = new MenuItem("Log out");
-				logOut.setIcon(Icons.LOG_OUT);
+				logOut.setIcon(Imgs.get(Imgs.LOG_OUT));
 				logOut.addClickHandler(new ClickHandler(){
 					public void onClick(MenuItemClickEvent event) {
 						view.getOpenId().logOut();
@@ -73,7 +73,7 @@ public class ConfigMenu extends Menu {
 				items.add(logOut);
 			} else {
 				MenuItem logIn = new MenuItem("Log in");
-				logIn.setIcon(Icons.LOG_IN);
+				logIn.setIcon(Imgs.get(Imgs.LOG_IN));
 				logIn.addClickHandler(new ClickHandler(){
 					public void onClick(MenuItemClickEvent event) {
 						view.getOpenId().showOpenIdProviders();
@@ -85,7 +85,7 @@ public class ConfigMenu extends Menu {
 	
 	private void addAboutItem() {
 		MenuItem about = new MenuItem("About (version " + StaticConfig.VERSION + ")");
-		about.setIcon(Icons.QUESTION_MARK);
+		about.setIcon(Imgs.get(Imgs.QUESTION_MARK));
 		about.addClickHandler(new ClickHandler(){
 			public void onClick(MenuItemClickEvent event) {
 				new About(view);
@@ -97,9 +97,9 @@ public class ConfigMenu extends Menu {
 		MenuItem compatability = new MenuItem("Show browser compatabilities");
 		final Compatabilities compatabilities = new Compatabilities(view);
 		if (!compatabilities.allSupported()) {
-			compatability.setIcon(Icons.WARNING);
+			compatability.setIcon(Imgs.get(Imgs.WARNING));
 		} else {
-			compatability.setIcon(Icons.COMPATIBLE);
+			compatability.setIcon(Imgs.get(Imgs.COMPATIBLE));
 		}
 		compatability.addClickHandler(new ClickHandler(){
 			@Override
@@ -140,7 +140,7 @@ public class ConfigMenu extends Menu {
 		}
 		
 		
-		MenuItem refresh = new MenuItem("Refresh Data", Icons.REFRESH); 
+		MenuItem refresh = new MenuItem("Refresh Data", Imgs.get(Imgs.REFRESH)); 
 		refresh.setSubmenu(refreshSubMenu);
 		items.add(refresh);
 	}

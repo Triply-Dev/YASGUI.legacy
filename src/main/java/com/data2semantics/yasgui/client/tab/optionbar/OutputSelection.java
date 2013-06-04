@@ -29,6 +29,7 @@ package com.data2semantics.yasgui.client.tab.optionbar;
 import java.util.LinkedHashMap;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
+import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.shared.Output;
 import com.smartgwt.client.types.TitleOrientation;
@@ -54,15 +55,12 @@ public class OutputSelection extends DynamicForm {
 		valueMap.put(Output.OUTPUT_RAW_RESPONSE, "Query Response");
 		
 		LinkedHashMap<String, String> valueIcons = new LinkedHashMap<String, String>();
-		valueIcons.put(Output.OUTPUT_TABLE, Output.OUTPUT_TABLE);
-		valueIcons.put(Output.OUTPUT_TABLE_SIMPLE, Output.OUTPUT_TABLE_SIMPLE);
-//		valueIcons.put(Output.OUTPUT_CSV, Output.OUTPUT_CSV);
-		valueIcons.put(Output.OUTPUT_RAW_RESPONSE, Output.OUTPUT_RAW_RESPONSE);
+		valueIcons.put(Output.OUTPUT_TABLE, Imgs.get(Imgs.OUTPUT_TABLE));
+		valueIcons.put(Output.OUTPUT_TABLE_SIMPLE, Imgs.get(Imgs.OUTPUT_TABLE_SIMPLE));
+		valueIcons.put(Output.OUTPUT_RAW_RESPONSE, Imgs.get(Imgs.OUTPUT_RAW));
 		selectItem.setValueIcons(valueIcons);
 
 		selectItem.setValueMap(valueMap);
-		selectItem.setImageURLPrefix("icons/formats/");
-		selectItem.setImageURLSuffix(".png");
 		selectItem.setDefaultValue(tab.getTabSettings().getOutputFormat());
 		selectItem.addChangedHandler(new ChangedHandler() {
 			@Override

@@ -32,7 +32,7 @@ import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
-import com.data2semantics.yasgui.client.settings.Icons;
+import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.shared.Endpoints;
 import com.smartgwt.client.data.AdvancedCriteria;
@@ -236,7 +236,7 @@ public class EndpointInput extends DynamicForm {
 					if (colName.equals(Endpoints.KEY_TITLE) || colName.equals(Endpoints.KEY_ENDPOINT)) {
 						return "<span style='cursor:pointer;'>" + cellValue + "</span>";
 					} else if (colName.equals(Endpoints.KEY_DATASETURI) && cellValue.length() > 0) {
-						return "<a href='" + cellValue + "' target='_blank'><img src='" + Icons.DIR_IMAGES + Icons.INFO + "' width='16' height='16'></a>";
+						return "<a href='" + cellValue + "' target='_blank'><img src='" + Imgs.OTHER_IMAGES_DIR + Imgs.get(Imgs.INFO) + "' width='16' height='16'></a>";
 					}
 				}
                 return null;

@@ -32,7 +32,7 @@ import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
-import com.data2semantics.yasgui.client.settings.Icons;
+import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.settings.TooltipText;
@@ -153,7 +153,7 @@ public class QueryTabs extends TabSet {
 		
 		
 		addTabButton = new ImgButton();
-		addTabButton.setSrc(Icons.ADD_TAB);
+		addTabButton.setSrc(Imgs.get(Imgs.ADD_TAB));
 		addTabButton.setShowDown(false);
 		addTabButton.setShowRollOver(true);
 		addTabButton.setWidth(25);

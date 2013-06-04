@@ -40,7 +40,7 @@ import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
-import com.data2semantics.yasgui.client.settings.Icons;
+import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.settings.TooltipText;
 import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.data2semantics.yasgui.shared.Bookmark;
@@ -77,11 +77,11 @@ public class AddToBookmarks extends Img {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 		if (enabled) {
-			setSrc(Icons.BOOKMARK_QUERY);
+			setSrc(Imgs.get(Imgs.BOOKMARK_QUERY));
 			setTooltip("add query to bookmarks");
 			setCursor(Cursor.POINTER);
 		} else {
-			setSrc(Icons.getDisabled(Icons.BOOKMARK_QUERY));
+			setSrc(Imgs.getDisabled(Imgs.BOOKMARK_QUERY));
 			setTooltip("log in to use your bookmarks");
 			setCursor(Cursor.DEFAULT);
 		}
@@ -147,10 +147,10 @@ public class AddToBookmarks extends Img {
 				bookmark.setTitle(bookmarkTitle.getValueAsString());
 
 				window.clear();
-				setSrc(Icons.LOADING);
+				setSrc(Imgs.get(Imgs.LOADING));
 				view.getRemoteService().addBookmark(bookmark, new AsyncCallback<Void>() {
 					public void onFailure(Throwable caught) {
-						setSrc(Icons.BOOKMARK_QUERY);
+						setSrc(Imgs.get(Imgs.BOOKMARK_QUERY));
 						if (caught instanceof OpenIdException) {
 							view.getElements().onError(caught.getMessage() + ". Logging out");
 							view.getOpenId().logOut();
@@ -162,7 +162,7 @@ public class AddToBookmarks extends Img {
 
 					@Override
 					public void onSuccess(Void result) {
-						setSrc(Icons.BOOKMARK_QUERY);
+						setSrc(Imgs.get(Imgs.BOOKMARK_QUERY));
 					}
 				});
 			}

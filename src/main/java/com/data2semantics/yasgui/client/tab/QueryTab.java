@@ -31,7 +31,7 @@ import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
-import com.data2semantics.yasgui.client.settings.Icons;
+import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.settings.TooltipText;
 import com.data2semantics.yasgui.client.tab.optionbar.AddToBookmarks;
@@ -145,7 +145,7 @@ public class QueryTab extends Tab {
 		Menu menu = new Menu();
 		MenuItem copy = new MenuItem();
 		copy.setTitle("Create copy");
-		copy.setIcon(Icons.COPY_TAB);
+		copy.setIcon(Imgs.get(Imgs.COPY_TAB));
 		copy.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(MenuItemClickEvent event) {
@@ -159,7 +159,7 @@ public class QueryTab extends Tab {
 
 		MenuItem renameTab = new MenuItem();
 		renameTab.setTitle("Rename Tab");
-		renameTab.setIcon(Icons.EDIT_TEXT);
+		renameTab.setIcon(Imgs.get(Imgs.EDIT_TEXT));
 		renameTab.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -169,7 +169,7 @@ public class QueryTab extends Tab {
 		});
 		MenuItem closeTab = new MenuItem();
 		closeTab.setTitle("Close");
-		closeTab.setIcon("icons/custom/close-one.png");
+		closeTab.setIcon(Imgs.get(Imgs.CLOSE_TAB_SINGLE));
 		closeTab.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -179,7 +179,7 @@ public class QueryTab extends Tab {
 		});
 		MenuItem closeOtherTabs = new MenuItem();
 		closeOtherTabs.setTitle("Close others");
-		closeOtherTabs.setIcon("icons/custom/close-others.png");
+		closeOtherTabs.setIcon(Imgs.get(Imgs.CLOSE_TAB_OTHERS));
 		closeOtherTabs.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -191,7 +191,7 @@ public class QueryTab extends Tab {
 
 		MenuItem closeAll = new MenuItem();
 		closeAll.setTitle("Close all");
-		closeAll.setIcon("icons/custom/close-all.png");
+		closeAll.setIcon(Imgs.get(Imgs.CLOSE_TAB_ALL));
 		closeAll.addClickHandler(new ClickHandler() {
 
 			@Override

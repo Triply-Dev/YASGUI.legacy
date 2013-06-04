@@ -29,7 +29,7 @@ package com.data2semantics.yasgui.client.configmenu;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
-import com.data2semantics.yasgui.client.settings.Icons;
+import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.data2semantics.yasgui.shared.StaticConfig;
 import com.google.gwt.storage.client.Storage;
@@ -172,9 +172,9 @@ public class Compatabilities extends Window {
 	private Img getIcon(boolean supported) {
 		Img img;
 		if (supported) {
-			img = new Img(Icons.CHECKBOX);
+			img = new Img(Imgs.get(Imgs.CHECKBOX));
 		} else {
-			img = new Img(Icons.CROSS);
+			img = new Img(Imgs.get(Imgs.CROSS));
 		}
 		img.setLayoutAlign(VerticalAlignment.CENTER);
 		img.setValign(VerticalAlignment.CENTER);
@@ -185,7 +185,7 @@ public class Compatabilities extends Window {
 	}
 	
 	private HTMLFlow getRowName(String string) {
-		string = "<div style='height:" + Integer.toString(ROW_HEIGHT) + "px;'><img src='images/1px.png' alt=\"\" style=\"width:1px; height:100%; vertical-align:middle\" /><strong>" + string + "</strong></div>";
+		string = "<div style='height:" + Integer.toString(ROW_HEIGHT) + "px;'><img src='" + Imgs.OTHER_IMAGES_DIR + Imgs.get(Imgs.OTHER_1PX) + "' alt=\"\" style=\"width:1px; height:100%; vertical-align:middle\" /><strong>" + string + "</strong></div>";
 		HTMLFlow label = new HTMLFlow(string);
 		label.setWidth(150);
 		label.setHeight100();
