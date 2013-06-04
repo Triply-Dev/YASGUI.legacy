@@ -42,6 +42,7 @@ import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
+import com.smartgwt.client.widgets.grid.SortNormalizer;
 
 public class ResultGrid extends ListGrid {
 	private static String SOLUTION_ATTRIBUTE = "yasgui___solution";
@@ -142,6 +143,12 @@ public class ResultGrid extends ListGrid {
 		ArrayList<ListGridField> listGridFields = new ArrayList<ListGridField>();
 		for(String var: vars){
 			ListGridField field = new ListGridField(var, var);
+			field.setSortNormalizer(new SortNormalizer(){
+				public Object normalize(ListGridRecord record, String fieldName) {
+					HashMap<String, HashMap<String, String>> bindings = solutions.get(record.getAttributeAsInt(SOLUTION_ATTRIBUTE));
+					HashMap<String, String> binding = bindings.get(fieldName);
+					return binding.get("value");
+				}});
 			field.setCellAlign(Alignment.LEFT);
 			field.setAlign(Alignment.CENTER); //for header
 			
