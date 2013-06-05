@@ -5,6 +5,7 @@ var sparqlHighlight = {};
 var sparqlResponseHighlight = {};
 var prefixes;
 var queryRequest;
+var showCorsError = true;
 
 /*
  * CORS ajax calls and firefox are not a good match: firefox is buggy in this respect.
@@ -55,7 +56,7 @@ function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader,
 	if (corsEnabled[endpoint]) {
 		uri = endpoint;
 	} else {
-		if (corsEnabled[endpoint] == false && endpoint.match(/https*:\/\/(localhost|127).*/) != null) {
+		if (showCorsError = true && corsEnabled[endpoint] == false && endpoint.match(/https*:\/\/(localhost|127).*/) != null) {
 			//we are trying to access a local endpoint via the proxy: this won't work...
 			var errorString = "You are trying to send a query to an endpoint installed on your local computer.<br>" +
 					"This only works when the endpoint is <a href=\"http://enable-cors.org/\" target=\"_blank\">CORS enabled</a> or when the endpoint is accessible on the same port as YASGUI (i.e. port 80).<br>" +
@@ -66,7 +67,7 @@ function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader,
 					"</ul>" +
 					"Instead, you can also configure the endpoint to run via port 80 (the same as YASGUI)";
 			
-			onQueryError(errorString);
+			onQueryError(tabId, errorString);
 			return;
 		}
 		//query via proxy
@@ -101,7 +102,7 @@ function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader,
 				},
 				error : function(jqXHR, textStatus, errorThrown) {
 					if (textStatus != "abort") {
-						//if user cancels query, textStatus will be 'abort'. No need to show error window than
+						//if user cancels query, textStatus will be 'abort'. No need to show error window then
 						onQueryFinish();
 						clearQueryResult();
 						var errorMsg;
