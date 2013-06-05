@@ -160,6 +160,7 @@ public class ViewElements {
 	 * execute query
 	 */
 	public void executeQuery() {
+		//clear current result container -before- query, not after
 		view.getSelectedTab().getResultContainer().reset();
 		if (JsMethods.stringToDownloadSupported()) {
 			view.getSelectedTab().getDownloadLink().showDisabledIcon();

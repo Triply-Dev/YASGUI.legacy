@@ -73,8 +73,17 @@ public class ResultsHelper {
 		return uri;
 	}
 	
-	public static String getHtmlLinkForUri(HashMap<String, String> binding, HashMap<String, Prefix> queryPrefixes) {
+	public static String getImageLink(String imgPath, String url) {
+		return  "<a href=\"" + url + "\" target=\"_blank\"><img src=\"" + imgPath +"\" height=\"18\" width=\"18\"/></a>";
+	}
+	
+	public static String getExternalLinkForUri(HashMap<String, String> binding, HashMap<String, Prefix> queryPrefixes) {
 		String uri = binding.get("value");
 		return  "<a href=\"" + uri + "\" target=\"_blank\">" + StringUtil.asHTML(getShortUri(uri, queryPrefixes)) + "</a>";
+	}
+	
+	public static String getOpenAsResourceLinkForUri(HashMap<String, String> binding, HashMap<String, Prefix> queryPrefixes) {
+		String uri = binding.get("value");
+		return "<span class=\"clickable\" onclick=\"queryForResource('" + uri + "');\">" + ResultsHelper.getShortUri(uri, queryPrefixes) + "</span>";
 	}
 }

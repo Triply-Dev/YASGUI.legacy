@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
+import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.tab.results.input.ResultsHelper;
 import com.data2semantics.yasgui.client.tab.results.input.SparqlResults;
 import com.data2semantics.yasgui.shared.Prefix;
@@ -84,7 +85,9 @@ public class SimpleGrid extends HTMLPane {
 				if (bindings.containsKey(variable)) {
 					HashMap<String, String> binding = bindings.get(variable);
 					if (binding.get("type").equals("uri")) {
-						html += ResultsHelper.getHtmlLinkForUri(binding, queryPrefixes);
+						html += ResultsHelper.getOpenAsResourceLinkForUri(binding, queryPrefixes);
+						html += "&nbsp;";
+						html += ResultsHelper.getImageLink(Imgs.OTHER_IMAGES_DIR + Imgs.get(Imgs.EXTERNAL_LINK), binding.get("value"));
 					} else if (binding.get("type").equals("literal") || binding.get("type").equals("typed-literal")) {
 						html += ResultsHelper.getLiteralFromBinding(binding);
 					} else {
