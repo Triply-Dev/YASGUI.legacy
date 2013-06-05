@@ -32,17 +32,23 @@ import java.util.Map.Entry;
 
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
+import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.tab.results.input.ResultsHelper;
 import com.data2semantics.yasgui.client.tab.results.input.SparqlResults;
 import com.data2semantics.yasgui.shared.Prefix;
+import com.google.gwt.user.client.Window;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLPane;
+import com.smartgwt.client.widgets.ImgButton;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.grid.CellFormatter;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.SortNormalizer;
+import com.smartgwt.client.widgets.layout.HLayout;
 
 public class ResultGrid extends ListGrid {
 	private static String SOLUTION_ATTRIBUTE = "yasgui___solution";
@@ -50,7 +56,10 @@ public class ResultGrid extends ListGrid {
 	private View view;
 	private SparqlResults sparqlResults;
 	private HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
-	public ResultGrid(View view, SparqlResults sparqlResults, HTMLPane html) {
+	private ListGridRecord rollOverRecord;
+	private HLayout rollOverCanvas;
+	private Canvas emptyRollOverCanvas;
+	public ResultGrid(final View view, SparqlResults sparqlResults, HTMLPane html) {
 		this.view = view;
 		this.sparqlResults = sparqlResults;
 		setWidth100();
@@ -61,10 +70,62 @@ public class ResultGrid extends ListGrid {
 		setFixedRecordHeights(false);
 		setWrapCells(true);
 		setCanResizeFields(true);
+		setShowRollOverCanvas(true);
+		setUseCellRollOvers(true);
 		queryPrefixes = Helper.getPrefixHashMapFromQuery(view.getSelectedTabSettings().getQueryString());
 		drawQueryResults();
+		
+
 	}
 	
+	protected Canvas getRollOverCanvas(final Integer rowNum, Integer colNum) {
+		rollOverRecord = getRecord(rowNum);
+		if (rollOverRecord != null) {
+			final String varName = rollOverRecord.getAttribute(getFieldName(colNum));
+			
+			if (varName != null && varName.startsWith("http")) {
+				//the check above is done to avoid needing to use the solutions hashtable (might be a performance thingy)
+				if (rollOverCanvas == null) {
+					rollOverCanvas = new HLayout();
+					rollOverCanvas.setSnapTo("TR");
+					rollOverCanvas.setWidth(22);
+					rollOverCanvas.setHeight(22);
+		
+					ImgButton openExtLink = new ImgButton();
+					openExtLink.setShowDown(false);
+					openExtLink.setShowRollOver(false);
+					openExtLink.setLayoutAlign(Alignment.CENTER);
+					openExtLink.setSrc(Imgs.get(Imgs.EXTERNAL_LINK));
+					openExtLink.setPrompt("Open resource in new browser window");
+					openExtLink.setHeight(16);
+					openExtLink.setWidth(16);
+					openExtLink.addClickHandler(new ClickHandler() {
+						public void onClick(ClickEvent event) {
+							Window.open(rollOverRecord.getAttribute(varName), "_blank", null);
+						}
+					});
+		
+					rollOverCanvas.addMember(openExtLink);
+					
+				}
+				return rollOverCanvas;
+			}
+		}
+		//this isnt a url. don't show rollover
+		return getEmptyCanvas();
+
+	}
+
+	
+	
+	private Canvas getEmptyCanvas() {
+		if (emptyRollOverCanvas == null) {
+			emptyRollOverCanvas = new Canvas();
+			emptyRollOverCanvas.setWidth(1);
+			emptyRollOverCanvas.setHeight(1);
+		}
+		return emptyRollOverCanvas;
+	}
 	/**
 	 * Take json string from query results, parse it, and draw in this table
 	 * 
@@ -116,19 +177,16 @@ public class ResultGrid extends ListGrid {
 				public String format(Object value, ListGridRecord record, int rowNum, int colNum) {
 					HashMap<String, HashMap<String, String>> bindings = solutions.get(record.getAttributeAsInt(SOLUTION_ATTRIBUTE));
 					HashMap<String, String> binding = bindings.get(var);
-					String type = binding.get("type");
-					if (type.equals("uri")) {
-						final String uri = binding.get("value");
-						return new Canvas().linkHTML(ResultsHelper.getShortUri(uri, queryPrefixes), uri, "_blank", null, null, null);
-					} else {
-						String labelText;
-						if (type.equals("literal") || binding.get("type").equals("typed-literal")) {
-							labelText = ResultsHelper.getLiteralFromBinding(binding);
-						} else {
-							labelText = binding.get("value");
+					if (binding != null) {
+						String type = binding.get("type");
+						if (type.equals("uri")) {
+							final String uri = binding.get("value");
+							return "<span class=\"clickable\" onclick=\"queryForResource('" + uri + "');\">" + ResultsHelper.getShortUri(uri, queryPrefixes) + "</span>";
+						} else if (type.equals("literal") || binding.get("type").equals("typed-literal")){
+							return ResultsHelper.getLiteralFromBinding(binding);
 						}
-						return labelText;
 					}
+					return (String)value;
 					
 				}});
 			field.setCellAlign(Alignment.LEFT);

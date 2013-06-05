@@ -138,6 +138,20 @@ public class CallableJsMethods {
 		view.getTabs().saveTabTitle();
 	}
 	
+	public void queryForResource(String resource) {
+		String query = "SELECT ?property ?hasValue ?isValueOf\n" +
+				"WHERE {\n" + 
+				"	{ <" + resource + "> ?property ?hasValue }\n" +
+				"	UNION\n" + 
+				"	{ ?isValueOf ?property <" + resource + "> }\n" +
+				"}";
+		view.getSelectedTab().setQueryString(query);
+		view.getSelectedTabSettings().setQueryString(query);
+		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+		
+		view.getElements().executeQuery();
+	}
+	
 	/**
 	 * Add view methods to JS, use this for situations where a non-static GWT method needs to be called
 	 * 
@@ -186,6 +200,9 @@ public class CallableJsMethods {
 		}
 		$wnd.setQueryType = function(queryType) {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::setQueryType(Ljava/lang/String;)(queryType);
+		}
+		$wnd.queryForResource = function(resource) {
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::queryForResource(Ljava/lang/String;)(resource);
 		}
 		$wnd.storeSettings = function() {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::storeSettings()();
