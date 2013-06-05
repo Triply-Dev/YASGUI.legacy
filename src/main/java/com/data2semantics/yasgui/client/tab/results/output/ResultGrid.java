@@ -180,8 +180,7 @@ public class ResultGrid extends ListGrid {
 					if (binding != null) {
 						String type = binding.get("type");
 						if (type.equals("uri")) {
-							final String uri = binding.get("value");
-							return "<span class=\"clickable\" onclick=\"queryForResource('" + uri + "');\">" + ResultsHelper.getShortUri(uri, queryPrefixes) + "</span>";
+							return ResultsHelper.getOpenAsResourceLinkForUri(binding, queryPrefixes);
 						} else if (type.equals("literal") || binding.get("type").equals("typed-literal")){
 							return ResultsHelper.getLiteralFromBinding(binding);
 						}
