@@ -188,7 +188,7 @@ public class BookmarkedQueries extends Img {
 
 				if (rollOverCanvas == null) {
 					rollOverCanvas = new HLayout(3);
-					rollOverCanvas.setSnapTo("CR");
+					rollOverCanvas.setSnapTo("TR");
 					rollOverCanvas.setWidth(50);
 					rollOverCanvas.setHeight(22);
 
