@@ -81,20 +81,22 @@ public class SimpleGrid extends HTMLPane {
 			html += "<tr>";
 			html += "<td>" + Integer.toString(rowId) + "</td>";
 			for (String variable: variables) {
-				html += "<td>";
 				if (bindings.containsKey(variable)) {
 					HashMap<String, String> binding = bindings.get(variable);
 					if (binding.get("type").equals("uri")) {
+						html += "<td class=\"snorqlLink\">";
 						html += ResultsHelper.getOpenAsResourceLinkForUri(binding, queryPrefixes);
 						html += "&nbsp;";
-						html += ResultsHelper.getImageLink(Imgs.OTHER_IMAGES_DIR + Imgs.get(Imgs.EXTERNAL_LINK), binding.get("value"));
+						html += ResultsHelper.getImageLink(Imgs.OTHER_IMAGES_DIR + Imgs.get(Imgs.EXTERNAL_LINK), binding.get("value"), "extResourceLink", 12);
 					} else if (binding.get("type").equals("literal") || binding.get("type").equals("typed-literal")) {
+						html += "<td>";
 						html += ResultsHelper.getLiteralFromBinding(binding);
 					} else {
+						html += "<td>";
 						html += StringUtil.asHTML(binding.get("value"));
 					}
 				} else {
-					html += "&nbsp;";
+					html += "<td>&nbsp;";
 				}
 				html += "</td>";
 			}

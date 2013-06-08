@@ -73,8 +73,12 @@ public class ResultsHelper {
 		return uri;
 	}
 	
-	public static String getImageLink(String imgPath, String url) {
-		return  "<a href=\"" + url + "\" target=\"_blank\"><img src=\"" + imgPath +"\" height=\"18\" width=\"18\"/></a>";
+	public static String getImageLink(String imgPath, String url, String className, int size) {
+		String html = "<a href=\"" + url + "\" target=\"_blank\"";
+		if (className != null) {
+			html += " class=\"" + className + "\"";
+		}
+		return  html + "><img src=\"" + imgPath +"\" height=\"" + size + "\" width=\"" + size + "\"/></a>";
 	}
 	
 	public static String getExternalLinkForUri(HashMap<String, String> binding, HashMap<String, Prefix> queryPrefixes) {

@@ -126,7 +126,15 @@ span.CodeMirror-matchhighlight {
 .clickable {
 	color: blue;
 	cursor: pointer;
+	text-decoration:underline;
 }
+.extResourceLink {
+	display: none;
+}
+.snorqlLink:hover .extResourceLink {
+    display: inline-block;
+}
+
 .providerContainer:hover {
 	-moz-box-shadow: 3px 3px 4px #000;
 	-webkit-box-shadow: 3px 3px 4px #000;

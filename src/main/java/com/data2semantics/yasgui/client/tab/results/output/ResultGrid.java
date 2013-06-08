@@ -81,9 +81,10 @@ public class ResultGrid extends ListGrid {
 	protected Canvas getRollOverCanvas(final Integer rowNum, Integer colNum) {
 		rollOverRecord = getRecord(rowNum);
 		if (rollOverRecord != null) {
-			final String varName = rollOverRecord.getAttribute(getFieldName(colNum));
+			String varName = getFieldName(colNum);
+			final String value = rollOverRecord.getAttribute(varName);
 			
-			if (varName != null && varName.startsWith("http")) {
+			if (value != null && value.startsWith("http")) {
 				//the check above is done to avoid needing to use the solutions hashtable (might be a performance thingy)
 				if (rollOverCanvas == null) {
 					rollOverCanvas = new HLayout();
@@ -101,7 +102,7 @@ public class ResultGrid extends ListGrid {
 					openExtLink.setWidth(16);
 					openExtLink.addClickHandler(new ClickHandler() {
 						public void onClick(ClickEvent event) {
-							Window.open(rollOverRecord.getAttribute(varName), "_blank", null);
+							Window.open(value, "_blank", "");
 						}
 					});
 		
