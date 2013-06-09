@@ -144,7 +144,10 @@ $(document).keydown(function(e) {
 	if (code == 27) {//escape key
 		cancelQuery();
 	}
-	if ((code == 10 || code == 13) && e.ctrlKey) {
+	if (
+			(code == 10 || code == 13) //enter
+			&& (e.ctrlKey || code == e.metaKey) //ctrl or apple cmd key
+		) {
 		executeQuery();
 	}
 
