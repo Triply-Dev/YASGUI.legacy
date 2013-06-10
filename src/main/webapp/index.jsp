@@ -15,7 +15,14 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <meta name="description" content="A user-friendly interface to query any remote SPARQL endpoint">
-<title>YASGUI</title>
+<title><% 
+String title = ConfigFetcher.getValueAsString(request.getSession().getServletContext().getRealPath("/"), "browserTitle");
+if (title == null) {
+	out.print("YASGUI");
+} else {
+	out.print(title);
+}
+%></title>
 <link href='//fonts.googleapis.com/css?family=Audiowide' rel='stylesheet' type='text/css'>
 <link rel="shortcut icon" type="image/png" href="images/rdf.png">
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>

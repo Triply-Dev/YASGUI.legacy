@@ -226,6 +226,7 @@ public class JsMethods {
 	public static native void setAutocompletePrefixes(String prefixes) /*-{
 		$wnd.prefixes = eval(prefixes);
 	}-*/;
+	
 
 	/**
 	 * Query an endpoint. Asynchronous. A callback function (drawResultsInTable) is used to process query result.
@@ -238,7 +239,7 @@ public class JsMethods {
 	}-*/;
 	
 	
-	public static native String getInstallationSettings() /*-{
+	public static native String getDefaultSettings() /*-{
 		return $wnd.defaults;
 	}-*/;
 	
@@ -468,6 +469,35 @@ public class JsMethods {
 		});
 	}-*/;
 	
+	public static native void pushHistoryState(String dataString, String stateTitle, String stateUrl) /*-{
+		if ($wnd.ignoreNextHistoryPush) {
+			$wnd.ignoreNextHistoryPush = false;
+		} else {
+			$wnd.historyCallbackEnabled = false;
+			dataObject = {"data": dataString};
+			$wnd.History.pushState(dataObject, stateTitle, stateUrl);
+		}
+	}-*/;
+	
+	public static native void replaceHistoryState(String dataString, String stateTitle, String stateUrl) /*-{
+		dataObject = {"data": dataString};
+		$wnd.historyCallbackEnabled = false;
+		$wnd.History.replaceState(dataObject, stateTitle, stateUrl);
+	}-*/;
+	
+	public static native HistoryDataObject getHistoryState() /*-{
+		return $wnd.History.getState().data; 
+	}-*/;
 	
 	
+	public static native void setHistoryStateChangeCallback() /*-{
+		$wnd.window.History.Adapter.bind ($wnd.window, 'statechange', function() {
+			if ($wnd.historyCallbackEnabled) {
+				$wnd.ignoreNextHistoryPush = true;
+				$wnd.historyStateChangeCallback();
+			} else {
+				$wnd.historyCallbackEnabled = true;
+			}
+		});
+	}-*/;
 }

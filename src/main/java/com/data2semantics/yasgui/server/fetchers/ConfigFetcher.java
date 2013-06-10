@@ -46,6 +46,17 @@ public class ConfigFetcher {
 	public static String CONFIG_DIR = "/config/";
 	private static String CONFIG_FILE = "config.json";
 	
+	public static String getValueAsString(String path, String key) {
+		String value = null;
+		try {
+			JSONObject jsonObject = getJsonObjectFromPath(path);
+			value = jsonObject.getString(key);
+		} catch (Exception e) {
+			//do nothing. return default
+		}
+		return value;
+	}
+	
 	/**
 	 * check whether config json string is defined and parsable. if so, return the string
 	 * 
@@ -125,8 +136,5 @@ public class ConfigFetcher {
 				Helper.containsKey(json, SettingKeys.BITLY_USERNAME)));
 		return json;
 	}
-	
-	
-	
 	
 }

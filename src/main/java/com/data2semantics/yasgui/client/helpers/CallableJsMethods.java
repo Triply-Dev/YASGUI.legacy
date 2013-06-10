@@ -138,6 +138,10 @@ public class CallableJsMethods {
 		view.getTabs().saveTabTitle();
 	}
 	
+	public void historyStateChangeCallback() {
+		view.getHistory().onHistoryStateChange();
+	}
+	
 	public void queryForResource(String resource) {
 		String query = "SELECT ?property ?hasValue ?isValueOf\n" +
 				"WHERE {\n" + 
@@ -215,6 +219,9 @@ public class CallableJsMethods {
 		}
 		$wnd.saveTabTitle = function() {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::saveTabTitle()();
+		}
+		$wnd.historyStateChangeCallback = function() {
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::historyStateChangeCallback()();
 		}
 	}-*/;
 }

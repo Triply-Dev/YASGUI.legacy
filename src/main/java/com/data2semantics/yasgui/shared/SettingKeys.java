@@ -42,6 +42,7 @@ public class SettingKeys implements Serializable {
 	public static String TRACKING_CONSENT = "trackingConsent";
 	public static String TRACKING_QUERIES_CONSENT = "trackingQueriesConsent";
 	public static String DEFAULT_BOOKMARKS = "defaultBookmarks";
+	public static String BROWSER_TITLE = "browserTitle";
 	
 	//tabsettings object
 	public static String ENDPOINT = "endpoint";
