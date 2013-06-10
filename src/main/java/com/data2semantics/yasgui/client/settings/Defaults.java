@@ -99,7 +99,7 @@ public class Defaults extends JSONObject {
 	}
 	
 	public JSONArray getDefaultQueryArgs() {
-		JSONArray args = null;
+		JSONArray args = new JSONArray();
 		if (containsKey(SettingKeys.EXTRA_QUERY_ARGS)) {
 			args = get(SettingKeys.EXTRA_QUERY_ARGS).isArray();
 		}

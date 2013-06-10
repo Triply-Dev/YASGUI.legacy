@@ -86,7 +86,6 @@ public class QueryTabs extends TabSet {
 			@Override
 			public void onTabDeselected(TabDeselectedEvent event) {
 				saveTabTitle();
-				
 			}});
 		setTitleEditEvent(TabTitleEditEvent.DOUBLECLICK);
 		setTabsFromSettings();
@@ -138,6 +137,12 @@ public class QueryTabs extends TabSet {
 			}
 		}
 	}
+	
+	public void redrawTabs() {
+		removeAllTabs(false, false);
+		setTabsFromSettings();
+		selectTab(view.getSettings().getSelectedTabNumber());
+	}
 
 	/**
 	 * Add controls (e.g. 'add new tab') to the tab bar
@@ -166,6 +171,7 @@ public class QueryTabs extends TabSet {
 				view.getSettings().addTabSettings(tabSettings);
 				view.getTabs().addTab(tabSettings, true);
 				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+				view.getHistory().setHistoryCheckpoint();
 			}
 		});
 		controls.setZIndex(ZIndexes.TAB_CONTROLS);
@@ -187,6 +193,7 @@ public class QueryTabs extends TabSet {
 					public void execute() {
 						JsMethods.attachCodeMirrorToQueryInput(((QueryTab) getSelectedTab()).getQueryTextArea().getInputId());
 						((QueryTab) getSelectedTab()).getQueryTextArea().adjustForContent(true);
+						view.getHistory().setHistoryCheckpoint();
 					}
 				});
 			}
@@ -204,8 +211,9 @@ public class QueryTabs extends TabSet {
 		addCloseClickHandler(new CloseClickHandler() {
 			@Override
 			public void onCloseClick(TabCloseClickEvent event) {
-				closePreProcess((QueryTab)event.getTab());
+				closePreProcess((QueryTab)event.getTab(), true);
 				closePostProcess((QueryTab)event.getTab());
+				view.getHistory().setHistoryCheckpoint();
 			}
 		});
 	}
@@ -218,22 +226,29 @@ public class QueryTabs extends TabSet {
 		Tab[] tabs = getTabs();
 		for (Tab tab: tabs) {
 			if (!tab.equals(except)) {
-				removeTab((QueryTab)tab, false);
+				removeTab((QueryTab)tab, false, true);
 			}
 		}
 		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
 	}
 	
 	/**
-	 * Remove all tabs
+	 * Remove all tabs (and stores settings in local storage)
 	 */
 	public void removeAllTabs() {
+		removeAllTabs(true, true);
+	}
+	
+	public void removeAllTabs(boolean storeSettings, boolean updateSettings) {
 		Tab[] tabs = getTabs();
 		for (Tab tab: tabs) {
-			removeTab((QueryTab)tab, false);
+			removeTab((QueryTab)tab, false, updateSettings);
 		}
-		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+		if (storeSettings) {
+			LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+		}
 	}
+	
 	
 	/**
 	 * Remove a single tab
@@ -241,10 +256,12 @@ public class QueryTabs extends TabSet {
 	 * @param storeSettings Whether to save settings in cookie as well. 
 	 * Use this settings if this methods is called often, we want to store once instead of multiple times for performance reasons 
 	 */
-	public void removeTab(QueryTab tab, boolean storeSettings) {
-		closePreProcess(tab);
+	public void removeTab(QueryTab tab, boolean storeSettings, boolean updateSettings) {
+		closePreProcess(tab, updateSettings);
 		removeTab(tab);
-		closePostProcess(tab, storeSettings);
+		if (updateSettings) {
+			closePostProcess(tab, storeSettings);
+		}
 	}
 	
 	/**
@@ -252,9 +269,11 @@ public class QueryTabs extends TabSet {
 	 * 
 	 * @param queryTab
 	 */
-	public void closePreProcess(QueryTab queryTab) {
+	public void closePreProcess(QueryTab queryTab, boolean updateSettings) {
 		Settings settings = view.getSettings();
-		settings.removeTabSettings(getTabNumber(queryTab.getID()));
+		if (updateSettings) {
+			settings.removeTabSettings(getTabNumber(queryTab.getID()));
+		}
 		// To avoid codemirror js objects lying around, remove js objects
 		// belonging to this tab
 		JsMethods.destroyCodeMirrorQueryInput(queryTab.getQueryTextArea().getInputId());
@@ -267,7 +286,7 @@ public class QueryTabs extends TabSet {
 	}
 	
 	public void removeAndPostProcessTab(QueryTab tab) {
-		removeTab(tab, STORE_SETTINGS_ON_CLOSE_DEFAULT);
+		removeTab(tab, STORE_SETTINGS_ON_CLOSE_DEFAULT, true);
 	}
 	
 	/**

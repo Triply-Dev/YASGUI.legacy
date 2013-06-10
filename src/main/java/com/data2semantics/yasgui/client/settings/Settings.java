@@ -38,12 +38,12 @@ import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 
 public class Settings extends JsonHelper {
 	private ArrayList<TabSettings> tabArray = new ArrayList<TabSettings>();
 	private Defaults defaults;
-
 	
 	
 	/**
@@ -51,7 +51,14 @@ public class Settings extends JsonHelper {
 	 */
 	public static int DEFAULT_SELECTED_TAB = 0;
 	
+	public Settings() {}
 	
+	public Settings(String jsonString) throws IOException {
+		this.addToSettings(jsonString);
+	}
+	
+
+
 	public void addToSettings(String jsonString) throws IOException {
 		JSONValue jsonVal = JSONParser.parseStrict(jsonString);
 		if (jsonVal != null) {
@@ -107,6 +114,14 @@ public class Settings extends JsonHelper {
 	
 	public ArrayList<TabSettings> getTabArray() {
 		return tabArray;
+	}
+	
+	public JSONArray getTabArrayAsJson() {
+		JSONArray jsonArray = new JSONArray();
+		for(int i = 0; i < tabArray.size(); i++) {
+			jsonArray.set(i, (JSONObject)tabArray.get(i));
+		}
+		return jsonArray;
 	}
 	
 	
@@ -195,15 +210,21 @@ public class Settings extends JsonHelper {
 	 * Returns JSON representation of this object
 	 */
 	public String toString() {
-		//First add TabSettings to the jsonobject
-		JSONArray jsonArray = new JSONArray();
-		for(int i = 0; i < tabArray.size(); i++) {
-			jsonArray.set(i, (JSONObject)tabArray.get(i));
-		}
-		put(SettingKeys.TAB_SETTINGS, jsonArray);
-		
+		put(SettingKeys.TAB_SETTINGS, getTabArrayAsJson());
+		put(SettingKeys.DEFAULTS, defaults);
 		return super.toString();
 	}
 	
+	public String getBrowserTitle() {
+		String title = "YASGUI";//default value
+		if (containsKey(SettingKeys.BROWSER_TITLE)) {
+			title = get(SettingKeys.BROWSER_TITLE).isString().stringValue();
+		}
+		return title;
+	}
 	
+	
+	public void setBrowserTitle(String title) {
+		put(SettingKeys.BROWSER_TITLE, new JSONString(title));
+	}
 }

@@ -175,6 +175,7 @@ public class QueryTab extends Tab {
 			@Override
 			public void onClick(MenuItemClickEvent event) {
 				((QueryTabs) getTabSet()).removeAndPostProcessTab(getTabObject());
+				view.getHistory().setHistoryCheckpoint();
 			}
 		});
 		MenuItem closeOtherTabs = new MenuItem();
@@ -185,7 +186,7 @@ public class QueryTab extends Tab {
 			@Override
 			public void onClick(MenuItemClickEvent event) {
 				((QueryTabs) getTabSet()).removeAllExcept(getTabObject());
-
+				view.getHistory().setHistoryCheckpoint();
 			}
 		});
 
@@ -197,7 +198,7 @@ public class QueryTab extends Tab {
 			@Override
 			public void onClick(MenuItemClickEvent event) {
 				((QueryTabs) getTabSet()).removeAllTabs();
-
+				view.getHistory().setHistoryCheckpoint();
 			}
 		});
 

@@ -285,6 +285,10 @@ public class TabSettings extends JSONObject {
 
 	}
 	
+	public int compareTo(TabSettings otherSettings) {
+		return toString().compareTo(otherSettings.toString());
+	}
+	
 	public TabSettings clone() {
 		//GWT and cloning is difficult. Use the simple solution: serialize to json, and parse into new settings object
 		return new TabSettings(mainSettings, JSONParser.parseStrict(this.toString()).isObject());

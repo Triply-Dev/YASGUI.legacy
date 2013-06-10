@@ -7,6 +7,11 @@ var prefixes;
 var queryRequest;
 var showCorsError = true;
 
+//These two variables are ugly workaround with which we can distinguish in our callback between a history state changed issued
+//by the browser, and issued by our code
+var historyCallbackEnabled = false;
+var ignoreNextHistoryPush = false;
+
 /*
  * CORS ajax calls and firefox are not a good match: firefox is buggy in this respect.
  * Use patch below to be able to get the content type

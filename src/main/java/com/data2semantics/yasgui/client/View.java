@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 import com.data2semantics.yasgui.client.helpers.CallableJsMethods;
 import com.data2semantics.yasgui.client.helpers.GoogleAnalytics;
 import com.data2semantics.yasgui.client.helpers.Helper;
+import com.data2semantics.yasgui.client.helpers.HistoryHelper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.openid.OpenId;
@@ -75,6 +76,7 @@ public class View extends VLayout {
 	private Settings settings = new Settings();
 	private CallableJsMethods jsEvents;
 	private OpenId openId;
+	private HistoryHelper historyHelper = new HistoryHelper(this);
 	public View() {
 		boolean newUser = false;
 		if (LocalStorageHelper.newUser()) newUser = true;
@@ -115,7 +117,7 @@ public class View extends VLayout {
 		
 		processUrlParameters(newUser);
 		
-		
+		getHistory().replaceHistoryState();
 	}
 	
 	private void setViewLayout() {
@@ -136,7 +138,7 @@ public class View extends VLayout {
 				//to do this, we simple remove the only open tab, and re-open a new one
 				QueryTab selectedTab = getSelectedTab();
 				if (selectedTab != null) {
-					queryTabs.removeTab(selectedTab, false);
+					queryTabs.removeTab(selectedTab, false, true);
 				}
 			}
 			
@@ -151,21 +153,21 @@ public class View extends VLayout {
 	
 	private void retrieveSettings()  {
 		try {
-			String installationSettings = JsMethods.getInstallationSettings();
-			if (installationSettings == null || installationSettings.length() == 0) {
+			String defaultSettings = JsMethods.getDefaultSettings();
+			if (defaultSettings == null || defaultSettings.length() == 0) {
 				throw new IOException("Failed to load default settings from javascript.");
 			}
 			 
 			//First create settings object with the proper default values
 			//need default values when creating settings objects, as not all values might be filled in our cache and stuff
-			settings.addToSettings(installationSettings);
+			settings.addToSettings(defaultSettings);
 			
 			String settingsString = LocalStorageHelper.getSettingsStringFromCookie();
 			if (settingsString != null && settingsString.length() > 0) {
 				settings.addToSettings(settingsString);
 				
 				//add installation settings again. The settings retrieved from cookie might have stale default values
-				settings.addToSettings(installationSettings);
+				settings.addToSettings(defaultSettings);
 			} else {
 				//no options in cache. we already have default values and settings object
 				//now initialize a tab with default values
@@ -235,6 +237,10 @@ public class View extends VLayout {
 
 	public Settings getSettings() {
 		return this.settings;
+	}
+	
+	public void setSettings(Settings settings) {
+		this.settings = settings;
 	}
 	
 	
@@ -406,5 +412,8 @@ public class View extends VLayout {
 	public CallableJsMethods getCallableJsMethods() {
 		return jsEvents;
 		
+	}
+	public HistoryHelper getHistory() {
+		return this.historyHelper;
 	}
 }
