@@ -36,13 +36,13 @@
 		
 		//First token of line needs to be PREFIX, and there should be no trailing text (otherwise, text is wrongly inserted in between)
 		firstToken = getNextNonWsToken(editor, cur.line);
-		if (firstToken == null || firstToken.string != "PREFIX") return;
+		if (firstToken == null || firstToken.string.toUpperCase() != "PREFIX") return;
 		if (editor.getLine(cur.line).length > cur.ch) return;
 		//Dont show prefixes when - cursor is on first page, or there is text previously
 		
 		
 		//If this is a whitespace, and token is just after PREFIX, proceed using empty string as token
-		if (/\s*/.test(token.string) && getToken(editor, {line : cur.line,ch : token.start}).string == "PREFIX") {
+		if (/\s*/.test(token.string) && getToken(editor, {line : cur.line,ch : token.start}).string.toUpperCase() == "PREFIX") {
 			token = {
 				start : cur.ch,
 				end : cur.ch,
