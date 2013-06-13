@@ -139,9 +139,10 @@ public class QueryTabs extends TabSet {
 	}
 	
 	public void redrawTabs() {
+		int selectedTabNumber = view.getSettings().getSelectedTabNumber();
 		removeAllTabs(false, false);
 		setTabsFromSettings();
-		selectTab(view.getSettings().getSelectedTabNumber());
+		selectTab(selectedTabNumber);
 	}
 
 	/**
