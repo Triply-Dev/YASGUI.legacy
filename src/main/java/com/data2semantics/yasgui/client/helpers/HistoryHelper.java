@@ -77,64 +77,11 @@ public class HistoryHelper {
 		boolean tabSetChanged = !settings.getTabArrayAsJson().toString().equals(view.getSettings().getTabArrayAsJson().toString());
 		view.setSettings(settings);
 		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
-		
 		if (tabSetChanged) {
 			view.getTabs().redrawTabs();
 		} else {
 			view.getTabs().selectTab(view.getSettings().getSelectedTabNumber());
 		}
 	}
-	
-//	private void updateView(String settingsString) throws IOException {
-//		Settings newSettings = new Settings(settingsString);
-//		ArrayList<TabSettings> newTabSettingsArray = newSettings.getTabArray();
-//		Settings oldSettings = view.getSettings();
-//		ArrayList<TabSettings> oldTabSettingsArray = oldSettings.getTabArray();
-//		
-//		ArrayList<String> newTabSettingsStrings = getSettingsAsStrings(newTabSettingsArray);
-//		ArrayList<String> oldTabSettingsStrings = getSettingsAsStrings(oldTabSettingsArray);
-//		
-//		//YASGUI does not support re-ordering tabs. Use this in finding the diffs efficiently
-//		ArrayList<Integer> changedOrDeletedTabs = new ArrayList<Integer>();
-//		for (int oldTabId = 0; oldTabId < oldTabSettingsStrings.size(); oldTabId++) {
-//			boolean foundMatch = false;
-//			
-//			
-//			//for each old tab settings, try to find whether exactly the same one exists
-//			//if we find a match, great
-//			//if we don't find a match, then this tab is either removed or changed. flag this tab
-//			String oldTabSettings = oldTabSettingsStrings.get(oldTabId);
-//			for (int newTabId = 0; newTabId < newTabSettingsStrings.size(); newTabId++) {
-//				String newTabSettings = newTabSettingsStrings.get(newTabId);
-//				if (newTabSettings.equals(oldTabSettings)) {
-//					foundMatch = true;
-//					break;
-//				}
-//			}
-//			if (!foundMatch) {
-//				changedOrDeletedTabs.add(oldTabId);
-//			}
-//		}
-//		//we've found tabs that were deleted or changed. we should also find tabs that were added
-//		for (int newTabId = 0; newTabId < newTabSettingsStrings.size(); newTabId++) {
-//			for (int oldTabId = 0; oldTabId < oldTabSettingsStrings.size(); oldTabId++) {
-//				
-//			}
-//		}
-//		
-//		
-//	}
-//	
-//	private ArrayList<String> getSettingsAsStrings(ArrayList<TabSettings> tabSettingsArray) {
-//		ArrayList<String> tabSettingsStrings = new ArrayList<String>();
-//		for (TabSettings tabSettings: tabSettingsArray) {
-//			tabSettingsStrings.add(tabSettings.toString());
-//		}
-//		return tabSettingsStrings;
-//	}
-	
-
-	
-	
 	
 }
