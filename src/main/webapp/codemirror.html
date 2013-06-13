@@ -26,11 +26,11 @@
   </head>
   <body>
 <br><br>
-	<textarea id="test" style="width:400px;height:300px;">PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
+	<textarea id="test" style="width:400px;height:300px;">
 PREFIX : &lt;http://aers.data2semantics.org/vocab/&gt; 
 SELECT DISTINCT *
 {
-?patient rdfs:comment ?comment.
+?patient rd:comment ?comment.
 }
 </textarea>
 
@@ -38,7 +38,7 @@ SELECT DISTINCT *
 	function checkAdjustParent() {
 		
 	}
-	var prefixes = ["aers: <bwah>", "aaebs: <sdf>", "aacbs: <sdf>", "http: <htpp://bla>", "rdfs: <bwah>", "whereeee: <sdf>", "whereeec: <sdf>"];
+	var prefixes = ["aers: <bwah>", "aaebs: <sdf>", "aacbs: <sdf>", "rdf: <htpp://bla>", "http: <htpp://bla>", "rdfs: <bwah>", "whereeee: <sdf>", "whereeec: <sdf>"];
 				var modes;
 		var myCodeMirror = CodeMirror.fromTextArea(document
 				.getElementById("test"), {
