@@ -366,7 +366,7 @@ public class ViewElements {
 
 	
 	public void addLogo() {
-		HTMLFlow html = getLogo(31, "Show YASGUI page");
+		HTMLFlow html = getYasguiLogo(31, "Show YASGUI page");
 		html.getElement().getStyle().setPosition(Position.ABSOLUTE);
 		html.getElement().getStyle().setTop(-2, Unit.PX);
 		html.getElement().getStyle().setLeft(4, Unit.PX);
@@ -380,7 +380,7 @@ public class ViewElements {
 		}
 	}
 	
-	public HTMLFlow getLogo(int fontSize, String title) {
+	public HTMLFlow getYasguiLogo(int fontSize, String title) {
 		HTMLFlow html = new HTMLFlow();
 		html.setContents("<span title='" + title + "' style=\"font-family: 'Audiowide'; font-size: " + fontSize + "px;cursor:pointer;\" onclick=\"window.open('" + ExternalLinks.YASGUI_HTML +  "')\">YASGUI</span>");
 		html.setWidth(100);
