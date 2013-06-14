@@ -41,7 +41,7 @@ import com.smartgwt.client.widgets.layout.LayoutSpacer;
 public class About extends Window {
 	
 	private static int HEIGHT = 100;
-	private static int WIDTH = 500;
+	private static int WIDTH = 800;
 	private View view;
 	public About(View view) {
 		this.view = view;
@@ -61,16 +61,19 @@ public class About extends Window {
 		HLayout hLayout = new HLayout();
 		LayoutSpacer leftSpacer = new LayoutSpacer();
 		leftSpacer.setWidth100();
+		
 		hLayout.addMember(leftSpacer);
-		
-		
 		hLayout.addMember(getGithubCanvas());
 		
 		LayoutSpacer middleSpacer = new LayoutSpacer();
 		middleSpacer.setWidth(40);
 		hLayout.addMember(middleSpacer);
 		
-		hLayout.addMember(view.getElements().getLogo(45, "Show YASGUI page"));
+		hLayout.addMember(view.getElements().getYasguiLogo(45, "Show YASGUI page"));
+		
+		
+		hLayout.addMember(middleSpacer);
+		hLayout.addMember(getData2SemanticsCanvas());
 		
 		LayoutSpacer rightSpacer = new LayoutSpacer();
 		rightSpacer.setWidth100();
@@ -90,6 +93,20 @@ public class About extends Window {
 		imgButton.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event) {
 				com.google.gwt.user.client.Window.open(ExternalLinks.GITHUB_PAGE, title, "_blank");
+			}});
+		
+		return imgButton;
+	}
+	private Img getData2SemanticsCanvas() {
+		Img imgButton = new Img(Imgs.get(Imgs.LOGO_DATA2SEMANTICS));
+		imgButton.setWidth(300);
+		imgButton.setHeight(61);
+		imgButton.setCursor(Cursor.POINTER);
+		final String title = "YASGUI is partially funded by Data2Semantics";
+		imgButton.setPrompt(title);
+		imgButton.addClickHandler(new ClickHandler(){
+			public void onClick(ClickEvent event) {
+				com.google.gwt.user.client.Window.open(ExternalLinks.DATA2SEMANTICS, title, "_blank");
 			}});
 		
 		return imgButton;
