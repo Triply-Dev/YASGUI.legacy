@@ -52,6 +52,7 @@ package com.data2semantics.yasgui.client.helpers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
 import com.data2semantics.yasgui.shared.Prefix;
@@ -258,5 +259,38 @@ public class Helper {
 	    } else {
 	        return host;
 	    }
+	}
+
+	public static String removeArgumentsFromUrl(String url, Set<String> keySet) {
+		String[] splittedUrl = url.split("\\?");
+		
+		String baseUrl = splittedUrl[0];
+		String argsString = "";
+		if (splittedUrl.length > 1) {
+			argsString = splittedUrl[1];
+			String[] argsArray = argsString.split("&");
+			ArrayList<String> cleanedArgList = new ArrayList<String>();
+			for(String arg: argsArray) {
+				String argKey = arg.split("=")[0];
+				if (!keySet.contains(argKey)) {
+					cleanedArgList.add(arg);
+				} else {
+					//this is one of the arguments we'd like to remove
+				}
+			}
+			
+			boolean firstArg = true;
+			argsString = "";
+			for (String cleanedArg: cleanedArgList) {
+				//ok, so we have some arguments left. add these again to url
+				if (!firstArg) {
+					argsString += "&";
+				}
+				argsString += cleanedArg;
+				firstArg = false;
+			}
+		}
+		return baseUrl + (argsString.length() > 0 ? "?" + argsString: "");
+		
 	}
 }

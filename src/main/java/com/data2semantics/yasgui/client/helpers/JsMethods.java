@@ -500,4 +500,29 @@ public class JsMethods {
 			}
 		});
 	}-*/;
+
+	public static native boolean inExternalIframe() /*-{
+		//$wnd is actually our parent (GWT) iframe. we want to check whether there is another iframe as parent
+		var inExtIframe;
+		if ($wnd.parent == null || $wnd.parent == $wnd) {
+			inExtIframe = false;
+		} else {
+			inExtIframe = true;
+		}
+		return inExtIframe;
+	}-*/;
+	
+	public static native String getLocation() /*-{
+		var location;
+		//$wnd is actually our parent (GWT) iframe. we want to check whether there is another iframe as parent
+		
+		if ($wnd.parent == null || $wnd.parent == $wnd) {
+			location = $wnd.location.href;
+		} else {
+			//when external iframe parent is from different domain, we cannot access the location
+			//try to use referrer instead.
+			location = $wnd.document.referrer;
+		}
+		return location;
+	}-*/;
 }

@@ -44,6 +44,7 @@ import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
+import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
 import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.settings.TooltipText;
@@ -214,9 +215,14 @@ public class LinkCreator extends ImgButton {
 	}
 	
 	private String getLink(TreeMap<String, String> args) {
-		String url = getBaseUrl();
+		String url = JsMethods.getLocation();
 		
+		//remove these, as we will be adding these again
+		url = Helper.removeArgumentsFromUrl(url, args.keySet());
 		boolean firstItem = true;
+		if (url.contains("?")) {
+			firstItem = false;
+		}
 		Iterator<String> iterator = args.keySet().iterator();
 		while (iterator.hasNext()) {
 			if (firstItem) {
@@ -231,18 +237,6 @@ public class LinkCreator extends ImgButton {
 		}
 		return url;
 		
-	}
-	
-	private String getBaseUrl() {
-		String url = com.google.gwt.user.client.Window.Location.getProtocol() + "//";
-		url += com.google.gwt.user.client.Window.Location.getHostName();
-		
-		String port = com.google.gwt.user.client.Window.Location.getPort();
-		if (port != null && port.length() > 0) {
-			url += ":" + port;
-		}
-		url += com.google.gwt.user.client.Window.Location.getPath();
-		return url;
 	}
 	
 	public void showToolTips(int fromVersionId) {
