@@ -30,7 +30,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 
+import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.JsonHelper;
+import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.shared.SettingKeys;
 import com.data2semantics.yasgui.shared.exceptions.SettingsException;
 import com.google.gwt.json.client.JSONArray;
@@ -40,6 +42,7 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.user.client.Window;
 
 public class Settings extends JsonHelper {
 	private ArrayList<TabSettings> tabArray = new ArrayList<TabSettings>();
@@ -226,5 +229,48 @@ public class Settings extends JsonHelper {
 	
 	public void setBrowserTitle(String title) {
 		put(SettingKeys.BROWSER_TITLE, new JSONString(title));
+	}
+	
+	public static Settings retrieveSettings() throws IOException {
+		Settings settings = new Settings();
+		String defaultSettings = JsMethods.getDefaultSettings();
+		if (defaultSettings == null || defaultSettings.length() == 0) {
+			throw new IOException("Failed to load default settings from javascript.");
+		}
+		 
+		//First create settings object with the proper default values
+		//need default values when creating settings objects, as not all values might be filled in our cache and stuff
+		settings.addToSettings(defaultSettings);
+		
+		settings = addUrlArgToSettings(settings);
+		
+		String settingsString = LocalStorageHelper.getSettingsStringFromCookie();
+		if (settingsString != null && settingsString.length() > 0) {
+			settings.addToSettings(settingsString);
+			
+			//add installation + url settings again. The settings retrieved from cookie might have stale default values
+			settings.addToSettings(defaultSettings);
+			settings = addUrlArgToSettings(settings);
+		} else {
+			//no options in cache. we already have default values and settings object
+			//now initialize a tab with default values
+			settings.initDefaultTab();
+		}
+		return settings;
+	}
+	
+	/**
+	 * If we have settings passed as argument (e.g. in an iframe setting, add these to settings object)
+	 * @param settings
+	 * @return
+	 * @throws IOException
+	 */
+	private static Settings addUrlArgToSettings(Settings settings) throws IOException {
+		//If we have settings passed as argument (e.g. in an iframe setting, add these to settings object)
+		String jsonSettings = Window.Location.getParameter(SettingKeys.JSON_SETTINGS_ARGUMENT);
+		if (jsonSettings != null && jsonSettings.length() > 0) {
+			settings.addToSettings(jsonSettings);
+		}
+		return settings;
 	}
 }

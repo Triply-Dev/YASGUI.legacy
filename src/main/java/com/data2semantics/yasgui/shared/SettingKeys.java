@@ -65,4 +65,6 @@ public class SettingKeys implements Serializable {
 	//inferred settings
 	public static String DB_SET = "dbSet";
 	public static String USE_BITLY = "useBitly";
+	
+	public static String JSON_SETTINGS_ARGUMENT = "jsonSettings";//passed in url to YASGUI, containing all the json settings
 }

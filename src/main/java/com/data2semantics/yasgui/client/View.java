@@ -153,26 +153,7 @@ public class View extends VLayout {
 	
 	private void retrieveSettings()  {
 		try {
-			String defaultSettings = JsMethods.getDefaultSettings();
-			if (defaultSettings == null || defaultSettings.length() == 0) {
-				throw new IOException("Failed to load default settings from javascript.");
-			}
-			 
-			//First create settings object with the proper default values
-			//need default values when creating settings objects, as not all values might be filled in our cache and stuff
-			settings.addToSettings(defaultSettings);
-			
-			String settingsString = LocalStorageHelper.getSettingsStringFromCookie();
-			if (settingsString != null && settingsString.length() > 0) {
-				settings.addToSettings(settingsString);
-				
-				//add installation settings again. The settings retrieved from cookie might have stale default values
-				settings.addToSettings(defaultSettings);
-			} else {
-				//no options in cache. we already have default values and settings object
-				//now initialize a tab with default values
-				settings.initDefaultTab();
-			}
+			settings = Settings.retrieveSettings();
 		} catch (IOException e) {
 			getElements().onError(e);
 		}
