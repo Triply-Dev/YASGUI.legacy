@@ -294,7 +294,6 @@ public class OpenId {
 	 * Callback to execute when user is validated as being logged in
 	 */
 	public void loggedInCallback() {
-		view.getSelectedTab().getBookmarkedQueries().setEnabled(true);
-		view.getSelectedTab().getAddToBookmarks().setEnabled(true);
+		view.getTabs().loggedInCallback();
 	}
 }
