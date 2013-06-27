@@ -95,8 +95,7 @@ public class EndpointInput extends DynamicForm {
 		endpoint.setOptionDataSource(view.getEndpointDataSource());
 		endpoint.setHideEmptyPickList(true);
 		endpoint.setDefaultValue(getQueryTab().getTabSettings().getEndpoint());
-		//For this default value, also retrieve CORS setting
-		JsMethods.checkCorsEnabled(getQueryTab().getTabSettings().getEndpoint());
+		
 
 		initPickList();
 		

@@ -78,6 +78,10 @@ public class QueryTab extends Tab {
 		this.queryResultContainer = new ResultContainer(view, this);
 		setCanClose(true);
 		
+		
+		//For each tab we create, check the cors setting of the endpoint
+		JsMethods.checkCorsEnabled(getTabSettings().getEndpoint());
+		
 		vLayout.addMember(getQueryOptionBar());
 		
 		queryTextArea = new QueryTextArea(view, this);
