@@ -388,6 +388,13 @@ public class QueryTabs extends TabSet {
 			return newTitle;
 		}
 	}
-	
-	
+
+	public void loggedInCallback() {
+		Tab[] tabs = getTabs();
+		for (Tab tab: tabs) {
+			QueryTab queryTab = (QueryTab) tab;
+			queryTab.getBookmarkedQueries().setEnabled(true);
+			queryTab.getAddToBookmarks().setEnabled(true);
+		}
+	}
 }
