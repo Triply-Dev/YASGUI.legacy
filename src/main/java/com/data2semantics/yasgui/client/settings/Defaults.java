@@ -35,10 +35,7 @@ import com.google.gwt.json.client.JSONObject;
 public class Defaults extends JSONObject {
 
 	public Defaults(JSONObject jsonObject) {
-		Set<String> keys = jsonObject.keySet();
-		for (String key : keys) {
-			put(key, jsonObject.get(key));
-		}
+		update(jsonObject);
 	}
 	public String getDefaultEndpoint() {
 		String endpoint = null;
@@ -104,6 +101,12 @@ public class Defaults extends JSONObject {
 			args = get(SettingKeys.EXTRA_QUERY_ARGS).isArray();
 		}
 		return args;
+	}
+	public void update(JSONObject jsonObject) {
+		Set<String> keys = jsonObject.keySet();
+		for (String key : keys) {
+			put(key, jsonObject.get(key));
+		}
 	}
 	
 }

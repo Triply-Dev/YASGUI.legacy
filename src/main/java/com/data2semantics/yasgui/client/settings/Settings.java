@@ -86,7 +86,12 @@ public class Settings extends JsonHelper {
 					tabArray.add(new TabSettings(this, jsonArray.get(i).isObject()));
 				}
 			} else if (key.equals(SettingKeys.DEFAULTS)) {
-				defaults = new Defaults(jsonObject.get(key).isObject());
+				if (defaults == null) {
+					defaults = new Defaults(jsonObject.get(key).isObject());
+				} else {
+					defaults.update(jsonObject.get(key).isObject());
+				}
+				
 			} else {
 				put(key, jsonObject.get(key));
 			}
