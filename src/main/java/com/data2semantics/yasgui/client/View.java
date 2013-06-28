@@ -76,7 +76,7 @@ public class View extends VLayout {
 	private Settings settings = new Settings();
 	private CallableJsMethods jsEvents;
 	private OpenId openId;
-	private HistoryHelper historyHelper = new HistoryHelper(this);
+	private HistoryHelper historyHelper;
 	public View() {
 		boolean newUser = false;
 		if (LocalStorageHelper.newUser()) newUser = true;
@@ -84,6 +84,10 @@ public class View extends VLayout {
 		setViewLayout();
 		
 		retrieveSettings();
+		
+		if (JsMethods.historyApiSupported()) {
+			historyHelper = new HistoryHelper(this);
+		}
 		
 		viewElements = new ViewElements(this);
 		jsEvents = new CallableJsMethods(this);

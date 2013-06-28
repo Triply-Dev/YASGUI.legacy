@@ -16,7 +16,7 @@
 
 <script src="externals/jquery-1.10.0.min.js"></script>
 <script src="externals/jquery.browser.min.js"></script>
-<script src="externals/history.js/scripts/bundled/html4+html5/jquery.history.js"></script>
+<script src="externals/history.js/scripts/bundled/html5/jquery.history.js"></script>
 <!-- qtip lib -->
 <script src="externals/qtip/jquery.qtip.min.js"></script>
 <link rel="stylesheet" href="externals/qtip/jquery.qtip.css">

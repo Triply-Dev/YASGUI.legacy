@@ -500,6 +500,10 @@ public class JsMethods {
 			}
 		});
 	}-*/;
+	
+	public static native boolean historyApiSupported() /*-{
+		return !!($wnd.window.history && $wnd.history.pushState);
+	}-*/;
 
 	public static native boolean inExternalIframe() /*-{
 		//$wnd is actually our parent (GWT) iframe. we want to check whether there is another iframe as parent

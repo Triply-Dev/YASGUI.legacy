@@ -47,11 +47,12 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 public class Compatabilities extends Window {
 	
-	private static int HEIGHT = 200;
+	private static int HEIGHT = 250;
 	private static int WIDTH = 700;
 	private static int ROW_HEIGHT = 40;
 	private static int BUTTON_WIDTH = 150;
 	private static String URL_COMPATABILTIES_LOCAL_STORAGE = "http://caniuse.com/#feat=namevalue-storage";
+	private static String URL_COMPATABILTIES_HISTORY = "http://caniuse.com/#search=history";
 	private static String URL_COMPATABILITIES_DOWNLOAD_ATTRIBUTE = "http://caniuse.com/#feat=download";
 	private static String URL_COMPATABILITIES_DOWNLOAD_FILE = "http://caniuse.com/#feat=bloburls";
 	
@@ -60,6 +61,7 @@ public class Compatabilities extends Window {
 	private boolean html5StorageSupported = false;
 	private boolean downloadAttributeSupported = false;
 	private boolean downloadFileSupported = false;
+	private boolean historySupported = false;
 	private boolean allSupported = false;
 	private View view;
 	private VLayout layout = new VLayout();;
@@ -81,8 +83,8 @@ public class Compatabilities extends Window {
 		html5StorageSupported = Storage.isLocalStorageSupported();
 		downloadFileSupported = JsMethods.stringToDownloadSupported();
 		downloadAttributeSupported = JsMethods.downloadAttributeSupported();
-		
-		allSupported = (html5StorageSupported && downloadFileSupported && downloadAttributeSupported);
+		historySupported = JsMethods.historyApiSupported();
+		allSupported = (html5StorageSupported && downloadFileSupported && downloadAttributeSupported && historySupported);
 	}
 	
 	public boolean allSupported() {
@@ -111,10 +113,26 @@ public class Compatabilities extends Window {
 		drawHtml5LocalStorage();
 		drawDownloadFunctionality();
 		drawDownloadFilenameFunctionality();
+		drawHistoryFunctionality();
 		draw();
 		
 		//ok, so we've shown the stuff. reload the menu button, as we might still have an exclamation mark there
 		view.getElements().redrawConfigMenu();
+	}
+	private void drawHistoryFunctionality() {
+		HLayout hlayout = new HLayout();
+		hlayout.setHeight(ROW_HEIGHT);
+		
+		hlayout.addMember(getIcon(historySupported));
+		hlayout.addMember(getRowName("HTML5 History"));
+		if (historySupported) {
+			hlayout.addMember(getExplanation("Supported by your browser. Allows for client-side caching, resulting in faster page loads"));
+		} else {
+			hlayout.addMember(getExplanation("Not supported by your browser. This results in slightly slower page loads, as client-side caching is not possible"));
+		}
+		hlayout.addMember(getLink(URL_COMPATABILTIES_HISTORY));
+		
+		layout.addMember(hlayout);
 	}
 	
 	private void drawHtml5LocalStorage() {
