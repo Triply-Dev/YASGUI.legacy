@@ -31,7 +31,7 @@ public class TooltipText {
 	public static String TOOLTIP_BUTTON = "Click this button to show these hints again";
 	public static String CONFIG_MENU = "<ul style=\"margin: 1px;\">" +
 			"<li>Update prefixes or endpoints (CKAN) list</li>" +
-			"<li>Support YASGUI features</li>" +
+			"<li>Supported YASGUI features</li>" +
 			"<li>Login using OpenID</li>" +
 			"</ul>";
 	public static String TAB_SELECTION = "Double click to rename. Right click for tab options";
@@ -44,6 +44,7 @@ public class TooltipText {
 				"<li><strong>CTRL-ALT-up</strong>: Copy line up</li>\n" + 
 				"<li><strong>CTRL-/</strong>: Comment line(s)</li>\n" + 
 				"<li><strong>CTRL-&lt;enter&gt;</strong>: Execute query</li>\n" + 
+				"<li><strong>ESC</strong>: Cancel query</li>\n" + 
 			"</ul>";
 	public static String QUERY_CONFIG_MENU = "Advanced options which you normally wont need, including:" +
 			"<ul style=\"margin: 1px;\">\n" + 

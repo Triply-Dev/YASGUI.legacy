@@ -111,14 +111,13 @@ public class QueryTabs extends TabSet {
 	
 	private void showTabSelectionTooltip(int fromVersionId) throws ElementIdException {
 		if (fromVersionId < TOOLTIP_VERSION_TAB_SELECTION) {
-			view.getLogger().severe("showing tab tooltip for id " + getDOM().getId());
 			TooltipProperties tProp = new TooltipProperties();
 			tProp.setId(getDOM().getId());
 			tProp.setContent(TooltipText.TAB_SELECTION);
 			tProp.setMy(TooltipProperties.POS_LEFT_CENTER);
-			tProp.setAt(TooltipProperties.POS_LEFT_CENTER);
+			tProp.setAt(TooltipProperties.POS_LEFT_TOP);
 			tProp.setXOffset(132);
-			tProp.setYOffset(6);
+			tProp.setYOffset(12);
 			Helper.drawTooltip(tProp);
 		}
 	}

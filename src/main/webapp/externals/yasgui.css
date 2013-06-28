@@ -142,3 +142,7 @@ span.CodeMirror-matchhighlight {
 	/* For IE 8 */
 	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#000000')";
 }
+/*We want to overwrite the form label colors (ugle blue)*/
+.formTitle, .formTitleFocussed  {
+	color: #4D4D4D !important;
+}

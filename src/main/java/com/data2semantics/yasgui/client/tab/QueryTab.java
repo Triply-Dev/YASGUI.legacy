@@ -226,7 +226,7 @@ public class QueryTab extends Tab {
 			TooltipProperties tProp = new TooltipProperties();
 			tProp.setId(searchIcon.getDOM().getId());
 			tProp.setContent(TooltipText.ENDPOINT_SEARCH_ICON);
-			tProp.setMy(TooltipProperties.POS_BOTTOM_CENTER);
+			tProp.setMy(TooltipProperties.POS_BOTTOM_LEFT);
 			tProp.setAt(TooltipProperties.POS_TOP_CENTER);
 			tProp.setYOffset(9);
 //			tProp.setXOffset(-1);

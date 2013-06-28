@@ -414,7 +414,7 @@
 	color: #454545;
 
 	font-weight: normal;
-	font-family: georgia;/*changed from serif to georgia. in ie, serif, can look veeery ugly (mapped to a Batang font!!)*/
+	font-family: Arial, Verdana, sans-serif;
 }
 
 	.ui-tooltip-tipped .ui-tooltip-titlebar{
