@@ -104,10 +104,10 @@ public class LocalStorageHelper {
 	 */
 	private static String getFromLocalStorage(String key) {
 		StorageMap storageMap = getStorageMap();
-		String domain = Helper.getCurrentBaseDomain();
+		String domain = Helper.getCurrentHost();
 		
 		if (storageMap.containsKey(domain + "_" + key)) {
-			return domain + "_" + key;
+			return storageMap.get(domain + "_" + key);
 		} else if (storageMap.containsKey(key)) {
 			//for backwards compatability (i.e. the time when we didnt use the basedomain as part of the key)
 			String value = storageMap.get(key);
@@ -120,14 +120,14 @@ public class LocalStorageHelper {
 	
 	private static void removeLocalStorageKey(String key) {
 		Storage html5Storage = Storage.getLocalStorageIfSupported();
-		String domain = Helper.getCurrentBaseDomain();
+		String domain = Helper.getCurrentHost();
 		html5Storage.removeItem(domain + "_" + key);
 	}
 	
 	public static void setInLocalStorage(String key, String value) {
 		if (Storage.isLocalStorageSupported()) {
 			Storage html5Storage = Storage.getLocalStorageIfSupported();
-			html5Storage.setItem(Helper.getCurrentBaseDomain() + "_" + key, value);
+			html5Storage.setItem(Helper.getCurrentHost() + "_" + key, value);
 		}
 	}
 	
@@ -154,13 +154,13 @@ public class LocalStorageHelper {
 	}
 	
 	public static void setAsCookie(String key, String value, int expireDays) {
-		key = Helper.getCurrentBaseDomain() + "_" + key;
+		key = Helper.getCurrentHost() + "_" + key;
 		Cookies.removeCookie(key);
 		Cookies.setCookie(key, value, getExpireDate(expireDays));
 	}
 	
 	public static String getAsCookie(String key) {
-		String domain = Helper.getCurrentBaseDomain();
+		String domain = Helper.getCurrentHost();
 		
 		
 		if (Cookies.getCookie(domain + "_" + key) != null) {
