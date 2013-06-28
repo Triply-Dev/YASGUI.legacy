@@ -46,10 +46,10 @@ public class LocalStorageHelper {
 	private static String LOCAL_STORAGE_EXPIRE_SEPARATOR = "_"; //used to separate content and long value containing timestamp of insertion
 	private static int PREFIXES_EXPIRE_DAYS = 30;
 	private static int ENDPOINTS_EXPIRE_DAYS = 30;
-	private static int SETTINGS_EXPIRE_DAYS = 5000;
-	private static int VERSION_EXPIRE_DAYS = 5000;
-	private static int TOOLTIPS_EXPIRE_DAYS = 5000;
-	private static int COMPATABILITIES_SHOWN_EXPIRE_DAYS = 5000;
+	private static int SETTINGS_EXPIRE_DAYS = 1000;
+	private static int VERSION_EXPIRE_DAYS = 1000;
+	private static int TOOLTIPS_EXPIRE_DAYS = 1000;
+	private static int COMPATABILITIES_SHOWN_EXPIRE_DAYS = 1000;
 	private static int UNKNOWN_EXPIRE_DAYS = 30;
 	
 	
@@ -63,13 +63,12 @@ public class LocalStorageHelper {
 	public static String getFromLocalStorage(String key, int expireDays) {
 		String result = null;
 		String storageString = getFromLocalStorage(key);
-		
 		if (storageString != null && storageString.length() > 0) {
 			int separatorIndex = storageString.indexOf(LOCAL_STORAGE_EXPIRE_SEPARATOR);
 			try {
 				long expire = Long.parseLong(storageString.substring(0, separatorIndex));
 				Date currentDate = new Date();
-				if (currentDate.getTime() - expire < 1000 * 60 * 60 * 24 * PREFIXES_EXPIRE_DAYS) {
+				if (currentDate.getTime() - expire < 1000 * 60 * 60 * 24 * expireDays) {
 					result = storageString.substring(separatorIndex + 1);
 					if (result.length() == 0) {
 						result = null;
@@ -105,7 +104,6 @@ public class LocalStorageHelper {
 	private static String getFromLocalStorage(String key) {
 		StorageMap storageMap = getStorageMap();
 		String domain = Helper.getCurrentHost();
-		
 		if (storageMap.containsKey(domain + "_" + key)) {
 			return storageMap.get(domain + "_" + key);
 		} else if (storageMap.containsKey(key)) {
