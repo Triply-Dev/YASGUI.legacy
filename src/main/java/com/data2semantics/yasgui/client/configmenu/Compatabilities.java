@@ -57,7 +57,7 @@ public class Compatabilities extends Window {
 	private static String URL_COMPATABILITIES_DOWNLOAD_FILE = "http://caniuse.com/#feat=bloburls";
 	
 	
-	public static int VERSION_NUMBER = 3; //used for determining whether we need warning icon (i.e. something not compatible, and not shown before)
+	public static int VERSION_NUMBER = 4; //used for determining whether we need warning icon (i.e. something not compatible, and not shown before)
 	private boolean html5StorageSupported = false;
 	private boolean downloadAttributeSupported = false;
 	private boolean downloadFileSupported = false;

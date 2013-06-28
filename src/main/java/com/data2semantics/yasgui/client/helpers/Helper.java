@@ -240,7 +240,7 @@ public class Helper {
 
 
 	/**  Based on : http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/2.3.3_r1/android/webkit/CookieManager.java#CookieManager.getBaseDomain%28java.lang.String%29
-	 * Get the base domain for a given host or url. E.g. mail.google.com will return google.com
+	 * Get the base domain for a given host or url. E.g. mail.google.com:8080 will return google.com:8080
 	 * @param host 
 	 * @return 
 	 */
@@ -259,6 +259,19 @@ public class Helper {
 	    } else {
 	        return host;
 	    }
+	}
+	
+	/**
+	 * Get base domain for current location header (or parent location header, in case of iframe).
+	 * Remove port notation as well
+	 * @return
+	 */
+	public static String getCurrentBaseDomain() {
+		String domain = getBaseDomain(JsMethods.getLocation());
+		if (domain.indexOf(":") > 0) {
+			domain = domain.substring(0, domain.indexOf(":"));
+		}
+		return domain;
 	}
 
 	public static String removeArgumentsFromUrl(String url, Set<String> keySet) {
