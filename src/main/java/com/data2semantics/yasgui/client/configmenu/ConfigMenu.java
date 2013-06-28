@@ -114,24 +114,20 @@ public class ConfigMenu extends Menu {
 		Menu refreshSubMenu = new Menu();  
         
 		MenuItem prefixUpdate = new MenuItem("Force prefixes update");
-//		prefixUpdate.setIcon(Icons.REFRESH);
 		prefixUpdate.addClickHandler(new ClickHandler(){
 
 			@Override
 			public void onClick(MenuItemClickEvent event) {
 				view.setAutocompletePrefixes(true);
 			}});
-//		items.add(prefixUpdate);
 		MenuItem endpointsUpdate = null;
 		if (!view.getSettings().inSingleEndpointMode()) {
 			endpointsUpdate = new MenuItem("Force endpoints update");
-//			endpointsUpdate.setIcon(Icons.REFRESH);
 			endpointsUpdate.addClickHandler(new ClickHandler(){
 				@Override
 				public void onClick(MenuItemClickEvent event) {
 					view.initEndpointDataSource(true);
 				}});
-//			items.add(endpointsUpdate);
 		}
 		if (endpointsUpdate == null) {
 			refreshSubMenu.setItems(prefixUpdate);
