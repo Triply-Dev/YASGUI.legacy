@@ -262,12 +262,12 @@ public class Helper {
 	}
 	
 	/**
-	 * Get base domain for current location header (or parent location header, in case of iframe).
+	 * Get host of current location header (or parent location header, in case of iframe).
 	 * Remove port notation as well
 	 * @return
 	 */
-	public static String getCurrentBaseDomain() {
-		String domain = getBaseDomain(JsMethods.getLocation());
+	public static String getCurrentHost() {
+		String domain = getHost(JsMethods.getLocation());
 		if (domain.indexOf(":") > 0) {
 			domain = domain.substring(0, domain.indexOf(":"));
 		}
