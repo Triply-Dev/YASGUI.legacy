@@ -113,7 +113,7 @@ public class JsMethods {
 				}
 			}
 		} else {
-			$wnd.onError("no text area for input id: " + queryInputId);
+			$wnd.onError("no text area for query input id: " + queryInputId);
 		}
 	}-*/;
 	
@@ -167,7 +167,7 @@ public class JsMethods {
 				$wnd.$("#"+queryInputId).next().find($wnd.$(".CodeMirror-scroll")).addClass("bookmarkScrollCm");
 			}
 		} else {
-			$wnd.onError("no text area for input id: " + queryInputId);
+			$wnd.onError("no text area for bookmark query input id: " + queryInputId);
 		}
 	}-*/;
 	
@@ -347,14 +347,6 @@ public class JsMethods {
 		return instance.getTokenAt({line : lineCount - 1, ch: instance.getLine(lineCount-1).length-1}).state.queryType;
 	}-*/;
 	
-	/*
-	 * Calls codemirror the check the querytype of one of our codemirror instances
-	 * @param queryInputId
-	 * @return
-	 */
-	public static native String openDownDialogForCsv(String csv) /*-{
-	}-*/;
-
 	public static native boolean elementExists(String id) /*-{
 		if ($doc.getElementById(id)) {
 			return true;

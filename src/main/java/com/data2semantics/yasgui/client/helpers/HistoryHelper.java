@@ -33,20 +33,26 @@ import com.data2semantics.yasgui.client.settings.Settings;
 public class HistoryHelper {
 	private View view;
 	private String previousCheckpointSettings = "";
+	private boolean historyEnabled = false;
 	public HistoryHelper(View view) {
+		this.historyEnabled = JsMethods.historyApiSupported();
 		this.view = view;
-		JsMethods.setHistoryStateChangeCallback();
+		if (historyEnabled) {
+			JsMethods.setHistoryStateChangeCallback();
+		}
 	}
 	
 	/**
 	 * Set history checkpoint, normally called -after- executing a change / operation (e.g. after adding a new tab)
 	 */
 	public void setHistoryCheckpoint() {
-		String currentSettingsString = view.getSettings().toString();
-		if (currentSettingsString.equals(previousCheckpointSettings) == false) {
-			//only add new checkpoint when the settings are different than the last one
-			previousCheckpointSettings = currentSettingsString;
-			JsMethods.pushHistoryState(currentSettingsString, view.getSettings().getBrowserTitle(), "");
+		if (historyEnabled) {
+			String currentSettingsString = view.getSettings().toString();
+			if (currentSettingsString.equals(previousCheckpointSettings) == false) {
+				//only add new checkpoint when the settings are different than the last one
+				previousCheckpointSettings = currentSettingsString;
+				JsMethods.pushHistoryState(currentSettingsString, view.getSettings().getBrowserTitle(), "");
+			}
 		}
 	}
 	
@@ -54,9 +60,11 @@ public class HistoryHelper {
 	 * Set history checkpoint, normally called -after- executing a change / operation (e.g. after adding a new tab)
 	 */
 	public void replaceHistoryState() {
-		String currentSettingsString = view.getSettings().toString();
-		previousCheckpointSettings = currentSettingsString;
-		JsMethods.replaceHistoryState(currentSettingsString, view.getSettings().getBrowserTitle(), "");
+		if (historyEnabled) {
+			String currentSettingsString = view.getSettings().toString();
+			previousCheckpointSettings = currentSettingsString;
+			JsMethods.replaceHistoryState(currentSettingsString, view.getSettings().getBrowserTitle(), "");
+		}
 	}
 	
 	public void onHistoryStateChange() {
