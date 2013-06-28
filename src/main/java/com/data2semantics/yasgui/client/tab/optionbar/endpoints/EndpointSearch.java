@@ -67,12 +67,7 @@ public class EndpointSearch extends VLayout {
 		bottomSpacer.setHeight(3);
 		LayoutSpacer topSpacer = new LayoutSpacer();
 		topSpacer.setHeight100();
-		
-		
-		
 		addMembers(topSpacer, addImgButton(), bottomSpacer);
-		
-		
 	}
 	
 	private HLayout addImgButton() {
