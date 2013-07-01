@@ -126,9 +126,9 @@ public class Compatabilities extends Window {
 		hlayout.addMember(getIcon(historySupported));
 		hlayout.addMember(getRowName("HTML5 History"));
 		if (historySupported) {
-			hlayout.addMember(getExplanation("Supported by your browser. Allows for client-side caching, resulting in faster page loads"));
+			hlayout.addMember(getExplanation("Supported by your browser. You can use the browser 'back' button to return to previous YASGUI states"));
 		} else {
-			hlayout.addMember(getExplanation("Not supported by your browser. This results in slightly slower page loads, as client-side caching is not possible"));
+			hlayout.addMember(getExplanation("Not supported by your browser. You won't be able to go back (using the browser 'back' button) to previous YASGUI states"));
 		}
 		hlayout.addMember(getLink(URL_COMPATABILTIES_HISTORY));
 		
