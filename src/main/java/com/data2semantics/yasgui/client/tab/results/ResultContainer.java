@@ -28,6 +28,7 @@ package com.data2semantics.yasgui.client.tab.results;
 
 import java.util.HashMap;
 import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.tab.QueryTab;
@@ -205,8 +206,6 @@ public class ResultContainer extends VLayout {
 		HLayout empty = new HLayout();
 		empty.setDefaultLayoutAlign(VerticalAlignment.CENTER);
 		empty.setHeight(50);
-		LayoutSpacer spacer = new LayoutSpacer();
-		spacer.setWidth100();
 		empty.setWidth100();
 		
 		Img cross = new Img();
@@ -218,10 +217,10 @@ public class ResultContainer extends VLayout {
 		emptyMessage.setAutoHeight();
 		emptyMessage.setStyleName("queryResultText");
 		emptyMessage.setWidth(70);
-		empty.addMember(spacer);
+		empty.addMember(Helper.getHSpacer());
 		empty.addMember(cross);
 		empty.addMember(emptyMessage);
-		empty.addMember(spacer);
+		empty.addMember(Helper.getHSpacer());
 		
 		addMember(empty);
 	}

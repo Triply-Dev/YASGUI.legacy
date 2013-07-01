@@ -105,9 +105,7 @@ public class LinkCreator extends ImgButton {
 
 	private VLayout getWindowContent() {
 		VLayout layout = new VLayout();
-		LayoutSpacer spacer1 = new LayoutSpacer();
-		spacer1.setHeight100();
-		layout.addMember(spacer1);
+		layout.addMember(Helper.getVSpacer());
 		
 		layout.addMember(getLinkText());
 		
@@ -121,9 +119,7 @@ public class LinkCreator extends ImgButton {
 		
 		layout.addMember(belowLink);
 		
-		LayoutSpacer spacer2 = new LayoutSpacer();
-		spacer2.setHeight100();
-		layout.addMember(spacer2);
+		layout.addMember(Helper.getVSpacer());
 		
 		Scheduler.get().scheduleDeferred(new ScheduledCommand(){
 			@Override

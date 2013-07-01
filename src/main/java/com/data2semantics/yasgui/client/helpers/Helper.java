@@ -65,6 +65,7 @@ import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
+import com.smartgwt.client.widgets.layout.LayoutSpacer;
 
 public class Helper {
 	private static String CRAWL_USER_AGENTS = "googlebot|msnbot|baidu|curl|wget|Mediapartners-Google|slurp|ia_archiver|Gigabot|libwww-perl|lwp-trivial|bingbot";
@@ -305,5 +306,15 @@ public class Helper {
 		}
 		return baseUrl + (argsString.length() > 0 ? "?" + argsString: "");
 		
+	}
+	public static LayoutSpacer getVSpacer() {
+		LayoutSpacer spacer = new LayoutSpacer();
+		spacer.setHeight100();
+		return spacer;
+	}
+	public static LayoutSpacer getHSpacer() {
+		LayoutSpacer spacer = new LayoutSpacer();
+		spacer.setWidth100();
+		return spacer;
 	}
 }
