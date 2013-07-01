@@ -124,9 +124,7 @@ public class QueryTab extends Tab {
 		queryConfigMenu = new QueryConfigMenu(view);
 		queryOptions.addMember(queryConfigMenu);
 		
-		LayoutSpacer spacer = new LayoutSpacer();
-		spacer.setWidth100();
-		queryOptions.addMember(spacer);
+		queryOptions.addMember(Helper.getHSpacer());
 		
 		
 		linkCreator = new LinkCreator(view);

@@ -167,9 +167,7 @@ public class AddToBookmarks extends Img {
 				});
 			}
 		});
-		LayoutSpacer spacer = new LayoutSpacer();
-		spacer.setWidth100();
-		hlayout.addMembers(form, spacer, bookmarkButton);
+		hlayout.addMembers(form, Helper.getHSpacer(), bookmarkButton);
 		return hlayout;
 	}
 	
