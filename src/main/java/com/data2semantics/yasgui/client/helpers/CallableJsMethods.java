@@ -156,6 +156,10 @@ public class CallableJsMethods {
 		view.getElements().executeQuery();
 	}
 	
+	public boolean inSingleEndpointMode() {
+		return view.getSettings().inSingleEndpointMode();
+	}
+	
 	/**
 	 * Add view methods to JS, use this for situations where a non-static GWT method needs to be called
 	 * 
@@ -222,6 +226,9 @@ public class CallableJsMethods {
 		}
 		$wnd.historyStateChangeCallback = function() {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::historyStateChangeCallback()();
+		}
+		$wnd.inSingleEndpointMode = function() {
+			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::inSingleEndpointMode()();
 		}
 	}-*/;
 }
