@@ -253,13 +253,8 @@ public class ViewElements {
 	}
 	
 	public void onQueryError(String tabId, String error) {
-		view.getLogger().severe("tabId: " + tabId);
-		view.getLogger().severe("error: " + error);
 		onQueryFinish();
 		QueryTab tab = (QueryTab)view.getTabs().getTab(tabId);
-		view.getLogger().severe(tab.toString());
-		view.getLogger().severe(tab.getTabSettings().getEndpoint());
-		view.getLogger().severe(tab.getTabSettings().getQueryString());
 		onQueryError(error, tab.getTabSettings().getEndpoint(), tab.getTabSettings().getQueryString(), tab.getTabSettings().getQueryArgs());
 	}
 	
