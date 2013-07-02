@@ -60,7 +60,6 @@ function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader,
 	if (corsEnabled[endpoint]) {
 		uri = endpoint;
 	} else {
-		console.log(inSingleEndpointMode());
 		if (!inSingleEndpointMode() && corsEnabled[endpoint] == false && endpoint.match(/https*:\/\/(localhost|127).*/) != null) {
 			//we are trying to access a local endpoint via the proxy: this won't work...
 			var errorString = "You are trying to send a query to an endpoint installed on your local computer.<br>" +

@@ -118,7 +118,7 @@ public class OpenId {
 
 					public void onSuccess(LoginResult result) {
 						if (result.isLoggedIn()) {
-							view.getLogger().severe("already logged in");
+							//already logged in
 						} else {
 							// redirect user to login page
 							Window.Location.assign(result
