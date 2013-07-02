@@ -92,6 +92,7 @@ public class ViewElements {
 		addLogo();
 		initLoadingWidget();
 		drawConfigMenu();
+		checkOpera();
 	}
 	
 
@@ -575,6 +576,14 @@ public class ViewElements {
 		showConfigMenuTooltip(fromVersionId);
 	}
 	
-	
+	private void checkOpera() {
+		//the newest opera version (15) uses webkit, works on yasgui, and is identified as 'chrome'.
+		//All incompatible opera versions are 0-14
+		//therefore, just check whether we have as name 'opera'
+		if (JsMethods.getBrowserName().equals("opera")) {
+			onError("You are using an opera browser. Users are known to encounter issues in YASGUI using this browser. <br>" +
+					"We recommend you switch to Opera 15+, or to any other modern browser");
+		}
+	}
 	
 }
