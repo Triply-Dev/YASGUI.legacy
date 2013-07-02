@@ -191,7 +191,7 @@ public class ViewElements {
 		
 		JsMethods.query(tabId, queryString, endpoint, acceptHeaders, argsString, requestMethod);
 		view.checkAndAddEndpointToDs(endpoint);
-		if (view.getSettings().useGoogleAnalytics() && view.getSettings().getTrackingQueryConsent()) {
+		if (view.getSettings().useGoogleAnalytics()) {
 			GoogleAnalyticsEvent queryEvent = new GoogleAnalyticsEvent(endpoint, queryString);
 			GoogleAnalytics.trackEvents(queryEvent);
 		}
