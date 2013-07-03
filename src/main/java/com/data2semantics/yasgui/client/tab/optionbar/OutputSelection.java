@@ -78,9 +78,10 @@ public class OutputSelection extends DynamicForm {
 	}
 	
 	public void adaptToQueryType(String queryType) {
+		
 		if (queryType == null) {
 			selectItem.setDisabled(false);
-		} else if (queryType.equals("CONSTRUCT")) {
+		} else if (queryType.equals("CONSTRUCT") || queryType.equals("DESCRIBE")) {
 			selectItem.setValue(Output.OUTPUT_RAW_RESPONSE);
 			selectItem.setDisabled(true);
 		} else {
