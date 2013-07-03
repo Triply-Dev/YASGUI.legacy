@@ -29,9 +29,22 @@
 <script src="externals/addCommands.js"></script>
   <body>
 <br><br>
-	<textarea id="test" style="width:400px;height:300px;">PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns# &gt;
-
-CONSTRUCT {?obj ?pred ?obj} WHERE {&lt;http://aers.data2semantics.org/resource/patient/john_doe&gt; ?pred ?obj} 
+	<textarea id="test" style="width:400px;height:300px;">
+	
+@prefix virtrdf:	&lt;http://www.openlinksw.com/schemas/virtrdf#&gt; .
+@prefix rdfdf:	&lt;http://www.openlinksw.com/virtrdf-data-formats#&gt; .
+&lt;http://www.openlinksw.com/sparql/virtrdf-data-formats.ttl&gt;	virtrdf:item	rdfdf:default-iid-nullable .
+@prefix rdf:	&lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
+rdfdf:default-iid-nullable	rdf:type	virtrdf:QuadMapFormat ;
+	virtrdf:qmfName	"default-iid-nullable" ;
+	virtrdf:qmfValRange-rvrRestrictions	virtrdf:SPART_VARR_IS_REF ;
+	virtrdf:qmfSuperFormats	rdfdf:default-iid-nullable-SuperFormats ;
+	virtrdf:inheritFrom	rdfdf:default-iid ;
+	virtrdf:noInherit	virtrdf:qmfValRange-rvrRestrictions .
+rdfdf:default-nullable	virtrdf:qmfSubFormatForRefs	rdfdf:default-iid-nullable .
+rdfdf:default-iid-SuperFormats	rdf:_1	rdfdf:default-iid-nullable .
+rdfdf:default-iid-nonblank-SuperFormats	rdf:_3	rdfdf:default-iid-nullable .
+rdfdf:default-iid-nonblank-nullable-SuperFormats	rdf:_1	rdfdf:default-iid-nullable . 
 
 
 

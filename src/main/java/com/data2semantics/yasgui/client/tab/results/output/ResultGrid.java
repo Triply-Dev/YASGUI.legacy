@@ -189,6 +189,7 @@ public class ResultGrid extends ListGrid {
 					return (String)value;
 					
 				}});
+			
 			field.setCellAlign(Alignment.LEFT);
 			field.setAlign(Alignment.CENTER); //for header
 			

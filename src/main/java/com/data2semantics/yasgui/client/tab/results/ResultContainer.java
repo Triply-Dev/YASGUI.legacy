@@ -126,7 +126,7 @@ public class ResultContainer extends VLayout {
 		this.contentType = contentType;
 		
 		
-		if (queryTab.getQueryType().equals("CONSTRUCT")) {
+		if (queryTab.getQueryType().equals("CONSTRUCT") || queryTab.getQueryType().equals("DESCRIBE")) {
 			drawConstructResult(resultString);
 			return;
 		}
@@ -155,7 +155,7 @@ public class ResultContainer extends VLayout {
 	
 	private void drawConstructResult(String responseString) {
 		int mode = 0;
-		if (contentType.equals(QueryConfigMenu.CONTENT_TYPE_CONSTRUCT_TURTLE)) {
+		if (contentType.contains(QueryConfigMenu.CONTENT_TYPE_CONSTRUCT_TURTLE)) {
 			mode = CONTENT_TYPE_TURTLE;
 		} else {
 			mode = CONTENT_TYPE_XML;
@@ -260,10 +260,11 @@ public class ResultContainer extends VLayout {
 		if (resultFormat == CONTENT_TYPE_JSON) {
 			mode = "json";
 		} else if (resultFormat == CONTENT_TYPE_TURTLE) {
-			mode = "turtle";
+			mode = "text/turtle";
 		} else {
 			mode = "xml";
 		}
+		view.getLogger().severe(mode);
 		//on window resize, part of the page get redrawn. This means we have to attach to codemirror again
 		//this is also called on first load
 		rawResponseOutput.addResizedHandler(new ResizedHandler(){
