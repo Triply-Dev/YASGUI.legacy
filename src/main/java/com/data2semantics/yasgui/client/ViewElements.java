@@ -176,21 +176,21 @@ public class ViewElements {
 		String endpoint = view.getSelectedTabSettings().getEndpoint();
 		String queryString = view.getSelectedTabSettings().getQueryString();
 		
-		String mainAcceptHeader;
+		String acceptHeader;
 		if (view.getSelectedTab().getQueryType().equals("CONSTRUCT")) {
 			//Change content type automatically for construct queries
-			mainAcceptHeader = view.getSelectedTabSettings().getConstructContentType();
+			acceptHeader = view.getSelectedTabSettings().getConstructContentType();
 		} else {
-			mainAcceptHeader = view.getSelectedTabSettings().getSelectContentType();
+			acceptHeader = view.getSelectedTabSettings().getSelectContentType();
 		}
-		String acceptHeaders = Helper.getAcceptHeaders(mainAcceptHeader);
+		acceptHeader += ",*/*;q=0.9";
 	
 		String argsString = view.getSelectedTabSettings().getQueryArgsAsJsonString();
 		String requestMethod = view.getSelectedTabSettings().getRequestMethod();
 		
 		
 		
-		JsMethods.query(tabId, queryString, endpoint, acceptHeaders, argsString, requestMethod);
+		JsMethods.query(tabId, queryString, endpoint, acceptHeader, argsString, requestMethod);
 		view.checkAndAddEndpointToDs(endpoint);
 		if (view.getSettings().useGoogleAnalytics()) {
 			GoogleAnalyticsEvent queryEvent = new GoogleAnalyticsEvent(endpoint, queryString);
