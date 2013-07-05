@@ -177,16 +177,6 @@ public class Helper {
 		JsMethods.drawTooltip(tProp.getId(), tProp.getContent(), tProp.getMy(), tProp.getAt(), tProp.getXOffset(), tProp.getYOffset());
 	}
 	
-	public static String getAcceptHeaders(String mainAccept) {
-		String acceptString = mainAccept + "," +
-						QueryConfigMenu.CONTENT_TYPE_CONSTRUCT_TURTLE + ";q=0.9," + 
-						QueryConfigMenu.CONTENT_TYPE_CONSTRUCT_XML + ";q=0.9," + 
-						QueryConfigMenu.CONTENT_TYPE_SELECT_JSON + ";q=0.9," +
-						QueryConfigMenu.CONTENT_TYPE_SELECT_XML + ";q=0.9," +
-						"*/*;q=0.8";
-		return acceptString;
-	}
-	
 	/**
 	 * Check whether visitor is a crawler. This way we can avoid the google screenshot containing lots of popups
 	 */
