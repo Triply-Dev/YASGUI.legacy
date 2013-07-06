@@ -29,6 +29,7 @@ package com.data2semantics.yasgui.client.tab.results.input;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.smartgwt.client.util.StringUtil;
@@ -89,5 +90,23 @@ public class ResultsHelper {
 	public static String getOpenAsResourceLinkForUri(HashMap<String, String> binding, HashMap<String, Prefix> queryPrefixes) {
 		String uri = binding.get("value");
 		return "<span class=\"clickable\" onclick=\"queryForResource('" + uri + "');\">" + ResultsHelper.getShortUri(uri, queryPrefixes) + "</span>";
+	}
+	public static boolean valueIsUri(HashMap<String, String> valueInfo) {
+		if (valueInfo.containsKey("type")) {
+			return valueInfo.get("type").equals("uri");
+		} else {
+			//try to detect manually. a csv returned from an endpoint does not contain this extra information
+			return Helper.validUrl(valueInfo.get("value"));
+		}
+	}
+	public static boolean valueIsLiteral(HashMap<String, String> valueInfo) {
+		return (valueInfo.containsKey("type") && (valueInfo.get("type").equals("literal") || valueInfo.get("type").equals("typed-literal")));
+	}
+	
+	public static void main(String[] args) {
+		HashMap<String, String> binding = new HashMap<String, String>();
+		binding.put("value", "http://www.openlinksw.com/schemas/virtrdapformat");//false
+//		binding.put("value", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type");//true
+		System.out.println(valueIsUri(binding));
 	}
 }

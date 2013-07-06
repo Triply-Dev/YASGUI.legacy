@@ -17,6 +17,8 @@
 <script src="externals/jquery-1.10.0.min.js"></script>
 <script src="externals/jquery.browser.min.js"></script>
 <script src="externals/history.js/scripts/bundled/html5/jquery.history.js"></script>
+<script src="externals/jquery.csv-0.71.js"></script>
+
 <!-- qtip lib -->
 <script src="externals/qtip/jquery.qtip.min.js"></script>
 <link rel="stylesheet" href="externals/qtip/jquery.qtip.css">
@@ -40,6 +42,7 @@
 <link rel="stylesheet" href="externals/flint/sparql.css">
 <!-- Code for adding custom keycombination/mouseclick commands to codemirror -->
 <script src="externals/addCommands.js"></script>
+
 
 <script src="externals/yasgui.js?<% out.print(StaticConfig.VERSION); %>"></script>
 <link rel="stylesheet" href="externals/yasgui.css?<% out.print(StaticConfig.VERSION); %>">

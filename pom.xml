@@ -260,6 +260,7 @@
 								<include>../externals/jquery-1.10.0.min.js</include>
 								<include>../externals/jquery.browser.min.js</include>
 								<include>../externals/qtip/jquery.qtip.min.js</include>
+								<include>../externals/jquery.csv-0.71.min.js</include>
 								<include>../externals/history.js/scripts/bundled/html5/jquery.history.js</include>
 								<include>../externals/codemirror/codemirror.js</include>
 								<include>../externals/codemirror/mode/javascript/javascript.js</include>

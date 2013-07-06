@@ -179,10 +179,9 @@ public class ResultGrid extends ListGrid {
 					HashMap<String, HashMap<String, String>> bindings = solutions.get(record.getAttributeAsInt(SOLUTION_ATTRIBUTE));
 					HashMap<String, String> binding = bindings.get(var);
 					if (binding != null) {
-						String type = binding.get("type");
-						if (type.equals("uri")) {
+						if (ResultsHelper.valueIsUri(binding)) {
 							return ResultsHelper.getOpenAsResourceLinkForUri(binding, queryPrefixes);
-						} else if (type.equals("literal") || binding.get("type").equals("typed-literal")){
+						} else if (ResultsHelper.valueIsLiteral(binding)){
 							return ResultsHelper.getLiteralFromBinding(binding);
 						}
 					}

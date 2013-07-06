@@ -53,8 +53,6 @@ package com.data2semantics.yasgui.client.helpers;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
-
-import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.google.gwt.core.client.GWT;
@@ -296,6 +294,16 @@ public class Helper {
 		}
 		return baseUrl + (argsString.length() > 0 ? "?" + argsString: "");
 		
+	}
+	
+	public static boolean validUrl (String url) {
+		 RegExp pattern = RegExp.compile("^(https?:\\/\\/)?"+ // protocol
+			"((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+			"((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+			"(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+			"(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+			"(\\#[-a-z\\d_]*)?$", "i");
+		 return pattern.test(url);	 
 	}
 	public static LayoutSpacer getVSpacer() {
 		LayoutSpacer spacer = new LayoutSpacer();
