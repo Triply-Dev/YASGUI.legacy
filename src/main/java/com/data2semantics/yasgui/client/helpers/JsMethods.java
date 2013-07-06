@@ -1,5 +1,7 @@
 package com.data2semantics.yasgui.client.helpers;
 
+import com.data2semantics.yasgui.client.tab.results.input.dlv.DlvWrapper;
+
 /*
  * #%L
  * YASGUI
@@ -523,5 +525,9 @@ public class JsMethods {
 			location = $wnd.document.referrer;
 		}
 		return location;
+	}-*/;
+	
+	public static native DlvWrapper getDlv(String csvString, String separator) /*-{
+		return $wnd.$.csv.toArrays(csvString, {"separator": separator});
 	}-*/;
 }

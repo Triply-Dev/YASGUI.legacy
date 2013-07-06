@@ -54,8 +54,10 @@ public class QueryConfigMenu extends IconMenuButton {
 	private View view;
 	private Window window;
 	private Menu mainMenu = new Menu();
-	private MenuItem selectJson;
-	private MenuItem selectXml;
+	private MenuItem selectJson = new MenuItem("JSON");
+	private MenuItem selectXml = new MenuItem("XML");
+	private MenuItem selectCsv = new MenuItem("CSV");
+	private MenuItem selectTsv = new MenuItem("TSV");
 	private MenuItem constructXml;
 	private MenuItem constructTurtle;
 	private MenuItem post;
@@ -65,6 +67,8 @@ public class QueryConfigMenu extends IconMenuButton {
 	private ParametersListGrid paramListGrid;
 	public static String CONTENT_TYPE_SELECT_JSON = "application/sparql-results+json";
 	public static String CONTENT_TYPE_SELECT_XML = "application/sparql-results+xml";
+	public static String CONTENT_TYPE_SELECT_CSV = "text/csv";
+	public static String CONTENT_TYPE_SELECT_TSV = "text/tab-separated-values";
 	public static String CONTENT_TYPE_CONSTRUCT_TURTLE = "text/turtle";
 	public static String CONTENT_TYPE_CONSTRUCT_XML = "application/rdf+xml";
 	public static String REQUEST_POST = "POST";
@@ -139,8 +143,7 @@ public class QueryConfigMenu extends IconMenuButton {
 	
 	private Menu getQueryAcceptHeadersSubMenu() {
 		Menu acceptHeadersSubMenu = new Menu();
-		selectJson = new MenuItem("JSON");
-		selectXml = new MenuItem("XML");
+
 		
 		selectJson.setCheckIfCondition(new MenuItemIfFunction(){
 			@Override
@@ -151,6 +154,16 @@ public class QueryConfigMenu extends IconMenuButton {
 			@Override
 			public boolean execute(Canvas target, Menu menu, MenuItem item) {
 				return view.getSelectedTabSettings().getSelectContentType().equals(CONTENT_TYPE_SELECT_XML);
+			}});
+		selectCsv.setCheckIfCondition(new MenuItemIfFunction(){
+			@Override
+			public boolean execute(Canvas target, Menu menu, MenuItem item) {
+				return view.getSelectedTabSettings().getSelectContentType().equals(CONTENT_TYPE_SELECT_CSV);
+			}});
+		selectTsv.setCheckIfCondition(new MenuItemIfFunction(){
+			@Override
+			public boolean execute(Canvas target, Menu menu, MenuItem item) {
+				return view.getSelectedTabSettings().getSelectContentType().equals(CONTENT_TYPE_SELECT_TSV);
 			}});
 		
 		selectJson.addClickHandler(new ClickHandler() {
@@ -167,7 +180,21 @@ public class QueryConfigMenu extends IconMenuButton {
 				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
 			}
 		});
-		acceptHeadersSubMenu.setItems(selectXml, selectJson);
+		selectCsv.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				view.getSelectedTabSettings().setSelectContentType(CONTENT_TYPE_SELECT_CSV);
+				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+			}
+		});
+		selectTsv.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				view.getSelectedTabSettings().setSelectContentType(CONTENT_TYPE_SELECT_TSV);
+				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+			}
+		});
+		acceptHeadersSubMenu.setItems(selectXml, selectJson, selectCsv, selectTsv);
 		return acceptHeadersSubMenu;
 	}
 	private Menu getConstructAcceptHeadersSubMenu() {

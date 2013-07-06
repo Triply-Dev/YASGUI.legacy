@@ -33,6 +33,7 @@ import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
+import com.data2semantics.yasgui.client.tab.results.input.DlvResults;
 import com.data2semantics.yasgui.client.tab.results.input.JsonResults;
 import com.data2semantics.yasgui.client.tab.results.input.SparqlResults;
 import com.data2semantics.yasgui.client.tab.results.input.XmlResults;
@@ -42,6 +43,7 @@ import com.data2semantics.yasgui.client.tab.results.output.ResultGrid;
 import com.data2semantics.yasgui.client.tab.results.output.SimpleGrid;
 import com.data2semantics.yasgui.shared.Output;
 import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
+import com.data2semantics.yasgui.shared.exceptions.SparqlParseException;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
@@ -57,7 +59,6 @@ import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ResizedEvent;
 import com.smartgwt.client.widgets.events.ResizedHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
-import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 public class ResultContainer extends VLayout {
@@ -69,6 +70,8 @@ public class ResultContainer extends VLayout {
 	public static int CONTENT_TYPE_JSON = 1;
 	public static int CONTENT_TYPE_XML = 2;
 	public static int CONTENT_TYPE_TURTLE = 3;
+	public static int CONTENT_TYPE_CSV = 4;
+	public static int CONTENT_TYPE_TSV = 5;
 	
 	private String contentType;
 	private View view;
@@ -142,6 +145,10 @@ public class ResultContainer extends VLayout {
 			resultFormat = ResultContainer.CONTENT_TYPE_JSON;
 		} else if (contentType.contains("sparql-results+xml")) {
 			resultFormat = ResultContainer.CONTENT_TYPE_XML;
+		} else if (contentType.contains(QueryConfigMenu.CONTENT_TYPE_SELECT_CSV)) {
+			resultFormat = ResultContainer.CONTENT_TYPE_CSV;
+		} else if (contentType.contains(QueryConfigMenu.CONTENT_TYPE_SELECT_TSV)) {
+			resultFormat = ResultContainer.CONTENT_TYPE_TSV;
 		} else {
 			//assuming select query here (no construct)
 			resultFormat = detectContentType(resultString);
@@ -165,14 +172,12 @@ public class ResultContainer extends VLayout {
 	
 	public void addQueryResult(String responseString, int resultFormat) {
 		reset();
-		String queryType = JsMethods.getQueryType(view.getSelectedTab().getQueryTextArea().getInputId());
-		if (!queryTypes.containsKey(queryType)) {
-			view.getElements().onError("No valid query type detected for this query");
-			return;
-		}
-		int queryMode = queryTypes.get(queryType);
-		
 		try {
+			String queryType = JsMethods.getQueryType(view.getSelectedTab().getQueryTextArea().getInputId());
+			if (!queryTypes.containsKey(queryType)) {
+				throw new SparqlParseException("No valid query type detected for this query");
+			}
+			int queryMode = queryTypes.get(queryType);
 			if (queryMode == RESULT_TYPE_INSERT) {
 				setResultMessage(Imgs.get(Imgs.CHECKBOX), "Done");
 			} else if (queryMode == RESULT_TYPE_BOOLEAN || queryMode == RESULT_TYPE_TABLE) {
@@ -183,9 +188,14 @@ public class ResultContainer extends VLayout {
 					SparqlResults results;
 					if (resultFormat == CONTENT_TYPE_JSON) {
 						results = new JsonResults(responseString, view, queryMode);
-					} else {
-						//xml
+					} else if (resultFormat == CONTENT_TYPE_XML) {
 						results = new XmlResults(responseString, view, queryMode);
+					} else if (resultFormat == CONTENT_TYPE_CSV) {
+						results = new DlvResults(responseString, view, queryMode, ",");
+					} else if (resultFormat == CONTENT_TYPE_TSV) {
+						results = new DlvResults(responseString, view, queryMode, "\t");
+					} else {
+						throw new SparqlParseException("no valid content type found for this response");
 					}
 					if (queryMode == RESULT_TYPE_BOOLEAN){
 						drawResultsAsBoolean(results);
@@ -303,5 +313,7 @@ public class ResultContainer extends VLayout {
 		
 		return contentType;
 	}
+	
+
 	
 }
