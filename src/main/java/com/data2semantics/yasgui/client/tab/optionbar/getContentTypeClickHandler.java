@@ -49,7 +49,7 @@ import com.smartgwt.client.widgets.menu.MenuItemIfFunction;
 import com.smartgwt.client.widgets.menu.events.ClickHandler;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 
-public class QueryConfigMenu extends IconMenuButton {
+public class getContentTypeClickHandler extends IconMenuButton {
 	private static final int TOOLTIP_VERSION_QUERY_CONFIG = 1;
 	private View view;
 	private Window window;
@@ -58,8 +58,10 @@ public class QueryConfigMenu extends IconMenuButton {
 	private MenuItem selectXml = new MenuItem("XML");
 	private MenuItem selectCsv = new MenuItem("CSV");
 	private MenuItem selectTsv = new MenuItem("TSV");
-	private MenuItem constructXml;
-	private MenuItem constructTurtle;
+	private MenuItem constructTurtle = new MenuItem("Turtle");
+	private MenuItem constructXml = new MenuItem("RDF/XML");
+	private MenuItem constructCsv = new MenuItem("CSV");
+	private MenuItem constructTsv = new MenuItem("TSV");
 	private MenuItem post;
 	private MenuItem get;
 	private static int WINDOW_HEIGHT = 200;
@@ -74,7 +76,7 @@ public class QueryConfigMenu extends IconMenuButton {
 	public static String REQUEST_POST = "POST";
 	public static String REQUEST_GET = "GET";
 
-	public QueryConfigMenu(final View view) {
+	public getContentTypeClickHandler(final View view) {
 		this.view = view;
 		
 		mainMenu.setItems(getQueryParamMenuItem(), getAcceptHeaderMenuItem(), getRequestMethodMenuItem());
@@ -144,93 +146,53 @@ public class QueryConfigMenu extends IconMenuButton {
 	private Menu getQueryAcceptHeadersSubMenu() {
 		Menu acceptHeadersSubMenu = new Menu();
 
+		selectJson.setCheckIfCondition(getContentTypeCheckIfCondition(CONTENT_TYPE_SELECT_JSON));
+		selectXml.setCheckIfCondition(getContentTypeCheckIfCondition(CONTENT_TYPE_SELECT_XML));
+		selectCsv.setCheckIfCondition(getContentTypeCheckIfCondition(CONTENT_TYPE_SELECT_CSV));
+		selectTsv.setCheckIfCondition(getContentTypeCheckIfCondition(CONTENT_TYPE_SELECT_TSV));
 		
-		selectJson.setCheckIfCondition(new MenuItemIfFunction(){
-			@Override
-			public boolean execute(Canvas target, Menu menu, MenuItem item) {
-				return view.getSelectedTabSettings().getSelectContentType().equals(CONTENT_TYPE_SELECT_JSON);
-			}});
-		selectXml.setCheckIfCondition(new MenuItemIfFunction(){
-			@Override
-			public boolean execute(Canvas target, Menu menu, MenuItem item) {
-				return view.getSelectedTabSettings().getSelectContentType().equals(CONTENT_TYPE_SELECT_XML);
-			}});
-		selectCsv.setCheckIfCondition(new MenuItemIfFunction(){
-			@Override
-			public boolean execute(Canvas target, Menu menu, MenuItem item) {
-				return view.getSelectedTabSettings().getSelectContentType().equals(CONTENT_TYPE_SELECT_CSV);
-			}});
-		selectTsv.setCheckIfCondition(new MenuItemIfFunction(){
-			@Override
-			public boolean execute(Canvas target, Menu menu, MenuItem item) {
-				return view.getSelectedTabSettings().getSelectContentType().equals(CONTENT_TYPE_SELECT_TSV);
-			}});
-		
-		selectJson.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(MenuItemClickEvent event) {
-				view.getSelectedTabSettings().setSelectContentType(CONTENT_TYPE_SELECT_JSON);
-				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
-			}
-		});
-		selectXml.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(MenuItemClickEvent event) {
-				view.getSelectedTabSettings().setSelectContentType(CONTENT_TYPE_SELECT_XML);
-				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
-			}
-		});
-		selectCsv.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(MenuItemClickEvent event) {
-				view.getSelectedTabSettings().setSelectContentType(CONTENT_TYPE_SELECT_CSV);
-				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
-			}
-		});
-		selectTsv.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(MenuItemClickEvent event) {
-				view.getSelectedTabSettings().setSelectContentType(CONTENT_TYPE_SELECT_TSV);
-				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
-			}
-		});
+		selectJson.addClickHandler(getContentTypeClickHandler(CONTENT_TYPE_SELECT_JSON));
+		selectXml.addClickHandler(getContentTypeClickHandler(CONTENT_TYPE_SELECT_XML));
+		selectCsv.addClickHandler(getContentTypeClickHandler(CONTENT_TYPE_SELECT_CSV));
+		selectTsv.addClickHandler(getContentTypeClickHandler(CONTENT_TYPE_SELECT_TSV));
+
 		acceptHeadersSubMenu.setItems(selectXml, selectJson, selectCsv, selectTsv);
 		return acceptHeadersSubMenu;
 	}
 	private Menu getConstructAcceptHeadersSubMenu() {
 		Menu acceptHeadersSubMenu = new Menu();
-		constructTurtle = new MenuItem("Turtle");
-		constructXml = new MenuItem("RDF/XML");
 		
-		constructTurtle.setCheckIfCondition(new MenuItemIfFunction(){
-			@Override
-			public boolean execute(Canvas target, Menu menu, MenuItem item) {
-				return view.getSelectedTabSettings().getConstructContentType().equals(CONTENT_TYPE_CONSTRUCT_TURTLE);
-			}});
-		constructXml.setCheckIfCondition(new MenuItemIfFunction(){
-			@Override
-			public boolean execute(Canvas target, Menu menu, MenuItem item) {
-				return view.getSelectedTabSettings().getConstructContentType().equals(CONTENT_TYPE_CONSTRUCT_XML);
-			}});
+		constructTurtle.setCheckIfCondition(getContentTypeCheckIfCondition(CONTENT_TYPE_CONSTRUCT_TURTLE));
+		constructXml.setCheckIfCondition(getContentTypeCheckIfCondition(CONTENT_TYPE_CONSTRUCT_XML));
+		constructCsv.setCheckIfCondition(getContentTypeCheckIfCondition(CONTENT_TYPE_SELECT_CSV));
+		constructTsv.setCheckIfCondition(getContentTypeCheckIfCondition(CONTENT_TYPE_SELECT_TSV));
 		
-		constructTurtle.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(MenuItemClickEvent event) {
-				view.getSelectedTabSettings().setConstructContentType(CONTENT_TYPE_CONSTRUCT_TURTLE);
-				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
-			}
-		});
-		constructXml.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(MenuItemClickEvent event) {
-				view.getSelectedTabSettings().setConstructContentType(CONTENT_TYPE_CONSTRUCT_XML);
-				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
-			}
-		});
-		acceptHeadersSubMenu.setItems(constructTurtle, constructXml);
+		constructTurtle.addClickHandler(getContentTypeClickHandler(CONTENT_TYPE_CONSTRUCT_TURTLE));
+		constructXml.addClickHandler(getContentTypeClickHandler(CONTENT_TYPE_CONSTRUCT_XML));
+		constructCsv.addClickHandler(getContentTypeClickHandler(CONTENT_TYPE_SELECT_CSV));
+		constructTsv.addClickHandler(getContentTypeClickHandler(CONTENT_TYPE_SELECT_TSV));
+		
+		acceptHeadersSubMenu.setItems(constructTurtle, constructXml, constructCsv, constructTsv);
 		return acceptHeadersSubMenu;
 	}
-
+	
+	private ClickHandler getContentTypeClickHandler(final String contentType) {
+		return new ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				view.getSelectedTabSettings().setConstructContentType(contentType);
+				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+				view.getSelectedTab().adaptInterfaceToQueryType();
+			}
+		};
+	}
+	private MenuItemIfFunction getContentTypeCheckIfCondition(final String contentType) {
+		return new MenuItemIfFunction(){
+		@Override
+		public boolean execute(Canvas target, Menu menu, MenuItem item) {
+			return view.getSelectedTabSettings().getConstructContentType().equals(contentType);
+		}};
+	}
 	private MenuItem getQueryParamMenuItem() {
 		MenuItem queryParam = new MenuItem("Add query parameters");
 		queryParam.addClickHandler(new ClickHandler() {

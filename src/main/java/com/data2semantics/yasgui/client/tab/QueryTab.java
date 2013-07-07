@@ -38,7 +38,7 @@ import com.data2semantics.yasgui.client.tab.optionbar.AddToBookmarks;
 import com.data2semantics.yasgui.client.tab.optionbar.DownloadLink;
 import com.data2semantics.yasgui.client.tab.optionbar.LinkCreator;
 import com.data2semantics.yasgui.client.tab.optionbar.OutputSelection;
-import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
+import com.data2semantics.yasgui.client.tab.optionbar.getContentTypeClickHandler;
 import com.data2semantics.yasgui.client.tab.optionbar.bookmarks.BookmarkedQueries;
 import com.data2semantics.yasgui.client.tab.optionbar.endpoints.EndpointInput;
 import com.data2semantics.yasgui.client.tab.optionbar.endpoints.EndpointSearch;
@@ -65,7 +65,7 @@ public class QueryTab extends Tab {
 	private TabSettings tabSettings;
 	private OutputSelection outputSelection;
 	private EndpointSearch searchIcon;
-	private QueryConfigMenu queryConfigMenu;
+	private getContentTypeClickHandler queryConfigMenu;
 	private DownloadLink downloadLink;
 	private BookmarkedQueries bookmarkedQueries;
 	private AddToBookmarks addToBookmarks;
@@ -121,7 +121,7 @@ public class QueryTab extends Tab {
 			queryOptions.addMember(downloadLink);
 		}
 		
-		queryConfigMenu = new QueryConfigMenu(view);
+		queryConfigMenu = new getContentTypeClickHandler(view);
 		queryOptions.addMember(queryConfigMenu);
 		
 		queryOptions.addMember(Helper.getHSpacer());
@@ -253,6 +253,10 @@ public class QueryTab extends Tab {
 	}
 	public void setQueryType(String queryType) {
 		this.queryType = queryType;
+		adaptInterfaceToQueryType();
+	}
+	
+	public void adaptInterfaceToQueryType() {
 		outputSelection.adaptToQueryType(queryType);
 	}
 	

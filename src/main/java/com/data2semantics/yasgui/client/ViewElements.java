@@ -177,7 +177,7 @@ public class ViewElements {
 		String queryString = view.getSelectedTabSettings().getQueryString();
 		
 		String acceptHeader;
-		if (view.getSelectedTab().getQueryType().equals("CONSTRUCT")) {
+		if (view.getSelectedTab().getQueryType().equals("CONSTRUCT") || view.getSelectedTab().getQueryType().equals("DESCRIBE")) {
 			//Change content type automatically for construct queries
 			acceptHeader = view.getSelectedTabSettings().getConstructContentType();
 		} else {
