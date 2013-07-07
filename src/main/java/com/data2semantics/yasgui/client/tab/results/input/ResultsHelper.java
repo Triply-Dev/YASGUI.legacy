@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.data2semantics.yasgui.client.helpers.Helper;
+import com.data2semantics.yasgui.client.tab.optionbar.getContentTypeClickHandler;
 import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.smartgwt.client.util.StringUtil;
@@ -55,6 +56,9 @@ public class ResultsHelper {
 		return literal;
 	}
 	
+	public static boolean tabularContentType(String contentType) {
+		return contentType.contains(getContentTypeClickHandler.CONTENT_TYPE_SELECT_CSV) || contentType.contains(getContentTypeClickHandler.CONTENT_TYPE_SELECT_TSV);
+	}
 	/**
 	 * Check for a uri whether there is a prefix defined in the query.
 	 * 
