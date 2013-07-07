@@ -28,7 +28,7 @@ package com.data2semantics.yasgui.client.tab.results.input;
 
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
-import com.data2semantics.yasgui.client.tab.results.ResultContainer;
+import com.data2semantics.yasgui.client.tab.results.ResultContainer.ResultType;
 import com.data2semantics.yasgui.client.tab.results.input.dlv.DlvWrapper;
 import com.data2semantics.yasgui.client.tab.results.input.dlv.Row;
 import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
@@ -42,13 +42,13 @@ import java.util.HashMap;
 public class DlvResults implements SparqlResults {
 	@SuppressWarnings("unused")
 	private View view;
-	private int queryMode;
+	private ResultType queryMode;
 	private boolean booleanResult;
 	private String separator;
 	private ArrayList<String> variables = new ArrayList<String>();
 	
 	private ArrayList<HashMap<String, HashMap<String, String>>> bindings = new ArrayList<HashMap<String, HashMap<String, String>>>();
-	public DlvResults(String dlvString, View view, int queryMode, String separator) throws SparqlParseException, SparqlEmptyException {
+	public DlvResults(String dlvString, View view, ResultType queryMode, String separator) throws SparqlParseException, SparqlEmptyException {
 		this.view = view;
 		this.queryMode = queryMode;
 		this.separator = separator;
@@ -74,9 +74,9 @@ public class DlvResults implements SparqlResults {
 		if (dlv.length() < 2) { //first row contains vars
 			throw new SparqlEmptyException("No results");
 		}
-		if (queryMode == ResultContainer.RESULT_TYPE_TABLE) {
+		if (queryMode == ResultType.Table) {
 			storeTable(dlv);
-		} else if (queryMode == ResultContainer.RESULT_TYPE_BOOLEAN) {
+		} else if (queryMode == ResultType.Boolean) {
 			storeBooleanResult(dlv);
 		}
 	}	

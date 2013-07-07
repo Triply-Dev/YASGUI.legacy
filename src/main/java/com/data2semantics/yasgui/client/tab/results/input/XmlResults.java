@@ -27,7 +27,7 @@ package com.data2semantics.yasgui.client.tab.results.input;
  */
 
 import com.data2semantics.yasgui.client.View;
-import com.data2semantics.yasgui.client.tab.results.ResultContainer;
+import com.data2semantics.yasgui.client.tab.results.ResultContainer.ResultType;
 import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
 import com.data2semantics.yasgui.shared.exceptions.SparqlParseException;
 import com.google.gwt.xml.client.Document;
@@ -44,12 +44,12 @@ import java.util.HashMap;
 public class XmlResults implements SparqlResults{
 	@SuppressWarnings("unused")
 	private View view;
-	private int queryMode;
+	private ResultType queryMode;
 	private boolean booleanResult;
 	private ArrayList<String> variables = new ArrayList<String>();
 	
 	private ArrayList<HashMap<String, HashMap<String, String>>> bindings = new ArrayList<HashMap<String, HashMap<String, String>>>();
-	public XmlResults(String xmlString, View view, int queryMode) throws SparqlParseException, SparqlEmptyException {
+	public XmlResults(String xmlString, View view, ResultType queryMode) throws SparqlParseException, SparqlEmptyException {
 		this.view = view;
 		this.queryMode = queryMode;
 		processResults(xmlString);
@@ -69,10 +69,10 @@ public class XmlResults implements SparqlResults{
 		//no need for this anymore, and it can be quite big. Fingers crossed and hope garbage collector deals witht this properly
 		xmlString = null; 
 		
-		if (queryMode == ResultContainer.RESULT_TYPE_TABLE) {
+		if (queryMode == ResultType.Table) {
 			storeVariables(xmlDoc);
 			storeBindings(xmlDoc);
-		} else if (queryMode == ResultContainer.RESULT_TYPE_BOOLEAN) {
+		} else if (queryMode == ResultType.Boolean) {
 			storeBooleanResult(xmlDoc);
 		}
 		
