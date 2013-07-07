@@ -27,7 +27,7 @@ package com.data2semantics.yasgui.client.tab.results.input;
  */
 
 import com.data2semantics.yasgui.client.View;
-import com.data2semantics.yasgui.client.tab.results.ResultContainer;
+import com.data2semantics.yasgui.client.tab.results.ResultContainer.ResultType;
 import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
 import com.data2semantics.yasgui.shared.exceptions.SparqlParseException;
 import com.google.gwt.json.client.JSONArray;
@@ -47,7 +47,7 @@ import java.util.Set;
 public class JsonResults implements SparqlResults{
 	@SuppressWarnings("unused")
 	private View view;
-	private int queryMode;
+	private ResultType queryMode;
 	private boolean booleanResult;
 	private ArrayList<String> variables = new ArrayList<String>();
 	
@@ -63,7 +63,7 @@ public class JsonResults implements SparqlResults{
 	               }
 	             ]**/
 	private ArrayList<HashMap<String, HashMap<String, String>>> bindings = new ArrayList<HashMap<String, HashMap<String, String>>>();
-	public JsonResults(String jsonString, View view, int queryMode) throws SparqlParseException, SparqlEmptyException {
+	public JsonResults(String jsonString, View view, ResultType queryMode) throws SparqlParseException, SparqlEmptyException {
 		this.view = view;
 		this.queryMode = queryMode;
 		processResults(jsonString);
@@ -88,10 +88,10 @@ public class JsonResults implements SparqlResults{
 		JSONObject queryResult = jsonValue.isObject();
 		if (queryResult == null) throw new SparqlParseException("Unable to parse query json string");
 		
-		if (queryMode == ResultContainer.RESULT_TYPE_TABLE) {
+		if (queryMode == ResultType.Table) {
 			storeVariables(queryResult);
 			storeBindings(queryResult);
-		} else if (queryMode == ResultContainer.RESULT_TYPE_BOOLEAN) {
+		} else if (queryMode == ResultType.Boolean) {
 			storeBooleanResult(queryResult);
 		}
 	}	

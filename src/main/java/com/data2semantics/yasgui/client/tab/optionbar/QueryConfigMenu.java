@@ -130,9 +130,9 @@ public class QueryConfigMenu extends IconMenuButton {
 		MenuItem headersMenuItem = new MenuItem("Accept headers");
 
 		Menu headersMenu = new Menu();
-		MenuItem queryHeaders = new MenuItem("Select");
+		MenuItem queryHeaders = new MenuItem("SELECT");
 		queryHeaders.setSubmenu(getQueryAcceptHeadersSubMenu());
-		MenuItem constructHeaders = new MenuItem("Construct");
+		MenuItem constructHeaders = new MenuItem("Graph");
 		constructHeaders.setSubmenu(getConstructAcceptHeadersSubMenu());
 		headersMenu.setItems(queryHeaders, constructHeaders);
 		
@@ -200,7 +200,7 @@ public class QueryConfigMenu extends IconMenuButton {
 	private Menu getConstructAcceptHeadersSubMenu() {
 		Menu acceptHeadersSubMenu = new Menu();
 		constructTurtle = new MenuItem("Turtle");
-		constructXml = new MenuItem("XML");
+		constructXml = new MenuItem("RDF/XML");
 		
 		constructTurtle.setCheckIfCondition(new MenuItemIfFunction(){
 			@Override

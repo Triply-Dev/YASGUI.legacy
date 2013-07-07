@@ -63,9 +63,10 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 public class ResultContainer extends VLayout {
 	public static String XSD_DATA_PREFIX = "http://www.w3.org/2001/XMLSchema#";
-	public static int RESULT_TYPE_TABLE = 1;
-	public static int RESULT_TYPE_BOOLEAN = 2;
-	public static int RESULT_TYPE_INSERT = 3;
+	
+	public enum ResultType {
+		Table, Boolean, Insert;
+	}
 	
 	public static int CONTENT_TYPE_JSON = 1;
 	public static int CONTENT_TYPE_XML = 2;
@@ -77,7 +78,7 @@ public class ResultContainer extends VLayout {
 	private View view;
 	private QueryTab queryTab;
 	private RawResponse rawResponseOutput;
-	HashMap<String, Integer> queryTypes = new HashMap<String, Integer>();
+	HashMap<String, ResultType> queryTypes = new HashMap<String, ResultType>();
 	public ResultContainer(View view, QueryTab queryTab) {
 		setPossibleQueryTypes();
 		this.view = view;
@@ -85,21 +86,21 @@ public class ResultContainer extends VLayout {
 	}
 	
 	private void setPossibleQueryTypes() {
-		queryTypes.put("SELECT", RESULT_TYPE_TABLE);
-		queryTypes.put("ASK", RESULT_TYPE_BOOLEAN);
-		queryTypes.put("CONSTRUCT", RESULT_TYPE_TABLE);
-		queryTypes.put("INSERT", RESULT_TYPE_INSERT);
-		queryTypes.put("DESCRIBE", RESULT_TYPE_TABLE);
-		queryTypes.put("LOAD", RESULT_TYPE_INSERT);
-		queryTypes.put("CLEAR", RESULT_TYPE_INSERT);
-		queryTypes.put("DROP", RESULT_TYPE_INSERT);
-		queryTypes.put("ADD", RESULT_TYPE_INSERT);
-		queryTypes.put("MOVE", RESULT_TYPE_INSERT);
-		queryTypes.put("COPY", RESULT_TYPE_INSERT);
-		queryTypes.put("CREATE", RESULT_TYPE_INSERT);
-		queryTypes.put("INSERT", RESULT_TYPE_INSERT);
-		queryTypes.put("DELETE", RESULT_TYPE_INSERT);
-		queryTypes.put("WITH", RESULT_TYPE_INSERT); //used in MODIFY
+		queryTypes.put("SELECT", ResultType.Table);
+		queryTypes.put("ASK", ResultType.Boolean);
+		queryTypes.put("CONSTRUCT", ResultType.Table);
+		queryTypes.put("INSERT", ResultType.Insert);
+		queryTypes.put("DESCRIBE", ResultType.Table);
+		queryTypes.put("LOAD", ResultType.Insert);
+		queryTypes.put("CLEAR", ResultType.Insert);
+		queryTypes.put("DROP", ResultType.Insert);
+		queryTypes.put("ADD", ResultType.Insert);
+		queryTypes.put("MOVE", ResultType.Insert);
+		queryTypes.put("COPY", ResultType.Insert);
+		queryTypes.put("CREATE", ResultType.Insert);
+		queryTypes.put("INSERT", ResultType.Insert);
+		queryTypes.put("DELETE", ResultType.Insert);
+		queryTypes.put("WITH", ResultType.Insert); //used in MODIFY
 	}
 	
 	/**
@@ -177,33 +178,28 @@ public class ResultContainer extends VLayout {
 			if (!queryTypes.containsKey(queryType)) {
 				throw new SparqlParseException("No valid query type detected for this query");
 			}
-			int queryMode = queryTypes.get(queryType);
-			if (queryMode == RESULT_TYPE_INSERT) {
-				setResultMessage(Imgs.get(Imgs.CHECKBOX), "Done");
-			} else if (queryMode == RESULT_TYPE_BOOLEAN || queryMode == RESULT_TYPE_TABLE) {
-				String outputFormat = view.getSelectedTabSettings().getOutputFormat();
+			ResultType queryMode = queryTypes.get(queryType);
+			switch (queryTypes.get(queryType)) {
+            case Insert:
+            	setResultMessage(Imgs.get(Imgs.CHECKBOX), "Done");
+                    break;
+            case Boolean:
+            case Table:
+            	String outputFormat = view.getSelectedTabSettings().getOutputFormat();
 				if (outputFormat.equals(Output.OUTPUT_RAW_RESPONSE)) {
 					drawRawResponse(responseString, resultFormat);
 				} else {
-					SparqlResults results;
-					if (resultFormat == CONTENT_TYPE_JSON) {
-						results = new JsonResults(responseString, view, queryMode);
-					} else if (resultFormat == CONTENT_TYPE_XML) {
-						results = new XmlResults(responseString, view, queryMode);
-					} else if (resultFormat == CONTENT_TYPE_CSV) {
-						results = new DlvResults(responseString, view, queryMode, ",");
-					} else if (resultFormat == CONTENT_TYPE_TSV) {
-						results = new DlvResults(responseString, view, queryMode, "\t");
-					} else {
-						throw new SparqlParseException("no valid content type found for this response");
-					}
-					if (queryMode == RESULT_TYPE_BOOLEAN){
+					SparqlResults results = getResultsFromString(responseString, resultFormat, queryMode);
+					if (queryMode == ResultType.Boolean){
 						drawResultsAsBoolean(results);
-					} else if (queryMode == RESULT_TYPE_TABLE) {
+					} else if (queryMode == ResultType.Table) {
 						drawResultsInTable(results, outputFormat);
 					}
 				}
-			}
+				break;
+                  
+    }
+		
 		} catch (SparqlEmptyException e) {
 			setResultMessage(Imgs.get(Imgs.CROSS), e.getMessage());
 		} catch (Exception e) {
@@ -212,6 +208,21 @@ public class ResultContainer extends VLayout {
 		} 
 	}
 	
+	private SparqlResults getResultsFromString(String responseString, int resultFormat, ResultType queryMode) {
+		SparqlResults results = null;
+		if (resultFormat == CONTENT_TYPE_JSON) {
+			results = new JsonResults(responseString, view, queryMode);
+		} else if (resultFormat == CONTENT_TYPE_XML) {
+			results = new XmlResults(responseString, view, queryMode);
+		} else if (resultFormat == CONTENT_TYPE_CSV) {
+			results = new DlvResults(responseString, view, queryMode, ",");
+		} else if (resultFormat == CONTENT_TYPE_TSV) {
+			results = new DlvResults(responseString, view, queryMode, "\t");
+		} else {
+			throw new SparqlParseException("no valid content type found for this response");
+		}
+		return results;
+	}
 	public void setResultMessage(String iconSrc, String message) {
 		HLayout empty = new HLayout();
 		empty.setDefaultLayoutAlign(VerticalAlignment.CENTER);
