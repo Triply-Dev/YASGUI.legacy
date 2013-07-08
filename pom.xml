@@ -267,7 +267,7 @@
 								<include>../externals/codemirror/mode/xml/xml.js</include>
 								<include>../externals/codemirror/mode/turtle/turtle.js</include>
 								<include>../externals/codemirror/util/simple-hint.js</include>
-								<include>../externals/prefix-hint.js</include>
+								<include>../externals/yasguiHint.js</include>
 								<include>../externals/codemirror/util/searchcursor.js</include>
 								<include>../externals/codemirror/util/match-highlighter.js</include>
 								<include>../externals/flint/sparql.js</include>
