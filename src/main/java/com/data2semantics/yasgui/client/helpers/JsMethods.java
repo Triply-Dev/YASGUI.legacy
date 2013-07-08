@@ -73,7 +73,7 @@ public class JsMethods {
 								.matchHighlight("CodeMirror-matchhighlight");
 					},
 					onChange : function(cm) {
-						$wnd.CodeMirror.simpleHint(cm, $wnd.CodeMirror.prefixHint);
+						$wnd.CodeMirror.simpleHint(cm, $wnd.CodeMirror.allAutoCompletions);
 						$wnd.appendPrefixIfNeeded(cm);
 					},
 					onFocus: function(cm) {
@@ -229,6 +229,13 @@ public class JsMethods {
 		$wnd.prefixes = eval(prefixes);
 	}-*/;
 	
+	public static native void setAutocompleteProperties(String endpoint, String properties) /*-{
+		$wnd.properties[endpoint] = eval(properties);
+	}-*/;
+	public static native boolean propertiesRetrieved(String endpoint) /*-{
+		return $wnd.properties[endpoint] != null && $wnd.properties[endpoint].length > 0;
+	}-*/;
+	
 
 	/**
 	 * Query an endpoint. Asynchronous. A callback function (drawResultsInTable) is used to process query result.
@@ -305,12 +312,6 @@ public class JsMethods {
 	public static native String checkCorsEnabled(String endpointUri) /*-{
 		$wnd.checkCorsEnabled(endpointUri);
 	}-*/;
-	
-	
-	
-	
-	
-	
 	
 	/**
 	 * Define the url of the sparql proxy servlet in javascript
@@ -530,4 +531,5 @@ public class JsMethods {
 	public static native DlvWrapper getDlv(String csvString, String separator) /*-{
 		return $wnd.$.csv.toArrays(csvString, {"separator": separator});
 	}-*/;
+
 }

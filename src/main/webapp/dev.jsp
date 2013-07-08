@@ -32,7 +32,7 @@
 <!-- Autocompletion code -->
 <link rel="stylesheet" href="externals/codemirror/util/simple-hint.css">
 <script src="externals/codemirror/util/simple-hint.js"></script>
-<script src="externals/prefix-hint.js"></script>
+<script src="externals/yasguiHint.js"></script>
 <!-- Highlight words onclick code -->
 <script src="externals/codemirror/util/searchcursor.js"></script>
 <script src="externals/codemirror/util/match-highlighter.js"></script>

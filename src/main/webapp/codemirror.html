@@ -13,7 +13,7 @@
 <!-- Autocompletion code -->
 <link rel="stylesheet" href="externals/codemirror/util/simple-hint.css">
 <script src="externals/codemirror/util/simple-hint.js"></script>
-<script src="externals/prefix-hint.js"></script>
+<script src="externals/yasguiHint.js"></script>
 <!-- Highlight words onclick code -->
 <script src="externals/codemirror/util/searchcursor.js"></script>
 <script src="externals/codemirror/util/match-highlighter.js"></script>
@@ -28,6 +28,7 @@
 <br><br>
 	<textarea id="test" style="width:400px;height:300px;">
 PREFIX : &lt;http://aers.data2semantics.org/vocab/&gt; 
+PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
 SELECT DISTINCT *
 {
 ?patient rd:comment ?comment.
@@ -38,7 +39,11 @@ SELECT DISTINCT *
 	function checkAdjustParent() {
 		
 	}
-	var prefixes = ["aers: <bwah>", "aaebs: <sdf>", "aacbs: <sdf>", "rdf: <htpp://bla>", "http: <htpp://bla>", "rdfs: <bwah>", "whereeee: <sdf>", "whereeec: <sdf>"];
+	function getCurrentEndpoint() {
+		return "bla";
+	}
+	var properties = { "bla": ["http://www.w3.org/1999/02/22-rdf-syntax-ns#bla", "http://www.w3.org/1999/02/22-rdf-syntax-ns#bld", "http://www.w3.org/1999/02/22-rdf-syntax-ns#45"]};
+	var prefixes = ["aers: <bwah>", "aaebs: <sdf>", "aacbs: <sdf>", "rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>", "http: <htpp://bla>", "rdfs: <bwah>", "whereeee: <sdf>", "whereeec: <sdf>"];
 				var modes;
 		var myCodeMirror = CodeMirror.fromTextArea(document
 				.getElementById("test"), {
@@ -55,7 +60,7 @@ SELECT DISTINCT *
 				myCodeMirror.matchHighlight("CodeMirror-matchhighlight");
 			},
 			onChange : function(cm) {
-				CodeMirror.simpleHint(cm, CodeMirror.prefixHint);
+				CodeMirror.simpleHint(cm, CodeMirror.allAutoCompletions);
 				appendPrefixIfNeeded(cm);
 			},
 			onHighlightComplete: function(cm) {

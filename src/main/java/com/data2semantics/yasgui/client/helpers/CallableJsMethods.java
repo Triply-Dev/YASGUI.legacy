@@ -160,6 +160,14 @@ public class CallableJsMethods {
 		return view.getSettings().inSingleEndpointMode();
 	}
 	
+	public String getCurrentEndpoint() {
+		return view.getSelectedTabSettings().getEndpoint();
+	}
+	
+	public boolean inDebugMode() {
+		return Helper.inDebugMode();
+	}
+	
 	/**
 	 * Add view methods to JS, use this for situations where a non-static GWT method needs to be called
 	 * 
@@ -229,6 +237,12 @@ public class CallableJsMethods {
 		}
 		$wnd.inSingleEndpointMode = function() {
 			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::inSingleEndpointMode()();
+		}
+		$wnd.getCurrentEndpoint = function() {
+			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::getCurrentEndpoint()();
+		}
+		$wnd.inDebugMode = function() {
+			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::inDebugMode()();
 		}
 	}-*/;
 }
