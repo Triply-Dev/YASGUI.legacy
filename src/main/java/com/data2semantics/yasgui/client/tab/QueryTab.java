@@ -38,7 +38,7 @@ import com.data2semantics.yasgui.client.tab.optionbar.AddToBookmarks;
 import com.data2semantics.yasgui.client.tab.optionbar.DownloadLink;
 import com.data2semantics.yasgui.client.tab.optionbar.LinkCreator;
 import com.data2semantics.yasgui.client.tab.optionbar.OutputSelection;
-import com.data2semantics.yasgui.client.tab.optionbar.getContentTypeClickHandler;
+import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
 import com.data2semantics.yasgui.client.tab.optionbar.bookmarks.BookmarkedQueries;
 import com.data2semantics.yasgui.client.tab.optionbar.endpoints.EndpointInput;
 import com.data2semantics.yasgui.client.tab.optionbar.endpoints.EndpointSearch;
@@ -65,7 +65,7 @@ public class QueryTab extends Tab {
 	private TabSettings tabSettings;
 	private OutputSelection outputSelection;
 	private EndpointSearch searchIcon;
-	private getContentTypeClickHandler queryConfigMenu;
+	private QueryConfigMenu queryConfigMenu;
 	private DownloadLink downloadLink;
 	private BookmarkedQueries bookmarkedQueries;
 	private AddToBookmarks addToBookmarks;
@@ -81,7 +81,7 @@ public class QueryTab extends Tab {
 		
 		//For each tab we create, check the cors setting of the endpoint
 		JsMethods.checkCorsEnabled(getTabSettings().getEndpoint());
-		
+		EndpointInput.getProperties(view);
 		vLayout.addMember(getQueryOptionBar());
 		
 		queryTextArea = new QueryTextArea(view, this);
@@ -121,7 +121,7 @@ public class QueryTab extends Tab {
 			queryOptions.addMember(downloadLink);
 		}
 		
-		queryConfigMenu = new getContentTypeClickHandler(view);
+		queryConfigMenu = new QueryConfigMenu(view);
 		queryOptions.addMember(queryConfigMenu);
 		
 		queryOptions.addMember(Helper.getHSpacer());

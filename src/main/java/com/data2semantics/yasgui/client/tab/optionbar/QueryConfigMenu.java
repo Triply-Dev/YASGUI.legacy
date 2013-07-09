@@ -49,7 +49,7 @@ import com.smartgwt.client.widgets.menu.MenuItemIfFunction;
 import com.smartgwt.client.widgets.menu.events.ClickHandler;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 
-public class getContentTypeClickHandler extends IconMenuButton {
+public class QueryConfigMenu extends IconMenuButton {
 	private static final int TOOLTIP_VERSION_QUERY_CONFIG = 1;
 	private View view;
 	private Window window;
@@ -76,7 +76,7 @@ public class getContentTypeClickHandler extends IconMenuButton {
 	public static String REQUEST_POST = "POST";
 	public static String REQUEST_GET = "GET";
 
-	public getContentTypeClickHandler(final View view) {
+	public QueryConfigMenu(final View view) {
 		this.view = view;
 		
 		mainMenu.setItems(getQueryParamMenuItem(), getAcceptHeaderMenuItem(), getRequestMethodMenuItem());

@@ -35,6 +35,7 @@ import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.shared.Endpoints;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.data.AdvancedCriteria;
 import com.smartgwt.client.data.Criterion;
 import com.smartgwt.client.types.Autofit;
@@ -184,6 +185,7 @@ public class EndpointInput extends DynamicForm {
 		JsMethods.checkCorsEnabled(endpointString);
 		view.getSelectedTabSettings().setEndpoint(endpointString);
 		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+		getProperties(view);
 	}
 	
 	private QueryTab getQueryTab() {
@@ -247,6 +249,33 @@ public class EndpointInput extends DynamicForm {
                 return StringUtil.asHTML(record.getAttribute(Endpoints.KEY_DESCRIPTION)); 
             }  
         });  
+	}
+	public static void getProperties(final View view) {
+		final String endpoint = view.getSelectedTabSettings().getEndpoint();
+		if (!JsMethods.propertiesRetrieved(endpoint)) {
+			//not in memory yet, first try whether we have this cached in local storage
+			String properties = LocalStorageHelper.getProperties(endpoint);
+			if (properties != null && properties.length() > 0) {
+				JsMethods.setAutocompleteProperties(endpoint, properties);
+			} else {
+				view.getRemoteService().fetchProperties(endpoint, false, new AsyncCallback<String>() {
+					public void onFailure(Throwable caught) {
+						view.getLogger().severe("failure in getting properties");
+						view.getElements().onError(caught);
+					}
+		
+					public void onSuccess(String properties) {
+						if (properties.length() > 0) {
+							LocalStorageHelper.setProperties(endpoint, properties);
+							JsMethods.setAutocompleteProperties(endpoint, properties);
+							view.getLogger().severe("we've retrieved properties");
+						} else {
+							view.getLogger().severe("empty properties returned");
+						}
+					}
+				});
+			}
+		}
 	}
 	
 	
