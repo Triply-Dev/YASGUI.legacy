@@ -32,7 +32,7 @@ import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.tab.QueryTab;
-import com.data2semantics.yasgui.client.tab.optionbar.getContentTypeClickHandler;
+import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
 import com.data2semantics.yasgui.client.tab.results.input.DlvResults;
 import com.data2semantics.yasgui.client.tab.results.input.JsonResults;
 import com.data2semantics.yasgui.client.tab.results.input.ResultsHelper;
@@ -147,9 +147,9 @@ public class ResultContainer extends VLayout {
 			resultFormat = ResultContainer.CONTENT_TYPE_JSON;
 		} else if (contentType.contains("sparql-results+xml")) {
 			resultFormat = ResultContainer.CONTENT_TYPE_XML;
-		} else if (contentType.contains(getContentTypeClickHandler.CONTENT_TYPE_SELECT_CSV)) {
+		} else if (contentType.contains(QueryConfigMenu.CONTENT_TYPE_SELECT_CSV)) {
 			resultFormat = ResultContainer.CONTENT_TYPE_CSV;
-		} else if (contentType.contains(getContentTypeClickHandler.CONTENT_TYPE_SELECT_TSV)) {
+		} else if (contentType.contains(QueryConfigMenu.CONTENT_TYPE_SELECT_TSV)) {
 			resultFormat = ResultContainer.CONTENT_TYPE_TSV;
 		} else {
 			//assuming select query here (no construct)
@@ -166,7 +166,7 @@ public class ResultContainer extends VLayout {
 	
 	private void drawGraphResult(String responseString) {
 		int mode = 0;
-		if (contentType.contains(getContentTypeClickHandler.CONTENT_TYPE_CONSTRUCT_TURTLE)) {
+		if (contentType.contains(QueryConfigMenu.CONTENT_TYPE_CONSTRUCT_TURTLE)) {
 			mode = CONTENT_TYPE_TURTLE;
 		} else {
 			mode = CONTENT_TYPE_XML;
