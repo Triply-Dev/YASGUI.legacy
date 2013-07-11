@@ -54,6 +54,7 @@ public class PropertiesFetcher {
 	private static int CACHE_EXPIRES_DAYS = 360;
 	public static String fetch(String endpoint, boolean forceUpdate, File cacheDir) throws IOException {
 		String result = "";
+		System.out.println("before cache dir create");
 		if (!cacheDir.exists()) {
 			boolean bool = cacheDir.mkdir();
 			if (!bool) {
@@ -64,6 +65,7 @@ public class PropertiesFetcher {
 		
 		File file = new File(cacheDir + "/" + CACHE_BASENAME + "_" + endpoint.replace(File.separator, "_") + ".json");
 		if (forceUpdate || Helper.needUpdating(file, CACHE_EXPIRES_DAYS)) {
+			System.out.println("updating file");
 			file.createNewFile();
 			JSONArray properties = tryFetches(endpoint);
 			if (properties.length() > 0) {
@@ -73,6 +75,7 @@ public class PropertiesFetcher {
 			
 		} else {
 			try {
+				System.out.println("reading file");
 				result = Helper.readFile(file);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -82,13 +85,17 @@ public class PropertiesFetcher {
 	}
 	
 	private static JSONArray tryFetches(String endpoint) {
+		System.out.println("try fetches");
 		JSONArray properties = new JSONArray();
 		try {
+			System.out.println("fetching expensive");
 			properties = getProperties(endpoint, QUERY_EXPENSIVE);
 		} catch(Exception e) {
 			try {
+				System.out.println("fetching cheap");
 				properties = getProperties(endpoint, QUERY_CHEAP);
 			} catch (Exception e2) {
+				e2.printStackTrace();
 				//no other options.. probably just a typo in the endpoint or something
 			}
 		}

@@ -225,6 +225,7 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 
 	@Override
 	public String fetchProperties(String endpoint, boolean forceUpdate) throws IllegalArgumentException, FetchException {
+		System.out.println("fetching properties in service");
 		String properties = "";
 		try {
 			properties = PropertiesFetcher.fetch(endpoint, forceUpdate, new File(getServletContext().getRealPath(CACHE_DIR)));
