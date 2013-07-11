@@ -65,6 +65,7 @@ function getWarFile() {
 	return (reset($warFiles));
 }
 function unzipWarFile($warFile) {
+	global $argv;
 	$destination = "/tmp/".$argv[1].time()."_".rand();
 	if (file_exists($destination)) {
 		Helper::mailError(__FILE__, __LINE__, "Target dir to unzip war in already exists. Something is wrong... (".$destination.")");
