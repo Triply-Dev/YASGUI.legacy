@@ -172,7 +172,7 @@ function deployToTomcat($yasguiDir, $deployConfig) {
 	/**
 	 * restore cach dir
 	 */
-	shell_exec("rm ".$to."/cache");
+	shell_exec("rm -r ".$to."/cache");
 	shell_exec("mv ".$tmpDir."/cache ".$to);
 	
 }
