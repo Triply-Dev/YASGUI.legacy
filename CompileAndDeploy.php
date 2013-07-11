@@ -41,7 +41,7 @@ function compileAndDeploy($deployConfig) {
 function pull() {
 	shell_exec("rm errorOutput.txt");
 	$result = shell_exec("git pull 2> errorOutput.txt");
-	if (file_exists("errorOutput.txt") && strpos(file_get_contents("errorOutput.txt"), "error:") >= 0) {
+	if (file_exists("errorOutput.txt") && strpos(file_get_contents("errorOutput.txt"), "error:") === false) {
 		Helper::mailError(__FILE__, __LINE__, "Unable to pull from git: \n".file_get_contents("errorOutput.txt"));
 		exit;
 	}
