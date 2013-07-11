@@ -267,7 +267,7 @@ function appendPrefixIfNeeded(cm) {
 
 
 /**
- * Get defined prefixes from query as array, in format ["rdf:", "rdfs:"]
+ * Get defined prefixes from query as array, in format {"prefix:" "uri"}
  * @param cm
  * @returns {Array}
  */
@@ -276,7 +276,7 @@ function getPrefixesFromQuery(cm) {
 	var numLines = cm.lineCount();
 	for (var i = 0; i < numLines; i++) {
 		var firstToken = getNextNonWsToken(cm, i);
-		if (firstToken != null && firstToken.string == "PREFIX") {
+		if (firstToken != null && firstToken.string.toUpperCase() == "PREFIX") {
 			var prefix = getNextNonWsToken(cm, i, firstToken.end + 1);
 			var uri = getNextNonWsToken(cm, i, prefix.end + 1);
 			if (prefix != null && prefix.string.length > 0 && uri != null && uri.string.length > 0) {
