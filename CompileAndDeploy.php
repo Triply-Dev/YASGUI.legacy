@@ -25,11 +25,15 @@ if (count($argv) > 1) {
 function compileAndDeploy($deployConfig) {
 	global $argv;
 	chdir($deployConfig['git']);
+	echo "pulling\n";
  	pull();
+ 	echo "packaging\n";
  	package();
 	$warFile = getWarFile();
 	$yasguiDir = unzipWarFile($warFile);
+	echo "updating config";
 	updateConfig($yasguiDir, $deployConfig);
+	echo "deploying to tomcat";
 	deployToTomcat($yasguiDir, $deployConfig);
  	Helper::sendMail("Succesfully deployed YASGUI as ".$argv[1], "Succesfully deployed YASGUI as ".$argv[1]);
 }
