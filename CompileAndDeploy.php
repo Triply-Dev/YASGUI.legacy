@@ -122,12 +122,14 @@ function deployToTomcat($yasguiDir, $deployConfig) {
 	/**
 	 * Remove current deployment
 	 */
+	//be very sure we arent deleting other stuff:
 	if (strlen($to) && file_exists($to) && strpos($to, "tomcat")) {
-		//be very sure we arent deleting other stuff
+		//first copy cache dir (we want to save that one)
+		shell_exec("mv ".$to."/config ".sys_get_temp_dir());
+		
 		shell_exec("rm -rf ".$to);
 		//all files created by YASGUI won't be deleted... (owned by tomcat, not apache)
-		if (count(scandir($to)) > 3) {
-			//everything except config dir should be deleted..
+		if (file_exists($to)) {
 			Helper::mailError(__FILE__, __LINE__, "Unable to remove previously deployed yasgui dir: ".$to.". It still exists!");
 			exit;
 		}
@@ -146,9 +148,16 @@ function deployToTomcat($yasguiDir, $deployConfig) {
 		exit;
 	}
 	
+	
 	/**
 	 * Set proper permissions
 	 */
 	shell_exec("chmod -R 775 ".$to);
+	
+	/**
+	 * restore cach dir
+	 */
+	shell_exec("mv ".sys_get_temp_dir()."/config/* ".$to."/config ");
+	
 }
 
