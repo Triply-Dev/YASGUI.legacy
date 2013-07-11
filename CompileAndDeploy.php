@@ -121,17 +121,26 @@ function getUpdatedConfig($dir, $deployConfig) {
 	}
 	return array_replace_recursive($jsonConfigArray, $overWriteJsonConfigArray);
 }
+function generateRandomString($length = 10) {
+	$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	$randomString = '';
+	for ($i = 0; $i < $length; $i++) {
+		$randomString .= $characters[rand(0, strlen($characters) - 1)];
+	}
+	return $randomString;
+}
 function deployToTomcat($yasguiDir, $deployConfig) {
 	global $config;
 	$to = $deployConfig['tomcat'];
-	
+	$tmpDir = sys_get_temp_dir()."/".generateRandomString();
+	shell_exec("mkdir ".$tmpDir);
 	/**
 	 * Remove current deployment
 	 */
 	//be very sure we arent deleting other stuff:
 	if (strlen($to) && file_exists($to) && strpos($to, "tomcat")) {
 		//first copy cache dir (we want to save that one)
-		shell_exec("mv ".$to."/config ".sys_get_temp_dir());
+		shell_exec("mv ".$to."/cache ".$tmpDir);
 		
 		shell_exec("rm -rf ".$to);
 		//all files created by YASGUI won't be deleted... (owned by tomcat, not apache)
@@ -163,7 +172,8 @@ function deployToTomcat($yasguiDir, $deployConfig) {
 	/**
 	 * restore cach dir
 	 */
-	shell_exec("mv ".sys_get_temp_dir()."/config/* ".$to."/config ");
+	shell_exec("rm ".$to."/cache");
+	shell_exec("mv ".$tmpDir."/cache ".$to);
 	
 }
 
