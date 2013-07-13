@@ -73,6 +73,9 @@ public class CkanFetcher {
 				+ "		PREFIX dcterms: <http://purl.org/dc/terms/>\n" + "\n"
 				+ "		SELECT DISTINCT ?"	+ Endpoints.KEY_DATASETURI	+ " ?" + Endpoints.KEY_TITLE + " ?"	+ Endpoints.KEY_DESCRIPTION + " ?" + Endpoints.KEY_ENDPOINT	+ "  {\n"
 				+ "		  ?" + Endpoints.KEY_DATASETURI	+ " dcat:distribution ?distribution.\n"
+				//hmm, there are multiple dataset uris per endpoint, and no proper way to distinguish between them
+				//to avoid having multiple results per endpoint, only retrieve the datasets with the datahub.io dataset uri
+				+ "		FILTER regex(str(?" + Endpoints.KEY_DATASETURI + "), \"^http://datahub.io\") ."	
 				+ "		?distribution dcterms:format ?format.\n"
 				+ "		?format rdf:value 'api/sparql'.\n"
 				+ "		?distribution dcat:accessURL ?"	+ Endpoints.KEY_ENDPOINT + ".\n"
