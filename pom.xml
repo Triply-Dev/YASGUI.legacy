@@ -271,7 +271,7 @@
 								<include>../externals/qtip/jquery.qtip.css</include>
 								<include>../externals/codemirror/codemirror.css</include>
 								<include>../externals/codemirror/theme/yasgui.css</include>
-								<include>../externals/codemirror/util/show-hint.css</include>
+								<include>../externals/codemirror/addon/hint/show-hint.css</include>
 								<include>../externals/flint/sparql.css</include>
 								<include>../externals/yasgui.css</include>
 							</includes>
