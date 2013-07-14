@@ -35,14 +35,22 @@ import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.shared.Endpoints;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.data.AdvancedCriteria;
 import com.smartgwt.client.data.Criterion;
 import com.smartgwt.client.types.Autofit;
 import com.smartgwt.client.types.OperatorId;
+import com.smartgwt.client.types.Positioning;
 import com.smartgwt.client.types.TextMatchStyle;
 import com.smartgwt.client.types.TitleOrientation;
 import com.smartgwt.client.util.StringUtil;
+import com.smartgwt.client.widgets.Canvas;
+import com.smartgwt.client.widgets.Img;
+import com.smartgwt.client.widgets.ImgButton;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ComboBoxItem;
 import com.smartgwt.client.widgets.form.fields.FormItemCriteriaFunction;
@@ -60,6 +68,7 @@ import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.SelectionUpdatedEvent;
 import com.smartgwt.client.widgets.grid.events.SelectionUpdatedHandler;
+import com.smartgwt.client.widgets.layout.HLayout;
 
 public class EndpointInput extends DynamicForm {
 	private View view;
@@ -67,18 +76,24 @@ public class EndpointInput extends DynamicForm {
 	private String latestEndpointValue; //used to detect when to check for cors enabled. Not just on blur, but only on blur and when value has changed
 	private QueryTab queryTab;
 	private ListGrid pickListProperties;
+	private static int WIDTH = 420;
 	private static int COL_WIDTH_DATASET_TITLE = 150;
 	private static int COL_WIDTH_MORE_INFO = 22;
+	private static int BUTTON_OFFSET_Y = 18;
+	private static int BUTTON_OFFSET_X = WIDTH - 39;
 	private boolean pickListRecordSelected = false;
 	private ArrayList<String> cols = new ArrayList<String>();
-	
+	private HLayout buttonSpace = new HLayout();
 	public EndpointInput(View view, QueryTab queryTab) {
 		this.queryTab = queryTab;
 		this.view = view;
 		setTitleOrientation(TitleOrientation.TOP);
 		createTextInput();
-		
+		addButtonSpace();
+//		getProperties();
 	}
+
+	
 	public EndpointInput() {
 		setTitleOrientation(TitleOrientation.TOP);
 		createTextInput();
@@ -87,12 +102,85 @@ public class EndpointInput extends DynamicForm {
 		
 	}
 	
+	private void addButtonSpace() {
+		Scheduler.get().scheduleDeferred(new Command() {
+			public void execute() {
+				//initialize button space
+				buttonSpace.setAutoWidth();
+				buttonSpace.setPosition(Positioning.ABSOLUTE);
+				buttonSpace.setLeft(getDOM().getAbsoluteLeft() + BUTTON_OFFSET_X);
+				buttonSpace.setTop(getDOM().getAbsoluteTop() + BUTTON_OFFSET_Y);
+				buttonSpace.setAutoHeight();
+				buttonSpace.setAutoWidth();
+				buttonSpace.draw();
+				addFetchAutocompletionsButton();
+			}
+		});
+	}
+	
+	private void addFetchAutocompletionsButton() {
+		resetButtonSpace();
+		ImgButton imgButton = new ImgButton();
+		imgButton.setSrc(Imgs.get(Imgs.DOWNLOAD_ROUND));
+		imgButton.setHeight(16);
+		imgButton.setWidth(16);
+		imgButton.setShowOverCanvas(false);
+		imgButton.setShowDownIcon(false);
+		imgButton.setTooltip("Fetch predicate autocompletion information for this endpoint");
+		imgButton.addClickHandler(new ClickHandler(){
+			@Override
+			public void onClick(ClickEvent event) {
+				getProperties();
+			}});
+		buttonSpace.addMember(imgButton);
+		
+	}
+	private void addFetchingAutocompletionsIcon() {
+		resetButtonSpace();
+		Img img = new Img(Imgs.get(Imgs.LOADING));
+		img.setHeight(16);
+		img.setWidth(16);
+		img.setTooltip("Fetching predicate autocompletion information for this endpoint");
+		buttonSpace.addMember(img);
+	}
+	
+	private void addAutocompletionsFetchedIcon() {
+		resetButtonSpace();
+		Img img = new Img(Imgs.get(Imgs.CHECKMARK));
+		img.setHeight(16);
+		img.setWidth(16);
+		img.setTooltip("Autocompletion information fetched for this endpoint");
+		buttonSpace.addMember(img);
+	}
+	private void addFetchingFailedIcon() {
+		resetButtonSpace();
+		ImgButton imgButton = new ImgButton();
+		imgButton.setSrc(Imgs.get(Imgs.CROSS));
+		imgButton.setHeight(16);
+		imgButton.setWidth(16);
+		imgButton.setShowOverCanvas(false);
+		imgButton.setShowDownIcon(false);
+		imgButton.setTooltip("Unable to fetch predicate autocompletion information for this endpoint. Click to retry");
+		imgButton.addClickHandler(new ClickHandler(){
+			@Override
+			public void onClick(ClickEvent event) {
+				getProperties();
+			}});
+		buttonSpace.addMember(imgButton);
+	}
+	
+	private void resetButtonSpace() {
+		Canvas[] contents = buttonSpace.getMembers();
+		for (Canvas content: contents) {
+			content.destroy();
+		}
+	}
 	private void createTextInput() {
 		endpoint = new ComboBoxItem("endpoint", "Endpoint");
 		endpoint.setValueField(Endpoints.KEY_ENDPOINT);
 		endpoint.setAddUnknownValues(true);
 		endpoint.setCompleteOnTab(true);
-		endpoint.setWidth(420);
+		endpoint.setWidth(WIDTH);
 		endpoint.setOptionDataSource(view.getEndpointDataSource());
 		endpoint.setHideEmptyPickList(true);
 		endpoint.setDefaultValue(getQueryTab().getTabSettings().getEndpoint());
@@ -185,7 +273,7 @@ public class EndpointInput extends DynamicForm {
 		JsMethods.checkCorsEnabled(endpointString);
 		view.getSelectedTabSettings().setEndpoint(endpointString);
 		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
-		getProperties(view);
+		getProperties();
 	}
 	
 	private QueryTab getQueryTab() {
@@ -250,20 +338,26 @@ public class EndpointInput extends DynamicForm {
             }  
         });  
 	}
-	public static void getProperties(final View view) {
+	public void getProperties() {
 		final String endpoint = view.getSelectedTabSettings().getEndpoint();
-		if (!JsMethods.propertiesRetrieved(endpoint)) {
+		if (JsMethods.propertiesRetrieved(endpoint)) {
+			addAutocompletionsFetchedIcon();
+		} else {
+			addFetchingAutocompletionsIcon();
 			view.getRemoteService().fetchProperties(endpoint, false, new AsyncCallback<String>() {
 				public void onFailure(Throwable caught) {
 					view.getLogger().severe("failure in getting properties");
 					view.getElements().onError(caught);
+					addFetchingFailedIcon();
 				}
 	
 				public void onSuccess(String properties) {
 					if (properties.length() > 0) {
 						JsMethods.setAutocompleteProperties(endpoint, properties);
 						view.getLogger().severe("we've retrieved properties");
+						addAutocompletionsFetchedIcon();
 					} else {
+						addFetchingFailedIcon();
 						view.getLogger().severe("empty properties returned");
 					}
 				}
