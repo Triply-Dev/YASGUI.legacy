@@ -77,7 +77,6 @@ function copyLinesBelow(cm) {
 	}
 }
 var clearError = function() {};
-var markerHandle = null;
 function checkSyntax(cm, updateQueryButton) {
 	var queryValid = true;
 	if (clearError != null) {
@@ -85,18 +84,19 @@ function checkSyntax(cm, updateQueryButton) {
 		clearError = null;
 	}
 	;
-	if (markerHandle != null) {
-		cm.clearMarker(markerHandle);
-	}
+	cm.clearGutter("gutterErrorBar");
+	var state = null;
 	for ( var l = 0; l < cm.lineCount(); ++l) {
-		var state = cm.getTokenAt({
+		
+		state = cm.getTokenAt({
 			line : l,
 			ch : cm.getLine(l).length
 		}).state;
 		if (state.OK == false) {
-			markerHandle = cm
-					.setMarker(l,
-							"<span style=\"color: #f00 ; font-size: large;\">&rarr;</span> %N%");
+			var error = document.createElement('span');
+			error.innerHTML = "&rarr;";
+			error.className = "gutterError";
+			cm.setGutterMarker(l,"gutterErrorBar", error);
 			clearError = function() {
 				cm.markText({
 					line : l,
@@ -112,7 +112,7 @@ function checkSyntax(cm, updateQueryButton) {
 	}
 	if (updateQueryButton) {
 		showPlayButton((queryValid? "1": "0"));
-		if (state != undefined && state.stack != undefined) {
+		if (state != null && state.stack != undefined) {
 			var stack = state.stack, len = state.stack.length;
 			// Because incremental parser doesn't receive end-of-input
 			// it can't clear stack, so we have to check that whatever

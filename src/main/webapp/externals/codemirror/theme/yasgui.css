@@ -39,3 +39,12 @@
 .cm-s-yasgui .cm-hr {color: #999;}
 .cm-s-yasgui .cm-link {color: #00c;}
 
+.gutterError {
+	color: #f00 ;
+	font-size: large;
+	margin-left:10px;
+	margin-bottom:3px;
+}
+.gutterErrorBar {
+	width:0px !important;
+}
