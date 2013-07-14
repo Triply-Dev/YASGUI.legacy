@@ -64,48 +64,49 @@ public class JsMethods {
 				//Only add if it hasnt been drawn yet
 				$wnd.sparqlHighlight[queryInputId] = $wnd.CodeMirror.fromTextArea(qInput, {
 					mode : "application/x-sparql-query",
+					theme: "yasgui",
+					highlightSelectionMatches: {showToken: /\w/},
 					tabMode : "indent",
 					lineNumbers : true,
 					matchBrackets : true,
 					fixedGutter: true,
-					onCursorActivity : function() {
-						$wnd.sparqlHighlight[queryInputId]
-								.matchHighlight("CodeMirror-matchhighlight");
-					},
-					onChange : function(cm) {
-						$wnd.CodeMirror.simpleHint(cm, $wnd.CodeMirror.allAutoCompletions);
-						$wnd.appendPrefixIfNeeded(cm);
-					},
-					onFocus: function(cm) {
-						$wnd.saveTabTitle();
-					},
-					onGutterClick: function(cm) {
-						$wnd.saveTabTitle();
-					},
 					extraKeys : {
 						"Ctrl-Space" : "autocomplete",
 						"Ctrl-D" : "deleteLines",
 						"Ctrl-/" : "commentLines",
 						"Ctrl-Alt-Down" : "copyLineDown",
 						"Ctrl-Alt-Up" : "copyLineUp",
-					},
-					onHighlightComplete : function(cm) {
-						$wnd.checkSyntax(cm, true);
-						$wnd.setQueryType(cm.getStateAfter().queryType);
-						height = $wnd.sparqlHighlight[queryInputId].getWrapperElement().offsetHeight;
-						if ($wnd.sparqlHighlightHeight[queryInputId]) {
-							if (height != $wnd.sparqlHighlightHeight[queryInputId]) {
-								$wnd.sparqlHighlightHeight[queryInputId] = height;
-								$wnd.adjustQueryInputForContent();
-							}
-						} else {
-							$wnd.sparqlHighlightHeight[queryInputId] = height;
-						}
-					},
-					onBlur: function() {
-						$wnd.storeQueryInCookie();
-					},
+					}
 				});
+				
+				$wnd.sparqlHighlight[queryInputId].on("change", function(cm, change){
+					$wnd.checkSyntax(cm, true);
+					$wnd.setQueryType(cm.getStateAfter().queryType);
+					height = $wnd.sparqlHighlight[queryInputId].getWrapperElement().offsetHeight;
+					if ($wnd.sparqlHighlightHeight[queryInputId]) {
+						if (height != $wnd.sparqlHighlightHeight[queryInputId]) {
+							$wnd.sparqlHighlightHeight[queryInputId] = height;
+							$wnd.adjustQueryInputForContent();
+						}
+					} else {
+						$wnd.sparqlHighlightHeight[queryInputId] = height;
+					}
+					$wnd.CodeMirror.simpleHint(cm, $wnd.CodeMirror.allAutoCompletions);
+					$wnd.appendPrefixIfNeeded(cm);
+				});
+				$wnd.sparqlHighlight[queryInputId].on("gutterClick", function(cm, change) {
+					$wnd.saveTabTitle();
+				});
+				$wnd.sparqlHighlight[queryInputId].on("focus", function(cm, change) {
+					$wnd.saveTabTitle();
+				});
+				$wnd.sparqlHighlight[queryInputId].on("blur", function(cm, change) {
+					$wnd.storeQueryInCookie();
+				});
+				//init query type
+				$wnd.setQueryType($wnd.sparqlHighlight[queryInputId].getStateAfter().queryType);
+				
+				
 				//Append another classname to the codemirror div, so we can set width and height via css
 				if (qInput.nextSibling != null && qInput.nextSibling.className == "CodeMirror") {
 					qInput.nextSibling.className = "CodeMirror queryCm";
@@ -130,36 +131,32 @@ public class JsMethods {
 			$wnd.sparqlHighlight[queryInputId] = $wnd.CodeMirror.fromTextArea(qInput, {
 				mode : "application/x-sparql-query",
 				tabMode : "indent",
+				theme: "yasgui",
+				highlightSelectionMatches: {showToken: /\w/},
 				lineNumbers : true,
 				matchBrackets : true,
 				fixedGutter: true,
 				viewportMargin: Infinity,
-				onCursorActivity : function() {
-					$wnd.sparqlHighlight[queryInputId]
-							.matchHighlight("CodeMirror-matchhighlight");
-				},
-				onChange : function(cm) {
-					$wnd.CodeMirror.simpleHint(cm, $wnd.CodeMirror.prefixHint);
-					$wnd.appendPrefixIfNeeded(cm);
-					
-				},
 				extraKeys : {
 					"Ctrl-Space" : "autocomplete",
 					"Ctrl-D" : "deleteLines",
 					"Ctrl-/" : "commentLines",
 					"Ctrl-Alt-Down" : "copyLineDown",
 					"Ctrl-Alt-Up" : "copyLineUp",
-				},
-				onHighlightComplete : function(cm) {
-					$wnd.checkSyntax(cm, false);
-					$wnd.setQueryType(cm.getStateAfter().queryType);
-					$wnd.updateBookmarkCmHeight(queryInputId);
-					
-				},
-				onBlur: function() {
-					$wnd.updateBookmarkedQuery();
-				},
+				}
 			});
+			
+			$wnd.sparqlHighlight[queryInputId].on("change", function(cm, change){
+				$wnd.checkSyntax(cm, false);
+				$wnd.setQueryType(cm.getStateAfter().queryType);
+				$wnd.updateBookmarkCmHeight(queryInputId);
+				$wnd.CodeMirror.simpleHint(cm, $wnd.CodeMirror.prefixHint);
+				$wnd.appendPrefixIfNeeded(cm);
+			});
+			$wnd.sparqlHighlight[queryInputId].on("blur", function(cm, change) {
+				$wnd.updateBookmarkedQuery();
+			});
+				
 			$wnd.updateBookmarkCmHeight(queryInputId);
 			//Append another classname to the codemirror div, so we can set width and height via css
 			if (qInput.nextSibling != null && qInput.nextSibling.className == "CodeMirror") {
@@ -204,7 +201,9 @@ public class JsMethods {
 				}
 				$wnd.sparqlResponseHighlight[queryInputId] = $wnd.CodeMirror.fromTextArea($doc.getElementById(queryInputId), {
 					mode : cmMode,
+					theme: "yasgui",
 					lineNumbers : true,
+					highlightSelectionMatches: {showToken: /\w/},
 					matchBrackets : true,
 					readOnly: true,
 					fixedGutter: true,

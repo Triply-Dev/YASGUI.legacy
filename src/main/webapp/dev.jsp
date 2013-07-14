@@ -26,16 +26,18 @@
 <!-- Main codemirror stuff -->
 <script src="externals/codemirror/codemirror.js"></script>
 <link rel="stylesheet" href="externals/codemirror/codemirror.css">
+<link rel="stylesheet" href="externals/codemirror/theme/yasgui.css">
 <script src="externals/codemirror/mode/javascript/javascript.js"></script>
 <script src="externals/codemirror/mode/xml/xml.js"></script>
 <script src="externals/codemirror/mode/turtle/turtle.js"></script>
 <!-- Autocompletion code -->
-<link rel="stylesheet" href="externals/codemirror/util/simple-hint.css">
-<script src="externals/codemirror/util/simple-hint.js"></script>
+<link rel="stylesheet" href="externals/codemirror/addon/hint/show-hint.css">
+<script src="externals/codemirror/addon/hint/show-hint.js"></script>
 <script src="externals/yasguiHint.js"></script>
 <!-- Highlight words onclick code -->
-<script src="externals/codemirror/util/searchcursor.js"></script>
-<script src="externals/codemirror/util/match-highlighter.js"></script>
+<script src="externals/codemirror/addon/search/searchcursor.js"></script>
+<script src="externals/codemirror/addon/search/match-highlighter.js"></script>
+<script src="externals/codemirror/addon/edit/matchbrackets.js"></script>
 
 <!-- Flint code for sparql mode -->
 <script src="externals/flint/sparql.js"></script>
