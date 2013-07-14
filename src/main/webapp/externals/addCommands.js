@@ -56,6 +56,7 @@ CodeMirror.commands.copyLineUp = function(cm) {
 	copyLinesBelow(cm);
 };
 CodeMirror.commands.copyLineDown = function(cm) {
+	console.log("copy down");
 	copyLinesBelow(cm);
 	//Make sure cursor goes one down (we are copying downwards)
 	var cursor = cm.getCursor();

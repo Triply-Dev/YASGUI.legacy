@@ -112,6 +112,7 @@
 	}
 
 	CodeMirror.allAutoCompletions = function(editor) {
+		console.log("all autocompletions");
 		return getAllAutoCompletions(editor, function(e, cur) {
 			return e.getTokenAt(cur);
 		});

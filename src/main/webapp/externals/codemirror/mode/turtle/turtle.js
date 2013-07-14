@@ -14,7 +14,7 @@ CodeMirror.defineMode("turtle", function(config) {
     curPunc = null;
     if (ch == "<" && !stream.match(/^[\s\u00a0=]/, false)) {
       stream.match(/^[^\s\u00a0>]*>?/);
-      return "meta";
+      return "atom";
     }
     else if (ch == "\"" || ch == "'") {
       state.tokenize = tokenLiteral(ch);
@@ -33,22 +33,29 @@ CodeMirror.defineMode("turtle", function(config) {
       return null;
     }
     else if (ch == ":") {
-      stream.eatWhile(/[\w\d\._\-]/);
-      return "atom";
-    }
-    else {
+          return "operator";
+        } else {
       stream.eatWhile(/[_\w\d]/);
       if(stream.peek() == ":") {
-//      if (stream.eat(":")) {
-        //stream.eatWhile(/[\w\d_\-]/);
-  //      stream.backup(1);
-        return "quote";
+        return "variable-3";
+      } else {
+             var word = stream.current();
+
+             if(keywords.test(word)) {
+                        return "meta";
+             }
+
+             if(ch >= "A" && ch <= "Z") {
+                    return "comment";
+                 } else {
+                        return "keyword";
+                 }
       }
-      var word = stream.current(), type;
+      var word = stream.current();
       if (ops.test(word))
         return null;
       else if (keywords.test(word))
-        return "keyword";
+        return "meta";
       else
         return "variable";
     }
@@ -77,7 +84,7 @@ CodeMirror.defineMode("turtle", function(config) {
   }
 
   return {
-    startState: function(base) {
+    startState: function() {
       return {tokenize: tokenBase,
               context: null,
               indent: 0,
@@ -112,7 +119,7 @@ CodeMirror.defineMode("turtle", function(config) {
           state.context.col = stream.column();
         }
       }
-      
+
       return style;
     },
 
