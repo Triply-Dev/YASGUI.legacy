@@ -2,7 +2,6 @@
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-
 <title>Codemirror Test</title>
 <script type="text/javascript">function showPlayButton(){};function setQueryType(){};</script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
@@ -29,6 +28,7 @@
 <script src="externals/addCommands.js"></script>
   </head>
   <body>
+  
 <br><br>
 	<textarea id="test" style="width:400px;height:300px;">
 PREFIX : &lt;http://aers.data2semantics.org/vocab/&gt; 
@@ -38,25 +38,7 @@ SELECT DISTINCT *
 ?patient rd:comment ?comment.
 }
 </textarea>
-    <form><textarea id="code" name="code">
-&lt;html style="color: green"&gt;
-  &lt;!-- this is a comment --&gt;
-  &lt;head&gt;
-    &lt;title&gt;HTML Example&lt;/title&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    The indentation tries to be &lt;em&gt;somewhat &amp;quot;do what
-    I mean&amp;quot;&lt;/em&gt;... but might not match your style.
-  &lt;/body&gt;
-&lt;/html&gt;
-</textarea></form>
-    <script>
-      var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-        mode: {name: "xml", alignCDATA: true},
-        theme: "yasgui",
-        lineNumbers: true
-      });
-    </script>
+
 
 	<script type="text/javascript">
 	function checkAdjustParent() {
@@ -75,6 +57,7 @@ SELECT DISTINCT *
 			lineNumbers : true,
 			highlightSelectionMatches: {showToken: /\w/},
 			matchBrackets: true,
+			gutters: ["gutterErrorBar","CodeMirror-linenumbers" ],
 			extraKeys : {
 				"Ctrl-Space" : "autocomplete",
 				"Ctrl-D" : "deleteLines",

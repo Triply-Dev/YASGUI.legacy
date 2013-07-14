@@ -68,6 +68,7 @@ public class JsMethods {
 					highlightSelectionMatches: {showToken: /\w/},
 					tabMode : "indent",
 					lineNumbers : true,
+					gutters: ["gutterErrorBar","CodeMirror-linenumbers" ],
 					matchBrackets : true,
 					fixedGutter: true,
 					extraKeys : {
@@ -133,6 +134,7 @@ public class JsMethods {
 				tabMode : "indent",
 				theme: "yasgui",
 				highlightSelectionMatches: {showToken: /\w/},
+				gutters: ["gutterErrorBar","CodeMirror-linenumbers" ],
 				lineNumbers : true,
 				matchBrackets : true,
 				fixedGutter: true,
