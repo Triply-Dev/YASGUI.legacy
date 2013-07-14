@@ -253,28 +253,21 @@ public class EndpointInput extends DynamicForm {
 	public static void getProperties(final View view) {
 		final String endpoint = view.getSelectedTabSettings().getEndpoint();
 		if (!JsMethods.propertiesRetrieved(endpoint)) {
-			//not in memory yet, first try whether we have this cached in local storage
-			String properties = LocalStorageHelper.getProperties(endpoint);
-			if (properties != null && properties.length() > 0) {
-				JsMethods.setAutocompleteProperties(endpoint, properties);
-			} else {
-				view.getRemoteService().fetchProperties(endpoint, false, new AsyncCallback<String>() {
-					public void onFailure(Throwable caught) {
-						view.getLogger().severe("failure in getting properties");
-						view.getElements().onError(caught);
+			view.getRemoteService().fetchProperties(endpoint, false, new AsyncCallback<String>() {
+				public void onFailure(Throwable caught) {
+					view.getLogger().severe("failure in getting properties");
+					view.getElements().onError(caught);
+				}
+	
+				public void onSuccess(String properties) {
+					if (properties.length() > 0) {
+						JsMethods.setAutocompleteProperties(endpoint, properties);
+						view.getLogger().severe("we've retrieved properties");
+					} else {
+						view.getLogger().severe("empty properties returned");
 					}
-		
-					public void onSuccess(String properties) {
-						if (properties.length() > 0) {
-							LocalStorageHelper.setProperties(endpoint, properties);
-							JsMethods.setAutocompleteProperties(endpoint, properties);
-							view.getLogger().severe("we've retrieved properties");
-						} else {
-							view.getLogger().severe("empty properties returned");
-						}
-					}
-				});
-			}
+				}
+			});
 		}
 	}
 	
