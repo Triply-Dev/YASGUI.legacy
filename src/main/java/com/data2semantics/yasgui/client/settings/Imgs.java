@@ -46,6 +46,7 @@ public class Imgs {
 	public static String COPY_TAB = "nounproject/copy.png";
 	public static String CROSS = "nounproject/cross.png";
 	public static String DOWNLOAD = "nounproject/download.png";
+	public static String DOWNLOAD_ROUND = "nounproject/download_round.png";
 	public static String INFO = "nounproject/info.png";
 	public static String LINK = "nounproject/link.png";
 	public static String REFRESH = "nounproject/refresh.png";
