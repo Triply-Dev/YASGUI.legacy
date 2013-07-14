@@ -10,13 +10,16 @@
 
 <script src="externals/codemirror/codemirror.js"></script>
 <link rel="stylesheet" href="externals/codemirror/codemirror.css">
+<link rel="stylesheet" href="externals/codemirror/theme/yasgui.css">
 <!-- Autocompletion code -->
-<link rel="stylesheet" href="externals/codemirror/util/simple-hint.css">
-<script src="externals/codemirror/util/simple-hint.js"></script>
+<link rel="stylesheet" href="externals/codemirror/addon/hint/show-hint.css">
+<script src="externals/codemirror/addon/hint/show-hint.js"></script>
 <script src="externals/yasguiHint.js"></script>
 <!-- Highlight words onclick code -->
-<script src="externals/codemirror/util/searchcursor.js"></script>
-<script src="externals/codemirror/util/match-highlighter.js"></script>
+<script src="externals/codemirror/addon/search/searchcursor.js"></script>
+<script src="externals/codemirror/addon/search/match-highlighter.js"></script>
+<script src="externals/codemirror/addon/edit/matchbrackets.js"></script>
+
 <link rel="stylesheet" href="externals/yasgui.css">
 <!-- Flint code for sparql mode -->
 <script src="externals/flint/sparql.js"></script>
@@ -47,7 +50,10 @@ SELECT DISTINCT *
 				var modes;
 		var myCodeMirror = CodeMirror.fromTextArea(document
 				.getElementById("test"), {
+			theme: "yasgui",
 			lineNumbers : true,
+			highlightSelectionMatches: {showToken: /\w/},
+			matchBrackets: true,
 			extraKeys : {
 				"Ctrl-Space" : "autocomplete",
 				"Ctrl-D" : "deleteLines",
@@ -55,22 +61,19 @@ SELECT DISTINCT *
 				"Ctrl-Alt-Down" : "copyLineDown",
 				"Ctrl-Alt-Up" : "copyLineUp",
 				"Ctrl-S" : "doNothing"
-			},
-			onCursorActivity : function() {
-				myCodeMirror.matchHighlight("CodeMirror-matchhighlight");
-			},
-			onChange : function(cm) {
-				CodeMirror.simpleHint(cm, CodeMirror.allAutoCompletions);
-				appendPrefixIfNeeded(cm);
-			},
-			onHighlightComplete: function(cm) {
-				checkSyntax(cm);
-				setQueryType(cm.getStateAfter().queryType);
-				checkAdjustParent();
-				
-			},
-			adjustParent: function(){console.log("in callback")}
+			}
 		});
+		myCodeMirror.on("change", function(cm, change){
+			CodeMirror.showHint(cm, CodeMirror.allAutoCompletions);
+			appendPrefixIfNeeded(cm);
+			checkSyntax(cm);
+			setQueryType(cm.getStateAfter().queryType);
+			checkAdjustParent();
+		});
+		//myCodeMirror.on("cursorActivity", function(cm){
+		//	console.log("bla3");
+		//	cm.matchHighlight("CodeMirror-matchhighlight");
+		//});
 			
 			
 			

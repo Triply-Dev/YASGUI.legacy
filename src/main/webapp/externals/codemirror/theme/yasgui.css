@@ -1,0 +1,12 @@
+/* Based on the theme at http://bonsaiden.github.com/JavaScript-Garden */
+
+
+.CodeMirror {
+	line-height: 1.7em;
+}
+.CodeMirror pre {
+	font-size: 14px;
+}
+.CodeMirror-focused .cm-matchhighlight {
+	background-color: #d9d9d9
+}
