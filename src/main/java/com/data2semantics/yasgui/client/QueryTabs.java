@@ -60,6 +60,8 @@ import com.smartgwt.client.widgets.tab.events.TabSelectedEvent;
 import com.smartgwt.client.widgets.tab.events.TabSelectedHandler;
 import com.smartgwt.client.widgets.tab.events.TabTitleChangedEvent;
 import com.smartgwt.client.widgets.tab.events.TabTitleChangedHandler;
+import com.smartgwt.client.widgets.tab.events.TabsReorderedEvent;
+import com.smartgwt.client.widgets.tab.events.TabsReorderedHandler;
 
 public class QueryTabs extends TabSet {
 	private View view;
@@ -80,6 +82,7 @@ public class QueryTabs extends TabSet {
 		setHeight100();
 		setCanEditTabTitles(true);
 		setTitleEditorTopOffset(5);
+		setCanReorderTabs(true);
 		setTitleEditorLeftOffset(5);
 		addTabDeselectedHandler(new TabDeselectedHandler(){
 			//this works for within smartgwt. on codemirror focus needs separate event though
@@ -87,6 +90,12 @@ public class QueryTabs extends TabSet {
 			public void onTabDeselected(TabDeselectedEvent event) {
 				saveTabTitle();
 			}});
+		addTabsReorderedHandler(new TabsReorderedHandler() {
+			public void onTabsReordered(TabsReorderedEvent event) {
+				
+				
+			}
+		});
 		setTitleEditEvent(TabTitleEditEvent.DOUBLECLICK);
 		setTabsFromSettings();
 		selectTab(view.getSettings().getSelectedTabNumber());
