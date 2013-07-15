@@ -77,6 +77,7 @@ function copyLinesBelow(cm) {
 	}
 }
 var clearError = function() {};
+var prevQueryValid = true;
 function checkSyntax(cm, updateQueryButton) {
 	var queryValid = true;
 	if (clearError != null) {
@@ -87,11 +88,16 @@ function checkSyntax(cm, updateQueryButton) {
 	cm.clearGutter("gutterErrorBar");
 	var state = null;
 	for ( var l = 0; l < cm.lineCount(); ++l) {
-		
+		var precise = false;
+		if (!prevQueryValid) {
+			//we don't want cached information in this case, otherwise the previous error sign might still show up,
+			//even though the syntax error might be gone already
+			precise = true;
+		}
 		state = cm.getTokenAt({
 			line : l,
 			ch : cm.getLine(l).length
-		}).state;
+		}, precise).state;
 		if (state.OK == false) {
 			var error = document.createElement('span');
 			error.innerHTML = "&rarr;";
@@ -110,6 +116,7 @@ function checkSyntax(cm, updateQueryButton) {
 			break;
 		}
 	}
+	prevQueryValid = queryValid;
 	if (updateQueryButton) {
 		showPlayButton((queryValid? "1": "0"));
 		if (state != null && state.stack != undefined) {
