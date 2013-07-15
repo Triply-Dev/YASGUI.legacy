@@ -15,6 +15,12 @@ CodeMirror.commands.deleteLines = function(cm) {
 		//Therefore, keep on deleting the minimum of the selection
 		cm.removeLine(min);
 	}
+	var cursor = cm.getCursor(true);
+	if (cursor.line + 1 <= cm.lineCount() ) {
+		cursor.line++;
+		cursor.ch = 0;
+		cm.setCursor(cursor);
+	}
 };
 CodeMirror.commands.commentLines = function(cm) {
 	var startLine = cm.getCursor(true).line;

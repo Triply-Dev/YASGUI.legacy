@@ -5,10 +5,24 @@
 	line-height: 1.7em;
 	border-style:solid;
   	border-color: #d1d1d1;
-  	border-width: 2px;
-  	overflow: hidden;
+  	border-width: 1px;
   	height: auto;
+	min-height: 300px;
+	position: relative;
+	overflow: hidden;
 }
+
+.CodeMirror-vscrollbar {
+	overflow:hidden;
+}
+.CodeMirror-scroll {
+	height: auto;
+	min-height:300px;
+	overflow-x: auto; 
+	overflow-y: hidden; 
+}
+
+
 .CodeMirror pre {
 	font-size: 14px;
 }
@@ -47,4 +61,7 @@
 }
 .gutterErrorBar {
 	width:0px !important;
+}
+.CodeMirror-gutter {
+	width: 37px;
 }
