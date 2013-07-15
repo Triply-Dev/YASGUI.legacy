@@ -19,7 +19,7 @@
 	
 	function getPrefixAutocompletions(editor, getToken) {
 		// Find the token at the cursor
-		var cur = editor.getCursor(), token = getToken(editor, cur);
+		var cur = editor.getCursor(), token = editor.getTokenAt(cur);
 		
 		includePreviousTokens = function(token, cur) {
 			var prevToken = getToken(editor, {line : cur.line,ch : token.start});
@@ -36,8 +36,14 @@
 		//not at end of line
 		if (editor.getLine(cur.line).length > cur.ch) return;
 		
+		if (token.className != "sp-ws") {
+			//we want to complete token, e.g. when the prefix starts with an a (treated as a token in itself..)
+			//but we to avoid including the PREFIX tag. So when we have just typed a space after the prefix tag, don't get the complete token
+			token = getCompleteToken(editor, token, cur);
+		}
 		//we shouldnt be at the uri part the prefix declaration
-		if ($.inArray("PNAME_NS", token.state.possibleCurrent) == -1) return; 
+		//also check whether current token isnt 'a' (that makes codemirror thing a namespace is a possiblecurrent
+		if (!token.string.startsWith("a") && $.inArray("PNAME_NS", token.state.possibleCurrent) == -1) return; 
 		
 		//First token of line needs to be PREFIX,
 		//there should be no trailing text (otherwise, text is wrongly inserted in between)
@@ -101,7 +107,7 @@
 	}
 
 	function getAllAutoCompletions(editor, getToken) {
-		autocompletions = getPrefixAutocompletions(editor, getToken);
+		var autocompletions = getPrefixAutocompletions(editor, getToken);
 		if (autocompletions == null) {
 			//ok, so current cursor should not show prefix autocompletions. Try our properties autocompletions
 			autocompletions = getPropertiesAutocompletions(editor, getToken);
@@ -135,31 +141,39 @@
 		return found;
 	}
 	
-	
-	function getPropertiesSuggestions(editor, getToken) {
-		getCompleteToken = function(token, cur) {
-			//we cannot use token.string alone (e.g. http://bla results in 2 tokens: http: and //bla)
-			var prevToken = getToken(editor, {line : cur.line,ch : token.start});
-			if (prevToken.className != "sp-ws") {
-				token.start = prevToken.start;
-				cur.ch = prevToken.start;
-				token.string = prevToken.string + token.string;
-				return getCompleteToken(token, cur);//recursively, might have multiple tokens which it should include
-			} else {
-				return token;
-			}
-		};
-		var cur = editor.getCursor(), token = getToken(editor, cur);
+	function getCompleteToken(editor, token, cur) {
+		//we cannot use token.string alone (e.g. http://bla results in 2 tokens: http: and //bla)
 		
-		token = getCompleteToken(token, editor.getCursor());
+		var prevToken = editor.getTokenAt({line : cur.line,ch : token.start});
+		if (prevToken.className != null && prevToken.className != "sp-ws") {
+			token.start = prevToken.start;
+			cur.ch = prevToken.start;
+			token.string = prevToken.string + token.string;
+			return getCompleteToken(editor, token, cur);//recursively, might have multiple tokens which it should include
+		} else {
+			return token;
+		}
+	};
+	function getPropertiesSuggestions(editor, getToken) {
+		console.log("propertiessuggestions");
+		cur = editor.getCursor(), token = getToken(editor, cur);
+		
+		var token = getCompleteToken(editor, token, editor.getCursor());
 		var uriStart = getUriFromPrefix(editor, token);
 		var found = [];
 		var queryPrefixes = getPrefixesFromQuery(editor);
-		
+		//use custom completionhint function, to avoid reaching a loop when the completionhint is the same as the current token
+		//regular behaviour would keep changing the codemirror dom, hence constantly calling this callback
+		var completionHint = function(cm, data, completion) {
+			if (completion.text != cm.getTokenAt(editor.getCursor()).string) {
+				lastPropertyPick = completion.text;
+				cm.replaceRange(completion.text, data.from, data.to);
+			}
+		};
 		
 		for ( var i = 0, e = properties[getCurrentEndpoint()].length; i < e; ++i) {
 			if (found.length > 500) break; //otherwise autocomplete box might become huge
-			str = properties[getCurrentEndpoint()][i];
+			var str = properties[getCurrentEndpoint()][i];
 			if (uriStart.startsWith("<")) {
 				str = "<" + str + ">";
 			}
@@ -173,13 +187,10 @@
 						str = prefix + str;
 					}
 				} 
-				
-				//check that the current string isnt the one we want to autocomplete
-				if (token.string != str) {
-					found.push(str);
-				}
+				found.push({text: str, hint:completionHint});
 			}
 		}
+		if (found.length == 1 && found[0].text == token.string) return;//we already have our match
 		if (found.length > 0) {
 			return {
 				list : found,
