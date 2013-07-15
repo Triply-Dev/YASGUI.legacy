@@ -48,7 +48,7 @@ SELECT DISTINCT *
 		return "bla";
 	}
 	var properties = { "bla": ["http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla2","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla", "http://www.w3.org/1999/02/22-rdf-syntax-ns#bld", "http://www.w3.org/1999/02/22-rdf-syntax-ns#45"]};
-	var prefixes = ["aers: <bwah>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aacbs: <sdf>", "rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>", "http: <htpp://bla>", "rdfs: <bwah>", "whereeee: <sdf>", "whereeec: <sdf>"];
+	var prefixes = ["aers: <bwah>", "aacbs: <sdf>", "aacds: <sdf>", "aaebs: <sdf>", "blaaa1: <sdf>", "blaaa2: <sdf>", "blaaa3: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aacbs: <sdf>", "rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>", "http: <htpp://bla>", "rdfs: <bwah>", "whereeee: <sdf>", "whereeec: <sdf>"];
 				var modes;
 		var myCodeMirror = CodeMirror.fromTextArea(document
 				.getElementById("test"), {
@@ -68,7 +68,7 @@ SELECT DISTINCT *
 			}
 		});
 		myCodeMirror.on("change", function(cm, change){
-			CodeMirror.showHint(cm, CodeMirror.allAutoCompletions);
+			CodeMirror.showHint(cm, CodeMirror.allAutoCompletions, {closeCharacters: /blaaaaat/});
 			appendPrefixIfNeeded(cm);
 			checkSyntax(cm);
 			setQueryType(cm.getStateAfter().queryType);
