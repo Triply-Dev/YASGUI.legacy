@@ -92,7 +92,7 @@ public class JsMethods {
 					} else {
 						$wnd.sparqlHighlightHeight[queryInputId] = height;
 					}
-					$wnd.CodeMirror.simpleHint(cm, $wnd.CodeMirror.allAutoCompletions);
+					$wnd.CodeMirror.showHint(cm, $wnd.CodeMirror.allAutoCompletions, {closeCharacters: /(?=a)b/});
 					$wnd.appendPrefixIfNeeded(cm);
 				});
 				$wnd.sparqlHighlight[queryInputId].on("gutterClick", function(cm, change) {
@@ -152,7 +152,7 @@ public class JsMethods {
 				$wnd.checkSyntax(cm, false);
 				$wnd.setQueryType(cm.getStateAfter().queryType);
 				$wnd.updateBookmarkCmHeight(queryInputId);
-				$wnd.CodeMirror.simpleHint(cm, $wnd.CodeMirror.prefixHint);
+				$wnd.CodeMirror.showHint(cm, $wnd.CodeMirror.prefixHint, {closeCharacters: /(?=a)b/});
 				$wnd.appendPrefixIfNeeded(cm);
 			});
 			$wnd.sparqlHighlight[queryInputId].on("blur", function(cm, change) {
