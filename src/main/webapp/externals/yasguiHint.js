@@ -89,7 +89,7 @@
 			
 			if (
 				//we are either writing a uri, or we've already typed the prefix part, and want to specify the stuff after the colon
-				(token.string.contains(":") !== -1 || token.string.startsWith("<")) 
+				(token.string.contains(":") || token.string.startsWith("<")) 
 				//the cursor is at the end of the string
 				&& token.end == cur.ch
 				//we already have something filled in
@@ -155,7 +155,6 @@
 		}
 	};
 	function getPropertiesSuggestions(editor, getToken) {
-		console.log("propertiessuggestions");
 		cur = editor.getCursor(), token = getToken(editor, cur);
 		
 		var token = getCompleteToken(editor, token, editor.getCursor());
