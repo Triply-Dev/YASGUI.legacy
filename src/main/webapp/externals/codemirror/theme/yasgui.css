@@ -11,7 +11,9 @@
 	position: relative;
 	overflow: hidden;
 }
-
+.CodeMirror-hints {
+	z-index: 99999999 !important;
+}
 .CodeMirror-vscrollbar {
 	overflow:hidden;
 }

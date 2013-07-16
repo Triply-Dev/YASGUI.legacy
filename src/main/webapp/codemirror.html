@@ -68,7 +68,7 @@ SELECT DISTINCT *
 			}
 		});
 		myCodeMirror.on("change", function(cm, change){
-			CodeMirror.showHint(cm, CodeMirror.allAutoCompletions, {closeCharacters: /blaaaaat/});
+			CodeMirror.showHint(cm, CodeMirror.allAutoCompletions, {closeCharacters: /(?=a)b/});
 			appendPrefixIfNeeded(cm);
 			checkSyntax(cm);
 			setQueryType(cm.getStateAfter().queryType);
