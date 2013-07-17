@@ -156,11 +156,27 @@
 	};
 	function getPropertiesSuggestions(editor, getToken) {
 		cur = editor.getCursor(), token = getToken(editor, cur);
-		
 		var token = getCompleteToken(editor, token, editor.getCursor());
+		var tokenPrefix = null;
+		var tokenPrefixUri = null;
+		if (!token.string.startsWith("<")) {
+			tokenPrefix = token.string.substring(0, token.string.indexOf(":") + 1);
+			var queryPrefixes = getPrefixesFromQuery(editor);
+			if (queryPrefixes[tokenPrefix] != null) {
+				tokenPrefixUri = queryPrefixes[tokenPrefix];
+			}
+		}
+		
+		//preprocess string for which to find the autocompletion
 		var uriStart = getUriFromPrefix(editor, token);
+		if (uriStart.startsWith("<")) uriStart = uriStart.substring(1);
+		if (uriStart.endsWith(">")) uriStart = uriStart.substring(0, uriStart.length - 1);
+		
+		
+		
+		
 		var found = [];
-		var queryPrefixes = getPrefixesFromQuery(editor);
+		
 		//use custom completionhint function, to avoid reaching a loop when the completionhint is the same as the current token
 		//regular behaviour would keep changing the codemirror dom, hence constantly calling this callback
 		var completionHint = function(cm, data, completion) {
@@ -170,25 +186,22 @@
 			}
 		};
 		
-		for ( var i = 0, e = properties[getCurrentEndpoint()].length; i < e; ++i) {
-			if (found.length > 500) break; //otherwise autocomplete box might become huge
-			var str = properties[getCurrentEndpoint()][i];
-			if (uriStart.startsWith("<")) {
-				str = "<" + str + ">";
-			}
-			if (str.indexOf(uriStart) == 0 && !arrayContains(found, str)) {
-				//great, we've found a hit!
-				if (!token.string.startsWith("<")) {
-					//we need to get the suggested string back to prefixed form
-					var prefix = token.string.substring(0, token.string.indexOf(":") + 1);
-					if (queryPrefixes[prefix] != null) {
-						str = str.substring(queryPrefixes[prefix].length);
-						str = prefix + str;
-					}
-				} 
-				found.push({text: str, hint:completionHint});
-			}
-		}
+
+	
+	    var suggestionsList = properties[getCurrentEndpoint()].autoComplete(uriStart);
+	    for (var i = 0; i < suggestionsList.length ; i++) {
+	    	var suggestedString = suggestionsList[i];
+	    	if (tokenPrefix != null && tokenPrefixUri != null) {
+				//we need to get the suggested string back to prefixed form
+	    		suggestedString = suggestedString.substring(tokenPrefixUri.length);
+	    		suggestedString = tokenPrefix + suggestedString;
+			} 
+	    	found.push({text: suggestedString, hint:completionHint});
+	    }
+	    if (found.length > 500) {
+	    	found = found.splice(0,500);
+	    }
+
 		if (found.length == 1 && found[0].text == token.string) return;//we already have our match
 		if (found.length > 0) {
 			return {
