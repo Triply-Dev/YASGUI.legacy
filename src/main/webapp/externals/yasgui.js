@@ -4,7 +4,7 @@ var sparqlHighlightHeight = {};
 var sparqlHighlight = {};
 var sparqlResponseHighlight = {};
 var prefixes = [];
-var properties = [];
+var properties = {};
 var queryRequest;
 
 //These two variables are ugly workaround with which we can distinguish in our callback between a history state changed issued
