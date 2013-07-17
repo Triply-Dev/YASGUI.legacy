@@ -251,6 +251,7 @@
 								<include>../externals/codemirror/mode/javascript/javascript.js</include>
 								<include>../externals/codemirror/mode/xml/xml.js</include>
 								<include>../externals/codemirror/mode/turtle/turtle.js</include>
+								<include>../externals/trie..js</include>
 								<include>../externals/codemirror/addon/hint/show-hint.js</include>
 								<include>../externals/yasguiHint.js</include>
 								<include>../externals/codemirror/addon/search/searchcursor.js</include>

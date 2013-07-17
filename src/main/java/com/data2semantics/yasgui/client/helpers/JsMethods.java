@@ -231,7 +231,13 @@ public class JsMethods {
 	}-*/;
 	
 	public static native void setAutocompleteProperties(String endpoint, String properties) /*-{
-		$wnd.properties[endpoint] = eval(properties);
+		var propertiesArray =  eval(properties);
+		var T = new Trie();
+	    var i;
+	    for(i = 0; i < propertiesArray.length; i++) {
+	        T.insert(propertiesArray[i]);
+	    }
+		$wnd.properties[endpoint] = T;
 	}-*/;
 	public static native boolean propertiesRetrieved(String endpoint) /*-{
 		return $wnd.properties[endpoint] != null && $wnd.properties[endpoint].length > 0;

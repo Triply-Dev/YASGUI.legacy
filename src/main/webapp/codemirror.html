@@ -6,6 +6,7 @@
 <script type="text/javascript">function showPlayButton(){};function setQueryType(){};</script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
 <script src="externals/yasgui.js"></script>
+<script src="externals/trie.js"></script>
 
 <script src="externals/codemirror/codemirror.js"></script>
 <script src="externals/codemirror/mode/xml/xml.js"></script>
@@ -47,7 +48,14 @@ SELECT DISTINCT *
 	function getCurrentEndpoint() {
 		return "bla";
 	}
-	var properties = { "bla": ["http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla2","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla", "http://www.w3.org/1999/02/22-rdf-syntax-ns#bld", "http://www.w3.org/1999/02/22-rdf-syntax-ns#45"]};
+	var properties = {};
+	var propertiesArray = ["http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla2","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla", "http://www.w3.org/1999/02/22-rdf-syntax-ns#bld", "http://www.w3.org/1999/02/22-rdf-syntax-ns#45"];
+	var T = new Trie();
+    var i;
+    for(i = 0; i < propertiesArray.length; i++) {
+        T.insert(propertiesArray[i]);
+        properties['bla'] = T;
+    }
 	var prefixes = ["aers: <bwah>", "aacbs: <sdf>", "aacds: <sdf>", "aaebs: <sdf>", "blaaa1: <sdf>", "blaaa2: <sdf>", "blaaa3: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aacbs: <sdf>", "rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>", "http: <htpp://bla>", "rdfs: <bwah>", "whereeee: <sdf>", "whereeec: <sdf>"];
 				var modes;
 		var myCodeMirror = CodeMirror.fromTextArea(document
