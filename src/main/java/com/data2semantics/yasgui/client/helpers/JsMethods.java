@@ -232,7 +232,7 @@ public class JsMethods {
 	
 	public static native void setAutocompleteProperties(String endpoint, String properties) /*-{
 		var propertiesArray =  eval(properties);
-		var T = new Trie();
+		var T = new $wnd.Trie();
 	    var i;
 	    for(i = 0; i < propertiesArray.length; i++) {
 	        T.insert(propertiesArray[i]);
