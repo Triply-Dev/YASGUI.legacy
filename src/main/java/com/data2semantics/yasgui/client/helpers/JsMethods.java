@@ -57,68 +57,8 @@ public class JsMethods {
 	 * 
 	 * @param queryInputId Id of text area to attach codemirror to
 	 */
-	public static native void attachCodeMirrorToQueryInput(String queryInputId) /*-{
-		var qInput = $doc.getElementById(queryInputId);
-		if (qInput) {
-			if ($wnd.sparqlHighlight[queryInputId] == null) { 
-				//Only add if it hasnt been drawn yet
-				$wnd.sparqlHighlight[queryInputId] = $wnd.CodeMirror.fromTextArea(qInput, {
-					mode : "application/x-sparql-query",
-					theme: "yasgui",
-					highlightSelectionMatches: {showToken: /\w/},
-					tabMode : "indent",
-					lineNumbers : true,
-					gutters: ["gutterErrorBar","CodeMirror-linenumbers" ],
-					matchBrackets : true,
-					fixedGutter: true,
-					extraKeys : {
-						"Ctrl-Space" : "autocomplete",
-						"Ctrl-D" : "deleteLines",
-						"Ctrl-/" : "commentLines",
-						"Ctrl-Alt-Down" : "copyLineDown",
-						"Ctrl-Alt-Up" : "copyLineUp",
-					}
-				});
-				
-				$wnd.sparqlHighlight[queryInputId].on("change", function(cm, change){
-					$wnd.checkSyntax(cm, true);
-					$wnd.setQueryType(cm.getStateAfter().queryType);
-					height = $wnd.sparqlHighlight[queryInputId].getWrapperElement().offsetHeight;
-					if ($wnd.sparqlHighlightHeight[queryInputId]) {
-						if (height != $wnd.sparqlHighlightHeight[queryInputId]) {
-							$wnd.sparqlHighlightHeight[queryInputId] = height;
-							$wnd.adjustQueryInputForContent();
-						}
-					} else {
-						$wnd.sparqlHighlightHeight[queryInputId] = height;
-					}
-					$wnd.CodeMirror.showHint(cm, $wnd.CodeMirror.allAutoCompletions, {closeCharacters: /(?=a)b/});
-					$wnd.appendPrefixIfNeeded(cm);
-				});
-				$wnd.sparqlHighlight[queryInputId].on("gutterClick", function(cm, change) {
-					$wnd.saveTabTitle();
-				});
-				$wnd.sparqlHighlight[queryInputId].on("focus", function(cm, change) {
-					$wnd.saveTabTitle();
-				});
-				$wnd.sparqlHighlight[queryInputId].on("blur", function(cm, change) {
-					$wnd.storeQueryInCookie();
-				});
-				//init query type
-				$wnd.setQueryType($wnd.sparqlHighlight[queryInputId].getStateAfter().queryType);
-				
-				
-				//Append another classname to the codemirror div, so we can set width and height via css
-				if (qInput.nextSibling != null && qInput.nextSibling.className == "CodeMirror") {
-					qInput.nextSibling.className = "CodeMirror queryCm";
-					scrollElement = qInput.nextSibling.getElementsByClassName("CodeMirror-scroll");
-					//use jquery for this (a bit easier). for this element, find scroll class, and append another class
-					$wnd.$("#"+queryInputId).next().find($wnd.$(".CodeMirror-scroll")).addClass("queryScrollCm");
-				}
-			}
-		} else {
-			$wnd.onError("no text area for query input id: " + queryInputId);
-		}
+	public static native void initializeQueryCodemirror(String elementId) /*-{
+		$wnd.initializeQueryCodemirror(elementId);
 	}-*/;
 	
 	/**
@@ -126,50 +66,17 @@ public class JsMethods {
 	 * 
 	 * @param queryInputId Id of text area to attach codemirror to
 	 */
-	public static native void attachCodeMirrorToBookmarkedQuery(String queryInputId) /*-{
-		var qInput = $doc.getElementById(queryInputId);
-		if (qInput) {
-			$wnd.sparqlHighlight[queryInputId] = $wnd.CodeMirror.fromTextArea(qInput, {
-				mode : "application/x-sparql-query",
-				tabMode : "indent",
-				theme: "yasgui",
-				highlightSelectionMatches: {showToken: /\w/},
-				gutters: ["gutterErrorBar","CodeMirror-linenumbers" ],
-				lineNumbers : true,
-				matchBrackets : true,
-				fixedGutter: true,
-				viewportMargin: Infinity,
-				extraKeys : {
-					"Ctrl-Space" : "autocomplete",
-					"Ctrl-D" : "deleteLines",
-					"Ctrl-/" : "commentLines",
-					"Ctrl-Alt-Down" : "copyLineDown",
-					"Ctrl-Alt-Up" : "copyLineUp",
-				}
-			});
-			
-			$wnd.sparqlHighlight[queryInputId].on("change", function(cm, change){
-				$wnd.checkSyntax(cm, false);
-				$wnd.setQueryType(cm.getStateAfter().queryType);
-				$wnd.updateBookmarkCmHeight(queryInputId);
-				$wnd.CodeMirror.showHint(cm, $wnd.CodeMirror.prefixHint, {closeCharacters: /(?=a)b/});
-				$wnd.appendPrefixIfNeeded(cm);
-			});
-			$wnd.sparqlHighlight[queryInputId].on("blur", function(cm, change) {
-				$wnd.updateBookmarkedQuery();
-			});
-				
-			$wnd.updateBookmarkCmHeight(queryInputId);
-			//Append another classname to the codemirror div, so we can set width and height via css
-			if (qInput.nextSibling != null && qInput.nextSibling.className == "CodeMirror") {
-				qInput.nextSibling.className = "CodeMirror bookmarkCm";
-				scrollElement = qInput.nextSibling.getElementsByClassName("CodeMirror-scroll");
-				//use jquery for this (a bit easier). for this element, find scroll class, and append another class
-				$wnd.$("#"+queryInputId).next().find($wnd.$(".CodeMirror-scroll")).addClass("bookmarkScrollCm");
-			}
-		} else {
-			$wnd.onError("no text area for bookmark query input id: " + queryInputId);
-		}
+	public static native void initializeQueryBookmarkCodemirror(String elementId) /*-{
+		$wnd.initializeQueryBookmarkCodemirror(elementId);
+	}-*/;
+	
+	/**
+	 * Initialize and atatch codemirror to a text area used for displaying json/xml results of query
+	 * 
+	 * @param queryInputId Id of text area to attach codemirror to
+	 */
+	public static native void initializeQueryResponseCodemirror(String elementId, String mode) /*-{
+		$wnd.initializeQueryResponseCodemirror(elementId, mode);
 	}-*/;
 	
 	public static native void resizeQueryInput(String queryInputId, int width, int height) /*-{
@@ -178,52 +85,7 @@ public class JsMethods {
 		}
 	}-*/;
 
-	/**
-	 * Initialize and atatch codemirror to a text area used for displaying json/xml results of query
-	 * 
-	 * @param queryInputId Id of text area to attach codemirror to
-	 */
-	public static native void attachCodeMirrorToQueryResult(String queryInputId, String mode) /*-{
-		var qInput = $doc.getElementById(queryInputId);
-		if (qInput) {
-			var drawCodeMirror = false;
-			if ($wnd.sparqlResponseHighlight[queryInputId] == null) drawCodeMirror = true;
-			
-			//also check if it isnt drawn yet. Checking for just the javascript object in the sparqlResponseHighlight object is not enough
-			//The object can be there, while visually you see the text area. a goof that happens between codemirror and smartgwt I believe (having to do with the way smartgwt loads pages icw resizing pages)
-			if (qInput.nextSibling == null) drawCodeMirror = true;
 
-			if (drawCodeMirror) {
-				var cmMode = mode;
-				if (mode == "json") {
-					cmMode = {
-						name: "javascript",
-						json: true
-					};
-				}
-				$wnd.sparqlResponseHighlight[queryInputId] = $wnd.CodeMirror.fromTextArea($doc.getElementById(queryInputId), {
-					mode : cmMode,
-					theme: "yasgui",
-					lineNumbers : true,
-					highlightSelectionMatches: {showToken: /\w/},
-					matchBrackets : true,
-					readOnly: true,
-					fixedGutter: true,
-					hideVScroll: true
-				});
-				
-				//Append another classname to the codemirror div, so we can set width and height via css
-				if (qInput.nextSibling != null && qInput.nextSibling.className == "CodeMirror") {
-					qInput.nextSibling.className = "CodeMirror resultCm";
-					scrollElement = qInput.nextSibling.getElementsByClassName("CodeMirror-scroll");
-					//use jquery for this (a bit easier). for this element, find scroll class, and append another class
-					$wnd.$("#"+queryInputId).next().find($wnd.$(".CodeMirror-scroll")).addClass("resultScrollCm");
-				}
-			}
-		} else {
-			$wnd.onError("no text area to create sparql response highlight for. Input id: " + queryInputId);
-		}
-	}-*/;
 	
 	
 	public static native void setAutocompletePrefixes(String prefixes) /*-{
