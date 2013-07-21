@@ -258,7 +258,7 @@
 								<include>../externals/codemirror/addon/search/match-highlighter.js</include>
 								<include>../externals/codemirror/addon/edit/matchbrackets.js</include>
 								<include>../externals/flint/sparql.js</include>
-								<include>../externals/addCommands.js</include>
+								<include>../externals/codemirrorCommands.js</include>
 								<include>../externals/yasgui.js</include>
 							</includes>
 						</aggregation>

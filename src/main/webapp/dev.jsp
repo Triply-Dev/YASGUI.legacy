@@ -44,7 +44,7 @@
 <script src="externals/flint/sparql.js"></script>
 <link rel="stylesheet" href="externals/flint/sparql.css">
 <!-- Code for adding custom keycombination/mouseclick commands to codemirror -->
-<script src="externals/addCommands.js"></script>
+<script src="externals/codemirrorCommands.js"></script>
 
 
 <script src="externals/yasgui.js?<% out.print(StaticConfig.VERSION); %>"></script>

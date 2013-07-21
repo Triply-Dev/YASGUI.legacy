@@ -185,7 +185,6 @@ function initializeQueryCodemirror(elementId) {
 				matchBrackets : true,
 				fixedGutter: true,
 				extraKeys : {
-					"Ctrl-Space" : "autocomplete",
 					"Ctrl-D" : "deleteLines",
 					"Ctrl-/" : "commentLines",
 					"Ctrl-Alt-Down" : "copyLineDown",
@@ -290,7 +289,6 @@ function initializeQueryBookmarkCodemirror(elementId) {
 			fixedGutter: true,
 			viewportMargin: Infinity,
 			extraKeys : {
-				"Ctrl-Space" : "autocomplete",
 				"Ctrl-D" : "deleteLines",
 				"Ctrl-/" : "commentLines",
 				"Ctrl-Alt-Down" : "copyLineDown",
