@@ -216,13 +216,16 @@ Trie.prototype = {
     * @param {String} str Prefix of current word
     * @return {Array} Array of words in the dictionary
     */
-    getAllWords: function(str) {
+    getAllWords: function(str, maxWords, currentCount) {
         var T = this,
             k,
             child,
             ret = [];
         if(str === undefined) {
             str = "";
+        }
+        if (currentCount === undefined) {
+        	currentCount = 0;
         }
         if(T === undefined) {
             return [];
@@ -231,8 +234,14 @@ Trie.prototype = {
             ret.push(str);
         }
         for(k in T.children) {
-            child = T.children[k];
-            ret = ret.concat(child.getAllWords(str + k));
+        	if (T.children.hasOwnProperty(k)) {
+                child = T.children[k];
+                ret = ret.concat(child.getAllWords(str + k, maxWords, currentCount));
+                if (currentCount > maxWords) {
+                	break;
+                }
+                currentCount += child.prefixes;
+            }
         }
         return ret;
     },
@@ -245,11 +254,10 @@ Trie.prototype = {
     * @param {Integer} pos Current index of the prefix
     * @return {Array} Array of possible suggestions
     */
-    autoComplete: function(str, pos) {
+    autoComplete: function(str, pos, maxWords) {
         if(str.length == 0) {
             return [];
         }
-        
         var T = this,
             k,
             child;
@@ -263,8 +271,8 @@ Trie.prototype = {
             return [];
         }
         if(pos === str.length - 1) {
-            return child.getAllWords(str);
+            return child.getAllWords(str, maxWords).splice(0,maxWords);
         }
-        return child.autoComplete(str, pos + 1);
+        return child.autoComplete(str, pos + 1, maxWords);
     }
 };
