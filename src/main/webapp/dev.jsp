@@ -33,7 +33,7 @@
 <!-- Autocompletion code -->
 <link rel="stylesheet" href="externals/codemirror/addon/hint/show-hint.css">
 <script src="externals/codemirror/addon/hint/show-hint.js"></script>
-<script src="externals/trie.js"></script>
+
 <script src="externals/yasguiHint.js"></script>
 <!-- Highlight words onclick code -->
 <script src="externals/codemirror/addon/search/searchcursor.js"></script>
@@ -48,6 +48,7 @@
 
 
 <script src="externals/yasgui.js?<% out.print(StaticConfig.VERSION); %>"></script>
+<script src="externals/trie.js"></script>
 <link rel="stylesheet" href="externals/yasgui.css?<% out.print(StaticConfig.VERSION); %>">
 <!--                                           -->
 <!-- This script loads your compiled module.   -->
