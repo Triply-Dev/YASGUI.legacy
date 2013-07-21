@@ -1,6 +1,3 @@
-CodeMirror.commands.autocomplete = function(cm) {
-	CodeMirror.simpleHint(cm, CodeMirror.prefixHint);
-};
 CodeMirror.commands.executeQuery = function(cm) {
 	executeQuery();
 };
