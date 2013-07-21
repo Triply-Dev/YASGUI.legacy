@@ -14,6 +14,9 @@
 .CodeMirror-hints {
 	z-index: 99999999 !important;
 }
+.CodeMirror-hint {
+  max-width: 30em !important;
+}
 .CodeMirror-vscrollbar {
 	overflow:hidden;
 }
