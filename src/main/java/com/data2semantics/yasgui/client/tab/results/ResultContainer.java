@@ -296,7 +296,7 @@ public class ResultContainer extends VLayout {
 			public void onResized(ResizedEvent event) {
 				Scheduler.get().scheduleDeferred(new Command() {
 					public void execute() {
-						JsMethods.attachCodeMirrorToQueryResult(rawResponseOutput.getInputId(), mode);
+						JsMethods.initializeQueryResponseCodemirror(rawResponseOutput.getInputId(), mode);
 						rawResponseOutput.adjustForContent(true);
 					}
 				});

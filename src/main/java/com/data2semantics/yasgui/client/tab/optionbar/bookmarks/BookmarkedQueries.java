@@ -254,7 +254,7 @@ public class BookmarkedQueries extends Img {
 				final BookmarkRecord record = (BookmarkRecord)(event.getRecord());
 				Scheduler.get().scheduleDeferred(new Command() {
 					public void execute() {
-						JsMethods.attachCodeMirrorToBookmarkedQuery(record.getInputId());
+						JsMethods.initializeQueryBookmarkCodemirror(record.getInputId());
 						listGrid.getCurrentExpansionComponent(record).setBackgroundColor("white");
 					}
 				});

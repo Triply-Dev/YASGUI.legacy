@@ -158,15 +158,167 @@ $(document).keydown(function(e) {
 
 });
 
-function updateBookmarkCmHeight(queryInputId) {
-	cmHeight = sparqlHighlight[queryInputId].getWrapperElement().offsetHeight;
-	if (sparqlHighlightHeight[queryInputId]) {
-		if (cmHeight != sparqlHighlightHeight[queryInputId]) {
-			sparqlHighlightHeight[queryInputId] = cmHeight;
+function updateBookmarkCmHeight(elementId) {
+	cmHeight = sparqlHighlight[elementId].getWrapperElement().offsetHeight;
+	if (sparqlHighlightHeight[elementId]) {
+		if (cmHeight != sparqlHighlightHeight[elementId]) {
+			sparqlHighlightHeight[elementId] = cmHeight;
 			adjustBookmarkQueryInputForContent(cmHeight);
 		}
 	} else {
-		sparqlHighlightHeight[queryInputId] = cmHeight;
+		sparqlHighlightHeight[elementId] = cmHeight;
 	}
 }
 
+function initializeQueryCodemirror(elementId) {
+	var qInput = document.getElementById(elementId);
+	if (qInput) {
+		if (sparqlHighlight[elementId] == null) { 
+			//Only add if it hasnt been drawn yet
+			sparqlHighlight[elementId] = CodeMirror.fromTextArea(qInput, {
+				mode : "application/x-sparql-query",
+				theme: "yasgui",
+				highlightSelectionMatches: {showToken: /\w/},
+				tabMode : "indent",
+				lineNumbers : true,
+				gutters: ["gutterErrorBar","CodeMirror-linenumbers" ],
+				matchBrackets : true,
+				fixedGutter: true,
+				extraKeys : {
+					"Ctrl-Space" : "autocomplete",
+					"Ctrl-D" : "deleteLines",
+					"Ctrl-/" : "commentLines",
+					"Ctrl-Alt-Down" : "copyLineDown",
+					"Ctrl-Alt-Up" : "copyLineUp",
+				}
+			});
+			
+			sparqlHighlight[elementId].on("change", function(cm, change){
+				checkSyntax(cm, true);
+				setQueryType(cm.getStateAfter().queryType);
+				height = sparqlHighlight[elementId].getWrapperElement().offsetHeight;
+				if (sparqlHighlightHeight[elementId]) {
+					if (height != sparqlHighlightHeight[elementId]) {
+						sparqlHighlightHeight[elementId] = height;
+						adjustQueryInputForContent();
+					}
+				} else {
+					sparqlHighlightHeight[elementId] = height;
+				}
+				CodeMirror.showHint(cm, CodeMirror.allAutoCompletions, {closeCharacters: /(?=a)b/});
+				appendPrefixIfNeeded(cm);
+			});
+			sparqlHighlight[elementId].on("gutterClick", function(cm, change) {
+				saveTabTitle();
+			});
+			sparqlHighlight[elementId].on("focus", function(cm, change) {
+				saveTabTitle();
+			});
+			sparqlHighlight[elementId].on("blur", function(cm, change) {
+				storeQueryInCookie();
+			});
+			//init query type
+			setQueryType(sparqlHighlight[elementId].getStateAfter().queryType);
+			
+			
+			//Append another classname to the codemirror div, so we can set width and height via css
+			if (qInput.nextSibling != null && qInput.nextSibling.className == "CodeMirror") {
+				qInput.nextSibling.className = "CodeMirror queryCm";
+				scrollElement = qInput.nextSibling.getElementsByClassName("CodeMirror-scroll");
+				//use jquery for this (a bit easier). for this element, find scroll class, and append another class
+				$("#"+elementId).next().find($(".CodeMirror-scroll")).addClass("queryScrollCm");
+			}
+		}
+	} else {
+		onError("no text area for query input id: " + elementId);
+	}
+}
+
+function initializeQueryResponseCodemirror(elementId, mode) {
+	var qInput = document.getElementById(elementId);
+	if (qInput) {
+		var drawCodeMirror = false;
+		if (sparqlResponseHighlight[elementId] == null) drawCodeMirror = true;
+		
+		//also check if it isnt drawn yet. Checking for just the javascript object in the sparqlResponseHighlight object is not enough
+		//The object can be there, while visually you see the text area. a goof that happens between codemirror and smartgwt I believe (having to do with the way smartgwt loads pages icw resizing pages)
+		if (qInput.nextSibling == null) drawCodeMirror = true;
+
+		if (drawCodeMirror) {
+			var cmMode = mode;
+			if (mode == "json") {
+				cmMode = {
+					name: "javascript",
+					json: true
+				};
+			}
+			sparqlResponseHighlight[elementId] = CodeMirror.fromTextArea(document.getElementById(elementId), {
+				mode : cmMode,
+				theme: "yasgui",
+				lineNumbers : true,
+				highlightSelectionMatches: {showToken: /\w/},
+				matchBrackets : true,
+				readOnly: true,
+				fixedGutter: true,
+				hideVScroll: true
+			});
+			
+			//Append another classname to the codemirror div, so we can set width and height via css
+			if (qInput.nextSibling != null && qInput.nextSibling.className == "CodeMirror") {
+				qInput.nextSibling.className = "CodeMirror resultCm";
+				scrollElement = qInput.nextSibling.getElementsByClassName("CodeMirror-scroll");
+				//use jquery for this (a bit easier). for this element, find scroll class, and append another class
+				$("#"+elementId).next().find($(".CodeMirror-scroll")).addClass("resultScrollCm");
+			}
+		}
+	} else {
+		onError("no text area to create sparql response highlight for. Input id: " + elementId);
+	}
+}
+
+function initializeQueryBookmarkCodemirror(elementId) {
+	var qInput = document.getElementById(elementId);
+	if (qInput) {
+		sparqlHighlight[elementId] = CodeMirror.fromTextArea(qInput, {
+			mode : "application/x-sparql-query",
+			tabMode : "indent",
+			theme: "yasgui",
+			highlightSelectionMatches: {showToken: /\w/},
+			gutters: ["gutterErrorBar","CodeMirror-linenumbers" ],
+			lineNumbers : true,
+			matchBrackets : true,
+			fixedGutter: true,
+			viewportMargin: Infinity,
+			extraKeys : {
+				"Ctrl-Space" : "autocomplete",
+				"Ctrl-D" : "deleteLines",
+				"Ctrl-/" : "commentLines",
+				"Ctrl-Alt-Down" : "copyLineDown",
+				"Ctrl-Alt-Up" : "copyLineUp",
+			}
+		});
+		
+		sparqlHighlight[elementId].on("change", function(cm, change){
+			checkSyntax(cm, false);
+			setQueryType(cm.getStateAfter().queryType);
+			updateBookmarkCmHeight(elementId);
+			CodeMirror.showHint(cm, CodeMirror.prefixHint, {closeCharacters: /(?=a)b/});
+			appendPrefixIfNeeded(cm);
+		});
+		sparqlHighlight[elementId].on("blur", function(cm, change) {
+			updateBookmarkedQuery();
+		});
+			
+		updateBookmarkCmHeight(elementId);
+		//Append another classname to the codemirror div, so we can set width and height via css
+		if (qInput.nextSibling != null && qInput.nextSibling.className == "CodeMirror") {
+			qInput.nextSibling.className = "CodeMirror bookmarkCm";
+			scrollElement = qInput.nextSibling.getElementsByClassName("CodeMirror-scroll");
+			//use jquery for this (a bit easier). for this element, find scroll class, and append another class
+			$("#"+elementId).next().find($(".CodeMirror-scroll")).addClass("bookmarkScrollCm");
+		}
+	} else {
+		onError("no text area for bookmark query input id: " + elementId);
+	}
+	
+}
