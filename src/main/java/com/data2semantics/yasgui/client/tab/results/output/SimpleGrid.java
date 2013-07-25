@@ -85,9 +85,11 @@ public class SimpleGrid extends HTMLPane {
 					HashMap<String, String> binding = bindings.get(variable);
 					if (ResultsHelper.valueIsUri(binding)) {
 						html += "<td class=\"snorqlLink\">";
-						html += ResultsHelper.getOpenAsResourceLinkForUri(binding, queryPrefixes);
-						html += "&nbsp;";
-						html += ResultsHelper.getImageLink(Imgs.OTHER_IMAGES_DIR + Imgs.get(Imgs.EXTERNAL_LINK), binding.get("value"), "extResourceLink", 12);
+						if (view.getSettings().useUrlAsSnorql()) {
+							html += ResultsHelper.getSnorqlHrefLink(binding, queryPrefixes) + "&nbsp;" + ResultsHelper.getRegularImgLink(binding.get("value"));
+						} else {
+							html += ResultsHelper.getRegularHrefLink(binding, queryPrefixes) + "&nbsp;" + ResultsHelper.getSnorqlImgLink(binding.get("value"));
+						}
 					} else if (ResultsHelper.valueIsLiteral(binding)) {
 						html += "<td>";
 						html += ResultsHelper.getLiteralFromBinding(binding);
