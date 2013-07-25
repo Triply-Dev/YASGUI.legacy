@@ -36,6 +36,7 @@ import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.tab.results.input.ResultsHelper;
 import com.data2semantics.yasgui.client.tab.results.input.SparqlResults;
 import com.data2semantics.yasgui.shared.Prefix;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.Canvas;
@@ -59,6 +60,7 @@ public class ResultGrid extends ListGrid {
 	private ListGridRecord rollOverRecord;
 	private HLayout rollOverCanvas;
 	private Canvas emptyRollOverCanvas;
+	private HandlerRegistration rollOverCanvasClickHandler;
 	public ResultGrid(final View view, SparqlResults sparqlResults, HTMLPane html) {
 		this.view = view;
 		this.sparqlResults = sparqlResults;
@@ -100,15 +102,18 @@ public class ResultGrid extends ListGrid {
 					openExtLink.setPrompt("Open resource in new browser window");
 					openExtLink.setHeight(16);
 					openExtLink.setWidth(16);
-					openExtLink.addClickHandler(new ClickHandler() {
-						public void onClick(ClickEvent event) {
-							Window.open(value, "_blank", "");
-						}
-					});
-		
 					rollOverCanvas.addMember(openExtLink);
 					
 				}
+				
+				//now, rollOverCanvas always exists, and always has 1 member. Get the member and change the onclick handler.
+				//This way we can use the same canvas for every URI, and still change the click handler
+				if (rollOverCanvasClickHandler != null) rollOverCanvasClickHandler.removeHandler();
+				rollOverCanvasClickHandler = rollOverCanvas.getMembers()[0].addClickHandler(new ClickHandler() {
+					public void onClick(ClickEvent event) {
+						Window.open(value, "_blank", "");
+					}
+				});
 				return rollOverCanvas;
 			}
 		}
