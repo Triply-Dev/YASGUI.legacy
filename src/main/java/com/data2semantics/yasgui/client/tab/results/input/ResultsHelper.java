@@ -29,6 +29,9 @@ package com.data2semantics.yasgui.client.tab.results.input;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
+import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.smartgwt.client.util.StringUtil;
@@ -72,22 +75,24 @@ public class ResultsHelper {
 		}
 		return uri;
 	}
+
 	
-	public static String getImageLink(String imgPath, String url, String className, int size) {
-		String html = "<a href=\"" + url + "\" target=\"_blank\"";
-		if (className != null) {
-			html += " class=\"" + className + "\"";
-		}
-		return  html + "><img src=\"" + imgPath +"\" height=\"" + size + "\" width=\"" + size + "\"/></a>";
+	public static String getSnorqlImgLink(String url) {
+		return "<img onclick=\"queryForResource('" + url +  "');\" class=\"extResourceLink\" style=\"cursor:pointer;\" src=\"" + Imgs.OTHER_IMAGES_DIR + Imgs.get(Imgs.INTERNAL_LINK) +"\" height=\"" + 11 + "\" width=\"" + 11 + "\"/>";
+	}
+
+	public static String getRegularImgLink(String url) {
+		String html = "<a href=\"" + url + "\" target=\"_blank\" class=\"extResourceLink\">";
+		return  html + "><img src=\"" + Imgs.OTHER_IMAGES_DIR + Imgs.get(Imgs.EXTERNAL_LINK) +"\" height=\"" + 12 + "\" width=\"" + 12 + "\"/></a>";
 	}
 	
-	public static String getExternalLinkForUri(HashMap<String, String> binding, HashMap<String, Prefix> queryPrefixes) {
-		String uri = binding.get("value");
-		return  "<a href=\"" + uri + "\" target=\"_blank\">" + StringUtil.asHTML(getShortUri(uri, queryPrefixes)) + "</a>";
-	}
 	
-	public static String getOpenAsResourceLinkForUri(HashMap<String, String> binding, HashMap<String, Prefix> queryPrefixes) {
+	public static String getSnorqlHrefLink(HashMap<String, String> binding, HashMap<String, Prefix> queryPrefixes) {
 		String uri = binding.get("value");
 		return "<span class=\"clickable\" onclick=\"queryForResource('" + uri + "');\">" + ResultsHelper.getShortUri(uri, queryPrefixes) + "</span>";
+	}
+	public static String getRegularHrefLink(HashMap<String, String> binding, HashMap<String, Prefix> queryPrefixes) {
+		String uri = binding.get("value");
+		return  "<a href=\"" + uri + "\" target=\"_blank\">" + StringUtil.asHTML(getShortUri(uri, queryPrefixes)) + "</a>";
 	}
 }

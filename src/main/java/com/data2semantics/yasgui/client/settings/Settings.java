@@ -212,6 +212,14 @@ public class Settings extends JsonHelper {
 		return dbSet;
 	}
 	
+	public boolean useUrlAsSnorql() {
+		boolean result = true;//default value, i.e. regular behaviour
+		if (containsKey(SettingKeys.URI_AS_SNORQL) && get(SettingKeys.URI_AS_SNORQL).isBoolean() != null){
+			result = get(SettingKeys.URI_AS_SNORQL).isBoolean().booleanValue();
+		}
+		return result;
+	}
+	
 	
 	
 	/**

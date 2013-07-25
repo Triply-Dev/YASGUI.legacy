@@ -64,6 +64,7 @@ public class Imgs {
 	public static String QUESTION_MARK = "nounproject/questionMark.png";
 	public static String COMPATIBLE = "nounproject/compatible.png";
 	public static String EXTERNAL_LINK = "nounproject/external_link.png";
+	public static String INTERNAL_LINK = "nounproject/internal_link.png";
 	
 	public static String LOGO_GITHUB = "logos/github.jpg";
 	public static String LOGO_GOOGLE = "logos/google.png";

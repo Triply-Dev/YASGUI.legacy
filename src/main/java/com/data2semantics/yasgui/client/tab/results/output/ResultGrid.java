@@ -98,8 +98,12 @@ public class ResultGrid extends ListGrid {
 					openExtLink.setShowDown(false);
 					openExtLink.setShowRollOver(false);
 					openExtLink.setLayoutAlign(Alignment.CENTER);
-					openExtLink.setSrc(Imgs.get(Imgs.EXTERNAL_LINK));
-					openExtLink.setPrompt("Open resource in new browser window");
+					if (view.getSettings().useUrlAsSnorql()) {
+						openExtLink.setSrc(Imgs.get(Imgs.EXTERNAL_LINK));
+					} else {
+						openExtLink.setSrc(Imgs.get(Imgs.INTERNAL_LINK));
+					}
+					openExtLink.setPrompt("Show resource information");
 					openExtLink.setHeight(16);
 					openExtLink.setWidth(16);
 					rollOverCanvas.addMember(openExtLink);
@@ -111,7 +115,11 @@ public class ResultGrid extends ListGrid {
 				if (rollOverCanvasClickHandler != null) rollOverCanvasClickHandler.removeHandler();
 				rollOverCanvasClickHandler = rollOverCanvas.getMembers()[0].addClickHandler(new ClickHandler() {
 					public void onClick(ClickEvent event) {
-						Window.open(value, "_blank", "");
+						if (view.getSettings().useUrlAsSnorql()) {
+							Window.open(value, "_blank", "");
+						} else {
+							view.getCallableJsMethods().queryForResource(value);
+						}
 					}
 				});
 				return rollOverCanvas;
@@ -186,7 +194,11 @@ public class ResultGrid extends ListGrid {
 					if (binding != null) {
 						String type = binding.get("type");
 						if (type.equals("uri")) {
-							return ResultsHelper.getOpenAsResourceLinkForUri(binding, queryPrefixes);
+							if (view.getSettings().useUrlAsSnorql()) {
+								return ResultsHelper.getSnorqlHrefLink(binding, queryPrefixes);
+							} else {
+								return ResultsHelper.getRegularHrefLink(binding, queryPrefixes);
+							}
 						} else if (type.equals("literal") || binding.get("type").equals("typed-literal")){
 							return ResultsHelper.getLiteralFromBinding(binding);
 						}
