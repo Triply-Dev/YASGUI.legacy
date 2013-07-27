@@ -249,6 +249,7 @@
 				<configuration>
 					<sourceDirectory>${webappDirectory}/externals</sourceDirectory>
 					<nosuffix>true</nosuffix>
+					<jswarn>false</jswarn>
 					<aggregations>
 						<aggregation>
 							<!-- remove files after aggregation (default: false) -->
