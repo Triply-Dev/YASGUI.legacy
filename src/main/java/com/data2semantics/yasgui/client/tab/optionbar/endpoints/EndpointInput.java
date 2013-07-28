@@ -105,15 +105,21 @@ public class EndpointInput extends DynamicForm {
 	private void addButtonSpace() {
 		Scheduler.get().scheduleDeferred(new Command() {
 			public void execute() {
-				//initialize button space
-				buttonSpace.setAutoWidth();
-				buttonSpace.setPosition(Positioning.ABSOLUTE);
-				buttonSpace.setLeft(getDOM().getAbsoluteLeft() + BUTTON_OFFSET_X);
-				buttonSpace.setTop(getDOM().getAbsoluteTop() + BUTTON_OFFSET_Y);
-				buttonSpace.setAutoHeight();
-				buttonSpace.setAutoWidth();
-				buttonSpace.draw();
-				addFetchAutocompletionsButton();
+				try {
+					//initialize button space
+					buttonSpace.setAutoWidth();
+					buttonSpace.setPosition(Positioning.ABSOLUTE);
+					buttonSpace.setLeft(getDOM().getAbsoluteLeft() + BUTTON_OFFSET_X);
+					buttonSpace.setTop(getDOM().getAbsoluteTop() + BUTTON_OFFSET_Y);
+					buttonSpace.setAutoHeight();
+					buttonSpace.setAutoWidth();
+					buttonSpace.draw();
+					addFetchAutocompletionsButton();
+				} catch (Exception e) {
+					//hmmm, somehow this component might not have been initialized properly whe these methods are called,
+					//making the getAbsoluteLeft() function cause a nullpointer exception
+					//ignore for now
+				}
 			}
 		});
 	}
