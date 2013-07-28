@@ -1,0 +1,1 @@
+../assetsCollections/yasguiHint.js
