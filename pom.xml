@@ -272,7 +272,7 @@
 							<insertNewLine>true</insertNewLine>
 							<output>${webappDirectory}/static/yasgui.css</output>
 							<includes>
-								<include>../assets/jquery.qtip.min.css</include>
+								<include>../assets/jquery.qtip.css</include>
 								<include>../assets/codemirror/codemirror.css</include>
 								<include>../assets/codemirror/theme/yasgui.css</include>
 								<include>../assets/codemirror/addon/hint/show-hint.css</include>
