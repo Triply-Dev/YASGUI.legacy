@@ -100,10 +100,12 @@ public class ResultGrid extends ListGrid {
 					openExtLink.setLayoutAlign(Alignment.CENTER);
 					if (view.getSettings().useUrlAsSnorql()) {
 						openExtLink.setSrc(Imgs.get(Imgs.EXTERNAL_LINK));
+						openExtLink.setPrompt("Open resource information in new window");
 					} else {
 						openExtLink.setSrc(Imgs.get(Imgs.INTERNAL_LINK));
+						openExtLink.setPrompt("Show resource information in YASGUI");
 					}
-					openExtLink.setPrompt("Show resource information");
+					
 					openExtLink.setHeight(16);
 					openExtLink.setWidth(16);
 					rollOverCanvas.addMember(openExtLink);
