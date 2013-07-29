@@ -31,9 +31,6 @@ import java.util.Map;
 
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
-import com.data2semantics.yasgui.client.View;
-import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
-import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.smartgwt.client.util.StringUtil;
@@ -82,14 +79,7 @@ public class ResultsHelper {
 	}
 
 	
-	public static String getSnorqlImgLink(String url) {
-		return "<img onclick=\"queryForResource('" + url +  "');\" class=\"extResourceLink\" style=\"cursor:pointer;\" src=\"" + Imgs.OTHER_IMAGES_DIR + Imgs.get(Imgs.INTERNAL_LINK) +"\" height=\"" + 11 + "\" width=\"" + 11 + "\"/>";
-	}
-
-	public static String getRegularImgLink(String url) {
-		String html = "<a href=\"" + url + "\" target=\"_blank\" class=\"extResourceLink\">";
-		return  html + "><img src=\"" + Imgs.OTHER_IMAGES_DIR + Imgs.get(Imgs.EXTERNAL_LINK) +"\" height=\"" + 12 + "\" width=\"" + 12 + "\"/></a>";
-	}
+	
 	
 	
 	public static String getSnorqlHrefLink(HashMap<String, String> binding, HashMap<String, Prefix> queryPrefixes) {
