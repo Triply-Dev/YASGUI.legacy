@@ -101,8 +101,17 @@ body {
 .extResourceLink {
 	display: none;
 }
-.snorqlLink:hover .extResourceLink {
+
+.snorqlTdWrapper:hover div .extResourceLink {
     display: inline-block;
+}
+
+.snorqlTdWrapper {
+	padding: 0px !important;
+}
+.snorqlTdWrapper > div {
+	padding: 4px 6px;
+	position: relative;
 }
 
 .providerContainer:hover {

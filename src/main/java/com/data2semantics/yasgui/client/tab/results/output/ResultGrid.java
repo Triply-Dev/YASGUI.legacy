@@ -39,6 +39,7 @@ import com.data2semantics.yasgui.shared.Prefix;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLPane;
 import com.smartgwt.client.widgets.ImgButton;
@@ -92,8 +93,8 @@ public class ResultGrid extends ListGrid {
 					rollOverCanvas = new HLayout();
 					rollOverCanvas.setSnapTo("TR");
 					rollOverCanvas.setWidth(22);
-					rollOverCanvas.setHeight(22);
-		
+					rollOverCanvas.setHeight100();
+					rollOverCanvas.setAlign(VerticalAlignment.CENTER);
 					ImgButton openExtLink = new ImgButton();
 					openExtLink.setShowDown(false);
 					openExtLink.setShowRollOver(false);
