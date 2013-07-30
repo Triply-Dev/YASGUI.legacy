@@ -237,6 +237,7 @@
 					<warSourceDirectory>${project.basedir}/src/main/webapp/assets</warSourceDirectory>
 					<outputDirectory>${webappDirectory}/assets</outputDirectory>
 					<nosuffix>true</nosuffix>
+					<jswarn>false</jswarn>
 					<aggregations>
 						<aggregation>
 							<!-- remove files after aggregation (default: false) -->
