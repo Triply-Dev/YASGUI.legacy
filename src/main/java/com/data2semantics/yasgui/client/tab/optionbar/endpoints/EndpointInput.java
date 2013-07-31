@@ -90,7 +90,6 @@ public class EndpointInput extends DynamicForm {
 		setTitleOrientation(TitleOrientation.TOP);
 		createTextInput();
 		addButtonSpace();
-//		getProperties();
 	}
 
 	
@@ -114,7 +113,7 @@ public class EndpointInput extends DynamicForm {
 					buttonSpace.setAutoHeight();
 					buttonSpace.setAutoWidth();
 					buttonSpace.draw();
-					addFetchAutocompletionsButton();
+					updateFetchIcon();
 				} catch (Exception e) {
 					//hmmm, somehow this component might not have been initialized properly whe these methods are called,
 					//making the getAbsoluteLeft() function cause a nullpointer exception
@@ -148,6 +147,15 @@ public class EndpointInput extends DynamicForm {
 		img.setWidth(16);
 		img.setTooltip("Fetching predicate autocompletion information for this endpoint");
 		buttonSpace.addMember(img);
+	}
+	
+	private void updateFetchIcon() {
+		final String endpoint = view.getSelectedTabSettings().getEndpoint();
+		if (JsMethods.propertiesRetrieved(endpoint)) {
+			addAutocompletionsFetchedIcon();
+		} else {
+			addFetchAutocompletionsButton();
+		}
 	}
 	
 	private void addAutocompletionsFetchedIcon() {
@@ -279,7 +287,7 @@ public class EndpointInput extends DynamicForm {
 		JsMethods.checkCorsEnabled(endpointString);
 		view.getSelectedTabSettings().setEndpoint(endpointString);
 		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
-		getProperties();
+		updateFetchIcon();
 	}
 	
 	private QueryTab getQueryTab() {
