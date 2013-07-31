@@ -59,7 +59,7 @@ public class LinkCreator extends ImgButton {
 	private static final int TOOLTIP_VERSION_LINK = 2;
 	private View view;
 	private Window window;
-	private static int WINDOW_WIDTH = 220;
+	private static int WINDOW_WIDTH = 230;
 	private static int WINDOW_HEIGHT = 85;
 	private static int ICON_WIDTH = 25;
 	private static int ICON_HEIGHT = 25;
@@ -86,11 +86,11 @@ public class LinkCreator extends ImgButton {
 			@Override
 			public void onClick(ClickEvent event) {
 				window = new Window();
+				window.setShowHeader(false);
 				window.setZIndex(ZIndexes.MODAL_WINDOWS);
 				window.setTitle("Get link");
 				window.setIsModal(true);
 				window.setDismissOnOutsideClick(true);
-				window.setShowHeader(false);
 				int left = (getAbsoluteLeft() + ICON_WIDTH) - WINDOW_WIDTH;
 				int top = getAbsoluteTop() + ICON_HEIGHT;
 				window.setRect(left, top, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -111,7 +111,6 @@ public class LinkCreator extends ImgButton {
 		
 		HLayout belowLink = new HLayout();
 		belowLink.setMargin(4);
-//		belowLink.addMember(getLinkOptions());
 		
 		if (view.getSettings().useBitly()) {
 			belowLink.addMember(getShortenUrlButton());
