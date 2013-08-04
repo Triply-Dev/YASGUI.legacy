@@ -27,7 +27,6 @@ package com.data2semantics.yasgui.client.tab.optionbar;
  */
 
 import java.util.Iterator;
-import java.util.TreeMap;
 import com.smartgwt.client.types.Positioning;
 import com.smartgwt.client.widgets.AnimationCallback;
 import com.smartgwt.client.widgets.Button;
@@ -48,9 +47,9 @@ import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.settings.TooltipText;
 import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.data2semantics.yasgui.shared.SettingKeys;
+import com.google.common.collect.TreeMultimap;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class LinkCreator extends ImgButton {
@@ -174,7 +173,7 @@ public class LinkCreator extends ImgButton {
 	
 	
 	private void updateLinkWithQueryArgs() {
-		TreeMap<String, String> args = getQueryArgs();
+		TreeMultimap<String, String> args = getQueryArgs();
 		updateLink(getLink(args));
 	}
 
@@ -194,8 +193,8 @@ public class LinkCreator extends ImgButton {
 			}}, ANIMATE_SPEED);
 	}
 	
-	private TreeMap<String, String> getQueryArgs() {
-		TreeMap<String, String> args = new TreeMap<String, String>();
+	private TreeMultimap<String, String> getQueryArgs() {
+		TreeMultimap<String, String> args = TreeMultimap.create();
 		args.put(SettingKeys.QUERY_STRING, view.getSelectedTabSettings().getQueryString());
 		args.put(SettingKeys.ENDPOINT, view.getSelectedTabSettings().getEndpoint());
 		args.put(SettingKeys.OUTPUT_FORMAT, view.getSelectedTabSettings().getOutputFormat());
@@ -207,7 +206,7 @@ public class LinkCreator extends ImgButton {
 		return args;
 	}
 	
-	private String getLink(TreeMap<String, String> args) {
+	private String getLink(TreeMultimap<String, String> args) {
 		String url = JsMethods.getLocation();
 		
 		//remove these, as we will be adding these again
@@ -218,15 +217,16 @@ public class LinkCreator extends ImgButton {
 		}
 		Iterator<String> iterator = args.keySet().iterator();
 		while (iterator.hasNext()) {
-			if (firstItem) {
-				url += "?";
-				firstItem = false;
-			} else {
-				url += "&";
-			}
 			String key = iterator.next();
-			String value = URL.encodeQueryString(args.get(key));
-			url += key + "=" + value;
+			for (String value: args.get(key)) {
+				if (firstItem) {
+					url += "?";
+					firstItem = false;
+				} else {
+					url += "&";
+				}
+				url += key + "=" + value;
+			}
 		}
 		return url;
 		
