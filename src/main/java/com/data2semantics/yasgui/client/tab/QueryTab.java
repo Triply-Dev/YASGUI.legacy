@@ -146,7 +146,7 @@ public class QueryTab extends Tab {
 		Menu menu = new Menu();
 		MenuItem copy = new MenuItem();
 		copy.setTitle("Create copy");
-		copy.setIcon(Imgs.get(Imgs.COPY_TAB));
+		copy.setIcon(Imgs.COPY_TAB.get());
 		copy.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(MenuItemClickEvent event) {
@@ -160,7 +160,7 @@ public class QueryTab extends Tab {
 
 		MenuItem renameTab = new MenuItem();
 		renameTab.setTitle("Rename Tab");
-		renameTab.setIcon(Imgs.get(Imgs.EDIT_TEXT));
+		renameTab.setIcon(Imgs.EDIT_TEXT.get());
 		renameTab.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -170,7 +170,7 @@ public class QueryTab extends Tab {
 		});
 		MenuItem closeTab = new MenuItem();
 		closeTab.setTitle("Close");
-		closeTab.setIcon(Imgs.get(Imgs.CLOSE_TAB_SINGLE));
+		closeTab.setIcon(Imgs.CLOSE_TAB_SINGLE.get());
 		closeTab.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -181,7 +181,7 @@ public class QueryTab extends Tab {
 		});
 		MenuItem closeOtherTabs = new MenuItem();
 		closeOtherTabs.setTitle("Close others");
-		closeOtherTabs.setIcon(Imgs.get(Imgs.CLOSE_TAB_OTHERS));
+		closeOtherTabs.setIcon(Imgs.CLOSE_TAB_OTHERS.get());
 		closeOtherTabs.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -193,7 +193,7 @@ public class QueryTab extends Tab {
 
 		MenuItem closeAll = new MenuItem();
 		closeAll.setTitle("Close all");
-		closeAll.setIcon(Imgs.get(Imgs.CLOSE_TAB_ALL));
+		closeAll.setIcon(Imgs.CLOSE_TAB_ALL.get());
 		closeAll.addClickHandler(new ClickHandler() {
 
 			@Override

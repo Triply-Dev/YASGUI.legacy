@@ -53,7 +53,7 @@ public class ParametersListGrid extends ListGrid {
 		setCanRemoveRecords(true);
 		setParamFields();
 		setParamData();
-		setRemoveIcon(Imgs.get(Imgs.CROSS));
+		setRemoveIcon(Imgs.CROSS.get());
 	}
 	
 	

@@ -184,7 +184,7 @@ public class ResultContainer extends VLayout {
 			ResultType queryMode = queryTypes.get(queryType);
 			switch (queryTypes.get(queryType)) {
             case Insert:
-            	setResultMessage(Imgs.get(Imgs.CHECKBOX), "Done");
+            	setResultMessage(Imgs.CHECKBOX.get(), "Done");
                     break;
             case Boolean:
             case Table:
@@ -204,7 +204,7 @@ public class ResultContainer extends VLayout {
     }
 		
 		} catch (SparqlEmptyException e) {
-			setResultMessage(Imgs.get(Imgs.CROSS), e.getMessage());
+			setResultMessage(Imgs.CROSS.get(), e.getMessage());
 		} catch (Exception e) {
 			view.getElements().onError(e);
 			
@@ -250,9 +250,9 @@ public class ResultContainer extends VLayout {
 	}
 	private void drawResultsAsBoolean(SparqlResults sparqlResults) {
 		if (sparqlResults.getBooleanResult()) {
-			setResultMessage(Imgs.get(Imgs.CHECKBOX), "true");
+			setResultMessage(Imgs.CHECKBOX.get(), "true");
 		} else {
-			setResultMessage(Imgs.get(Imgs.CROSS), "false");
+			setResultMessage(Imgs.CROSS.get(), "false");
 		}
 	}
 	

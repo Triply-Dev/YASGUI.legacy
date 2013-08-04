@@ -77,7 +77,7 @@ public class EndpointSearch extends VLayout {
 		rSpacer.setWidth100();
 		LayoutSpacer lSpacer = new LayoutSpacer();
 		lSpacer.setWidth(3);
-		imgButton.setSrc(Imgs.get(Imgs.SEARCH));
+		imgButton.setSrc(Imgs.SEARCH.get());
 		
 		imgButton.setWidth(ICON_WIDTH);
 		imgButton.setHeight(ICON_HEIGHT);
@@ -126,7 +126,7 @@ public class EndpointSearch extends VLayout {
 					if (colName.equals(Endpoints.KEY_TITLE) || colName.equals(Endpoints.KEY_DESCRIPTION) || colName.equals(Endpoints.KEY_ENDPOINT)) {
 						return "<span style='cursor:pointer;'>" + StringUtil.asHTML(cellValue) + "</span>";
 					} else if (colName.equals(Endpoints.KEY_DATASETURI) && cellValue.length() > 0) {
-						return "<a href=\"" + cellValue + "\" target=\"_blank\"><img src=\"" + Imgs.OTHER_IMAGES_DIR + Imgs.get(Imgs.INFO) + "\"/ width=\"16\" height=\"16\"></a>";
+						return "<a href=\"" + cellValue + "\" target=\"_blank\"><img src=\"" + Imgs.OTHER_IMAGES_DIR.getUnprocessed() + Imgs.INFO.get() + "\"/ width=\"16\" height=\"16\"></a>";
 					}
 				}
                 return null;
@@ -149,7 +149,7 @@ public class EndpointSearch extends VLayout {
 		fields.add(new ListGridField(Endpoints.KEY_ENDPOINT, "Endpoint"));
 		fields.add(new ListGridField(Endpoints.KEY_DESCRIPTION, "Description"));
 		ListGridField dataUriField = new ListGridField(Endpoints.KEY_DATASETURI, " ", COL_WIDTH_MORE_INFO);
-		dataUriField.setFilterEditorType(new SpacerItem());//don't want to be able to filter on datauri
+		dataUriField.setFilterEditorProperties(new SpacerItem());//don't want to be able to filter on datauri
 		fields.add(dataUriField);
 		searchGrid.setFields(fields.toArray(new ListGridField[fields.size()]));
 		searchGrid.setFilterOnKeypress(true);

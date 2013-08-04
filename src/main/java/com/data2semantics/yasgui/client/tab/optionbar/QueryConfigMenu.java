@@ -153,7 +153,7 @@ public class QueryConfigMenu extends IconMenuButton {
 		layout.setHeight100();
 	    IButton addButton = new IButton("Add " + graphArgTypeString + " graph");  
 	    addButton.setWidth(160);  
-	    addButton.setIcon(Imgs.get(Imgs.ADD));
+	    addButton.setIcon(Imgs.ADD.get());
 	    addButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
@@ -318,7 +318,7 @@ public class QueryConfigMenu extends IconMenuButton {
 		layout.setHeight100();
 	    IButton addButton = new IButton("Add Parameter");  
 	    addButton.setWidth(120);  
-	    addButton.setIcon(Imgs.get(Imgs.ADD));
+	    addButton.setIcon(Imgs.ADD.get());
 	    addButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {

@@ -84,7 +84,7 @@ public class About extends Window {
 	}
 	
 	private Img getGithubCanvas() {
-		Img imgButton = new Img(Imgs.get(Imgs.LOGO_GITHUB));
+		Img imgButton = new Img(Imgs.LOGO_GITHUB.get());
 		imgButton.setWidth(140);
 		imgButton.setHeight(54);
 		imgButton.setCursor(Cursor.POINTER);
@@ -98,7 +98,7 @@ public class About extends Window {
 		return imgButton;
 	}
 	private Img getData2SemanticsCanvas() {
-		Img imgButton = new Img(Imgs.get(Imgs.LOGO_DATA2SEMANTICS));
+		Img imgButton = new Img(Imgs.LOGO_DATA2SEMANTICS.get());
 		imgButton.setWidth(300);
 		imgButton.setHeight(61);
 		imgButton.setCursor(Cursor.POINTER);

@@ -28,7 +28,6 @@ package com.data2semantics.yasgui.client.tab.optionbar;
 
 import java.util.Iterator;
 import java.util.TreeMap;
-
 import com.smartgwt.client.types.Positioning;
 import com.smartgwt.client.widgets.AnimationCallback;
 import com.smartgwt.client.widgets.Button;
@@ -40,7 +39,6 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.HLayout;
-import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
@@ -72,7 +70,7 @@ public class LinkCreator extends ImgButton {
 	
 	public LinkCreator(View view) {
 		this.view = view;
-		setSrc(Imgs.get(Imgs.LINK));
+		setSrc(Imgs.LINK.get());
 		setWidth(ICON_WIDTH);
 		setHeight(ICON_HEIGHT);
 		setPosition(Positioning.ABSOLUTE);

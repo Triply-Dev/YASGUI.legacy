@@ -126,7 +126,7 @@ public class EndpointInput extends DynamicForm {
 	private void addFetchAutocompletionsButton() {
 		resetButtonSpace();
 		ImgButton imgButton = new ImgButton();
-		imgButton.setSrc(Imgs.get(Imgs.DOWNLOAD_ROUND));
+		imgButton.setSrc(Imgs.DOWNLOAD_ROUND.get());
 		imgButton.setHeight(16);
 		imgButton.setWidth(16);
 		imgButton.setShowOverCanvas(false);
@@ -142,7 +142,7 @@ public class EndpointInput extends DynamicForm {
 	}
 	private void addFetchingAutocompletionsIcon() {
 		resetButtonSpace();
-		Img img = new Img(Imgs.get(Imgs.LOADING));
+		Img img = new Img(Imgs.LOADING.get());
 		img.setHeight(16);
 		img.setWidth(16);
 		img.setTooltip("Fetching predicate autocompletion information for this endpoint");
@@ -160,7 +160,7 @@ public class EndpointInput extends DynamicForm {
 	
 	private void addAutocompletionsFetchedIcon() {
 		resetButtonSpace();
-		Img img = new Img(Imgs.get(Imgs.CHECKMARK));
+		Img img = new Img(Imgs.CHECKMARK.get());
 		img.setHeight(16);
 		img.setWidth(16);
 		img.setTooltip("Autocompletion information fetched for this endpoint");
@@ -169,7 +169,7 @@ public class EndpointInput extends DynamicForm {
 	private void addFetchingFailedIcon() {
 		resetButtonSpace();
 		ImgButton imgButton = new ImgButton();
-		imgButton.setSrc(Imgs.get(Imgs.CROSS));
+		imgButton.setSrc(Imgs.CROSS.get());
 		imgButton.setHeight(16);
 		imgButton.setWidth(16);
 		imgButton.setShowOverCanvas(false);
@@ -339,7 +339,7 @@ public class EndpointInput extends DynamicForm {
 					if (colName.equals(Endpoints.KEY_TITLE) || colName.equals(Endpoints.KEY_ENDPOINT)) {
 						return "<span style='cursor:pointer;'>" + cellValue + "</span>";
 					} else if (colName.equals(Endpoints.KEY_DATASETURI) && cellValue.length() > 0) {
-						return "<a href='" + cellValue + "' target='_blank'><img src='" + Imgs.OTHER_IMAGES_DIR + Imgs.get(Imgs.INFO) + "' width='16' height='16'></a>";
+						return "<a href='" + cellValue + "' target='_blank'><img src='" + Imgs.OTHER_IMAGES_DIR.getUnprocessed() + Imgs.INFO.get() + "' width='16' height='16'></a>";
 					}
 				}
                 return null;
