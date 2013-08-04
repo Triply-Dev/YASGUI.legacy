@@ -53,7 +53,7 @@ public class ConfigMenu extends Menu {
 	
 	private void addTooltips() {
 		MenuItem about = new MenuItem("Show help bubbles");
-		about.setIcon(Imgs.get(Imgs.TOOLTIP));
+		about.setIcon(Imgs.TOOLTIP.get());
 		about.addClickHandler(new ClickHandler(){
 			public void onClick(MenuItemClickEvent event) {
 				view.showTooltips(0); //show from version 0 onwards
@@ -65,7 +65,7 @@ public class ConfigMenu extends Menu {
 		if (view.getSettings().isDbSet()) {
 			if (view.getOpenId() != null && view.getOpenId().isLoggedIn()) {
 				MenuItem logOut = new MenuItem("Log out");
-				logOut.setIcon(Imgs.get(Imgs.LOG_OUT));
+				logOut.setIcon(Imgs.LOG_OUT.get());
 				logOut.addClickHandler(new ClickHandler(){
 					public void onClick(MenuItemClickEvent event) {
 						view.getOpenId().logOut();
@@ -73,7 +73,7 @@ public class ConfigMenu extends Menu {
 				items.add(logOut);
 			} else {
 				MenuItem logIn = new MenuItem("Log in");
-				logIn.setIcon(Imgs.get(Imgs.LOG_IN));
+				logIn.setIcon(Imgs.LOG_IN.get());
 				logIn.addClickHandler(new ClickHandler(){
 					public void onClick(MenuItemClickEvent event) {
 						view.getOpenId().showOpenIdProviders();
@@ -85,7 +85,7 @@ public class ConfigMenu extends Menu {
 	
 	private void addAboutItem() {
 		MenuItem about = new MenuItem("About (version " + StaticConfig.VERSION + ")");
-		about.setIcon(Imgs.get(Imgs.QUESTION_MARK));
+		about.setIcon(Imgs.QUESTION_MARK.get());
 		about.addClickHandler(new ClickHandler(){
 			public void onClick(MenuItemClickEvent event) {
 				new About(view);
@@ -97,9 +97,9 @@ public class ConfigMenu extends Menu {
 		MenuItem compatability = new MenuItem("Show browser compatabilities");
 		final Compatabilities compatabilities = new Compatabilities(view);
 		if (!compatabilities.allSupported()) {
-			compatability.setIcon(Imgs.get(Imgs.WARNING));
+			compatability.setIcon(Imgs.WARNING.get());
 		} else {
-			compatability.setIcon(Imgs.get(Imgs.COMPATIBLE));
+			compatability.setIcon(Imgs.COMPATIBLE.get());
 		}
 		compatability.addClickHandler(new ClickHandler(){
 			@Override
@@ -136,7 +136,7 @@ public class ConfigMenu extends Menu {
 		}
 		
 		
-		MenuItem refresh = new MenuItem("Refresh Data", Imgs.get(Imgs.REFRESH)); 
+		MenuItem refresh = new MenuItem("Refresh Data", Imgs.REFRESH.get()); 
 		refresh.setSubmenu(refreshSubMenu);
 		items.add(refresh);
 	}

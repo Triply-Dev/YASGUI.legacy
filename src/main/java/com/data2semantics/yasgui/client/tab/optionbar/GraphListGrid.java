@@ -53,7 +53,7 @@ public class GraphListGrid extends ListGrid {
 		setCanRemoveRecords(true);
 		setFields(new ListGridField(KEY_GRAPH, "Graph"));
 		setGraphs();
-		setRemoveIcon(Imgs.get(Imgs.CROSS));
+		setRemoveIcon(Imgs.CROSS.get());
 	}
 	
 	

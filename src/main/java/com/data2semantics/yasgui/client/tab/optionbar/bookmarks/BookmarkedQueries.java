@@ -92,11 +92,11 @@ public class BookmarkedQueries extends Img {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 		if (enabled) {
-			setSrc(Imgs.get(Imgs.SHOW_BOOKMARKS));
+			setSrc(Imgs.SHOW_BOOKMARKS.get());
 			setTooltip("show bookmarks");
 			setCursor(Cursor.POINTER);
 		} else {
-			setSrc(Imgs.getDisabled(Imgs.SHOW_BOOKMARKS));
+			setSrc(Imgs.SHOW_BOOKMARKS.getDisabled());
 			setTooltip("log in to use your bookmarks");
 			setCursor(Cursor.DEFAULT);
 		}
@@ -115,7 +115,7 @@ public class BookmarkedQueries extends Img {
 					view.getElements().onLoadingStart("loading bookmarks");
 					view.getRemoteService().getBookmarks(new AsyncCallback<Bookmark[]>() {
 						public void onFailure(Throwable caught) {
-							setSrc(Imgs.get(Imgs.BOOKMARK_QUERY));
+							setSrc(Imgs.BOOKMARK_QUERY.get());
 							if (caught instanceof OpenIdException) {
 								view.getElements().onError(caught.getMessage() + ". Logging out");
 								view.getOpenId().logOut();
@@ -196,7 +196,7 @@ public class BookmarkedQueries extends Img {
 					delImg.setShowDown(false);
 					delImg.setShowRollOver(false);
 					delImg.setLayoutAlign(Alignment.CENTER);
-					delImg.setSrc(Imgs.get(Imgs.CROSS));
+					delImg.setSrc(Imgs.CROSS.get());
 					delImg.setPrompt("delete");
 					delImg.setHeight(16);
 					delImg.setWidth(16);
@@ -211,7 +211,7 @@ public class BookmarkedQueries extends Img {
 					addImg.setShowDown(false);
 					addImg.setShowRollOver(false);
 					addImg.setLayoutAlign(Alignment.CENTER);
-					addImg.setSrc(Imgs.get(Imgs.ADD_TAB));
+					addImg.setSrc(Imgs.ADD_TAB.get());
 					addImg.setPrompt("select");
 					addImg.setHeight(16);
 					addImg.setWidth(16);

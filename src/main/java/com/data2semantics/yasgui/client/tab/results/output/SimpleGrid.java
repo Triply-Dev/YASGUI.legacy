@@ -118,9 +118,9 @@ public class SimpleGrid extends HTMLPane {
 		String divContentStyle = "position:absolute;top:50%;margin-top:-" + (ROLL_OVER_ICON_SIZE/2) + "px;";
 		if (regularHref) {
 			html += "<a style=\"" + divContentStyle + "\" href=\"" + url + "\" target=\"_blank\" class=\"extResourceLink\">";
-			html += "<img src=\"" + Imgs.OTHER_IMAGES_DIR + Imgs.get(Imgs.EXTERNAL_LINK) +"\" height=\"" + ROLL_OVER_ICON_SIZE + "\" width=\"" + ROLL_OVER_ICON_SIZE + "\"/></a>";
+			html += "<img src=\"" + Imgs.OTHER_IMAGES_DIR.getUnprocessed() + Imgs.EXTERNAL_LINK.get() +"\" height=\"" + ROLL_OVER_ICON_SIZE + "\" width=\"" + ROLL_OVER_ICON_SIZE + "\"/></a>";
 		} else {
-			html += "<img onclick=\"queryForResource('" + url +  "');\" class=\"extResourceLink\" style=\"cursor:pointer;" + divContentStyle + "\" src=\"" + Imgs.OTHER_IMAGES_DIR + Imgs.get(Imgs.INTERNAL_LINK) +"\" height=\"" + ROLL_OVER_ICON_SIZE + "\" width=\"" + ROLL_OVER_ICON_SIZE + "\"/>";
+			html += "<img onclick=\"queryForResource('" + url +  "');\" class=\"extResourceLink\" style=\"cursor:pointer;" + divContentStyle + "\" src=\"" + Imgs.OTHER_IMAGES_DIR.getUnprocessed() + Imgs.INTERNAL_LINK.get() +"\" height=\"" + ROLL_OVER_ICON_SIZE + "\" width=\"" + ROLL_OVER_ICON_SIZE + "\"/>";
 		}
 		html += "</div>";
 		return html;

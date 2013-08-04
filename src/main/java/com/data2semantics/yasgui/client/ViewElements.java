@@ -99,7 +99,7 @@ public class ViewElements {
 	 * Add Query button. Position absolute, as it hovers slightly over the tabbar. Also adds a loading icon on the same place
 	 */
 	public void addQueryButton() {
-		queryLoading = getQueryIcon(Imgs.get(Imgs.LOADING), new ClickHandler() {
+		queryLoading = getQueryIcon(Imgs.LOADING.get(), new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				cancelQuery();
@@ -113,7 +113,7 @@ public class ViewElements {
 			queryLoading.draw();
 		}
 		
-		queryButton = getQueryIcon(Imgs.get(Imgs.EXECUTE_QUERY), new ClickHandler() {
+		queryButton = getQueryIcon(Imgs.EXECUTE_QUERY.get(), new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				executeQuery();
@@ -201,7 +201,7 @@ public class ViewElements {
 	 */
 	public void initLoadingWidget() {
 		loading = new Label();
-		loading.setIcon(Imgs.get(Imgs.LOADING));
+		loading.setIcon(Imgs.LOADING.get());
 		loading.setBackgroundColor("#f0f0f0");
 		loading.setBorder("1px solid #C0C3C7");
 		loading.getElement().getStyle().setPosition(Position.FIXED);
@@ -221,9 +221,9 @@ public class ViewElements {
 
 	public void showPlayButton(String queryValid) {
 		if (queryValid.equals("1")) {
-			queryButton.setSrc(Imgs.get(Imgs.EXECUTE_QUERY));
+			queryButton.setSrc(Imgs.EXECUTE_QUERY.get());
 		} else {
-			queryButton.setSrc(Imgs.get(Imgs.QUERY_ERROR));
+			queryButton.setSrc(Imgs.QUERY_ERROR.get());
 		}
 	}
 	public void onLoadingStart() {
@@ -407,7 +407,7 @@ public class ViewElements {
 		yesButton.setWidth(CONSENT_BUTTON_WIDTH);
         yesButton.setShowRollOver(true);  
         yesButton.setHeight(CONSENT_BUTTON_HEIGHT);
-        yesButton.setIcon(Imgs.get(Imgs.CHECKMARK));
+        yesButton.setIcon(Imgs.CHECKMARK.get());
         yesButton.setIconOrientation("left");
         yesButton.addClickHandler(new ClickHandler() {
 			@Override
@@ -429,7 +429,7 @@ public class ViewElements {
 		noQueriesButton.setWidth(CONSENT_BUTTON_WIDTH);
 		noQueriesButton.setHeight(CONSENT_BUTTON_HEIGHT);
 		noQueriesButton.setShowRollOver(true);  
-		noQueriesButton.setIcon(Imgs.get(Imgs.CHECK_CROSS));
+		noQueriesButton.setIcon(Imgs.CHECK_CROSS.get());
 		noQueriesButton.setIconOrientation("left");  
 		noQueriesButton.addClickHandler(new ClickHandler() {
 			@Override
@@ -450,7 +450,7 @@ public class ViewElements {
 		noButton.setShowRollOver(true);  
 		noButton.setWidth(CONSENT_BUTTON_WIDTH);
 		noButton.setHeight(CONSENT_BUTTON_HEIGHT);
-		noButton.setIcon(Imgs.get(Imgs.CROSS));
+		noButton.setIcon(Imgs.CROSS.get());
 		noButton.setIconOrientation("left");  
 		noButton.addClickHandler(new ClickHandler() {
 			@Override
@@ -513,7 +513,7 @@ public class ViewElements {
 			IButton showQuestionnaire = new IButton("Show questionnaire");  
 			showQuestionnaire.setWidth(CONSENT_BUTTON_WIDTH);
 	        showQuestionnaire.setShowRollOver(true);
-	        showQuestionnaire.setIcon(Imgs.get(Imgs.CHECKMARK));
+	        showQuestionnaire.setIcon(Imgs.CHECKMARK.get());
 	        showQuestionnaire.setHeight(CONSENT_BUTTON_HEIGHT);
 	        showQuestionnaire.addClickHandler(new ClickHandler() {
 				@Override
@@ -532,7 +532,7 @@ public class ViewElements {
 			noQuestionnaire.setWidth(CONSENT_BUTTON_WIDTH);
 			noQuestionnaire.setHeight(CONSENT_BUTTON_HEIGHT);
 			noQuestionnaire.setShowRollOver(true);  
-			noQuestionnaire.setIcon(Imgs.get(Imgs.CROSS));
+			noQuestionnaire.setIcon(Imgs.CROSS.get());
 			noQuestionnaire.setIconOrientation("left");  
 			noQuestionnaire.addClickHandler(new ClickHandler() {
 				@Override
@@ -590,9 +590,9 @@ public class ViewElements {
 		Compatabilities compatabilities = new Compatabilities(view);
 		String icon  = "";
 		if (!compatabilities.allSupported() && LocalStorageHelper.getCompatabilitiesShownVersionNumber() < Compatabilities.VERSION_NUMBER) {
-			icon = Imgs.get(Imgs.WARNING);
+			icon = Imgs.WARNING.get();
 		} else {
-			icon = Imgs.get(Imgs.TOOLS);
+			icon = Imgs.TOOLS.get();
 		}
 		
 		String label = "Configure YASGUI";
