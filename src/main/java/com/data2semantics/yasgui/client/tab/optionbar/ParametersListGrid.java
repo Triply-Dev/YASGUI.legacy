@@ -36,6 +36,7 @@ import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
+import com.data2semantics.yasgui.client.settings.Imgs;
 
 public class ParametersListGrid extends ListGrid {
 	private static String KEY_KEY = "key";
@@ -52,6 +53,7 @@ public class ParametersListGrid extends ListGrid {
 		setCanRemoveRecords(true);
 		setParamFields();
 		setParamData();
+		setRemoveIcon(Imgs.get(Imgs.CROSS));
 	}
 	
 	
