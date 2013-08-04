@@ -228,7 +228,9 @@ public class JsMethods {
 	}-*/;
 	
 	public static native void cancelQuery() /*-{
-		$wnd.queryRequest.abort();
+		if ($wnd.queryRequest != null && $wnd.queryRequest != undefined) {
+			$wnd.queryRequest.abort();
+		}
 	}-*/;
 	
 	
