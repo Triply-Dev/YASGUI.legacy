@@ -27,8 +27,6 @@ package com.data2semantics.yasgui.client.tab.optionbar;
  */
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map.Entry;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Autofit;
 import com.smartgwt.client.widgets.grid.ListGrid;
@@ -36,12 +34,15 @@ import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
+import com.data2semantics.yasgui.client.settings.Imgs;
 
-public class ParametersListGrid extends ListGrid {
-	private static String KEY_KEY = "key";
-	private static String KEY_VALUE = "value";
+public class GraphListGrid extends ListGrid {
+	public static enum GraphArgType{NAMED_GRAPH, DEFAULT_GRAPH};
+	private GraphArgType graphArgType;
+	private static String KEY_GRAPH = "graph";
 	private View view;
-	public ParametersListGrid(final View view) {
+	public GraphListGrid(final View view, GraphArgType graphArgType) {
+		this.graphArgType = graphArgType;
 		this.view = view;
 		setHeight100();
 		setWidth100();
@@ -50,41 +51,43 @@ public class ParametersListGrid extends ListGrid {
 		setCanResizeFields(true);
 		setAlwaysShowEditors(true);
 		setCanRemoveRecords(true);
-		setParamFields();
-		setParamData();
+		setFields(new ListGridField(KEY_GRAPH, "Graph"));
+		setGraphs();
+		setRemoveIcon(Imgs.get(Imgs.CROSS));
 	}
 	
 	
-	public void setArgsInSettings() {
+	public void setGraphsInSettings() {
 		saveAllEdits();
-		HashMap<String, String> args = new HashMap<String, String>();
+		ArrayList<String> graphs = new ArrayList<String>();
 		getTotalRows();
 		
 		Record[] gridRecords = getRecords();
 		for (Record record: gridRecords) {
-			if (record != null && record.getAttribute(KEY_KEY) != null && record.getAttribute(KEY_VALUE) != null) {
-				args.put(record.getAttribute(KEY_KEY), record.getAttribute(KEY_VALUE));
+			if (record != null && record.getAttribute(KEY_GRAPH) != null) {
+				graphs.add(record.getAttribute(KEY_GRAPH));
 			}
 		}
-		view.getSelectedTabSettings().resetAndaddCustomQueryArgs(args);
+		if (graphArgType == GraphArgType.NAMED_GRAPH) {
+			view.getSelectedTabSettings().setNamedGraphs(graphs);
+		} else {
+			view.getSelectedTabSettings().setDefaultGraphs(graphs);
+		}
 		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
 	}
 	
-	private void setParamFields() {
-		ListGridField keyField = new ListGridField(KEY_KEY, "?key");
-//		keyField.setAlign(Alignment.CENTER);
-		ListGridField valueField = new ListGridField(KEY_VALUE, "=value");
-//		valueField.setAlign(Alignment.CENTER);
-		setFields(keyField, valueField);
-	}
 	
-	private void setParamData() {
-		HashMap<String, String> args = view.getSelectedTabSettings().getCustomQueryArgs();
+	private void setGraphs() {
+		ArrayList<String> graphs;
+		if (graphArgType == GraphArgType.NAMED_GRAPH) {
+			graphs = view.getSelectedTabSettings().getNamedGraphs();
+		} else {
+			graphs = view.getSelectedTabSettings().getDefaultGraphs();
+		}
 		ArrayList<ListGridRecord> records = new ArrayList<ListGridRecord>();
-		for (Entry<String, String> arg: args.entrySet()) {
+		for (String graph: graphs) {
 			ListGridRecord record = new ListGridRecord();
-			record.setAttribute(KEY_KEY, arg.getKey());
-			record.setAttribute(KEY_VALUE, arg.getValue());
+			record.setAttribute(KEY_GRAPH, graph);
 			records.add(record);
 		}
 		setRecords(records.toArray(new ListGridRecord[records.size()]));

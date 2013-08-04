@@ -205,7 +205,7 @@ public class LinkCreator extends ImgButton {
 		args.put(SettingKeys.CONTENT_TYPE_SELECT, view.getSelectedTabSettings().getSelectContentType());
 		args.put(SettingKeys.CONTENT_TYPE_CONSTRUCT, view.getSelectedTabSettings().getConstructContentType());
 		args.put(SettingKeys.REQUEST_METHOD, view.getSelectedTabSettings().getRequestMethod());
-		args.putAll(view.getSelectedTabSettings().getQueryArgs());
+		args.putAll(view.getSelectedTabSettings().getCustomQueryArgs());
 		return args;
 	}
 	

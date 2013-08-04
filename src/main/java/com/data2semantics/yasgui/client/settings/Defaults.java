@@ -102,6 +102,23 @@ public class Defaults extends JSONObject {
 		}
 		return args;
 	}
+	
+	public JSONArray getDefaultNamedGraphs() {
+		JSONArray namedGraphs = new JSONArray();
+		if (containsKey(SettingKeys.NAMED_GRAPHS)) {
+			namedGraphs = get(SettingKeys.NAMED_GRAPHS).isArray();
+		}
+		return namedGraphs;
+	}
+	
+	public JSONArray getDefaultDefaultGraphs() {
+		JSONArray defaultGraphs = new JSONArray();
+		if (containsKey(SettingKeys.DEFAULT_GRAPHS)) {
+			defaultGraphs = get(SettingKeys.DEFAULT_GRAPHS).isArray();
+		}
+		return defaultGraphs;
+	}
+	
 	public void update(JSONObject jsonObject) {
 		Set<String> keys = jsonObject.keySet();
 		for (String key : keys) {

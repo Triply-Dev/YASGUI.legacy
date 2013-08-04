@@ -56,6 +56,9 @@ import java.util.Set;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONString;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Window;
@@ -314,5 +317,29 @@ public class Helper {
 		LayoutSpacer spacer = new LayoutSpacer();
 		spacer.setWidth100();
 		return spacer;
+	}
+	
+	public static ArrayList<String> getJsonAsArrayList(JSONValue jsonVal) {
+		ArrayList<String> result = new ArrayList<String>();
+		JSONArray jsonArray = jsonVal.isArray();
+		if (jsonArray != null) {
+			for (int i = 0; i < jsonArray.size(); i++) {
+				JSONString value = jsonArray.get(i).isString();
+				if (value != null) {
+					result.add(value.stringValue());
+				}
+			}
+		}
+		return result;
+	}
+
+	public static JSONArray getArrayListAsJson(ArrayList<String> arrayList) {
+		JSONArray result = new JSONArray();
+		if (arrayList != null && arrayList.size() > 0) {
+			for (int i = 0; i < arrayList.size(); i++) {
+				result.set(i, new JSONString(arrayList.get(i)));
+			}
+		}
+		return result;
 	}
 }
