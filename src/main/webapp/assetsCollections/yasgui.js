@@ -51,9 +51,9 @@ $
 		});
 function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader,
 		argsJsonString, requestMethod, callback) {
-	var ajaxData = {
-		query : queryStr,
-	};
+	
+	var ajaxData = jQuery.parseJSON(argsJsonString);
+	ajaxData.push({name: "query", value: queryStr});
 	var uri;
 	onQueryStart();
 	
@@ -76,18 +76,10 @@ function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader,
 			return;
 		}
 		//query via proxy
-		ajaxData['endpoint'] = endpoint;
-		ajaxData['requestMethod'] = requestMethod;
+		ajaxData.push({name: "endpoint", value: endpoint});
+		ajaxData.push({name: "requestMethod", value: requestMethod});
 		requestMethod = "POST"; //we stil want to use POST to access the servlet itself
 		uri = proxy;
-	}
-	args = jQuery.parseJSON(argsJsonString);
-	if (args != null) {
-		for ( var key in args) {
-			if (args.hasOwnProperty(key)) {
-				ajaxData[key] = args[key];
-			}
-		}
 	}
 	queryRequest = $
 			.ajax({

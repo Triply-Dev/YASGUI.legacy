@@ -52,7 +52,6 @@ import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 public class QueryConfigMenu extends IconMenuButton {
 	private static final int TOOLTIP_VERSION_QUERY_CONFIG = 1;
 	private View view;
-	private Window window;
 	private Menu mainMenu = new Menu();
 	private MenuItem selectJson = new MenuItem("JSON");
 	private MenuItem selectXml = new MenuItem("XML");
@@ -64,9 +63,14 @@ public class QueryConfigMenu extends IconMenuButton {
 	private MenuItem constructTsv = new MenuItem("TSV");
 	private MenuItem post;
 	private MenuItem get;
-	private static int WINDOW_HEIGHT = 200;
-	private static int WINDOW_WIDTH = 400;
+	private Window graphWindow;
+	private Window queryArgWindow;
+	private static int QUERY_ARG_WINDOW_HEIGHT = 200;
+	private static int QUERY_ARG_WINDOW_WIDTH = 400;
+	private static int GRAPH_ARG_WINDOW_HEIGHT = 200;
+	private static int GRAPH_ARG_WINDOW_WIDTH = 300;
 	private ParametersListGrid paramListGrid;
+	private GraphListGrid graphListGrid;
 	public static String CONTENT_TYPE_SELECT_JSON = "application/sparql-results+json";
 	public static String CONTENT_TYPE_SELECT_XML = "application/sparql-results+xml";
 	public static String CONTENT_TYPE_SELECT_CSV = "text/csv";
@@ -79,7 +83,7 @@ public class QueryConfigMenu extends IconMenuButton {
 	public QueryConfigMenu(final View view) {
 		this.view = view;
 		
-		mainMenu.setItems(getQueryParamMenuItem(), getAcceptHeaderMenuItem(), getRequestMethodMenuItem());
+		mainMenu.setItems(getQueryParamMenuItem(), getNamedGraphMenuItem(), getDefaultGraphMenuItem(), getAcceptHeaderMenuItem(), getRequestMethodMenuItem());
 		setMenu(mainMenu);
 		setTitle("Configure request");
 		setCanFocus(false);
@@ -90,6 +94,79 @@ public class QueryConfigMenu extends IconMenuButton {
 			}
 		});
 	}
+	
+	private MenuItem getNamedGraphMenuItem() {
+		MenuItem namedGraphMenuItem = new MenuItem("Specify Named Graphs");
+		namedGraphMenuItem.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				drawGraphWindow(GraphListGrid.GraphArgType.NAMED_GRAPH);
+			}
+		});
+		namedGraphMenuItem.setCheckIfCondition(new MenuItemIfFunction(){
+			@Override
+			public boolean execute(Canvas target, Menu menu, MenuItem item) {
+				return (view.getSelectedTabSettings().getNamedGraphs().size() > 0);
+			}});
+		return namedGraphMenuItem;
+	}
+	private MenuItem getDefaultGraphMenuItem() {
+		MenuItem defaultGraphMenuItem = new MenuItem("Specify Default Graphs");
+		defaultGraphMenuItem.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				drawGraphWindow(GraphListGrid.GraphArgType.DEFAULT_GRAPH);
+			}
+		});
+		defaultGraphMenuItem.setCheckIfCondition(new MenuItemIfFunction(){
+			@Override
+			public boolean execute(Canvas target, Menu menu, MenuItem item) {
+				return (view.getSelectedTabSettings().getDefaultGraphs().size() > 0);
+			}});
+		return defaultGraphMenuItem;
+	}
+	
+	
+	private void drawGraphWindow(GraphListGrid.GraphArgType graphArgType) {
+		graphWindow = new Window();
+		graphWindow.setZIndex(ZIndexes.MODAL_WINDOWS);
+		String graphArgTypeString = (graphArgType == GraphListGrid.GraphArgType.NAMED_GRAPH? "named" : "default");
+		graphWindow.setTitle("Specify " + graphArgTypeString + " graphs");
+		graphWindow.setIsModal(true);
+		graphWindow.setDismissOnOutsideClick(true);
+		graphWindow.setWidth(GRAPH_ARG_WINDOW_WIDTH);
+		graphWindow.setHeight(GRAPH_ARG_WINDOW_HEIGHT);
+		graphWindow.setShowMinimizeButton(false);
+		graphWindow.setAutoCenter(true);
+		graphWindow.addCloseClickHandler(new CloseClickHandler(){
+			@Override
+			public void onCloseClick(CloseClickEvent event) {
+				graphListGrid.setGraphsInSettings();
+				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+				graphWindow.destroy();
+				
+			}});
+		graphListGrid = new GraphListGrid(view, graphArgType);
+		VLayout layout = new VLayout();
+		layout.setAlign(Alignment.CENTER);
+		layout.setWidth100();
+		layout.setHeight100();
+	    IButton addButton = new IButton("Add " + graphArgTypeString + " graph");  
+	    addButton.setWidth(160);  
+	    addButton.setIcon(Imgs.get(Imgs.ADD));
+	    addButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler(){
+			@Override
+			public void onClick(ClickEvent event) {
+				graphListGrid.startEditingNew();
+				
+			}});
+		layout.addMember(addButton);
+		
+		layout.addMember(graphListGrid);
+		graphWindow.addItem(layout);
+		graphWindow.draw();
+	}
+
 
 	private MenuItem getRequestMethodMenuItem() {
 		MenuItem acceptHeaders = new MenuItem("Request Method");
@@ -211,27 +288,27 @@ public class QueryConfigMenu extends IconMenuButton {
 		queryParam.setCheckIfCondition(new MenuItemIfFunction(){
 			@Override
 			public boolean execute(Canvas target, Menu menu, MenuItem item) {
-				return (view.getSelectedTabSettings().getQueryArgs().size() > 0);
+				return (view.getSelectedTabSettings().getCustomQueryArgs().size() > 0);
 			}});
 		return queryParam;
 	}
 	private void drawParamListGrid() {
-		window = new Window();
-		window.setZIndex(ZIndexes.MODAL_WINDOWS);
-		window.setTitle("Search endpoints");
-		window.setIsModal(true);
-		window.setDismissOnOutsideClick(true);
-		window.setWidth(WINDOW_WIDTH);
-		window.setHeight(WINDOW_HEIGHT);
-		window.setShowMinimizeButton(false);
-		window.setAutoCenter(true);
-		window.addCloseClickHandler(new CloseClickHandler(){
+		queryArgWindow = new Window();
+		queryArgWindow.setZIndex(ZIndexes.MODAL_WINDOWS);
+		queryArgWindow.setTitle("Specify Query Arguments");
+		queryArgWindow.setIsModal(true);
+		queryArgWindow.setDismissOnOutsideClick(true);
+		queryArgWindow.setWidth(QUERY_ARG_WINDOW_WIDTH);
+		queryArgWindow.setHeight(QUERY_ARG_WINDOW_HEIGHT);
+		queryArgWindow.setShowMinimizeButton(false);
+		queryArgWindow.setAutoCenter(true);
+		queryArgWindow.addCloseClickHandler(new CloseClickHandler(){
 
 			@Override
 			public void onCloseClick(CloseClickEvent event) {
 				paramListGrid.setArgsInSettings();
 				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
-				window.destroy();
+				queryArgWindow.destroy();
 				
 			}});
 		paramListGrid = new ParametersListGrid(view);
@@ -251,8 +328,8 @@ public class QueryConfigMenu extends IconMenuButton {
 		layout.addMember(addButton);
 		
 		layout.addMember(paramListGrid);
-		window.addItem(layout);
-		window.draw();
+		queryArgWindow.addItem(layout);
+		queryArgWindow.draw();
 	}
 
 	public void showTooltips(int fromVersionId) {

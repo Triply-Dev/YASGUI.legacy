@@ -26,9 +26,6 @@ package com.data2semantics.yasgui.client;
  * #L%
  */
 
-import java.util.HashMap;
-import java.util.Map.Entry;
-
 import com.data2semantics.yasgui.client.configmenu.Compatabilities;
 import com.data2semantics.yasgui.client.configmenu.ConfigMenu;
 import com.data2semantics.yasgui.client.helpers.GoogleAnalytics;
@@ -257,7 +254,7 @@ public class ViewElements {
 	public void onQueryError(String tabId, String error) {
 		onQueryFinish();
 		QueryTab tab = (QueryTab)view.getTabs().getTab(tabId);
-		onQueryError(error, tab.getTabSettings().getEndpoint(), tab.getTabSettings().getQueryString(), tab.getTabSettings().getQueryArgs());
+		onQueryError(error, tab.getTabSettings().getEndpoint(), tab.getTabSettings().getQueryString(), tab.getTabSettings().getQueryArgsAsUrlString());
 	}
 	
 	/**
@@ -319,7 +316,7 @@ public class ViewElements {
 	 * @param query Used query
 	 * @param args 
 	 */
-	public void onQueryError(String error, final String endpoint, final String query, final HashMap<String, String> args) {
+	public void onQueryError(String error, final String endpoint, final String query, final String argsString) {
 		final Window window = getErrorWindow();
 		window.setZIndex(ZIndexes.MODAL_WINDOWS);
 		VLayout vLayout = new VLayout();
@@ -336,10 +333,7 @@ public class ViewElements {
 		executeQuery.addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
-				String url = endpoint + "?query=" + URL.encodeQueryString(query);
-				for (Entry<String, String> entry : args.entrySet()) {
-				    url += "&" + entry.getKey() + "=" + URL.encodeQueryString(entry.getValue());
-				}
+				String url = endpoint + "?query=" + URL.encodeQueryString(query) + argsString;
 				com.google.gwt.user.client.Window.open(url, "_blank", null);
 			}});
 		executeQuery.setWidth(200);

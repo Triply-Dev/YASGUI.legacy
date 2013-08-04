@@ -54,6 +54,8 @@ public class SettingKeys implements Serializable {
 	public static String CONTENT_TYPE_CONSTRUCT = "contentTypeConstruct";
 	public static String EXTRA_QUERY_ARGS = "extraArgs";
 	public static String REQUEST_METHOD = "requestMethod";
+	public static String NAMED_GRAPHS = "namedGraphs";
+	public static String DEFAULT_GRAPHS = "defaultGraphs";
 	
 	//other (not used clientside) (actually, not accessible from clientside for security reasons)
 	public static String BITLY_API_KEY = "bitlyApiKey";
