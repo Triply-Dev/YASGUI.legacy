@@ -37,6 +37,7 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.settings.Imgs;
+import com.google.common.collect.HashMultimap;
 
 public class ParametersListGrid extends ListGrid {
 	private static String KEY_KEY = "key";
@@ -59,7 +60,7 @@ public class ParametersListGrid extends ListGrid {
 	
 	public void setArgsInSettings() {
 		saveAllEdits();
-		HashMap<String, String> args = new HashMap<String, String>();
+		HashMultimap<String, String> args = HashMultimap.create();
 		getTotalRows();
 		
 		Record[] gridRecords = getRecords();
@@ -74,16 +75,14 @@ public class ParametersListGrid extends ListGrid {
 	
 	private void setParamFields() {
 		ListGridField keyField = new ListGridField(KEY_KEY, "?key");
-//		keyField.setAlign(Alignment.CENTER);
 		ListGridField valueField = new ListGridField(KEY_VALUE, "=value");
-//		valueField.setAlign(Alignment.CENTER);
 		setFields(keyField, valueField);
 	}
 	
 	private void setParamData() {
-		HashMap<String, String> args = view.getSelectedTabSettings().getCustomQueryArgs();
+		HashMultimap<String, String> args = view.getSelectedTabSettings().getCustomQueryArgs();
 		ArrayList<ListGridRecord> records = new ArrayList<ListGridRecord>();
-		for (Entry<String, String> arg: args.entrySet()) {
+		for (Entry<String, String> arg: args.entries()) {
 			ListGridRecord record = new ListGridRecord();
 			record.setAttribute(KEY_KEY, arg.getKey());
 			record.setAttribute(KEY_VALUE, arg.getValue());

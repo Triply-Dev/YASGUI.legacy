@@ -143,8 +143,9 @@ public class QueryConfigMenu extends IconMenuButton {
 			public void onCloseClick(CloseClickEvent event) {
 				graphListGrid.setGraphsInSettings();
 				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
-				graphWindow.destroy();
-				
+				if (graphWindow != null) {
+					graphWindow.destroy();
+				}
 			}});
 		graphListGrid = new GraphListGrid(view, graphArgType);
 		VLayout layout = new VLayout();

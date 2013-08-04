@@ -27,7 +27,6 @@ package com.data2semantics.yasgui.client.settings;
  */
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +35,7 @@ import java.util.Set;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.shared.Output;
 import com.data2semantics.yasgui.shared.SettingKeys;
+import com.google.common.collect.HashMultimap;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -282,8 +282,9 @@ public class TabSettings extends JSONObject {
 	
 	public JSONArray getQueryArgs() {
 		JSONArray argsArray = new JSONArray();
-		HashMap<String, String> args = getCustomQueryArgs();
-		for (Entry<String, String> arg: args.entrySet()) {
+		HashMultimap<String, String> args = getCustomQueryArgs();
+		
+		for (Entry<String, String> arg: args.entries()) {
 			argsArray.set(argsArray.size(), getSimpleQueryArgObject(arg.getKey(), arg.getValue()));
 		}
 		for (String defaultGraph: getDefaultGraphs()) {
@@ -295,8 +296,9 @@ public class TabSettings extends JSONObject {
 		return argsArray;
 	}
 	
-	public HashMap<String, String> getCustomQueryArgs() {
-		HashMap<String, String> args = new HashMap<String, String>();
+	public HashMultimap<String, String> getCustomQueryArgs() {
+		HashMultimap<String, String> args = HashMultimap.create();
+		
 		if (containsKey(SettingKeys.EXTRA_QUERY_ARGS)) {
 			JSONArray argsArray = get(SettingKeys.EXTRA_QUERY_ARGS).isArray();
 			if (argsArray != null) {
@@ -338,9 +340,9 @@ public class TabSettings extends JSONObject {
 		argsArray.set(argsArray.size(), argObject);
 		put(SettingKeys.EXTRA_QUERY_ARGS, argsArray);
 	}
-	public void resetAndaddCustomQueryArgs(HashMap<String, String> args) {
+	public void resetAndaddCustomQueryArgs(HashMultimap<String, String> args) {
 		JSONArray argsArray = new JSONArray();
-		for (Entry<String, String> arg: args.entrySet()) {
+		for (Entry<String, String> arg: args.entries()) {
 			JSONObject argObject = new JSONObject();
 			argObject.put("key", new JSONString(arg.getKey()));
 			argObject.put("value", new JSONString(arg.getValue()));
