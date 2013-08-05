@@ -11,6 +11,15 @@
 		"requestMethod": "POST",
 		"extraArgs": []
 	},
+	"enabledFeatures": {
+		"endpointSelection": true,
+		"queryParameters": true,
+		"namedGraphs": true,
+		"defaultGraphs": true,
+		"acceptHeaders": true,
+		"requestMethod": true,
+		"propertyAutocompletion": true	
+	},
 	"browserTitle": "YASGUI",
 	"singleEndpointMode": false,
 	"googleAnalyticsId": "",

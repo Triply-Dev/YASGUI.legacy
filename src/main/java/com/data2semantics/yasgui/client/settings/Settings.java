@@ -47,7 +47,7 @@ import com.google.gwt.user.client.Window;
 public class Settings extends JsonHelper {
 	private ArrayList<TabSettings> tabArray = new ArrayList<TabSettings>();
 	private Defaults defaults;
-	
+	private EnabledFeatures enabledFeatures = new EnabledFeatures(this); //initialize with empty obj (don't require this obj in json settings file)
 	
 	/**
 	 * DEFAULTS
@@ -92,6 +92,8 @@ public class Settings extends JsonHelper {
 					defaults.update(jsonObject.get(key).isObject());
 				}
 				
+			} else if (key.equals(SettingKeys.ENABLED_FEATURES)) {
+				enabledFeatures.update(jsonObject.get(key).isObject());
 			} else {
 				put(key, jsonObject.get(key));
 			}
@@ -102,15 +104,6 @@ public class Settings extends JsonHelper {
 		this.setSelectedTabNumber(DEFAULT_SELECTED_TAB);
 		addTabSettings(new TabSettings(this, defaults));
 	}
-	
-	public boolean inSingleEndpointMode() {
-		boolean singleEndpointMode = false;
-		if (containsKey(SettingKeys.SINGLE_ENDPOINT_MODE)) {
-			singleEndpointMode = get(SettingKeys.SINGLE_ENDPOINT_MODE).isBoolean().booleanValue();
-		}
-		return singleEndpointMode;
-	}
-
 	
 	public void setSelectedTabNumber(int selectedTabNumber) {
 		put(SettingKeys.SELECTED_TAB_NUMBER, new JSONNumber(selectedTabNumber));
@@ -156,6 +149,10 @@ public class Settings extends JsonHelper {
 	
 	public Defaults getDefaults() {
 		return defaults;
+	}
+	
+	public EnabledFeatures getEnabledFeatures() {
+		return enabledFeatures;
 	}
 	
 	public String getGoogleAnalyticsId() {

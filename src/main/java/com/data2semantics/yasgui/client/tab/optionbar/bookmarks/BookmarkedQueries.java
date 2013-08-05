@@ -276,7 +276,7 @@ public class BookmarkedQueries extends Img {
 				updatedRecords.put(record.getBookmarkId(), record);
 			}});
 		
-		if (!view.getSettings().inSingleEndpointMode()) {
+		if (view.getEnabledFeatures().endpointSelectionEnabled()) {
 			ListGridField endpointField = new ListGridField(BookmarkRecord.KEY_ENDPOINT, "Endpoint");
 			endpointField.addChangedHandler(new ChangedHandler(){
 				@Override

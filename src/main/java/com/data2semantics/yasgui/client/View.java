@@ -38,6 +38,7 @@ import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.openid.OpenId;
 import com.data2semantics.yasgui.client.services.OpenIdServiceAsync;
 import com.data2semantics.yasgui.client.services.YasguiServiceAsync;
+import com.data2semantics.yasgui.client.settings.EnabledFeatures;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.settings.ZIndexes;
@@ -99,7 +100,7 @@ public class View extends VLayout {
 		setOverflow(Overflow.HIDDEN);
 		
 		
-		if (!settings.inSingleEndpointMode()) {
+		if (getEnabledFeatures().endpointSelectionEnabled()) {
 			initEndpointDataSource(false);
 		}
 		setAutocompletePrefixes(false);
@@ -324,7 +325,7 @@ public class View extends VLayout {
 	 * @param endpoint
 	 */
 	public void checkAndAddEndpointToDs(String endpoint) {
-		if (!getSettings().inSingleEndpointMode()) {
+		if (getEnabledFeatures().endpointSelectionEnabled()) {
 			Record[] records = endpointDataSource.getCacheData();
 			boolean exists = false;
 			for (Record record:records) {
@@ -396,5 +397,8 @@ public class View extends VLayout {
 	}
 	public HistoryHelper getHistory() {
 		return this.historyHelper;
+	}
+	public EnabledFeatures getEnabledFeatures() {
+		return getSettings().getEnabledFeatures();
 	}
 }

@@ -27,7 +27,6 @@ package com.data2semantics.yasgui.client.tab.optionbar;
  */
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map.Entry;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Autofit;

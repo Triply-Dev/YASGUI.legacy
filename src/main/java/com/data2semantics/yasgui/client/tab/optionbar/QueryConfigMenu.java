@@ -27,10 +27,13 @@ package com.data2semantics.yasgui.client.tab.optionbar;
  */
 
 
+import java.util.ArrayList;
+
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
+import com.data2semantics.yasgui.client.settings.EnabledFeatures;
 import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.settings.TooltipText;
 import com.data2semantics.yasgui.client.settings.ZIndexes;
@@ -52,7 +55,6 @@ import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 public class QueryConfigMenu extends IconMenuButton {
 	private static final int TOOLTIP_VERSION_QUERY_CONFIG = 1;
 	private View view;
-	private Menu mainMenu = new Menu();
 	private MenuItem selectJson = new MenuItem("JSON");
 	private MenuItem selectXml = new MenuItem("XML");
 	private MenuItem selectCsv = new MenuItem("CSV");
@@ -80,11 +82,10 @@ public class QueryConfigMenu extends IconMenuButton {
 	public static String REQUEST_POST = "POST";
 	public static String REQUEST_GET = "GET";
 
-	public QueryConfigMenu(final View view) {
+	public QueryConfigMenu(final View view) throws IllegalStateException {
 		this.view = view;
+		fillMenu();
 		
-		mainMenu.setItems(getQueryParamMenuItem(), getNamedGraphMenuItem(), getDefaultGraphMenuItem(), getAcceptHeaderMenuItem(), getRequestMethodMenuItem());
-		setMenu(mainMenu);
 		setTitle("Configure request");
 		setCanFocus(false);
 		addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler(){
@@ -93,6 +94,23 @@ public class QueryConfigMenu extends IconMenuButton {
 				showMenu();
 			}
 		});
+	}
+	
+	private void fillMenu() throws IllegalStateException {
+		Menu mainMenu = new Menu();
+		ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
+		EnabledFeatures enabledFeatures = view.getEnabledFeatures();
+		if (enabledFeatures.queryParametersEnabled()) menuItems.add(getQueryParamMenuItem());
+		if (enabledFeatures.namedGraphsSpecificationEnabled()) menuItems.add(getNamedGraphMenuItem());
+		if (enabledFeatures.defaultGraphsSpecificationEnabled()) menuItems.add(getDefaultGraphMenuItem());
+		if (enabledFeatures.acceptHeadersEnabled()) menuItems.add(getAcceptHeaderMenuItem());
+		if (enabledFeatures.requestParametersEnabled()) menuItems.add(getRequestMethodMenuItem());
+		
+		if (menuItems.size() == 0) {
+			throw new IllegalStateException("No items to fill query config menu");
+		}
+		mainMenu.setItems(menuItems.toArray(new MenuItem[menuItems.size()]));
+		setMenu(mainMenu);
 	}
 	
 	private MenuItem getNamedGraphMenuItem() {
@@ -334,7 +352,7 @@ public class QueryConfigMenu extends IconMenuButton {
 	}
 
 	public void showTooltips(int fromVersionId) {
-		if (!view.getSettings().inSingleEndpointMode() && fromVersionId < TOOLTIP_VERSION_QUERY_CONFIG) {
+		if (view.getEnabledFeatures().endpointSelectionEnabled() && fromVersionId < TOOLTIP_VERSION_QUERY_CONFIG) {
 			TooltipProperties tProp = new TooltipProperties();
 			tProp.setId(getDOM().getId());
 			tProp.setContent(TooltipText.QUERY_CONFIG_MENU);

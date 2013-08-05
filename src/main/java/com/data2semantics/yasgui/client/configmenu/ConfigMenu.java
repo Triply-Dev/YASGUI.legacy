@@ -121,7 +121,7 @@ public class ConfigMenu extends Menu {
 				view.setAutocompletePrefixes(true);
 			}});
 		MenuItem endpointsUpdate = null;
-		if (!view.getSettings().inSingleEndpointMode()) {
+		if (view.getEnabledFeatures().endpointSelectionEnabled()) {
 			endpointsUpdate = new MenuItem("Force endpoints update");
 			endpointsUpdate.addClickHandler(new ClickHandler(){
 				@Override

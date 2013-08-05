@@ -103,7 +103,7 @@ public class QueryTab extends Tab {
 			bookmarkedQueries = new BookmarkedQueries(view);
 			queryOptions.addMember(bookmarkedQueries);
 		}
-		if (!view.getSettings().inSingleEndpointMode()) {
+		if (view.getEnabledFeatures().endpointSelectionEnabled()) {
 			endpointInput = new EndpointInput(view, this);
 			queryOptions.addMember(endpointInput);
 		
@@ -120,11 +120,15 @@ public class QueryTab extends Tab {
 			queryOptions.addMember(downloadLink);
 		}
 		
-		queryConfigMenu = new QueryConfigMenu(view);
-		queryOptions.addMember(queryConfigMenu);
+		try {
+			queryConfigMenu = new QueryConfigMenu(view);
+			queryOptions.addMember(queryConfigMenu);
+		} catch (IllegalStateException e) {
+			//we don't have anything to add to this menu (everything is disabled)
+			//just ignore
+		}
 		
 		queryOptions.addMember(Helper.getHSpacer());
-		
 		
 		linkCreator = new LinkCreator(view);
 		queryOptions.addMember(linkCreator);
@@ -211,7 +215,9 @@ public class QueryTab extends Tab {
 	public void showTooltips(int fromVersionId) throws ElementIdException {
 		queryTextArea.showTooltips(fromVersionId);
 		showSearchIconTooltip(fromVersionId);
-		queryConfigMenu.showTooltips(fromVersionId);
+		if (queryConfigMenu != null) {
+			queryConfigMenu.showTooltips(fromVersionId);
+		}
 		linkCreator.showToolTips(fromVersionId);
 		if (addToBookmarks != null) {
 			addToBookmarks.showToolTips(fromVersionId);
