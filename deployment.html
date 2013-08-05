@@ -162,7 +162,15 @@ After making your changes, make sure the json configuration is valid, by validat
         "requestMethod": "POST",
         "extraArgs": []
     },
-    "singleEndpointMode": false,
+    "enabledFeatures": {
+        "endpointSelection": true,
+        "queryParameters": true,
+        "namedGraphs": true,
+        "defaultGraphs": true,
+        "acceptHeaders": true,
+        "requestMethod": true,
+        "propertyAutocompletion": true	
+    },
     "googleAnalyticsId": "UA-11111111-1",
     "bitlyApiKey": "R_xxxxxxxxxxxxxxxxxxxxxxxxx",
     "bitlyUsername": "SomeUserName",
@@ -213,19 +221,39 @@ After making your changes, make sure the json configuration is valid, by validat
 					<dt>extraArgs</dt>
 					<dd>
 						Any extra url arguments you'd like to pass on to the endpoint. The
-						following example will at &amp;bla=bla2 to the request send to the
+						following example will at &amp;bla=bla2&amp;bl3=bla4 to the request send to the
 						endpoint:
-						<code>"extraArgs": [{"bla":"bla2"}]</code>
+						<code>"extraArgs": [{"bla":"bla2"}, {"bla3":"bla4"}]</code>
 					</dd>
 				</dl>
-
-
+				<h4>Enabled Features</h4>
+				This part of the settings allow you to disable YASGUI functionality: Not including these in your json file will enable this features by default.
+				All items take as input a boolean value.
+				Setting a value to false,
+				<dl>
+					<dt>endpointSelection</dt>
+					<dd>Set fo false to only use the specified default endpoint. The user won't see the endpoint text input form, and won't be able to search for endpoints. An example of YASGUI working in single endpoint mode is available <a href="http://single.yasgui.laurensrietveld.nl" target="_blank">here</a></dd>
+					<dt>queryParameters</dt>
+					<dd>Set to false to hide the option to add query parameters</dd>
+					<dt>namedGraphs</dt>
+					<dd>Set to false to hide option to specify named graphs for a given query</dd>
+					<dt>defaultGraphs</dt>
+					<dd>Set to false to hide option to specify default graphs for a given query</dd>
+					<dt>acceptHeaders</dt>
+					<dd>Set to false to hide option to specify the accept headers for a given query</dd>
+					<dt>requestMethod</dt>
+					<dd>Set to false to hide option to specify the request method (e.g. GET or POST) for a given query</dd>
+					<dt>properyAutocompletion</dt>
+					<dd>Set to false to hide the property autocompletion feature. Users won't be presented with the option to fetch the property information, and won't be presented with the suggestionbox when typing the query</dd>
+				</dl>
 				<h4>Other options</h4>
 				<dl>
 					<dt>singleEndpointMode</dt>
-					<dd>A boolean value. If set the true, the user won't be able
+					<dd>
+					<p class="text-error">deprecated: instead, use the <i>enabledFeatures</i> settings ('endpointSelection' key)</p>
+					<del>A boolean value. If set the true, the user won't be able
 						to change the endpoint. Instead, the default endpoint is always
-						used. An example of YASGUI working in single endpoint mode is available <a href="http://single.yasgui.laurensrietveld.nl" target="_blank">here</a>.</dd>
+						used. An example of YASGUI working in single endpoint mode is available <a href="http://single.yasgui.laurensrietveld.nl" target="_blank">here</a>.</del></dd>
 					<dt>googleAnalyticsId*</dt>
 					<dd>Google analytics ID</dd>
 					<dt>bitlyUsername*</dt>
