@@ -124,8 +124,9 @@ public class AddToBookmarks extends Img {
 		form.setTitleWidth(100);
 		bookmarkTitle = new TextItem();
 		bookmarkTitle.setTitle("Title");
-		if (!view.getSettings().inSingleEndpointMode()) {
+		if (view.getEnabledFeatures().endpointSelectionEnabled()) {
 			includeEndpoint = new CheckboxItem();
+			includeEndpoint.setValue(true);
 			includeEndpoint.setTitle("Include endpoint");
 			includeEndpoint.setLabelAsTitle(true);
 			form.setItems(bookmarkTitle, includeEndpoint);

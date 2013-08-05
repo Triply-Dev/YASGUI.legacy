@@ -36,6 +36,7 @@ public class SettingKeys implements Serializable {
 	//settings object
 	public static String SELECTED_TAB_NUMBER = "selectedTabNumber";
 	public static String DEFAULTS = "defaults";
+	public static String ENABLED_FEATURES = "enabledFeatures";
 	public static String TAB_SETTINGS = "tabSettings";
 	public static String SINGLE_ENDPOINT_MODE = "singleEndpointMode";
 	public static String GOOGLE_ANALYTICS_ID = "googleAnalyticsId";
@@ -56,6 +57,16 @@ public class SettingKeys implements Serializable {
 	public static String REQUEST_METHOD = "requestMethod";
 	public static String NAMED_GRAPHS = "namedGraphs";
 	public static String DEFAULT_GRAPHS = "defaultGraphs";
+	
+	
+	//enabled features object
+	public static String ENABLED_ENDPOINT_SELECTION = "endpointSelection";
+	public static String ENABLED_AUTOCOMPLETION_PROPS = "propertyAutocompletion";
+	public static String ENABLED_QUERY_PARAMS = "queryParameters";
+	public static String ENABLED_NAMED_GRAPHS = "namedGraphs";
+	public static String ENABLED_DEFAULT_GRAPHS = "defaultGraphs";
+	public static String ENABLED_ACCEPT_HEADERS = "acceptHeaders";
+	public static String ENABLED_REQUEST_METHOD = "requestMethod";
 	
 	//other (not used clientside) (actually, not accessible from clientside for security reasons)
 	public static String BITLY_API_KEY = "bitlyApiKey";

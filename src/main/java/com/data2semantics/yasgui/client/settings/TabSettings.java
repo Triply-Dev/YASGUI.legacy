@@ -165,7 +165,7 @@ public class TabSettings extends JSONObject {
 
 	public String getEndpoint() {
 		String endpoint = null;
-		if (mainSettings.inSingleEndpointMode()) {
+		if (!mainSettings.getEnabledFeatures().endpointSelectionEnabled()) {
 			//do this, because otherwise when config on server changes to single endpoint mode, we don't want old (cached) endpoints in settings still being used
 			//instead, we just want to use one: the default
 			endpoint = defaults.getDefaultEndpoint();

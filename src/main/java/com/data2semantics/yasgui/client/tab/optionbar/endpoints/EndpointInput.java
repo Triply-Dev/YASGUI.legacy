@@ -89,7 +89,7 @@ public class EndpointInput extends DynamicForm {
 		this.view = view;
 		setTitleOrientation(TitleOrientation.TOP);
 		createTextInput();
-		addButtonSpace();
+		if (view.getEnabledFeatures().propertyAutocompletionEnabled()) addButtonSpace();
 	}
 
 	
@@ -287,7 +287,7 @@ public class EndpointInput extends DynamicForm {
 		JsMethods.checkCorsEnabled(endpointString);
 		view.getSelectedTabSettings().setEndpoint(endpointString);
 		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
-		updateFetchIcon();
+		if (view.getEnabledFeatures().propertyAutocompletionEnabled()) updateFetchIcon();
 	}
 	
 	private QueryTab getQueryTab() {

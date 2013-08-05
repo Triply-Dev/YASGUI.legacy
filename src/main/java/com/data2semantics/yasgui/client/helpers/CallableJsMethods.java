@@ -156,8 +156,8 @@ public class CallableJsMethods {
 		view.getElements().executeQuery();
 	}
 	
-	public boolean inSingleEndpointMode() {
-		return view.getSettings().inSingleEndpointMode();
+	public boolean endpointSelectionEnabled() {
+		return view.getEnabledFeatures().endpointSelectionEnabled();
 	}
 	
 	public String getCurrentEndpoint() {
@@ -235,8 +235,8 @@ public class CallableJsMethods {
 		$wnd.historyStateChangeCallback = function() {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::historyStateChangeCallback()();
 		}
-		$wnd.inSingleEndpointMode = function() {
-			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::inSingleEndpointMode()();
+		$wnd.endpointSelectionEnabled = function() {
+			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::endpointSelectionEnabled()();
 		}
 		$wnd.getCurrentEndpoint = function() {
 			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::getCurrentEndpoint()();
