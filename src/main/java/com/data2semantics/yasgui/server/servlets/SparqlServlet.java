@@ -170,9 +170,8 @@ public class SparqlServlet extends HttpServlet {
 		for (Entry<String, String[]> requestParam: requestParams.entrySet()) {
 			String key = requestParam.getKey();
 			if (!key.equals("endpoint") && !key.equals("requestMethod")) { //only used by this proxy servlet, so don't copy these
-				String[] values = requestParam.getValue();
-				if (values.length > 0) {
-					nameValuePairs.add(new BasicNameValuePair(key, values[0]));
+				for (String value: requestParam.getValue()) {
+					nameValuePairs.add(new BasicNameValuePair(key, value));
 				}
 			}
 		}
