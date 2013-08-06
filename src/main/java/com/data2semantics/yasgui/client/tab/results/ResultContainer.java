@@ -26,7 +26,9 @@ package com.data2semantics.yasgui.client.tab.results;
  * #L%
  */
 
+import java.util.ArrayList;
 import java.util.HashMap;
+
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
@@ -46,6 +48,8 @@ import com.data2semantics.yasgui.shared.Output;
 import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
 import com.data2semantics.yasgui.shared.exceptions.SparqlParseException;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
@@ -184,7 +188,7 @@ public class ResultContainer extends VLayout {
 			ResultType queryMode = queryTypes.get(queryType);
 			switch (queryTypes.get(queryType)) {
             case Insert:
-            	setResultMessage(Imgs.CHECKBOX.get(), "Done");
+            	addMember(getResultsLabel(Imgs.CHECKBOX.get(), "Done"));
                     break;
             case Boolean:
             case Table:
@@ -204,7 +208,21 @@ public class ResultContainer extends VLayout {
     }
 		
 		} catch (SparqlEmptyException e) {
-			setResultMessage(Imgs.CROSS.get(), e.getMessage());
+			VLayout vLayout = new VLayout();
+			vLayout.setWidth100();
+			vLayout.setHeight100();
+			
+			ArrayList<String> usedNamedGraphs = view.getSelectedTabSettings().getNamedGraphs();
+			ArrayList<String> usedDefaultGraphs = view.getSelectedTabSettings().getDefaultGraphs();
+			if (
+					(view.getEnabledFeatures().defaultGraphsSpecificationEnabled() && usedDefaultGraphs.size() > 0) ||
+					(view.getEnabledFeatures().namedGraphsSpecificationEnabled() && usedNamedGraphs.size() > 0)) {
+				vLayout.addMember(getResultsLabelWithWarning(Imgs.CROSS.get(), e.getMessage(), "You have specified named and/or default graphs in your query request, which may explain this empty result set"));
+			} else {
+				vLayout.addMember(getResultsLabel(Imgs.CROSS.get(), e.getMessage()));
+			}
+			
+			addMember(vLayout);
 		} catch (Exception e) {
 			view.getElements().onError(e);
 			
@@ -226,33 +244,56 @@ public class ResultContainer extends VLayout {
 		}
 		return results;
 	}
-	public void setResultMessage(String iconSrc, String message) {
-		HLayout empty = new HLayout();
-		empty.setDefaultLayoutAlign(VerticalAlignment.CENTER);
-		empty.setHeight(50);
-		empty.setWidth100();
+	public HLayout getResultsLabelWithWarning(String iconSrc, String message, String warningMessage) {
+		HLayout resultLayout = new HLayout();
+		resultLayout.setDefaultLayoutAlign(VerticalAlignment.CENTER);
+		resultLayout.setHeight(60);
+		resultLayout.setWidth100();
+		
+		Img cross = new Img();
+		cross.setSrc(iconSrc);
+		cross.setSize(20);
+		
+		Img warning = new Img();
+		warning.setSrc(Imgs.WARNING.get());
+		warning.setSize(13);
+		warning.setTooltip(warningMessage);
+		
+		Label messageLabel = new Label("&nbsp;" + message);
+		messageLabel.setAutoHeight();
+		messageLabel.setStyleName("queryResultText");
+		messageLabel.setWidth(70);
+		resultLayout.addMembers(Helper.getHSpacer(), cross, messageLabel, warning, Helper.getHSpacer());
+		return resultLayout;
+	}
+	
+	public HLayout getResultsLabel(String iconSrc, String message) {
+		HLayout resultLayout = new HLayout();
+		resultLayout.setDefaultLayoutAlign(VerticalAlignment.CENTER);
+		resultLayout.setHeight(60);
+		resultLayout.setWidth100();
 		
 		Img cross = new Img();
 		cross.setSrc(iconSrc);
 		cross.setSize(16);
 		
 		
-		Label emptyMessage = new Label("&nbsp;" + message);
-		emptyMessage.setAutoHeight();
-		emptyMessage.setStyleName("queryResultText");
-		emptyMessage.setWidth(70);
-		empty.addMember(Helper.getHSpacer());
-		empty.addMember(cross);
-		empty.addMember(emptyMessage);
-		empty.addMember(Helper.getHSpacer());
+		Label messageLabel = new Label("&nbsp;" + message);
+		messageLabel.setAutoHeight();
+		messageLabel.setStyleName("queryResultText");
+		messageLabel.setWidth(70);
+		resultLayout.addMember(Helper.getHSpacer());
+		resultLayout.addMember(cross);
+		resultLayout.addMember(messageLabel);
+		resultLayout.addMember(Helper.getHSpacer());
 		
-		addMember(empty);
+		return resultLayout;
 	}
 	private void drawResultsAsBoolean(SparqlResults sparqlResults) {
 		if (sparqlResults.getBooleanResult()) {
-			setResultMessage(Imgs.CHECKBOX.get(), "true");
+			addMember(getResultsLabel(Imgs.CHECKBOX.get(), "true"));
 		} else {
-			setResultMessage(Imgs.CROSS.get(), "false");
+			addMember(getResultsLabel(Imgs.CROSS.get(), "false"));
 		}
 	}
 	
