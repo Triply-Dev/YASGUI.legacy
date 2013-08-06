@@ -6,7 +6,9 @@ body {
 	font-weight: bold;
 	color: #686772;
 }
-
+.relative {
+	position: relative;
+}
 
 /*Custom stuff for the codemirror query input. This makes sure resizing doesnt mess up things*/
 .bookmarkCm {
