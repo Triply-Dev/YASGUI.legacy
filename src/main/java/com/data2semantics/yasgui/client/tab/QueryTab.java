@@ -41,6 +41,7 @@ import com.data2semantics.yasgui.client.tab.optionbar.OutputSelection;
 import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
 import com.data2semantics.yasgui.client.tab.optionbar.bookmarks.BookmarkedQueries;
 import com.data2semantics.yasgui.client.tab.optionbar.endpoints.EndpointInput;
+import com.data2semantics.yasgui.client.tab.optionbar.endpoints.EndpointInputIcon;
 import com.data2semantics.yasgui.client.tab.optionbar.endpoints.EndpointSearch;
 import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
@@ -60,6 +61,7 @@ public class QueryTab extends Tab {
 	private View view;
 	private QueryTextArea queryTextArea;
 	private EndpointInput endpointInput;
+	private EndpointInputIcon endpointInputIcon;
 	private VLayout vLayout = new VLayout();
 	private ResultContainer queryResultContainer;
 	private TabSettings tabSettings;
@@ -98,14 +100,19 @@ public class QueryTab extends Tab {
 	private HLayout getQueryOptionBar() {
 		HLayout queryOptions = new HLayout();
 		queryOptions.setDefaultLayoutAlign(VerticalAlignment.BOTTOM);
-		queryOptions.setHeight(35);
+		queryOptions.setHeight(25);
 		if (view.getSettings().isDbSet()) {
 			bookmarkedQueries = new BookmarkedQueries(view);
 			queryOptions.addMember(bookmarkedQueries);
 		}
 		if (view.getEnabledFeatures().endpointSelectionEnabled()) {
+			if (view.getEnabledFeatures().propertyAutocompletionEnabled()) {
+				endpointInputIcon = new EndpointInputIcon(view);
+				queryOptions.addMember(endpointInputIcon);
+			}
 			endpointInput = new EndpointInput(view, this);
 			queryOptions.addMember(endpointInput);
+			
 		
 			searchIcon = new EndpointSearch(view);
 			queryOptions.addMember(searchIcon);
@@ -282,5 +289,9 @@ public class QueryTab extends Tab {
 	}
 	public AddToBookmarks getAddToBookmarks() {
 		return this.addToBookmarks;
+	}
+
+	public EndpointInputIcon getEndpointInputIcon() {
+		return endpointInputIcon;
 	}
 }
