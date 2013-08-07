@@ -48,7 +48,7 @@ import com.smartgwt.client.widgets.layout.HLayout;
 public class EndpointInputIcon extends HLayout {
 	private View view;
 	private static int OFFSET_Y = 18;
-	private static int OFFSET_X =  397;
+	private static int OFFSET_X =  375;//offset from left of endpoint input
 	public EndpointInputIcon(View view) {
 		this.view = view;
 
@@ -72,7 +72,7 @@ public class EndpointInputIcon extends HLayout {
 
 	private void positionElement() {
 		setSnapTo("TL");
-		setSnapOffsetLeft(OFFSET_X);
+		setSnapOffsetLeft(view.getSelectedTab().getEndpointInput().getAbsoluteLeft() + OFFSET_X);
 		setSnapOffsetTop(OFFSET_Y);
 	}
 	

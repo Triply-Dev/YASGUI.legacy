@@ -59,7 +59,6 @@ import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.grid.events.SelectionUpdatedEvent;
 import com.smartgwt.client.widgets.grid.events.SelectionUpdatedHandler;
-import com.smartgwt.client.widgets.layout.HLayout;
 
 public class EndpointInput extends DynamicForm {
 	private View view;
@@ -70,11 +69,8 @@ public class EndpointInput extends DynamicForm {
 	private static int WIDTH = 420;
 	private static int COL_WIDTH_DATASET_TITLE = 150;
 	private static int COL_WIDTH_MORE_INFO = 22;
-	private static int BUTTON_OFFSET_Y = 18;
-	private static int BUTTON_OFFSET_X = WIDTH - 39;
 	private boolean pickListRecordSelected = false;
 	private ArrayList<String> cols = new ArrayList<String>();
-	private HLayout buttonSpace = new HLayout();
 	public EndpointInput(View view, QueryTab queryTab) {
 		this.queryTab = queryTab;
 		this.view = view;
