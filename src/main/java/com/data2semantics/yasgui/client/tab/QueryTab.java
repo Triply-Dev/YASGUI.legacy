@@ -101,18 +101,17 @@ public class QueryTab extends Tab {
 		HLayout queryOptions = new HLayout();
 		queryOptions.setDefaultLayoutAlign(VerticalAlignment.BOTTOM);
 		queryOptions.setHeight(25);
+		if (view.getEnabledFeatures().endpointSelectionEnabled() && view.getEnabledFeatures().propertyAutocompletionEnabled()) {
+			endpointInputIcon = new EndpointInputIcon(view);
+			queryOptions.addMember(endpointInputIcon);
+		}
 		if (view.getSettings().isDbSet()) {
 			bookmarkedQueries = new BookmarkedQueries(view);
 			queryOptions.addMember(bookmarkedQueries);
 		}
 		if (view.getEnabledFeatures().endpointSelectionEnabled()) {
-			if (view.getEnabledFeatures().propertyAutocompletionEnabled()) {
-				endpointInputIcon = new EndpointInputIcon(view);
-				queryOptions.addMember(endpointInputIcon);
-			}
 			endpointInput = new EndpointInput(view, this);
 			queryOptions.addMember(endpointInput);
-			
 		
 			searchIcon = new EndpointSearch(view);
 			queryOptions.addMember(searchIcon);
