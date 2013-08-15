@@ -402,5 +402,14 @@ public class JsMethods {
 	public static native DlvWrapper getDlv(String csvString, String separator) /*-{
 		return $wnd.$.csv.toArrays(csvString, {"separator": separator});
 	}-*/;
+	public static native String getUncommentedSparql(String sparqlQuery) /*-{
+		var cleanedQuery = "";
+		$wnd.CodeMirror.runMode(sparqlQuery, "sparql11", function(stringVal, className) {
+			if (className != "sp-comment") {
+				cleanedQuery += stringVal;
+			}
+		});
+		return cleanedQuery;
+	}-*/;
 
 }
