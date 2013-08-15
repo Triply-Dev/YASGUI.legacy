@@ -345,12 +345,12 @@ public class Helper {
 	}
 
 	public static String removeCommentsFromQuery(String queryString) {
-		String[] lines = queryString.split("\n");
+		String[] lines = queryString.split(System.getProperty("line.separator"));
 		
 		String cleanedQueryString = "";
 		for (String line: lines) {
 			if (!line.trim().startsWith("#")) {
-				cleanedQueryString += line + "\n";
+				cleanedQueryString += line + System.getProperty("line.separator");
 			}
 		}
 		return cleanedQueryString;
