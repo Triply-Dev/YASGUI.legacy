@@ -53,7 +53,6 @@ package com.data2semantics.yasgui.client.helpers;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
-
 import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.google.gwt.core.client.GWT;
@@ -342,17 +341,5 @@ public class Helper {
 			}
 		}
 		return result;
-	}
-
-	public static String removeCommentsFromQuery(String queryString) {
-		String[] lines = queryString.split(System.getProperty("line.separator"));
-		
-		String cleanedQueryString = "";
-		for (String line: lines) {
-			if (!line.trim().startsWith("#")) {
-				cleanedQueryString += line + System.getProperty("line.separator");
-			}
-		}
-		return cleanedQueryString;
 	}
 }

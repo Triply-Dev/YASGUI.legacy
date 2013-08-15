@@ -191,7 +191,7 @@ public class ViewElements {
 		JsMethods.query(tabId, queryString, endpoint, acceptHeader, argsString, requestMethod);
 		view.checkAndAddEndpointToDs(endpoint);
 		if (view.getSettings().useGoogleAnalytics()) {
-			GoogleAnalyticsEvent queryEvent = new GoogleAnalyticsEvent(endpoint, Helper.removeCommentsFromQuery(queryString));
+			GoogleAnalyticsEvent queryEvent = new GoogleAnalyticsEvent(endpoint, queryString);
 			GoogleAnalytics.trackEvents(queryEvent);
 		}
 	}
