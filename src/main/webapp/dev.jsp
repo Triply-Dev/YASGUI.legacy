@@ -40,6 +40,9 @@
 <script src="assets/codemirror/addon/search/match-highlighter.js"></script>
 <script src="assets/codemirror/addon/edit/matchbrackets.js"></script>
 
+<!-- Code for efficiently looping through all tokens (used for removing comments) -->
+<script src="assets/codemirror/addon/runmode/runmode.js"></script>
+
 <!-- Flint code for sparql mode -->
 <script src="assets/flint/sparql.js"></script>
 <link rel="stylesheet" href="assets/flint/sparql.css">

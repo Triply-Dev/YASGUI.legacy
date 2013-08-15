@@ -20,6 +20,7 @@
 <script src="assets/codemirror/addon/search/searchcursor.js"></script>
 <script src="assets/codemirror/addon/search/match-highlighter.js"></script>
 <script src="assets/codemirror/addon/edit/matchbrackets.js"></script>
+<script src="assets/codemirror/addon/runmode/runmode.js"></script>
 
 <link rel="stylesheet" href="assets/yasgui.css">
 <!-- Flint code for sparql mode -->
@@ -33,10 +34,10 @@
 <br><br>
 	<textarea id="test" style="width:400px;height:300px;">
 PREFIX : &lt;http://aers.data2semantics.org/vocab/&gt; 
-PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
+PREFIX #rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
 SELECT DISTINCT *
 {
-?patient rd:comment ?comment.
+#?patient rd:comment ?comment.
 }
 </textarea>
 
@@ -87,8 +88,17 @@ SELECT DISTINCT *
 		//	cm.matchHighlight("CodeMirror-matchhighlight");
 		//});
 			
-			
-			
+			var bla = "";
+function doHighlight() {
+  CodeMirror.runMode(document.getElementById("test").value, "sparql11",
+                     function(stringVal, className){
+	  if (className != "sp-comment") {
+		  bla += stringVal;
+	  }
+	  });
+}
+doHighlight();
+console.log(bla);
 
 			
 			
