@@ -273,6 +273,7 @@
 								<include>../externals/flint/sparql.js</include>
 								<include>../externals/addCommands.js</include>
 								<include>../externals/yasgui.js</include>
+								<include>../externals/codemirror/util/runmode.js</include>
 							</includes>
 						</aggregation>
 						<aggregation>

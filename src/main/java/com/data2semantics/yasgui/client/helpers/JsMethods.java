@@ -524,4 +524,15 @@ public class JsMethods {
 		}
 		return location;
 	}-*/;
+
+	public static native String getUncommentedSparql(String sparqlQuery) /*-{
+		var cleanedQuery = "";
+		$wnd.CodeMirror.runMode(sparqlQuery, "sparql11", function(stringVal, className) {
+			if (className != "sp-comment") {
+				cleanedQuery += stringVal;
+			}
+		});
+		return cleanedQuery;
+	}-*/;
+
 }
