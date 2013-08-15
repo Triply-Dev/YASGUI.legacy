@@ -33,6 +33,7 @@ import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.smartgwt.client.types.Positioning;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
@@ -40,6 +41,8 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.MovedEvent;
 import com.smartgwt.client.widgets.events.MovedHandler;
+import com.smartgwt.client.widgets.events.ResizedEvent;
+import com.smartgwt.client.widgets.events.ResizedHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 
 public class EndpointInputIcon extends HLayout {
