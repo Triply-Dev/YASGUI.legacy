@@ -35,6 +35,9 @@
 <script src="externals/codemirror/util/searchcursor.js"></script>
 <script src="externals/codemirror/util/match-highlighter.js"></script>
 
+<!-- Code for efficiently looping through all tokens (used for removing comments) -->
+<script src="externals/codemirror/util/runmode.js"></script>
+
 <!-- Flint code for sparql mode -->
 <script src="externals/flint/sparql.js"></script>
 <link rel="stylesheet" href="externals/flint/sparql.css">
