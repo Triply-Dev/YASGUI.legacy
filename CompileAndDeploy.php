@@ -1,24 +1,20 @@
 #!/usr/bin/php
 <?php
+$debug = false;
 include_once __DIR__.'/Helper.php';
 $config = Helper::getConfig();
+if (in_array("debug", $argv)) $debug = true;
+
+
 if (count($argv) > 1) {
 	if (in_array($argv[1], explode(",", $config['deployments']))) {
 		$deployConfig = $config[$argv[1]];
 		if (is_array($deployConfig) && count($deployConfig)) {
 			compileAndDeploy($deployConfig);
-		} else {
-			Helper::mailError(__FILE__, __LINE__, "couldnt find configuration for ".$argv[1]." in hookConfig.ini");
-			exit;
 		}
-	} else {
-		Helper::mailError(__FILE__, __LINE__, "Invalid script argument");
-		exit;
 	}
-} else {
-	Helper::mailError(__FILE__, __LINE__, "Not enough arguments");
-	exit;
 }
+
 
 
 
@@ -43,7 +39,6 @@ function pull() {
 	$result = shell_exec("git pull 2> errorOutput.txt");
 	if (file_exists("errorOutput.txt") && strpos(file_get_contents("errorOutput.txt"), "error:") !== false) {
 		Helper::mailError(__FILE__, __LINE__, "Unable to pull from git: \n".file_get_contents("errorOutput.txt"));
-		exit;
 	}
 }
 
@@ -52,12 +47,10 @@ function package() {
 	$succes = shell_exec("mvn clean 2> errorOutput.txt");
 	if (!$succes) {
 		Helper::mailError(__FILE__, __LINE__, "Unable to compile ".$argv[1]." project: \n".file_get_contents("errorOutput.txt"));
-		exit;
 	}
 	if ($succes) $succes = shell_exec("mvn package 2> errorOutput.txt");
 	if (!$succes || strpos($succes, "BUILD FAILURE")) {
 		Helper::mailError(__FILE__, __LINE__, "Unable to compile ".$argv[1]." project: \n".file_get_contents("errorOutput.txt")."\n".$succes);
-		exit;
 	}
 }
 
@@ -65,7 +58,6 @@ function getWarFile() {
 	$warFiles = glob("target/*.war");
 	if (count($warFiles) != 1) {
 		Helper::mailError(__FILE__, __LINE__, "Invalid number of war files after compiling (dir: ".getcwd()."/target/*.war, count: ".count($warFiles).")");
-		exit;
 	}
 	return (reset($warFiles));
 }
@@ -74,12 +66,10 @@ function unzipWarFile($warFile) {
 	$destination = "/tmp/".$argv[1].time()."_".rand();
 	if (file_exists($destination)) {
 		Helper::mailError(__FILE__, __LINE__, "Target dir to unzip war in already exists. Something is wrong... (".$destination.")");
-		exit;
 	}
 	$result = shell_exec("unzip ".$warFile." -d ".$destination);
 	if ($result == null || !file_exists($destination) || count(scandir($destination)) <= 2) {
 		Helper::mailError(__FILE__, __LINE__, "Failed to unzip compiled war file ".$warFile);
-		exit;
 	}
 	return $destination;
 }
@@ -89,11 +79,9 @@ function updateConfig($dir, $deployConfig) {
 		file_put_contents($dir."/config/config.json", json_encode($newConfig,JSON_UNESCAPED_SLASHES));
 		if (!file_exists($dir."/config/config.json")) {
 			Helper::mailError(__FILE__, __LINE__, "unable to store new json config file");
-			exit;
 		}
 	} else {
 		Helper::mailError(__FILE__, __LINE__, "unable to get updated config array");
-		exit;
 	}
 }
 
@@ -101,23 +89,19 @@ function getUpdatedConfig($dir, $deployConfig) {
 	$jsonConfig = $dir."/config/config.json";
 	if (!file_exists($jsonConfig)) {
 		Helper::mailError(__FILE__, __LINE__, "No config file in unzipped war file (".$jsonConfig.")");
-		exit;
 	}
 	$overWriteJsonConfig = $deployConfig['yasguiConfig'];
 	if (!file_exists($overWriteJsonConfig)) {
 		Helper::mailError(__FILE__, __LINE__, "No json config file to apply to yasgui (".$overWriteJsonConfig.")");
-		exit;
 	}
 	
 	$jsonConfigArray = json_decode(file_get_contents($jsonConfig), true);
 	if (!(is_array($jsonConfigArray) && count($jsonConfigArray))) {
 		Helper::mailError(__FILE__, __LINE__, "Unable to parse file as json (".$jsonConfig.")");
-		exit;
 	}
 	$overWriteJsonConfigArray = json_decode(file_get_Contents($overWriteJsonConfig), true);
 	if (!(is_array($overWriteJsonConfigArray) && count($jsonConfigArray))) {
 		Helper::mailError(__FILE__, __LINE__, "Unable to parse file as json (".$overWriteJsonConfig.")");
-		exit;
 	}
 	return array_replace_recursive($jsonConfigArray, $overWriteJsonConfigArray);
 }
@@ -151,7 +135,6 @@ function deployToTomcat($yasguiDir, $deployConfig) {
 	}
 	if (!file_exists($yasguiDir)) {
 		Helper::mailError(__FILE__, __LINE__, "We have no directory to copy. Something is wrong!");
-		exit;
 	}
 	
 	/**
@@ -160,7 +143,6 @@ function deployToTomcat($yasguiDir, $deployConfig) {
 	$result = shell_exec("mv ".$yasguiDir." ".$to);
 	if (!file_exists($to)) {
 		Helper::mailError(__FILE__, __LINE__, "Failed to copy yasgui to tomcat dir");
-		exit;
 	}
 	
 	
