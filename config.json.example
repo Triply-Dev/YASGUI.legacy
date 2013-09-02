@@ -1,0 +1,34 @@
+{
+	"mailSettings": {
+		"username": "",
+		"password": "",
+		"from": "",
+		"fromName": "",
+		"to":""
+	},
+	"shellSettings": {
+		"maxTimeoutInMin": "20",
+		"trashDir": "/var/lib/tomcat7/.trash"
+	},
+	"deployTargets": {
+		"master": [
+			{
+				"src": "/home/lrd900/gitCode/yasgui_master",
+				"target": "/usr/share/tomcat7/webapps/yasgui",
+				"overwriteConfig" : {
+				
+				}
+			}
+		
+		],
+		"dev": [
+			{
+				"src": "/home/lrd900/gitCode/yasgui_dev",
+				"target": "/usr/share/tomcat7/webapps/yasgui-dev",
+				"overwriteConfig" : {
+				
+				}
+			}
+		]
+	}
+}

@@ -4,7 +4,7 @@ class Helper {
 	 
 	static function sendMail($subject, $body) {
 		$config = Helper::getConfig();
-		if ($config) {
+		if (is_array($config)) {
 			require_once(__DIR__.'/lib/PHPMailer_v5.1/class.phpmailer.php');
 			$mail = new PHPMailer();  // create a new object
 			$mail->IsSMTP(); // enable SMTP
@@ -13,12 +13,12 @@ class Helper {
 			$mail->SMTPSecure = 'ssl'; // secure transfer enabled REQUIRED for GMail
 			$mail->Host = 'smtp.gmail.com';
 			$mail->Port = 465;
-			$mail->Username = $config['mail']['username'];
-			$mail->Password = $config['mail']['password'];
-			$mail->SetFrom($config['mail']['from'], 'YASGUI commit hook');
+			$mail->Username = $config['mailSettings']['username'];
+			$mail->Password = $config['mailSettings']['password'];
+			$mail->SetFrom($config['mailSettings']['from'], 'YASGUI commit hook');
 			$mail->Subject = $subject;
 			$mail->MsgHTML($body);
-			$mail->AddAddress($config['mail']['to']);
+			$mail->AddAddress($config['mailSettings']['to']);
 			return $mail->Send();
 		} else {
 			return false;
@@ -26,9 +26,9 @@ class Helper {
 	}
 	
 	static function getConfig() {
-		$config = parse_ini_file(__DIR__."/hookConfig.ini", true);
+		$config = json_decode(file_get_contents(__DIR__."/config.json"), true);
 		if ($config == null || !is_array($config) || count($config) == 0) {
-			Helper::mailError(__FILE__, __LINE__, "Unable to load hook config ini file");
+			Helper::mailError(__FILE__, __LINE__, "Unable to load main config json file ".$config);
 		}
 		return $config;
 	}

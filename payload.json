@@ -57,7 +57,7 @@
     },
     "before": "ea297b3b8b336b3622ee6e92c6d2f0b6bb6507ed",
     "created": false,
-    "ref": "refs/heads/master",
+    "ref": "refs/heads/dev",
     "commits": [
         {
             "message": "initial implementation of commit hook",
