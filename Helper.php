@@ -45,7 +45,7 @@ class Helper {
 			$body .= "Error: <strong>".$error."</strong><br>";
 			
 			$body .= "</body></html>";
-			Helper::sendMail("Error in ".basename(__FILE__), $body);
+			Helper::sendMail("Error in ".basename(__FILE__)." on ".gethostname(), $body);
 		}
  		exit;
 	}
