@@ -40,7 +40,7 @@ function compileAndDeploy($deployConfig) {
 	deployToTomcat($yasguiDir, $deployConfig);
 	$subject = "Succesfully deployed YASGUI as ".$argv[1]." on ".gethostname();
 	$body = $subject."\nmode: ".$deployConfig['target'];
- 	Helper::sendMail($succesText, $succesText);
+ 	Helper::sendMail($subject, $body);
 }
 
 function pull() {
