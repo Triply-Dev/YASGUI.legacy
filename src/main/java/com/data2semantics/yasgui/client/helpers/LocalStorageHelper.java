@@ -43,7 +43,6 @@ public class LocalStorageHelper {
 	private static String COOKIE_VERSION = "version";
 	private static String COOKIE_VERSION_ID = "versionId";
 	private static String COOKIE_COMPATABILITIES_SHOWN = "compatabilitiesShown";
-	private static String QUESTIONNAIRE = "questionnaire";
 	
 	private static String LOCAL_STORAGE_EXPIRE_SEPARATOR = "_"; //used to separate content and long value containing timestamp of insertion
 	private static int PREFIXES_EXPIRE_DAYS = 30;
@@ -267,19 +266,6 @@ public class LocalStorageHelper {
 	
 	public static void setVersionId(int version) {
 		setAsCookie(COOKIE_VERSION_ID, Integer.toString(version), VERSION_EXPIRE_DAYS);
-	}
-	
-	public static void setQuestionnaireShown() {
-		setAsCookie(QUESTIONNAIRE, "1", VERSION_EXPIRE_DAYS);
-	}
-	
-	public static boolean isQuestionnaireShown() {
-		boolean shown = false;
-		String cookieVal = getAsCookie(QUESTIONNAIRE);
-		if (cookieVal != null && cookieVal.equals("1")) {
-			shown = true;
-		}
-		return shown;
 	}
 	
 	public static int getVersionId() {
