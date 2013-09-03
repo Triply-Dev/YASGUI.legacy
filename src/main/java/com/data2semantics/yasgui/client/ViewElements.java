@@ -90,7 +90,6 @@ public class ViewElements {
 		initLoadingWidget();
 		drawConfigMenu();
 		checkOpera();
-		showQuestionnairePrompt();
 	}
 	
 
@@ -486,87 +485,6 @@ public class ViewElements {
 		
 		consentWindow.addItem(windowCanvas);
 		consentWindow.draw();
-	}
-	
-	public void showQuestionnairePrompt() {
-		if (!LocalStorageHelper.isQuestionnaireShown()) {
-			final Window questionnaireWindow = new Window();
-			
-			questionnaireWindow.setWidth(CONSENT_WINDOW_WIDTH);
-			questionnaireWindow.setHeight(CONSENT_WINDOW_HEIGHT);
-			questionnaireWindow.setAutoCenter(true);
-			VLayout windowCanvas = new VLayout();
-			
-			HTMLFlow consentMessage = new HTMLFlow();
-			consentMessage.setContents("<p style='text-align:center; margin:0px;'>We would like to invite you to spend 5 minutes on filling in a questionnaire about using and accessing the Semantic Web, and how YASGUI can help improve this. <strong>We would strongly appreciate your participation!</strong></p>");
-			consentMessage.setMargin(8);
-			consentMessage.setWidth(CONSENT_WINDOW_WIDTH - 20);
-			consentMessage.setAlign(Alignment.CENTER);
-			windowCanvas.addMember(consentMessage);
-			
-			LayoutSpacer vSpacer = new LayoutSpacer();
-			vSpacer.setHeight100();
-			windowCanvas.addMember(vSpacer);
-			
-			HLayout buttons = new HLayout();
-			buttons.setAlign(Alignment.CENTER);
-			IButton showQuestionnaire = new IButton("Show questionnaire");  
-			showQuestionnaire.setWidth(CONSENT_BUTTON_WIDTH);
-	        showQuestionnaire.setShowRollOver(true);
-	        showQuestionnaire.setIcon(Imgs.CHECKMARK.get());
-	        showQuestionnaire.setHeight(CONSENT_BUTTON_HEIGHT);
-	        showQuestionnaire.addClickHandler(new ClickHandler() {
-				@Override
-				public void onClick(ClickEvent event) {
-					LocalStorageHelper.setQuestionnaireShown();
-					com.google.gwt.user.client.Window.open("http://laurensrietveld.nl/yasgui/questionnaire.html", "_blank", null);
-					questionnaireWindow.destroy();
-				}});
-	        showQuestionnaire.setShowDownIcon(false);
-			
-	        LayoutSpacer spacer1 = new LayoutSpacer();
-	        spacer1.setWidth(10);
-	        
-			buttons.setAlign(Alignment.CENTER);
-			IButton noQuestionnaire = new IButton("No");  
-			noQuestionnaire.setWidth(CONSENT_BUTTON_WIDTH);
-			noQuestionnaire.setHeight(CONSENT_BUTTON_HEIGHT);
-			noQuestionnaire.setShowRollOver(true);  
-			noQuestionnaire.setIcon(Imgs.CROSS.get());
-			noQuestionnaire.setIconOrientation("left");  
-			noQuestionnaire.addClickHandler(new ClickHandler() {
-				@Override
-				public void onClick(ClickEvent event) {
-					LocalStorageHelper.setQuestionnaireShown();
-					questionnaireWindow.destroy();
-				}});
-			noQuestionnaire.setShowDownIcon(false);
-	        
-	        LayoutSpacer spacer2 = new LayoutSpacer();
-	        spacer2.setWidth(10);
-	        
-			Button askLater = new Button("Ask me later");  
-			askLater.setShowRollOver(true);  
-			askLater.setWidth(CONSENT_BUTTON_WIDTH);
-			askLater.setHeight(CONSENT_BUTTON_HEIGHT);
-			askLater.addClickHandler(new ClickHandler() {
-				@Override
-				public void onClick(ClickEvent event) {
-					questionnaireWindow.destroy();
-				}});
-			askLater.setShowDownIcon(false); 
-			
-	        LayoutSpacer spacer3 = new LayoutSpacer();
-	        spacer3.setWidth(10);
-			
-	        buttons.addMembers(showQuestionnaire, spacer1, noQuestionnaire, spacer2, askLater);
-	        buttons.setMargin(5);
-	        windowCanvas.addMember(buttons);
-			questionnaireWindow.setTitle("YASGUI Questionnaire");
-			
-			questionnaireWindow.addItem(windowCanvas);
-			questionnaireWindow.draw();
-		}
 	}
 	
 	public void drawOptionsInQueryField() {
