@@ -62,7 +62,7 @@ public class SparqlServlet extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String query = request.getParameter("query");
 		String endpoint = request.getParameter("endpoint");
-		
+		response.setCharacterEncoding("UTF-8");
 		String accept = request.getHeader("Accept");
 		if (accept == null) accept = "application/sparql-results+xml";
 		String requestMethod = request.getParameter("requestMethod");
