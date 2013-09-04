@@ -26,16 +26,20 @@ if (count($cleanedArgs) > 1) {
 
 
 function compileAndDeploy($deployConfig) {
+	
 	global $argv;
 	chdir($deployConfig['src']);
+	
 	echo "pulling\n";
+	checkout();//revert any previous changes (e.g. to pom.xml)
  	pull();
  	echo "packaging\n";
- 	package();
+ 	package($deployConfig);
 	$warFile = getWarFile();
 	$yasguiDir = unzipWarFile($warFile);
 	echo "updating config\n";
 	updateConfig($yasguiDir, $deployConfig);
+	
 	echo "deploying to tomcat\n";
 	deployToTomcat($yasguiDir, $deployConfig);
 	$subject = "Succesfully deployed YASGUI as ".$argv[1]." on ".gethostname();
@@ -43,21 +47,25 @@ function compileAndDeploy($deployConfig) {
  	Helper::sendMail($subject, $body);
 }
 
+function checkout() {
+	shell_exec("git checkout");
+}
 function pull() {
-	shell_exec("rm errorOutput.txt");
+	shell_exec("rm errorOutput.txt");//remove previous log
 	$result = shell_exec("git pull 2> errorOutput.txt");
 	if (file_exists("errorOutput.txt") && strpos(file_get_contents("errorOutput.txt"), "error:") !== false) {
 		Helper::mailError(__FILE__, __LINE__, "Unable to pull from git: \n".file_get_contents("errorOutput.txt"));
 	}
 }
 
-function package() {
+function package($deployConfig) {
 	global $argv;
-// 	$succes = shell_exec("mvn clean 2> errorOutput.txt");
-// 	if (!$succes) {
-// 		Helper::mailError(__FILE__, __LINE__, "Unable to compile ".$argv[1]." project: \n".file_get_contents("errorOutput.txt"));
-// 	}
-	$succes = shell_exec("mvn package 2> errorOutput.txt");
+	if ($deployConfig['compileDetailed']) {
+		$file_contents = file_get_contents("pom.xml");
+		$file_contents = str_replace("<style>OBF</style>", "<style>DETAILED</style>", $file_contents);
+		file_put_contents("pom.xml", $file_contents);
+	}
+	$succes = shell_exec("mvn clean package 2> errorOutput.txt");
 	if (!$succes || strpos($succes, "BUILD FAILURE")) {
 		Helper::mailError(__FILE__, __LINE__, "Unable to compile ".$argv[1]." project: \n".file_get_contents("errorOutput.txt")."\n".$succes);
 	}

@@ -28,6 +28,14 @@
 				"overwriteConfig" : {
 				
 				}
+			},
+			{
+				"src": "/home/lrd900/gitCode/yasgui_dev",
+				"target": "/usr/share/tomcat7/webapps/yasgui-dev",
+				"compileDetailed": true,
+				"overwriteConfig" : {
+				
+				}
 			}
 		]
 	}
