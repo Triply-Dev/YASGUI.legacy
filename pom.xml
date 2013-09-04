@@ -201,6 +201,7 @@
 				<configuration>
 					<runTarget>Yasgui.html</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
+					<style>OBF</style>
 				</configuration>
 			</plugin>
 
