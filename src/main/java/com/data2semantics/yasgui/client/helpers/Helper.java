@@ -53,6 +53,8 @@ package com.data2semantics.yasgui.client.helpers;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.logging.Logger;
+
 import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.google.gwt.core.client.GWT;
@@ -69,6 +71,7 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
 
 public class Helper {
+	private static Logger logger = Logger.getLogger(Helper.class.getName());
 	private static String CRAWL_USER_AGENTS = "googlebot|msnbot|baidu|curl|wget|Mediapartners-Google|slurp|ia_archiver|Gigabot|libwww-perl|lwp-trivial|bingbot";
 	private static String PREFIX_PATTERN = "\\s*PREFIX\\s*(\\w*):\\s*<(.*)>\\s*$";
 	/**
@@ -341,5 +344,19 @@ public class Helper {
 			}
 		}
 		return result;
+	}
+
+	public static void includeOfflineManifest() {
+		String strongName = GWT.getPermutationStrongName();
+		if (!strongName.equals("HostedMode")) {
+			if (JsMethods.isDevPageLoaded()) {
+				JsMethods.appendManifestIframe("Yasgui/" + GWT.getPermutationStrongName() + ".dev.cache.html");
+			} else {
+				JsMethods.appendManifestIframe("Yasgui/" + GWT.getPermutationStrongName() + ".appcache.html");
+			}
+		} else {
+			logger.info("We are in hosted mode. Not including appcache manifest");
+		}
+		
 	}
 }

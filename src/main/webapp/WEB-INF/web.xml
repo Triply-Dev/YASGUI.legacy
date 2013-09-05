@@ -22,10 +22,6 @@
 		<servlet-class>com.data2semantics.yasgui.server.openid.OpenIdServlet</servlet-class>
 	</servlet>
 
-
-
-
-
 	<servlet>
 		<servlet-name>openIdService</servlet-name>
 		<servlet-class>com.data2semantics.yasgui.server.OpenIdServiceImpl</servlet-class>
@@ -51,11 +47,10 @@
 		<servlet-name>openIdService</servlet-name>
 		<url-pattern>/Yasgui/OpenIdService</url-pattern>
 	</servlet-mapping>
-
-	<!-- Default page to serve -->
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
+
 	<security-constraint>
 		<display-name>excluded</display-name>
 		<web-resource-collection>
@@ -78,4 +73,6 @@
 			<transport-guarantee>NONE</transport-guarantee>
 		</user-data-constraint>
 	</security-constraint>
+
+
 </web-app>

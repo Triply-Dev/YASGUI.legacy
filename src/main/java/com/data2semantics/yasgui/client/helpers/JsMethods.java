@@ -411,5 +411,31 @@ public class JsMethods {
 		});
 		return cleanedQuery;
 	}-*/;
-
+	
+	/**
+	 * We cannot change the manifest attribute dynamically via clientside. 
+	 * Therefore, use this workaround instead, where we can include an iframe (which has a reference to a manifest attribute) dynamically
+	 * @param manifestIframe
+	 */
+	public static native void appendManifestIframe(String manifestIframe) /*-{
+		var ifrm = document.createElement("iframe"); 
+		ifrm.setAttribute("src", manifestIframe); 
+		ifrm.style.width = 0+"px"; 
+		ifrm.style.height = 0+"px"; 
+		$doc.body.appendChild(ifrm); 
+	}-*/;
+	
+	/**
+	 * We cannot change the manifest attribute dynamically via clientside. 
+	 * Therefore, use this workaround instead, where we can include an iframe (which has a reference to a manifest attribute) dynamically
+	 * @param manifestIframe
+	 */
+	public static native boolean isDevPageLoaded() /*-{
+		var devPageLoaded = false;
+		if ($wnd.location.pathname.substring(location.pathname.lastIndexOf('/')+1) == "dev.jsp") {
+			devPageLoaded = true;
+		}
+		return devPageLoaded; 
+	}-*/;
+	
 }

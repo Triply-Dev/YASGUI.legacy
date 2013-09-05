@@ -13,26 +13,30 @@
 	<!-- <inherits name='com.google.gwt.user.theme.standard.Standard' /> -->
 	<!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
 	<!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/> -->
-	<inherits name="com.smartclient.theme.graphite.GraphiteResources" />
+	<inherits name="com.smartclient.theme.graphite.GraphiteResources" /><!-- need to make sure appcache does not exclude this -->
 	<!-- Other module inherits -->
 	<inherits name="com.smartgwt.tools.SmartGwtTools" />
 
-<inherits name="com.google.common.collect.Collect" />
-<inherits name="com.google.common.base.Base" />
-	<!-- 	<inherits name="com.google.common.collect.Lists"/> -->
-<!-- 	<inherits name="com.google.common.collect.Maps"/> -->
+	<inherits name="com.google.common.collect.Collect" />
+	<inherits name="com.google.common.base.Base" />
+	<define-configuration-property name="cache.manifest"
+		is-multi-valued="true" />
+
+	<inherits name="com.data2semantics.yasgui.mgwtlinker.Linker" />
+	<add-linker name="permutationmaplinker" />
 	<!-- Specify the app entry point class. -->
 	<entry-point class='com.data2semantics.yasgui.client.Yasgui' />
-	
+
 	<!-- Specify the paths for translatable code -->
 	<source path='client' />
 	<source path='shared' />
-	
-	
+
+
 	<inherits name="com.google.gwt.logging.Logging" />
 	<set-property name="gwt.logging.logLevel" value="INFO" />
 	<set-property name="gwt.logging.enabled" value="TRUE" />
-	<set-property name="gwt.logging.developmentModeHandler"	value="ENABLED" />
+	<set-property name="gwt.logging.developmentModeHandler"
+		value="ENABLED" />
 	<set-property name="gwt.logging.systemHandler" value="DISABLED" />
 	<set-property name="gwt.logging.popupHandler" value="DISABLED" />
 	<set-property name="gwt.logging.consoleHandler" value="ENABLED" />

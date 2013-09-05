@@ -5,12 +5,8 @@
     response.setDateHeader("Expires", -1);
 %>
 <!doctype html>
-<!-- The DOCTYPE declaration above will set the    -->
-<!-- browser's rendering engine into               -->
-<!-- "Standards Mode". Replacing this declaration  -->
-<!-- with a "Quirks Mode" doctype may lead to some -->
-<!-- differences in layout.                        -->
 
+<!-- Important: add all included resourdces to gwt.xml file as well, so they are added to the appcache manifest file -->
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -23,17 +19,14 @@ if (title == null) {
 	out.print(title);
 }
 %></title>
-<link href='//fonts.googleapis.com/css?family=Audiowide' rel='stylesheet' type='text/css'>
-<link rel="shortcut icon" type="image/png" href="images/rdf.png">
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+
+<link rel="shortcut icon" type="image/png" href="images/rdf.png?<% out.print(StaticConfig.VERSION); %>">
 <script src="static/yasgui.js?<% out.print(StaticConfig.VERSION); %>"></script>
 <link rel="stylesheet" href="static/yasgui.css?<% out.print(StaticConfig.VERSION); %>">
-<!--                                           -->
-<!-- This script loads your compiled module.   -->
-<!-- If you add any GWT meta tags, they must   -->
-<!-- be added before this line.                -->
-<!--                                           -->
-<script type="text/javascript" src="Yasgui/Yasgui.nocache.js"></script>
+<!-- yasgui specific fonts -->
+<link rel="stylesheet" href="fonts/fonts.css?<% out.print(StaticConfig.VERSION); %>">
+
+<script type="text/javascript" src="Yasgui/Yasgui.nocache.js?<% out.print(StaticConfig.VERSION); %>"></script>
 <script type="text/javascript">defaults = "<% 
 out.print(StringEscapeUtils.escapeEcmaScript(ConfigFetcher.getJson(request.getSession().getServletContext().getRealPath("/"))));
 %>"</script>
