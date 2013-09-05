@@ -68,7 +68,8 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 public class View extends VLayout {
 	private static int TOP_SPACING = 34;
-	private Logger logger = Logger.getLogger("");
+	private Logger logger = Logger.getLogger(View.class.getName());
+	private boolean isOnline = true;
 	private YasguiServiceAsync remoteService = YasguiServiceAsync.Util.getInstance();
 	private OpenIdServiceAsync openIdService = OpenIdServiceAsync.Util.getInstance();
 	private EndpointDataSource endpointDataSource;
@@ -81,6 +82,8 @@ public class View extends VLayout {
 	public View() {
 		boolean newUser = false;
 		if (LocalStorageHelper.newUser()) newUser = true;
+		
+		Helper.includeOfflineManifest();
 		
 		setViewLayout();
 		
@@ -400,5 +403,32 @@ public class View extends VLayout {
 	}
 	public EnabledFeatures getEnabledFeatures() {
 		return getSettings().getEnabledFeatures();
+	}
+	
+	public void checkOnlineStatus() {
+		viewElements.onLoadingStart();
+		getRemoteService().isOnline(new AsyncCallback<Boolean>() {
+			public void onFailure(Throwable caught) {
+				setIsOnline(false);
+				viewElements.onLoadingFinish();
+			}
+			public void onSuccess(Boolean isOnline) {
+				setIsOnline(true);
+				viewElements.onLoadingFinish();
+			}
+		});
+	}
+	
+	public void setIsOnline(boolean isOnline) {
+		if (this.isOnline != isOnline) {
+			this.isOnline = isOnline;
+			if (isOnline) {
+				//remove offline notification
+				//re-enable stuff
+			} else {
+				//show offline notification
+				//add button to retry to get online
+			}
+		}
 	}
 }

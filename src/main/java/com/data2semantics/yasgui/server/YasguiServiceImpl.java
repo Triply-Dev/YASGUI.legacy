@@ -51,6 +51,7 @@ import com.data2semantics.yasgui.shared.exceptions.FetchException;
 import com.data2semantics.yasgui.shared.exceptions.OpenIdException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.rosaloves.bitlyj.*;
+
 import static com.rosaloves.bitlyj.Bitly.*;
 
 /**
@@ -237,5 +238,10 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 			throw new FetchException("unable to fetch properties for endpoint " + endpoint, e);
 		}
 		return properties;
+	}
+
+	@Override
+	public boolean isOnline() throws IllegalArgumentException {
+		return true;
 	}
 }

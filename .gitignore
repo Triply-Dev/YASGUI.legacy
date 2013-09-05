@@ -10,3 +10,4 @@ gwt-unitCache
 junitTest
 compileAndDeploy.sh
 config.json
+/target
