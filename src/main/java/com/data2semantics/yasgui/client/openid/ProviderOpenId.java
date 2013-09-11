@@ -46,7 +46,7 @@ public class ProviderOpenId implements OpenIdProvider{
 	}
 
 	public String getImageLocation() {
-		return Imgs.get(Imgs.LOGO_OPENID);
+		return Imgs.LOGO_OPENID.get();
 	}
 	public int getMaxIconHeight() {
 		return MAX_ICON_HEIGHT;

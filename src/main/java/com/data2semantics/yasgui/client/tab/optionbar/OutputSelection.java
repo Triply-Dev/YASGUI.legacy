@@ -31,6 +31,7 @@ import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.tab.QueryTab;
+import com.data2semantics.yasgui.client.tab.results.input.ResultsHelper;
 import com.data2semantics.yasgui.shared.Output;
 import com.smartgwt.client.types.TitleOrientation;
 import com.smartgwt.client.widgets.form.DynamicForm;
@@ -39,7 +40,6 @@ import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 
 public class OutputSelection extends DynamicForm {
-	@SuppressWarnings("unused")
 	private View view;
 	SelectItem selectItem;
 
@@ -51,13 +51,12 @@ public class OutputSelection extends DynamicForm {
 		LinkedHashMap<String, String> valueMap = new LinkedHashMap<String, String>();
 		valueMap.put(Output.OUTPUT_TABLE, "Table");
 		valueMap.put(Output.OUTPUT_TABLE_SIMPLE, "Simple Table");
-//		valueMap.put(Output.OUTPUT_CSV, "CSV");
 		valueMap.put(Output.OUTPUT_RAW_RESPONSE, "Query Response");
 		
 		LinkedHashMap<String, String> valueIcons = new LinkedHashMap<String, String>();
-		valueIcons.put(Output.OUTPUT_TABLE, Imgs.get(Imgs.OUTPUT_TABLE));
-		valueIcons.put(Output.OUTPUT_TABLE_SIMPLE, Imgs.get(Imgs.OUTPUT_TABLE_SIMPLE));
-		valueIcons.put(Output.OUTPUT_RAW_RESPONSE, Imgs.get(Imgs.OUTPUT_RAW));
+		valueIcons.put(Output.OUTPUT_TABLE, Imgs.OUTPUT_TABLE.get());
+		valueIcons.put(Output.OUTPUT_TABLE_SIMPLE, Imgs.OUTPUT_TABLE_SIMPLE.get());
+		valueIcons.put(Output.OUTPUT_RAW_RESPONSE, Imgs.OUTPUT_RAW.get());
 		selectItem.setValueIcons(valueIcons);
 
 		selectItem.setValueMap(valueMap);
@@ -81,7 +80,8 @@ public class OutputSelection extends DynamicForm {
 		
 		if (queryType == null) {
 			selectItem.setDisabled(false);
-		} else if (queryType.equals("CONSTRUCT") || queryType.equals("DESCRIBE")) {
+		} else if ((queryType.equals("CONSTRUCT") || queryType.equals("DESCRIBE")) 
+				&& !ResultsHelper.tabularContentType(view.getSelectedTabSettings().getConstructContentType())) {
 			selectItem.setValue(Output.OUTPUT_RAW_RESPONSE);
 			selectItem.setDisabled(true);
 		} else {

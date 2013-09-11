@@ -26,15 +26,17 @@ package com.data2semantics.yasgui.client.settings;
  * #L%
  */
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
+import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.shared.Output;
 import com.data2semantics.yasgui.shared.SettingKeys;
+import com.google.common.collect.HashMultimap;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
@@ -99,10 +101,14 @@ public class TabSettings extends JSONObject {
 				setSelectContentType(parameters.get(key).get(0));
 			} else if (key.equals(SettingKeys.REQUEST_METHOD)) {
 				setRequestMethod(parameters.get(key).get(0));
+			} else if (key.equals(SettingKeys.NAMED_GRAPHS)) {
+				setNamedGraphs(new ArrayList<String>(parameters.get(key)));
+			} else if (key.equals(SettingKeys.DEFAULT_GRAPHS)) {
+				setDefaultGraphs(new ArrayList<String>(parameters.get(key)));
 			} else if (!key.startsWith("gwt.")) {
 				//all other parameter keys are added as extra query arguments 
 				//ignore keys starting with gwt though (used for debugging)
-				addQueryArg(key, parameters.get(key).get(0));
+				addCustomQueryArg(key, parameters.get(key).get(0));
 			}
 		}
 	}
@@ -130,8 +136,17 @@ public class TabSettings extends JSONObject {
 		if (getRequestMethod() == null || getRequestMethod().length() == 0) {
 			setRequestMethod(defaults.getDefaultRequestMethod());
 		}
-		if (getQueryArgs().size() == 0) {
+		if (getRequestMethod() == null || getRequestMethod().length() == 0) {
+			setRequestMethod(defaults.getDefaultRequestMethod());
+		}
+		if (getCustomQueryArgs().size() == 0) {
 			put(SettingKeys.EXTRA_QUERY_ARGS, defaults.getDefaultQueryArgs());
+		}
+		if (getNamedGraphs().size() == 0) {
+			put(SettingKeys.NAMED_GRAPHS, defaults.getDefaultNamedGraphs());
+		}
+		if (getDefaultGraphs().size() == 0) {
+			put(SettingKeys.DEFAULT_GRAPHS, defaults.getDefaultDefaultGraphs());
 		}
 	}
 
@@ -150,7 +165,7 @@ public class TabSettings extends JSONObject {
 
 	public String getEndpoint() {
 		String endpoint = null;
-		if (mainSettings.inSingleEndpointMode()) {
+		if (!mainSettings.getEnabledFeatures().endpointSelectionEnabled()) {
 			//do this, because otherwise when config on server changes to single endpoint mode, we don't want old (cached) endpoints in settings still being used
 			//instead, we just want to use one: the default
 			endpoint = defaults.getDefaultEndpoint();
@@ -222,8 +237,68 @@ public class TabSettings extends JSONObject {
 		return contentType;
 	}
 	
-	public HashMap<String, String> getQueryArgs() {
-		HashMap<String, String> args = new HashMap<String, String>();
+	public ArrayList<String> getNamedGraphs() {
+		ArrayList<String> namedGraphs = new ArrayList<String>();
+		if (containsKey(SettingKeys.NAMED_GRAPHS)) {
+			namedGraphs = Helper.getJsonAsArrayList(get(SettingKeys.NAMED_GRAPHS));
+		}
+		return namedGraphs;
+	}
+	
+	public void setNamedGraphs(ArrayList<String> namedGraphs) {
+		put(SettingKeys.NAMED_GRAPHS, Helper.getArrayListAsJson(namedGraphs));
+	}
+	public ArrayList<String> getDefaultGraphs() {
+		ArrayList<String> defaultGraphs = new ArrayList<String>();
+		if (containsKey(SettingKeys.DEFAULT_GRAPHS)) {
+			defaultGraphs = Helper.getJsonAsArrayList(get(SettingKeys.DEFAULT_GRAPHS));
+		}
+		return defaultGraphs;
+	}
+	
+	public void setDefaultGraphs(ArrayList<String> defaultGraphs) {
+		put(SettingKeys.DEFAULT_GRAPHS, Helper.getArrayListAsJson(defaultGraphs));
+	}
+	
+	private JSONObject getSimpleQueryArgObject(String name, String value) {
+		JSONObject object = new JSONObject();
+		object.put("name", new JSONString(name));
+		object.put("value", new JSONString(value));
+		return object;
+	}
+	public String getQueryArgsAsJsonString() {
+		return getQueryArgs().toString();
+	}
+	public String getQueryArgsAsUrlString() {
+		String urlString = "";
+		JSONArray argsArray = getQueryArgs();
+		for (int i = 0; i < argsArray.size(); i++) {
+			JSONObject argObject = argsArray.get(i).isObject();
+			urlString += "&" + argObject.get("name").isString().stringValue() + 
+					"=" + URL.encodeQueryString(argObject.get("value").isString().stringValue());
+		}
+		return urlString;
+	}
+	
+	public JSONArray getQueryArgs() {
+		JSONArray argsArray = new JSONArray();
+		HashMultimap<String, String> args = getCustomQueryArgs();
+		
+		for (Entry<String, String> arg: args.entries()) {
+			argsArray.set(argsArray.size(), getSimpleQueryArgObject(arg.getKey(), arg.getValue()));
+		}
+		for (String defaultGraph: getDefaultGraphs()) {
+			argsArray.set(argsArray.size(), getSimpleQueryArgObject("default-graph-uri", defaultGraph));
+		}
+		for (String namedGraph: getNamedGraphs()) {
+			argsArray.set(argsArray.size(), getSimpleQueryArgObject("named-graph-uri", namedGraph));
+		}
+		return argsArray;
+	}
+	
+	public HashMultimap<String, String> getCustomQueryArgs() {
+		HashMultimap<String, String> args = HashMultimap.create();
+		
 		if (containsKey(SettingKeys.EXTRA_QUERY_ARGS)) {
 			JSONArray argsArray = get(SettingKeys.EXTRA_QUERY_ARGS).isArray();
 			if (argsArray != null) {
@@ -252,15 +327,7 @@ public class TabSettings extends JSONObject {
 		return args;
 	}
 	
-	public String getQueryArgsAsJsonString() {
-		HashMap<String, String> args = getQueryArgs();
-		JSONObject argsObject = new JSONObject();
-		for (Entry<String, String> arg: args.entrySet()) {
-			argsObject.put(arg.getKey(), new JSONString(arg.getValue()));
-		}
-		return argsObject.toString();
-	}
-	public void addQueryArg(String key, String value) {
+	public void addCustomQueryArg(String key, String value) {
 		JSONArray argsArray;
 		if (!containsKey(SettingKeys.EXTRA_QUERY_ARGS)) {
 			argsArray = new JSONArray();
@@ -273,9 +340,9 @@ public class TabSettings extends JSONObject {
 		argsArray.set(argsArray.size(), argObject);
 		put(SettingKeys.EXTRA_QUERY_ARGS, argsArray);
 	}
-	public void resetAndaddQueryArgs(HashMap<String, String> args) {
+	public void resetAndaddCustomQueryArgs(HashMultimap<String, String> args) {
 		JSONArray argsArray = new JSONArray();
-		for (Entry<String, String> arg: args.entrySet()) {
+		for (Entry<String, String> arg: args.entries()) {
 			JSONObject argObject = new JSONObject();
 			argObject.put("key", new JSONString(arg.getKey()));
 			argObject.put("value", new JSONString(arg.getValue()));

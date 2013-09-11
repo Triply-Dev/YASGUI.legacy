@@ -38,12 +38,12 @@ import com.smartgwt.client.util.StringUtil;
 import com.smartgwt.client.widgets.HTMLPane;
 
 public class SimpleGrid extends HTMLPane {
-	@SuppressWarnings("unused")
 	private View view;
 	private HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
 	private ArrayList<String> variables;
 	private ArrayList<HashMap<String, HashMap<String, String>>> solutions;
 	private String html = "";
+	private static int ROLL_OVER_ICON_SIZE = 12;
 
 	public SimpleGrid(View view, SparqlResults sparqlResults) {
 		this.view = view;
@@ -83,24 +83,28 @@ public class SimpleGrid extends HTMLPane {
 			for (String variable: variables) {
 				if (bindings.containsKey(variable)) {
 					HashMap<String, String> binding = bindings.get(variable);
-					if (binding.get("type").equals("uri")) {
-						html += "<td class=\"snorqlLink\">";
+					if (ResultsHelper.valueIsUri(binding)) {
+						html += "<td class=\"snorqlTdWrapper\"><div>";
 						if (view.getSettings().useUrlAsSnorql()) {
-							html += ResultsHelper.getSnorqlHrefLink(binding, queryPrefixes) + "&nbsp;" + ResultsHelper.getRegularImgLink(binding.get("value"));
+							html += ResultsHelper.getSnorqlHrefLink(binding, queryPrefixes);
+							html += getImgLink(binding.get("value"), true);
 						} else {
-							html += ResultsHelper.getRegularHrefLink(binding, queryPrefixes) + "&nbsp;" + ResultsHelper.getSnorqlImgLink(binding.get("value"));
+							html += ResultsHelper.getRegularHrefLink(binding, queryPrefixes);
+							html += getImgLink(binding.get("value"), false);
 						}
-					} else if (binding.get("type").equals("literal") || binding.get("type").equals("typed-literal")) {
+						html += "</div></td>";
+					} else if (ResultsHelper.valueIsLiteral(binding)) {
 						html += "<td>";
 						html += ResultsHelper.getLiteralFromBinding(binding);
+						html += "</td>";
 					} else {
 						html += "<td>";
 						html += StringUtil.asHTML(binding.get("value"));
+						html += "</td>";
 					}
 				} else {
-					html += "<td>&nbsp;";
+					html += "<td>&nbsp;</td>";
 				}
-				html += "</td>";
 			}
 			html += "</tr>";
 			rowId++;
@@ -109,5 +113,16 @@ public class SimpleGrid extends HTMLPane {
 	}
 	
 	
-	
+	private String getImgLink(String url, boolean regularHref) {
+		String html = "<div style=\"height:100%;position:absolute;top:0px;right:" + (ROLL_OVER_ICON_SIZE/2) + "px;\">";
+		String divContentStyle = "position:absolute;top:50%;margin-top:-" + (ROLL_OVER_ICON_SIZE/2) + "px;";
+		if (regularHref) {
+			html += "<a style=\"" + divContentStyle + "\" href=\"" + url + "\" target=\"_blank\" class=\"extResourceLink\">";
+			html += "<img src=\"" + Imgs.OTHER_IMAGES_DIR.getUnprocessed() + Imgs.EXTERNAL_LINK.get() +"\" height=\"" + ROLL_OVER_ICON_SIZE + "\" width=\"" + ROLL_OVER_ICON_SIZE + "\"/></a>";
+		} else {
+			html += "<img onclick=\"queryForResource('" + url +  "');\" class=\"extResourceLink\" style=\"cursor:pointer;" + divContentStyle + "\" src=\"" + Imgs.OTHER_IMAGES_DIR.getUnprocessed() + Imgs.INTERNAL_LINK.get() +"\" height=\"" + ROLL_OVER_ICON_SIZE + "\" width=\"" + ROLL_OVER_ICON_SIZE + "\"/>";
+		}
+		html += "</div>";
+		return html;
+	}
 }

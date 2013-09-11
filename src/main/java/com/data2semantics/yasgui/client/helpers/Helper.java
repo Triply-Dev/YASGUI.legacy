@@ -53,11 +53,12 @@ package com.data2semantics.yasgui.client.helpers;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
-
-import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONString;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Window;
@@ -175,16 +176,6 @@ public class Helper {
 			throw new ElementIdException("id '" + tProp.getId() + "' not found on page. Unable to draw tooltip");
 		}
 		JsMethods.drawTooltip(tProp.getId(), tProp.getContent(), tProp.getMy(), tProp.getAt(), tProp.getXOffset(), tProp.getYOffset());
-	}
-	
-	public static String getAcceptHeaders(String mainAccept) {
-		String acceptString = mainAccept + "," +
-						QueryConfigMenu.CONTENT_TYPE_CONSTRUCT_TURTLE + ";q=0.9," + 
-						QueryConfigMenu.CONTENT_TYPE_CONSTRUCT_XML + ";q=0.9," + 
-						QueryConfigMenu.CONTENT_TYPE_SELECT_JSON + ";q=0.9," +
-						QueryConfigMenu.CONTENT_TYPE_SELECT_XML + ";q=0.9," +
-						"*/*;q=0.8";
-		return acceptString;
 	}
 	
 	/**
@@ -307,6 +298,16 @@ public class Helper {
 		return baseUrl + (argsString.length() > 0 ? "?" + argsString: "");
 		
 	}
+	
+	public static boolean validUrl (String url) {
+		 RegExp pattern = RegExp.compile("^(https?:\\/\\/)?"+ // protocol
+			"((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+			"((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+			"(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+			"(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+			"(\\#[-a-z\\d_]*)?$", "i");
+		 return pattern.test(url);	 
+	}
 	public static LayoutSpacer getVSpacer() {
 		LayoutSpacer spacer = new LayoutSpacer();
 		spacer.setHeight100();
@@ -316,5 +317,29 @@ public class Helper {
 		LayoutSpacer spacer = new LayoutSpacer();
 		spacer.setWidth100();
 		return spacer;
+	}
+	
+	public static ArrayList<String> getJsonAsArrayList(JSONValue jsonVal) {
+		ArrayList<String> result = new ArrayList<String>();
+		JSONArray jsonArray = jsonVal.isArray();
+		if (jsonArray != null) {
+			for (int i = 0; i < jsonArray.size(); i++) {
+				JSONString value = jsonArray.get(i).isString();
+				if (value != null) {
+					result.add(value.stringValue());
+				}
+			}
+		}
+		return result;
+	}
+
+	public static JSONArray getArrayListAsJson(ArrayList<String> arrayList) {
+		JSONArray result = new JSONArray();
+		if (arrayList != null && arrayList.size() > 0) {
+			for (int i = 0; i < arrayList.size(); i++) {
+				result.set(i, new JSONString(arrayList.get(i)));
+			}
+		}
+		return result;
 	}
 }

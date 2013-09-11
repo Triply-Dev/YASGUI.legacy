@@ -190,9 +190,9 @@ public class Compatabilities extends Window {
 	private Img getIcon(boolean supported) {
 		Img img;
 		if (supported) {
-			img = new Img(Imgs.get(Imgs.CHECKBOX));
+			img = new Img(Imgs.CHECKBOX.get());
 		} else {
-			img = new Img(Imgs.get(Imgs.CROSS));
+			img = new Img(Imgs.CROSS.get());
 		}
 		img.setLayoutAlign(VerticalAlignment.CENTER);
 		img.setValign(VerticalAlignment.CENTER);
@@ -203,7 +203,7 @@ public class Compatabilities extends Window {
 	}
 	
 	private HTMLFlow getRowName(String string) {
-		string = "<div style='height:" + Integer.toString(ROW_HEIGHT) + "px;'><img src='" + Imgs.OTHER_IMAGES_DIR + Imgs.get(Imgs.OTHER_1PX) + "' alt=\"\" style=\"width:1px; height:100%; vertical-align:middle\" /><strong>" + string + "</strong></div>";
+		string = "<div style='height:" + Integer.toString(ROW_HEIGHT) + "px;'><img src='" + Imgs.OTHER_IMAGES_DIR.getUnprocessed() + Imgs.OTHER_1PX.get() + "' alt=\"\" style=\"width:1px; height:100%; vertical-align:middle\" /><strong>" + string + "</strong></div>";
 		HTMLFlow label = new HTMLFlow(string);
 		label.setWidth(150);
 		label.setHeight100();

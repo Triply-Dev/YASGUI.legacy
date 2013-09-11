@@ -2,47 +2,71 @@
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-
 <title>Codemirror Test</title>
 <script type="text/javascript">function showPlayButton(){};function setQueryType(){};</script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-<script src="externals/yasgui.js"></script>
+<script src="assets/yasgui.js"></script>
+<script src="assets/trie.js"></script>
 
-<script src="externals/codemirror/codemirror.js"></script>
-<link rel="stylesheet" href="externals/codemirror/codemirror.css">
+<script src="assets/codemirror/codemirror.js"></script>
+<script src="assets/codemirror/mode/xml/xml.js"></script>
+<link rel="stylesheet" href="assets/codemirror/codemirror.css">
+<link rel="stylesheet" href="assets/codemirror/theme/yasgui.css">
 <!-- Autocompletion code -->
-<link rel="stylesheet" href="externals/codemirror/util/simple-hint.css">
-<script src="externals/codemirror/util/simple-hint.js"></script>
-<script src="externals/prefix-hint.js"></script>
+<link rel="stylesheet" href="assets/codemirror/addon/hint/show-hint.css">
+<script src="assets/codemirror/addon/hint/show-hint.js"></script>
+<script src="assets/yasguiHint.js"></script>
 <!-- Highlight words onclick code -->
-<script src="externals/codemirror/util/searchcursor.js"></script>
-<script src="externals/codemirror/util/match-highlighter.js"></script>
-<link rel="stylesheet" href="externals/yasgui.css">
+<script src="assets/codemirror/addon/search/searchcursor.js"></script>
+<script src="assets/codemirror/addon/search/match-highlighter.js"></script>
+<script src="assets/codemirror/addon/edit/matchbrackets.js"></script>
+<script src="assets/codemirror/addon/runmode/runmode.js"></script>
+
+<link rel="stylesheet" href="assets/yasgui.css">
 <!-- Flint code for sparql mode -->
-<script src="externals/flint/sparql.js"></script>
-<link rel="stylesheet" href="externals/flint/sparql.css">
+<script src="assets/flint/sparql.js"></script>
+<link rel="stylesheet" href="assets/flint/sparql.css">
 <!-- Code for adding custom keycombination/mouseclick commands to codemirror -->
-<script src="externals/addCommands.js"></script>
+<script src="assets/codemirrorCommands.js"></script>
   </head>
   <body>
+  
 <br><br>
 	<textarea id="test" style="width:400px;height:300px;">
 PREFIX : &lt;http://aers.data2semantics.org/vocab/&gt; 
+PREFIX #rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
 SELECT DISTINCT *
 {
-?patient rd:comment ?comment.
+#?patient rd:comment ?comment.
 }
 </textarea>
+
 
 	<script type="text/javascript">
 	function checkAdjustParent() {
 		
 	}
-	var prefixes = ["aers: <bwah>", "aaebs: <sdf>", "aacbs: <sdf>", "rdf: <htpp://bla>", "http: <htpp://bla>", "rdfs: <bwah>", "whereeee: <sdf>", "whereeec: <sdf>"];
+	function getCurrentEndpoint() {
+		return "bla";
+	}
+	var properties = {};
+	var propertiesArray = ["http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla2","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla","http://www.w3.org/1999/02/22-rdf-syntax-ns#bla", "http://www.w3.org/1999/02/22-rdf-syntax-ns#bld", "http://www.w3.org/1999/02/22-rdf-syntax-ns#45"];
+	var T = new Trie();
+    var i;
+    for(i = 0; i < propertiesArray.length; i++) {
+        T.insert(propertiesArray[i]);
+        properties['bla'] = T;
+    }
+	var prefixes = ["aers: <bwah>", "aacbs: <sdf>", "aacds: <sdf>", "aaebs: <sdf>", "blaaa1: <sdf>", "blaaa2: <sdf>", "blaaa3: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aacbs: <sdf>", "rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>", "http: <htpp://bla>", "rdfs: <bwah>", "whereeee: <sdf>", "whereeec: <sdf>"];
 				var modes;
 		var myCodeMirror = CodeMirror.fromTextArea(document
 				.getElementById("test"), {
+			theme: "yasgui",
+			mode: "sparql11",
 			lineNumbers : true,
+			highlightSelectionMatches: {showToken: /\w/},
+			matchBrackets: true,
+			gutters: ["gutterErrorBar","CodeMirror-linenumbers" ],
 			extraKeys : {
 				"Ctrl-Space" : "autocomplete",
 				"Ctrl-D" : "deleteLines",
@@ -50,25 +74,31 @@ SELECT DISTINCT *
 				"Ctrl-Alt-Down" : "copyLineDown",
 				"Ctrl-Alt-Up" : "copyLineUp",
 				"Ctrl-S" : "doNothing"
-			},
-			onCursorActivity : function() {
-				myCodeMirror.matchHighlight("CodeMirror-matchhighlight");
-			},
-			onChange : function(cm) {
-				CodeMirror.simpleHint(cm, CodeMirror.prefixHint);
-				appendPrefixIfNeeded(cm);
-			},
-			onHighlightComplete: function(cm) {
-				checkSyntax(cm);
-				setQueryType(cm.getStateAfter().queryType);
-				checkAdjustParent();
-				
-			},
-			adjustParent: function(){console.log("in callback")}
+			}
 		});
+		myCodeMirror.on("change", function(cm, change){
+			CodeMirror.showHint(cm, CodeMirror.allAutoCompletions, {closeCharacters: /(?=a)b/, closeOnUnfocus: false});
+			appendPrefixIfNeeded(cm);
+			checkSyntax(cm);
+			setQueryType(cm.getStateAfter().queryType);
+			checkAdjustParent();
+		});
+		//myCodeMirror.on("cursorActivity", function(cm){
+		//	console.log("bla3");
+		//	cm.matchHighlight("CodeMirror-matchhighlight");
+		//});
 			
-			
-			
+			var bla = "";
+function doHighlight() {
+  CodeMirror.runMode(document.getElementById("test").value, "sparql11",
+                     function(stringVal, className){
+	  if (className != "sp-comment") {
+		  bla += stringVal;
+	  }
+	  });
+}
+doHighlight();
+console.log(bla);
 
 			
 			

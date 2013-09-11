@@ -27,10 +27,13 @@ package com.data2semantics.yasgui.client.tab.optionbar;
  */
 
 
+import java.util.ArrayList;
+
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
+import com.data2semantics.yasgui.client.settings.EnabledFeatures;
 import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.settings.TooltipText;
 import com.data2semantics.yasgui.client.settings.ZIndexes;
@@ -52,29 +55,37 @@ import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 public class QueryConfigMenu extends IconMenuButton {
 	private static final int TOOLTIP_VERSION_QUERY_CONFIG = 1;
 	private View view;
-	private Window window;
-	private Menu mainMenu = new Menu();
-	private MenuItem selectJson;
-	private MenuItem selectXml;
-	private MenuItem constructXml;
-	private MenuItem constructTurtle;
+	private MenuItem selectJson = new MenuItem("JSON");
+	private MenuItem selectXml = new MenuItem("XML");
+	private MenuItem selectCsv = new MenuItem("CSV");
+	private MenuItem selectTsv = new MenuItem("TSV");
+	private MenuItem constructTurtle = new MenuItem("Turtle");
+	private MenuItem constructXml = new MenuItem("RDF/XML");
+	private MenuItem constructCsv = new MenuItem("CSV");
+	private MenuItem constructTsv = new MenuItem("TSV");
 	private MenuItem post;
 	private MenuItem get;
-	private static int WINDOW_HEIGHT = 200;
-	private static int WINDOW_WIDTH = 400;
+	private Window graphWindow;
+	private Window queryArgWindow;
+	private static int QUERY_ARG_WINDOW_HEIGHT = 200;
+	private static int QUERY_ARG_WINDOW_WIDTH = 400;
+	private static int GRAPH_ARG_WINDOW_HEIGHT = 200;
+	private static int GRAPH_ARG_WINDOW_WIDTH = 300;
 	private ParametersListGrid paramListGrid;
+	private GraphListGrid graphListGrid;
 	public static String CONTENT_TYPE_SELECT_JSON = "application/sparql-results+json";
 	public static String CONTENT_TYPE_SELECT_XML = "application/sparql-results+xml";
+	public static String CONTENT_TYPE_SELECT_CSV = "text/csv";
+	public static String CONTENT_TYPE_SELECT_TSV = "text/tab-separated-values";
 	public static String CONTENT_TYPE_CONSTRUCT_TURTLE = "text/turtle";
 	public static String CONTENT_TYPE_CONSTRUCT_XML = "application/rdf+xml";
 	public static String REQUEST_POST = "POST";
 	public static String REQUEST_GET = "GET";
 
-	public QueryConfigMenu(final View view) {
+	public QueryConfigMenu(final View view) throws IllegalStateException {
 		this.view = view;
+		fillMenu();
 		
-		mainMenu.setItems(getQueryParamMenuItem(), getAcceptHeaderMenuItem(), getRequestMethodMenuItem());
-		setMenu(mainMenu);
 		setTitle("Configure request");
 		setCanFocus(false);
 		addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler(){
@@ -84,6 +95,97 @@ public class QueryConfigMenu extends IconMenuButton {
 			}
 		});
 	}
+	
+	private void fillMenu() throws IllegalStateException {
+		Menu mainMenu = new Menu();
+		ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
+		EnabledFeatures enabledFeatures = view.getEnabledFeatures();
+		if (enabledFeatures.queryParametersEnabled()) menuItems.add(getQueryParamMenuItem());
+		if (enabledFeatures.namedGraphsSpecificationEnabled()) menuItems.add(getNamedGraphMenuItem());
+		if (enabledFeatures.defaultGraphsSpecificationEnabled()) menuItems.add(getDefaultGraphMenuItem());
+		if (enabledFeatures.acceptHeadersEnabled()) menuItems.add(getAcceptHeaderMenuItem());
+		if (enabledFeatures.requestParametersEnabled()) menuItems.add(getRequestMethodMenuItem());
+		
+		if (menuItems.size() == 0) {
+			throw new IllegalStateException("No items to fill query config menu");
+		}
+		mainMenu.setItems(menuItems.toArray(new MenuItem[menuItems.size()]));
+		setMenu(mainMenu);
+	}
+	
+	private MenuItem getNamedGraphMenuItem() {
+		MenuItem namedGraphMenuItem = new MenuItem("Specify Named Graphs");
+		namedGraphMenuItem.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				drawGraphWindow(GraphListGrid.GraphArgType.NAMED_GRAPH);
+			}
+		});
+		namedGraphMenuItem.setCheckIfCondition(new MenuItemIfFunction(){
+			@Override
+			public boolean execute(Canvas target, Menu menu, MenuItem item) {
+				return (view.getSelectedTabSettings().getNamedGraphs().size() > 0);
+			}});
+		return namedGraphMenuItem;
+	}
+	private MenuItem getDefaultGraphMenuItem() {
+		MenuItem defaultGraphMenuItem = new MenuItem("Specify Default Graphs");
+		defaultGraphMenuItem.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				drawGraphWindow(GraphListGrid.GraphArgType.DEFAULT_GRAPH);
+			}
+		});
+		defaultGraphMenuItem.setCheckIfCondition(new MenuItemIfFunction(){
+			@Override
+			public boolean execute(Canvas target, Menu menu, MenuItem item) {
+				return (view.getSelectedTabSettings().getDefaultGraphs().size() > 0);
+			}});
+		return defaultGraphMenuItem;
+	}
+	
+	
+	private void drawGraphWindow(GraphListGrid.GraphArgType graphArgType) {
+		graphWindow = new Window();
+		graphWindow.setZIndex(ZIndexes.MODAL_WINDOWS);
+		String graphArgTypeString = (graphArgType == GraphListGrid.GraphArgType.NAMED_GRAPH? "named" : "default");
+		graphWindow.setTitle("Specify " + graphArgTypeString + " graphs");
+		graphWindow.setIsModal(true);
+		graphWindow.setDismissOnOutsideClick(true);
+		graphWindow.setWidth(GRAPH_ARG_WINDOW_WIDTH);
+		graphWindow.setHeight(GRAPH_ARG_WINDOW_HEIGHT);
+		graphWindow.setShowMinimizeButton(false);
+		graphWindow.setAutoCenter(true);
+		graphWindow.addCloseClickHandler(new CloseClickHandler(){
+			@Override
+			public void onCloseClick(CloseClickEvent event) {
+				graphListGrid.setGraphsInSettings();
+				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+				if (graphWindow != null) {
+					graphWindow.destroy();
+				}
+			}});
+		graphListGrid = new GraphListGrid(view, graphArgType);
+		VLayout layout = new VLayout();
+		layout.setAlign(Alignment.CENTER);
+		layout.setWidth100();
+		layout.setHeight100();
+	    IButton addButton = new IButton("Add " + graphArgTypeString + " graph");  
+	    addButton.setWidth(160);  
+	    addButton.setIcon(Imgs.ADD.get());
+	    addButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler(){
+			@Override
+			public void onClick(ClickEvent event) {
+				graphListGrid.startEditingNew();
+				
+			}});
+		layout.addMember(addButton);
+		
+		layout.addMember(graphListGrid);
+		graphWindow.addItem(layout);
+		graphWindow.draw();
+	}
+
 
 	private MenuItem getRequestMethodMenuItem() {
 		MenuItem acceptHeaders = new MenuItem("Request Method");
@@ -126,9 +228,9 @@ public class QueryConfigMenu extends IconMenuButton {
 		MenuItem headersMenuItem = new MenuItem("Accept headers");
 
 		Menu headersMenu = new Menu();
-		MenuItem queryHeaders = new MenuItem("Select");
+		MenuItem queryHeaders = new MenuItem("SELECT");
 		queryHeaders.setSubmenu(getQueryAcceptHeadersSubMenu());
-		MenuItem constructHeaders = new MenuItem("Construct");
+		MenuItem constructHeaders = new MenuItem("Graph");
 		constructHeaders.setSubmenu(getConstructAcceptHeadersSubMenu());
 		headersMenu.setItems(queryHeaders, constructHeaders);
 		
@@ -139,71 +241,61 @@ public class QueryConfigMenu extends IconMenuButton {
 	
 	private Menu getQueryAcceptHeadersSubMenu() {
 		Menu acceptHeadersSubMenu = new Menu();
-		selectJson = new MenuItem("JSON");
-		selectXml = new MenuItem("XML");
+
+		selectJson.setCheckIfCondition(getContentTypeCheckIfCondition(false, CONTENT_TYPE_SELECT_JSON));
+		selectXml.setCheckIfCondition(getContentTypeCheckIfCondition(false, CONTENT_TYPE_SELECT_XML));
+		selectCsv.setCheckIfCondition(getContentTypeCheckIfCondition(false, CONTENT_TYPE_SELECT_CSV));
+		selectTsv.setCheckIfCondition(getContentTypeCheckIfCondition(false, CONTENT_TYPE_SELECT_TSV));
 		
-		selectJson.setCheckIfCondition(new MenuItemIfFunction(){
-			@Override
-			public boolean execute(Canvas target, Menu menu, MenuItem item) {
-				return view.getSelectedTabSettings().getSelectContentType().equals(CONTENT_TYPE_SELECT_JSON);
-			}});
-		selectXml.setCheckIfCondition(new MenuItemIfFunction(){
-			@Override
-			public boolean execute(Canvas target, Menu menu, MenuItem item) {
-				return view.getSelectedTabSettings().getSelectContentType().equals(CONTENT_TYPE_SELECT_XML);
-			}});
-		
-		selectJson.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(MenuItemClickEvent event) {
-				view.getSelectedTabSettings().setSelectContentType(CONTENT_TYPE_SELECT_JSON);
-				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
-			}
-		});
-		selectXml.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(MenuItemClickEvent event) {
-				view.getSelectedTabSettings().setSelectContentType(CONTENT_TYPE_SELECT_XML);
-				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
-			}
-		});
-		acceptHeadersSubMenu.setItems(selectXml, selectJson);
+		selectJson.addClickHandler(getContentTypeClickHandler(CONTENT_TYPE_SELECT_JSON));
+		selectXml.addClickHandler(getContentTypeClickHandler(CONTENT_TYPE_SELECT_XML));
+		selectCsv.addClickHandler(getContentTypeClickHandler(CONTENT_TYPE_SELECT_CSV));
+		selectTsv.addClickHandler(getContentTypeClickHandler(CONTENT_TYPE_SELECT_TSV));
+
+		acceptHeadersSubMenu.setItems(selectXml, selectJson, selectCsv, selectTsv);
 		return acceptHeadersSubMenu;
 	}
 	private Menu getConstructAcceptHeadersSubMenu() {
 		Menu acceptHeadersSubMenu = new Menu();
-		constructTurtle = new MenuItem("Turtle");
-		constructXml = new MenuItem("XML");
 		
-		constructTurtle.setCheckIfCondition(new MenuItemIfFunction(){
-			@Override
-			public boolean execute(Canvas target, Menu menu, MenuItem item) {
-				return view.getSelectedTabSettings().getConstructContentType().equals(CONTENT_TYPE_CONSTRUCT_TURTLE);
-			}});
-		constructXml.setCheckIfCondition(new MenuItemIfFunction(){
-			@Override
-			public boolean execute(Canvas target, Menu menu, MenuItem item) {
-				return view.getSelectedTabSettings().getConstructContentType().equals(CONTENT_TYPE_CONSTRUCT_XML);
-			}});
+		constructTurtle.setCheckIfCondition(getContentTypeCheckIfCondition(true, CONTENT_TYPE_CONSTRUCT_TURTLE));
+		constructXml.setCheckIfCondition(getContentTypeCheckIfCondition(true, CONTENT_TYPE_CONSTRUCT_XML));
+		constructCsv.setCheckIfCondition(getContentTypeCheckIfCondition(true, CONTENT_TYPE_SELECT_CSV));
+		constructTsv.setCheckIfCondition(getContentTypeCheckIfCondition(true, CONTENT_TYPE_SELECT_TSV));
 		
-		constructTurtle.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(MenuItemClickEvent event) {
-				view.getSelectedTabSettings().setConstructContentType(CONTENT_TYPE_CONSTRUCT_TURTLE);
-				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
-			}
-		});
-		constructXml.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(MenuItemClickEvent event) {
-				view.getSelectedTabSettings().setConstructContentType(CONTENT_TYPE_CONSTRUCT_XML);
-				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
-			}
-		});
-		acceptHeadersSubMenu.setItems(constructTurtle, constructXml);
+		constructTurtle.addClickHandler(getContentTypeClickHandler(CONTENT_TYPE_CONSTRUCT_TURTLE));
+		constructXml.addClickHandler(getContentTypeClickHandler(CONTENT_TYPE_CONSTRUCT_XML));
+		constructCsv.addClickHandler(getContentTypeClickHandler(CONTENT_TYPE_SELECT_CSV));
+		constructTsv.addClickHandler(getContentTypeClickHandler(CONTENT_TYPE_SELECT_TSV));
+		
+		acceptHeadersSubMenu.setItems(constructTurtle, constructXml, constructCsv, constructTsv);
 		return acceptHeadersSubMenu;
 	}
-
+	
+	private ClickHandler getContentTypeClickHandler(final String contentType) {
+		return new ClickHandler() {
+			@Override
+			public void onClick(MenuItemClickEvent event) {
+				view.getSelectedTabSettings().setConstructContentType(contentType);
+				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+				view.getSelectedTab().adaptInterfaceToQueryType();
+			}
+		};
+	}
+	
+	private MenuItemIfFunction getContentTypeCheckIfCondition(final boolean construct, final String contentType) {
+		return new MenuItemIfFunction(){
+			@Override
+			public boolean execute(Canvas target, Menu menu, MenuItem item) {
+				if (construct) {
+					return view.getSelectedTabSettings().getConstructContentType().equals(contentType);
+				} else {
+					return view.getSelectedTabSettings().getSelectContentType().equals(contentType);
+				}
+				
+			}
+		};
+	}
 	private MenuItem getQueryParamMenuItem() {
 		MenuItem queryParam = new MenuItem("Add query parameters");
 		queryParam.addClickHandler(new ClickHandler() {
@@ -215,27 +307,27 @@ public class QueryConfigMenu extends IconMenuButton {
 		queryParam.setCheckIfCondition(new MenuItemIfFunction(){
 			@Override
 			public boolean execute(Canvas target, Menu menu, MenuItem item) {
-				return (view.getSelectedTabSettings().getQueryArgs().size() > 0);
+				return (view.getSelectedTabSettings().getCustomQueryArgs().size() > 0);
 			}});
 		return queryParam;
 	}
 	private void drawParamListGrid() {
-		window = new Window();
-		window.setZIndex(ZIndexes.MODAL_WINDOWS);
-		window.setTitle("Search endpoints");
-		window.setIsModal(true);
-		window.setDismissOnOutsideClick(true);
-		window.setWidth(WINDOW_WIDTH);
-		window.setHeight(WINDOW_HEIGHT);
-		window.setShowMinimizeButton(false);
-		window.setAutoCenter(true);
-		window.addCloseClickHandler(new CloseClickHandler(){
+		queryArgWindow = new Window();
+		queryArgWindow.setZIndex(ZIndexes.MODAL_WINDOWS);
+		queryArgWindow.setTitle("Specify Query Arguments");
+		queryArgWindow.setIsModal(true);
+		queryArgWindow.setDismissOnOutsideClick(true);
+		queryArgWindow.setWidth(QUERY_ARG_WINDOW_WIDTH);
+		queryArgWindow.setHeight(QUERY_ARG_WINDOW_HEIGHT);
+		queryArgWindow.setShowMinimizeButton(false);
+		queryArgWindow.setAutoCenter(true);
+		queryArgWindow.addCloseClickHandler(new CloseClickHandler(){
 
 			@Override
 			public void onCloseClick(CloseClickEvent event) {
 				paramListGrid.setArgsInSettings();
 				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
-				window.destroy();
+				queryArgWindow.destroy();
 				
 			}});
 		paramListGrid = new ParametersListGrid(view);
@@ -245,7 +337,7 @@ public class QueryConfigMenu extends IconMenuButton {
 		layout.setHeight100();
 	    IButton addButton = new IButton("Add Parameter");  
 	    addButton.setWidth(120);  
-	    addButton.setIcon(Imgs.get(Imgs.ADD));
+	    addButton.setIcon(Imgs.ADD.get());
 	    addButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
@@ -255,12 +347,12 @@ public class QueryConfigMenu extends IconMenuButton {
 		layout.addMember(addButton);
 		
 		layout.addMember(paramListGrid);
-		window.addItem(layout);
-		window.draw();
+		queryArgWindow.addItem(layout);
+		queryArgWindow.draw();
 	}
 
 	public void showTooltips(int fromVersionId) {
-		if (!view.getSettings().inSingleEndpointMode() && fromVersionId < TOOLTIP_VERSION_QUERY_CONFIG) {
+		if (view.getEnabledFeatures().endpointSelectionEnabled() && fromVersionId < TOOLTIP_VERSION_QUERY_CONFIG) {
 			TooltipProperties tProp = new TooltipProperties();
 			tProp.setId(getDOM().getId());
 			tProp.setContent(TooltipText.QUERY_CONFIG_MENU);

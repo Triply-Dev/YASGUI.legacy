@@ -14,38 +14,48 @@
 <title>YASGUI</title>
 <link rel="shortcut icon" type="image/png" href="images/rdf.png">
 
-<script src="externals/jquery-1.10.0.min.js"></script>
-<script src="externals/jquery.browser.min.js"></script>
-<script src="externals/history.js/scripts/bundled/html5/jquery.history.js"></script>
+<script src="assets/jquery-1.10.0.min.js"></script>
+<script src="assets/jquery.browser.min.js"></script>
+<script src="assets/jquery.history.js"></script>
+<script src="assets/jquery.csv-0.71.js"></script>
+
 <!-- qtip lib -->
-<script src="externals/qtip/jquery.qtip.min.js"></script>
-<link rel="stylesheet" href="externals/qtip/jquery.qtip.css">
+<script src="assets/jquery.qtip.min.js"></script>
+<link rel="stylesheet" href="assets/jquery.qtip.css">
 
 <!-- Main codemirror stuff -->
-<script src="externals/codemirror/codemirror.js"></script>
-<link rel="stylesheet" href="externals/codemirror/codemirror.css">
-<script src="externals/codemirror/mode/javascript/javascript.js"></script>
-<script src="externals/codemirror/mode/xml/xml.js"></script>
-<script src="externals/codemirror/mode/turtle/turtle.js"></script>
+<script src="assets/codemirror/codemirror.js"></script>
+<link rel="stylesheet" href="assets/codemirror/codemirror.css">
+<link rel="stylesheet" href="assets/codemirror/theme/yasgui.css">
+<script src="assets/codemirror/mode/javascript/javascript.js"></script>
+<script src="assets/codemirror/mode/xml/xml.js"></script>
+<script src="assets/codemirror/mode/turtle/turtle.js"></script>
 <!-- Autocompletion code -->
-<link rel="stylesheet" href="externals/codemirror/util/simple-hint.css">
-<script src="externals/codemirror/util/simple-hint.js"></script>
-<script src="externals/prefix-hint.js"></script>
+<link rel="stylesheet" href="assets/codemirror/addon/hint/show-hint.css">
+<script src="assets/codemirror/addon/hint/show-hint.js"></script>
+
+<script src="assets/yasguiHint.js"></script>
 <!-- Highlight words onclick code -->
-<script src="externals/codemirror/util/searchcursor.js"></script>
-<script src="externals/codemirror/util/match-highlighter.js"></script>
+<script src="assets/codemirror/addon/search/searchcursor.js"></script>
+<script src="assets/codemirror/addon/search/match-highlighter.js"></script>
+<script src="assets/codemirror/addon/edit/matchbrackets.js"></script>
+
+<!-- Code for efficiently looping through all tokens (used for removing comments) -->
+<script src="assets/codemirror/addon/runmode/runmode.js"></script>
 
 <!-- Code for efficiently looping through all tokens (used for removing comments) -->
 <script src="externals/codemirror/util/runmode.js"></script>
 
 <!-- Flint code for sparql mode -->
-<script src="externals/flint/sparql.js"></script>
-<link rel="stylesheet" href="externals/flint/sparql.css">
+<script src="assets/flint/sparql.js"></script>
+<link rel="stylesheet" href="assets/flint/sparql.css">
 <!-- Code for adding custom keycombination/mouseclick commands to codemirror -->
-<script src="externals/addCommands.js"></script>
+<script src="assets/codemirrorCommands.js"></script>
 
-<script src="externals/yasgui.js?<% out.print(StaticConfig.VERSION); %>"></script>
-<link rel="stylesheet" href="externals/yasgui.css?<% out.print(StaticConfig.VERSION); %>">
+
+<script src="assets/yasgui.js?<% out.print(StaticConfig.VERSION); %>"></script>
+<script src="assets/trie.js"></script>
+<link rel="stylesheet" href="assets/yasgui.css?<% out.print(StaticConfig.VERSION); %>">
 <!--                                           -->
 <!-- This script loads your compiled module.   -->
 <!-- If you add any GWT meta tags, they must   -->

@@ -29,9 +29,8 @@ package com.data2semantics.yasgui.client.tab.results.input;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.data2semantics.yasgui.client.View;
-import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
-import com.data2semantics.yasgui.client.settings.Imgs;
+import com.data2semantics.yasgui.client.helpers.Helper;
+import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
 import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.smartgwt.client.util.StringUtil;
@@ -57,6 +56,9 @@ public class ResultsHelper {
 		return literal;
 	}
 	
+	public static boolean tabularContentType(String contentType) {
+		return contentType.contains(QueryConfigMenu.CONTENT_TYPE_SELECT_CSV) || contentType.contains(QueryConfigMenu.CONTENT_TYPE_SELECT_TSV);
+	}
 	/**
 	 * Check for a uri whether there is a prefix defined in the query.
 	 * 
@@ -77,22 +79,38 @@ public class ResultsHelper {
 	}
 
 	
-	public static String getSnorqlImgLink(String url) {
-		return "<img onclick=\"queryForResource('" + url +  "');\" class=\"extResourceLink\" style=\"cursor:pointer;\" src=\"" + Imgs.OTHER_IMAGES_DIR + Imgs.get(Imgs.INTERNAL_LINK) +"\" height=\"" + 11 + "\" width=\"" + 11 + "\"/>";
-	}
-
-	public static String getRegularImgLink(String url) {
-		String html = "<a href=\"" + url + "\" target=\"_blank\" class=\"extResourceLink\">";
-		return  html + "><img src=\"" + Imgs.OTHER_IMAGES_DIR + Imgs.get(Imgs.EXTERNAL_LINK) +"\" height=\"" + 12 + "\" width=\"" + 12 + "\"/></a>";
-	}
+	
 	
 	
 	public static String getSnorqlHrefLink(HashMap<String, String> binding, HashMap<String, Prefix> queryPrefixes) {
 		String uri = binding.get("value");
 		return "<span class=\"clickable\" onclick=\"queryForResource('" + uri + "');\">" + ResultsHelper.getShortUri(uri, queryPrefixes) + "</span>";
 	}
+
+
 	public static String getRegularHrefLink(HashMap<String, String> binding, HashMap<String, Prefix> queryPrefixes) {
 		String uri = binding.get("value");
 		return  "<a href=\"" + uri + "\" target=\"_blank\">" + StringUtil.asHTML(getShortUri(uri, queryPrefixes)) + "</a>";
 	}
+
+	public static boolean valueIsUri(HashMap<String, String> valueInfo) {
+		if (valueInfo.containsKey("type")) {
+			return valueInfo.get("type").equals("uri");
+		} else {
+			//try to detect manually. a csv returned from an endpoint does not contain this extra information
+			return Helper.validUrl(valueInfo.get("value"));
+		}
+	}
+	public static boolean valueIsLiteral(HashMap<String, String> valueInfo) {
+		return (valueInfo.containsKey("type") && (valueInfo.get("type").equals("literal") || valueInfo.get("type").equals("typed-literal")));
+	}
+	
+	public static void main(String[] args) {
+		HashMap<String, String> binding = new HashMap<String, String>();
+		binding.put("value", "http://www.openlinksw.com/schemas/virtrdapformat");//false
+//		binding.put("value", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type");//true
+		System.out.println(valueIsUri(binding));
+	}
 }
+
+

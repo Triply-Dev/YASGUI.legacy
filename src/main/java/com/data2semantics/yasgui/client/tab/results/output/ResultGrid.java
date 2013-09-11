@@ -39,6 +39,7 @@ import com.data2semantics.yasgui.shared.Prefix;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLPane;
 import com.smartgwt.client.widgets.ImgButton;
@@ -92,18 +93,20 @@ public class ResultGrid extends ListGrid {
 					rollOverCanvas = new HLayout();
 					rollOverCanvas.setSnapTo("TR");
 					rollOverCanvas.setWidth(22);
-					rollOverCanvas.setHeight(22);
-		
+					rollOverCanvas.setHeight100();
+					rollOverCanvas.setAlign(VerticalAlignment.CENTER);
 					ImgButton openExtLink = new ImgButton();
 					openExtLink.setShowDown(false);
 					openExtLink.setShowRollOver(false);
 					openExtLink.setLayoutAlign(Alignment.CENTER);
 					if (view.getSettings().useUrlAsSnorql()) {
-						openExtLink.setSrc(Imgs.get(Imgs.EXTERNAL_LINK));
+						openExtLink.setSrc(Imgs.EXTERNAL_LINK.get());
+						openExtLink.setPrompt("Open resource information in new window");
 					} else {
-						openExtLink.setSrc(Imgs.get(Imgs.INTERNAL_LINK));
+						openExtLink.setSrc(Imgs.INTERNAL_LINK.get());
+						openExtLink.setPrompt("Show resource information in YASGUI");
 					}
-					openExtLink.setPrompt("Show resource information");
+					
 					openExtLink.setHeight(16);
 					openExtLink.setWidth(16);
 					rollOverCanvas.addMember(openExtLink);
@@ -192,14 +195,13 @@ public class ResultGrid extends ListGrid {
 					HashMap<String, HashMap<String, String>> bindings = solutions.get(record.getAttributeAsInt(SOLUTION_ATTRIBUTE));
 					HashMap<String, String> binding = bindings.get(var);
 					if (binding != null) {
-						String type = binding.get("type");
-						if (type.equals("uri")) {
+						if (ResultsHelper.valueIsUri(binding)) {
 							if (view.getSettings().useUrlAsSnorql()) {
 								return ResultsHelper.getSnorqlHrefLink(binding, queryPrefixes);
 							} else {
 								return ResultsHelper.getRegularHrefLink(binding, queryPrefixes);
 							}
-						} else if (type.equals("literal") || binding.get("type").equals("typed-literal")){
+						} else if (ResultsHelper.valueIsLiteral(binding)){
 							return ResultsHelper.getLiteralFromBinding(binding);
 						}
 					}

@@ -26,9 +26,6 @@ package com.data2semantics.yasgui.client;
  * #L%
  */
 
-import java.util.HashMap;
-import java.util.Map.Entry;
-
 import com.data2semantics.yasgui.client.configmenu.Compatabilities;
 import com.data2semantics.yasgui.client.configmenu.ConfigMenu;
 import com.data2semantics.yasgui.client.helpers.GoogleAnalytics;
@@ -101,7 +98,7 @@ public class ViewElements {
 	 * Add Query button. Position absolute, as it hovers slightly over the tabbar. Also adds a loading icon on the same place
 	 */
 	public void addQueryButton() {
-		queryLoading = getQueryIcon(Imgs.get(Imgs.LOADING), new ClickHandler() {
+		queryLoading = getQueryIcon(Imgs.LOADING.get(), new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				cancelQuery();
@@ -115,7 +112,7 @@ public class ViewElements {
 			queryLoading.draw();
 		}
 		
-		queryButton = getQueryIcon(Imgs.get(Imgs.EXECUTE_QUERY), new ClickHandler() {
+		queryButton = getQueryIcon(Imgs.EXECUTE_QUERY.get(), new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				executeQuery();
@@ -176,21 +173,21 @@ public class ViewElements {
 		String endpoint = view.getSelectedTabSettings().getEndpoint();
 		String queryString = view.getSelectedTabSettings().getQueryString();
 		
-		String mainAcceptHeader;
-		if (view.getSelectedTab().getQueryType().equals("CONSTRUCT")) {
+		String acceptHeader;
+		if (view.getSelectedTab().getQueryType().equals("CONSTRUCT") || view.getSelectedTab().getQueryType().equals("DESCRIBE")) {
 			//Change content type automatically for construct queries
-			mainAcceptHeader = view.getSelectedTabSettings().getConstructContentType();
+			acceptHeader = view.getSelectedTabSettings().getConstructContentType();
 		} else {
-			mainAcceptHeader = view.getSelectedTabSettings().getSelectContentType();
+			acceptHeader = view.getSelectedTabSettings().getSelectContentType();
 		}
-		String acceptHeaders = Helper.getAcceptHeaders(mainAcceptHeader);
+		acceptHeader += ",*/*;q=0.9";
 	
 		String argsString = view.getSelectedTabSettings().getQueryArgsAsJsonString();
 		String requestMethod = view.getSelectedTabSettings().getRequestMethod();
 		
 		
 		
-		JsMethods.query(tabId, queryString, endpoint, acceptHeaders, argsString, requestMethod);
+		JsMethods.query(tabId, queryString, endpoint, acceptHeader, argsString, requestMethod);
 		view.checkAndAddEndpointToDs(endpoint);
 		if (view.getSettings().useGoogleAnalytics()) {
 			GoogleAnalyticsEvent queryEvent = new GoogleAnalyticsEvent(endpoint, JsMethods.getUncommentedSparql(queryString));
@@ -203,7 +200,7 @@ public class ViewElements {
 	 */
 	public void initLoadingWidget() {
 		loading = new Label();
-		loading.setIcon(Imgs.get(Imgs.LOADING));
+		loading.setIcon(Imgs.LOADING.get());
 		loading.setBackgroundColor("#f0f0f0");
 		loading.setBorder("1px solid #C0C3C7");
 		loading.getElement().getStyle().setPosition(Position.FIXED);
@@ -223,9 +220,9 @@ public class ViewElements {
 
 	public void showPlayButton(String queryValid) {
 		if (queryValid.equals("1")) {
-			queryButton.setSrc(Imgs.get(Imgs.EXECUTE_QUERY));
+			queryButton.setSrc(Imgs.EXECUTE_QUERY.get());
 		} else {
-			queryButton.setSrc(Imgs.get(Imgs.QUERY_ERROR));
+			queryButton.setSrc(Imgs.QUERY_ERROR.get());
 		}
 	}
 	public void onLoadingStart() {
@@ -256,7 +253,7 @@ public class ViewElements {
 	public void onQueryError(String tabId, String error) {
 		onQueryFinish();
 		QueryTab tab = (QueryTab)view.getTabs().getTab(tabId);
-		onQueryError(error, tab.getTabSettings().getEndpoint(), tab.getTabSettings().getQueryString(), tab.getTabSettings().getQueryArgs());
+		onQueryError(error, tab.getTabSettings().getEndpoint(), tab.getTabSettings().getQueryString(), tab.getTabSettings().getQueryArgsAsUrlString());
 	}
 	
 	/**
@@ -318,7 +315,7 @@ public class ViewElements {
 	 * @param query Used query
 	 * @param args 
 	 */
-	public void onQueryError(String error, final String endpoint, final String query, final HashMap<String, String> args) {
+	public void onQueryError(String error, final String endpoint, final String query, final String argsString) {
 		final Window window = getErrorWindow();
 		window.setZIndex(ZIndexes.MODAL_WINDOWS);
 		VLayout vLayout = new VLayout();
@@ -335,10 +332,7 @@ public class ViewElements {
 		executeQuery.addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
-				String url = endpoint + "?query=" + URL.encodeQueryString(query);
-				for (Entry<String, String> entry : args.entrySet()) {
-				    url += "&" + entry.getKey() + "=" + URL.encodeQueryString(entry.getValue());
-				}
+				String url = endpoint + "?query=" + URL.encodeQueryString(query) + argsString;
 				com.google.gwt.user.client.Window.open(url, "_blank", null);
 			}});
 		executeQuery.setWidth(200);
@@ -412,7 +406,7 @@ public class ViewElements {
 		yesButton.setWidth(CONSENT_BUTTON_WIDTH);
         yesButton.setShowRollOver(true);  
         yesButton.setHeight(CONSENT_BUTTON_HEIGHT);
-        yesButton.setIcon(Imgs.get(Imgs.CHECKMARK));
+        yesButton.setIcon(Imgs.CHECKMARK.get());
         yesButton.setIconOrientation("left");
         yesButton.addClickHandler(new ClickHandler() {
 			@Override
@@ -434,7 +428,7 @@ public class ViewElements {
 		noQueriesButton.setWidth(CONSENT_BUTTON_WIDTH);
 		noQueriesButton.setHeight(CONSENT_BUTTON_HEIGHT);
 		noQueriesButton.setShowRollOver(true);  
-		noQueriesButton.setIcon(Imgs.get(Imgs.CHECK_CROSS));
+		noQueriesButton.setIcon(Imgs.CHECK_CROSS.get());
 		noQueriesButton.setIconOrientation("left");  
 		noQueriesButton.addClickHandler(new ClickHandler() {
 			@Override
@@ -455,7 +449,7 @@ public class ViewElements {
 		noButton.setShowRollOver(true);  
 		noButton.setWidth(CONSENT_BUTTON_WIDTH);
 		noButton.setHeight(CONSENT_BUTTON_HEIGHT);
-		noButton.setIcon(Imgs.get(Imgs.CROSS));
+		noButton.setIcon(Imgs.CROSS.get());
 		noButton.setIconOrientation("left");  
 		noButton.addClickHandler(new ClickHandler() {
 			@Override
@@ -514,9 +508,9 @@ public class ViewElements {
 		Compatabilities compatabilities = new Compatabilities(view);
 		String icon  = "";
 		if (!compatabilities.allSupported() && LocalStorageHelper.getCompatabilitiesShownVersionNumber() < Compatabilities.VERSION_NUMBER) {
-			icon = Imgs.get(Imgs.WARNING);
+			icon = Imgs.WARNING.get();
 		} else {
-			icon = Imgs.get(Imgs.TOOLS);
+			icon = Imgs.TOOLS.get();
 		}
 		
 		String label = "Configure YASGUI";
