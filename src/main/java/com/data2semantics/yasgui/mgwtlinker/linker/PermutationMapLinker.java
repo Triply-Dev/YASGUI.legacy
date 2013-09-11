@@ -144,7 +144,9 @@ public class PermutationMapLinker extends AbstractLinker {
 			
 			// build manifest for our stable version
 			String manifestFile = entry.getKey() + PERMUTATION_MANIFEST_FILE_ENDING;
-			String maniFest = buildManiFest(entry.getKey(), stableExternalFiles, filesForCurrentPermutation);
+			@SuppressWarnings("serial")
+			Map<String, String> fallbacks = new HashMap<String, String>(){{put("/", "/index.jsp");}};
+			String maniFest = buildManiFest(entry.getKey(), stableExternalFiles, filesForCurrentPermutation, fallbacks);
 			toReturn.add(emitString(logger, maniFest, manifestFile));
 			
 			// build manifest for our dev version
@@ -244,7 +246,11 @@ public class PermutationMapLinker extends AbstractLinker {
 	}
 
 	protected String buildManiFest(String moduleName, Set<String> staticResources, Set<String> cacheResources) {
-		return manifestWriter.writeManifest(staticResources, cacheResources);
+		return manifestWriter.writeManifest(staticResources, cacheResources, null);
+	}
+	
+	protected String buildManiFest(String moduleName, Set<String> staticResources, Set<String> cacheResources, Map<String, String> fallbacks) {
+		return manifestWriter.writeManifest(staticResources, cacheResources, fallbacks);
 	}
 
 	protected String buildManifestHtmlPage(String manifestFileLocation) {
@@ -271,8 +277,8 @@ public class PermutationMapLinker extends AbstractLinker {
 	protected Set<String> getStableExternalFiles(TreeLogger logger, LinkerContext context) {
 		HashSet<String> set = new HashSet<String>();
 		//all external js/css files should be minimized/aggregated by our maven plugin
-		set.add("../yasgui.js?" + StaticConfig.VERSION);
-		set.add("../yasgui.css?" + StaticConfig.VERSION);
+		set.add("../static/yasgui.js?" + StaticConfig.VERSION);
+		set.add("../static/yasgui.css?" + StaticConfig.VERSION);
 		set.add("../index.jsp");
 		set.addAll(getFontFiles());
 		set.addAll(getExternalFilesFromDir("images", true, "png", "jpg", "gif"));

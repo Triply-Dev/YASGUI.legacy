@@ -350,7 +350,7 @@ public class Helper {
 		String strongName = GWT.getPermutationStrongName();
 		if (!strongName.equals("HostedMode")) {
 			if (JsMethods.isDevPageLoaded()) {
-				JsMethods.appendManifestIframe("Yasgui/" + GWT.getPermutationStrongName() + ".dev.cache.html");
+				JsMethods.appendManifestIframe("Yasgui/" + GWT.getPermutationStrongName() + ".dev.appcache.html");
 			} else {
 				JsMethods.appendManifestIframe("Yasgui/" + GWT.getPermutationStrongName() + ".appcache.html");
 			}

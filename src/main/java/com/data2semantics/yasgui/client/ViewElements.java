@@ -404,7 +404,7 @@ public class ViewElements {
 		buttons.setAlign(Alignment.CENTER);
 		IButton yesButton = new IButton("Yes, allow");  
 		yesButton.setWidth(CONSENT_BUTTON_WIDTH);
-        yesButton.setShowRollOver(true);  
+        yesButton.setShowRollOver(false);  
         yesButton.setHeight(CONSENT_BUTTON_HEIGHT);
         yesButton.setIcon(Imgs.CHECKMARK.get());
         yesButton.setIconOrientation("left");
@@ -427,7 +427,7 @@ public class ViewElements {
 		IButton noQueriesButton = new IButton("Yes, track site usage, but not <br>the queries/endpoints I use");  
 		noQueriesButton.setWidth(CONSENT_BUTTON_WIDTH);
 		noQueriesButton.setHeight(CONSENT_BUTTON_HEIGHT);
-		noQueriesButton.setShowRollOver(true);  
+		noQueriesButton.setShowRollOver(false);  
 		noQueriesButton.setIcon(Imgs.CHECK_CROSS.get());
 		noQueriesButton.setIconOrientation("left");  
 		noQueriesButton.addClickHandler(new ClickHandler() {
@@ -446,7 +446,7 @@ public class ViewElements {
         spacer2.setWidth(10);
         
 		IButton noButton = new IButton("No, disable tracking");  
-		noButton.setShowRollOver(true);  
+		noButton.setShowRollOver(false);  
 		noButton.setWidth(CONSENT_BUTTON_WIDTH);
 		noButton.setHeight(CONSENT_BUTTON_HEIGHT);
 		noButton.setIcon(Imgs.CROSS.get());
@@ -467,7 +467,7 @@ public class ViewElements {
         spacer3.setWidth(10);
 		
 		IButton askLater = new IButton("Ask me later");  
-		askLater.setShowRollOver(true);  
+		askLater.setShowRollOver(false);  
 		askLater.setWidth(CONSENT_BUTTON_WIDTH - 30);
 		askLater.setHeight(CONSENT_BUTTON_HEIGHT);
 		askLater.setIconOrientation("left");  

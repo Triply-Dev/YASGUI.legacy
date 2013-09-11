@@ -82,6 +82,7 @@ public class EndpointInputIcon extends HLayout {
 		imgButton.setSrc(Imgs.DOWNLOAD_ROUND.get());
 		imgButton.setHeight(16);
 		imgButton.setWidth(16);
+		imgButton.setShowRollOverIcon(false);
 		imgButton.setShowOverCanvas(false);
 		imgButton.setShowDownIcon(false);
 		imgButton.setTooltip("Fetch predicate autocompletion information for this endpoint");
@@ -127,6 +128,7 @@ public class EndpointInputIcon extends HLayout {
 		imgButton.setHeight(16);
 		imgButton.setWidth(16);
 		imgButton.setShowOverCanvas(false);
+		imgButton.setShowRollOverIcon(false);
 		imgButton.setShowDownIcon(false);
 		imgButton.setTooltip("Unable to fetch predicate autocompletion information for this endpoint. Click to retry");
 		imgButton.addClickHandler(new ClickHandler(){
