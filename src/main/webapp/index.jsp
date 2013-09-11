@@ -33,7 +33,7 @@ if (title == null) {
 <!-- If you add any GWT meta tags, they must   -->
 <!-- be added before this line.                -->
 <!--                                           -->
-<script type="text/javascript" src="Yasgui/Yasgui.nocache.js"></script>
+<script type="text/javascript" src="Yasgui/Yasgui.nocache.js?<% out.print(StaticConfig.VERSION); %>"></script>
 <script type="text/javascript">defaults = "<% 
 out.print(StringEscapeUtils.escapeEcmaScript(ConfigFetcher.getJson(request.getSession().getServletContext().getRealPath("/"))));
 %>"</script>
