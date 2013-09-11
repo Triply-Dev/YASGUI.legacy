@@ -36,7 +36,6 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.HLayout;
-import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
@@ -77,11 +76,11 @@ public class AddToBookmarks extends Img {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 		if (enabled) {
-			setSrc(Imgs.get(Imgs.BOOKMARK_QUERY));
+			setSrc(Imgs.BOOKMARK_QUERY.get());
 			setTooltip("add query to bookmarks");
 			setCursor(Cursor.POINTER);
 		} else {
-			setSrc(Imgs.getDisabled(Imgs.BOOKMARK_QUERY));
+			setSrc(Imgs.BOOKMARK_QUERY.getDisabled());
 			setTooltip("log in to use your bookmarks");
 			setCursor(Cursor.DEFAULT);
 		}
@@ -125,8 +124,9 @@ public class AddToBookmarks extends Img {
 		form.setTitleWidth(100);
 		bookmarkTitle = new TextItem();
 		bookmarkTitle.setTitle("Title");
-		if (!view.getSettings().inSingleEndpointMode()) {
+		if (view.getEnabledFeatures().endpointSelectionEnabled()) {
 			includeEndpoint = new CheckboxItem();
+			includeEndpoint.setValue(true);
 			includeEndpoint.setTitle("Include endpoint");
 			includeEndpoint.setLabelAsTitle(true);
 			form.setItems(bookmarkTitle, includeEndpoint);
@@ -147,10 +147,10 @@ public class AddToBookmarks extends Img {
 				bookmark.setTitle(bookmarkTitle.getValueAsString());
 
 				window.clear();
-				setSrc(Imgs.get(Imgs.LOADING));
+				setSrc(Imgs.LOADING.get());
 				view.getRemoteService().addBookmark(bookmark, new AsyncCallback<Void>() {
 					public void onFailure(Throwable caught) {
-						setSrc(Imgs.get(Imgs.BOOKMARK_QUERY));
+						setSrc(Imgs.BOOKMARK_QUERY.get());
 						if (caught instanceof OpenIdException) {
 							view.getElements().onError(caught.getMessage() + ". Logging out");
 							view.getOpenId().logOut();
@@ -162,7 +162,7 @@ public class AddToBookmarks extends Img {
 
 					@Override
 					public void onSuccess(Void result) {
-						setSrc(Imgs.get(Imgs.BOOKMARK_QUERY));
+						setSrc(Imgs.BOOKMARK_QUERY.get());
 					}
 				});
 			}

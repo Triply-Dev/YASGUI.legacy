@@ -38,6 +38,7 @@ public class LocalStorageHelper {
 	private static String COOKIE_SETTINGS = "settings";
 	private static String COOKIE_TOOLTIPS_SHOWN = "tooltipsShown";
 	private static String COOKIE_PREFIXES = "prefixes";
+	private static String COOKIE_PROPERTIES = "properties";
 	private static String COOKIE_ENDPOINTS = "endpoints";
 	private static String COOKIE_VERSION = "version";
 	private static String COOKIE_VERSION_ID = "versionId";
@@ -50,6 +51,7 @@ public class LocalStorageHelper {
 	private static int VERSION_EXPIRE_DAYS = 1000;
 	private static int TOOLTIPS_EXPIRE_DAYS = 1000;
 	private static int COMPATABILITIES_SHOWN_EXPIRE_DAYS = 1000;
+	private static int PROPERTIES_EXPIRE_DAYS = 360;
 	private static int UNKNOWN_EXPIRE_DAYS = 30;
 	
 	
@@ -216,6 +218,23 @@ public class LocalStorageHelper {
 	public static String getPrefixesFromLocalStorage() {
 		return getFromLocalStorage(COOKIE_PREFIXES, PREFIXES_EXPIRE_DAYS);
 	}
+	
+	
+	public static void setProperties(String endpoint, String properties) {
+		setInLocalStorage(COOKIE_PROPERTIES + "_" + endpoint, properties, true);
+	}
+	
+	
+	/**
+	 * Return properties json array string from local html5 storage. Returns null if not found, or if html5 is not supported
+	 * 
+	 * @return
+	 */
+	public static String getProperties(String endpoint) {
+		return getFromLocalStorage(COOKIE_PROPERTIES + "_" + endpoint, PROPERTIES_EXPIRE_DAYS);
+	}
+	
+	
 	/**
 	 * Return prefixes json array string from local html5 storage. Returns null if not found, or if html5 is not supported
 	 * 

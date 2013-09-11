@@ -66,18 +66,19 @@ public class EndpointInput extends DynamicForm {
 	private String latestEndpointValue; //used to detect when to check for cors enabled. Not just on blur, but only on blur and when value has changed
 	private QueryTab queryTab;
 	private ListGrid pickListProperties;
+	private static int WIDTH = 420;
 	private static int COL_WIDTH_DATASET_TITLE = 150;
 	private static int COL_WIDTH_MORE_INFO = 22;
 	private boolean pickListRecordSelected = false;
 	private ArrayList<String> cols = new ArrayList<String>();
-	
 	public EndpointInput(View view, QueryTab queryTab) {
 		this.queryTab = queryTab;
 		this.view = view;
 		setTitleOrientation(TitleOrientation.TOP);
 		createTextInput();
-		
 	}
+
+	
 	public EndpointInput() {
 		setTitleOrientation(TitleOrientation.TOP);
 		createTextInput();
@@ -86,12 +87,13 @@ public class EndpointInput extends DynamicForm {
 		
 	}
 	
+	
 	private void createTextInput() {
 		endpoint = new ComboBoxItem("endpoint", "Endpoint");
 		endpoint.setValueField(Endpoints.KEY_ENDPOINT);
 		endpoint.setAddUnknownValues(true);
 		endpoint.setCompleteOnTab(true);
-		endpoint.setWidth(420);
+		endpoint.setWidth(WIDTH);
 		endpoint.setOptionDataSource(view.getEndpointDataSource());
 		endpoint.setHideEmptyPickList(true);
 		endpoint.setDefaultValue(getQueryTab().getTabSettings().getEndpoint());
@@ -184,6 +186,7 @@ public class EndpointInput extends DynamicForm {
 		JsMethods.checkCorsEnabled(endpointString);
 		view.getSelectedTabSettings().setEndpoint(endpointString);
 		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+		if (view.getEnabledFeatures().propertyAutocompletionEnabled()) view.getSelectedTab().getEndpointInputIcon().updateFetchIcon();
 	}
 	
 	private QueryTab getQueryTab() {
@@ -235,7 +238,7 @@ public class EndpointInput extends DynamicForm {
 					if (colName.equals(Endpoints.KEY_TITLE) || colName.equals(Endpoints.KEY_ENDPOINT)) {
 						return "<span style='cursor:pointer;'>" + cellValue + "</span>";
 					} else if (colName.equals(Endpoints.KEY_DATASETURI) && cellValue.length() > 0) {
-						return "<a href='" + cellValue + "' target='_blank'><img src='" + Imgs.OTHER_IMAGES_DIR + Imgs.get(Imgs.INFO) + "' width='16' height='16'></a>";
+						return "<a href='" + cellValue + "' target='_blank'><img src='" + Imgs.OTHER_IMAGES_DIR.getUnprocessed() + Imgs.INFO.get() + "' width='16' height='16'></a>";
 					}
 				}
                 return null;
@@ -248,6 +251,5 @@ public class EndpointInput extends DynamicForm {
             }  
         });  
 	}
-	
 	
 }

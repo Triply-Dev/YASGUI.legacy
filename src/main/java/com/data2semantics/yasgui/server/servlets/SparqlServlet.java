@@ -62,7 +62,7 @@ public class SparqlServlet extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String query = request.getParameter("query");
 		String endpoint = request.getParameter("endpoint");
-		
+		response.setCharacterEncoding("UTF-8");
 		String accept = request.getHeader("Accept");
 		if (accept == null) accept = "application/sparql-results+xml";
 		String requestMethod = request.getParameter("requestMethod");
@@ -170,9 +170,8 @@ public class SparqlServlet extends HttpServlet {
 		for (Entry<String, String[]> requestParam: requestParams.entrySet()) {
 			String key = requestParam.getKey();
 			if (!key.equals("endpoint") && !key.equals("requestMethod")) { //only used by this proxy servlet, so don't copy these
-				String[] values = requestParam.getValue();
-				if (values.length > 0) {
-					nameValuePairs.add(new BasicNameValuePair(key, values[0]));
+				for (String value: requestParam.getValue()) {
+					nameValuePairs.add(new BasicNameValuePair(key, value));
 				}
 			}
 		}

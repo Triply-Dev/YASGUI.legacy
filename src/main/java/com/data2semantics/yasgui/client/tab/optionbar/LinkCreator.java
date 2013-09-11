@@ -27,8 +27,6 @@ package com.data2semantics.yasgui.client.tab.optionbar;
  */
 
 import java.util.Iterator;
-import java.util.TreeMap;
-
 import com.smartgwt.client.types.Positioning;
 import com.smartgwt.client.widgets.AnimationCallback;
 import com.smartgwt.client.widgets.Button;
@@ -40,7 +38,6 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.HLayout;
-import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
@@ -50,16 +47,16 @@ import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.settings.TooltipText;
 import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.data2semantics.yasgui.shared.SettingKeys;
+import com.google.common.collect.TreeMultimap;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class LinkCreator extends ImgButton {
 	private static final int TOOLTIP_VERSION_LINK = 2;
 	private View view;
 	private Window window;
-	private static int WINDOW_WIDTH = 220;
+	private static int WINDOW_WIDTH = 230;
 	private static int WINDOW_HEIGHT = 85;
 	private static int ICON_WIDTH = 25;
 	private static int ICON_HEIGHT = 25;
@@ -72,7 +69,7 @@ public class LinkCreator extends ImgButton {
 	
 	public LinkCreator(View view) {
 		this.view = view;
-		setSrc(Imgs.get(Imgs.LINK));
+		setSrc(Imgs.LINK.get());
 		setWidth(ICON_WIDTH);
 		setHeight(ICON_HEIGHT);
 		setPosition(Positioning.ABSOLUTE);
@@ -86,11 +83,11 @@ public class LinkCreator extends ImgButton {
 			@Override
 			public void onClick(ClickEvent event) {
 				window = new Window();
+				window.setShowHeader(false);
 				window.setZIndex(ZIndexes.MODAL_WINDOWS);
 				window.setTitle("Get link");
 				window.setIsModal(true);
 				window.setDismissOnOutsideClick(true);
-				window.setShowHeader(false);
 				int left = (getAbsoluteLeft() + ICON_WIDTH) - WINDOW_WIDTH;
 				int top = getAbsoluteTop() + ICON_HEIGHT;
 				window.setRect(left, top, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -111,7 +108,6 @@ public class LinkCreator extends ImgButton {
 		
 		HLayout belowLink = new HLayout();
 		belowLink.setMargin(4);
-//		belowLink.addMember(getLinkOptions());
 		
 		if (view.getSettings().useBitly()) {
 			belowLink.addMember(getShortenUrlButton());
@@ -177,7 +173,7 @@ public class LinkCreator extends ImgButton {
 	
 	
 	private void updateLinkWithQueryArgs() {
-		TreeMap<String, String> args = getQueryArgs();
+		TreeMultimap<String, String> args = getQueryArgs();
 		updateLink(getLink(args));
 	}
 
@@ -197,8 +193,8 @@ public class LinkCreator extends ImgButton {
 			}}, ANIMATE_SPEED);
 	}
 	
-	private TreeMap<String, String> getQueryArgs() {
-		TreeMap<String, String> args = new TreeMap<String, String>();
+	private TreeMultimap<String, String> getQueryArgs() {
+		TreeMultimap<String, String> args = TreeMultimap.create();
 		args.put(SettingKeys.QUERY_STRING, view.getSelectedTabSettings().getQueryString());
 		args.put(SettingKeys.ENDPOINT, view.getSelectedTabSettings().getEndpoint());
 		args.put(SettingKeys.OUTPUT_FORMAT, view.getSelectedTabSettings().getOutputFormat());
@@ -206,11 +202,11 @@ public class LinkCreator extends ImgButton {
 		args.put(SettingKeys.CONTENT_TYPE_SELECT, view.getSelectedTabSettings().getSelectContentType());
 		args.put(SettingKeys.CONTENT_TYPE_CONSTRUCT, view.getSelectedTabSettings().getConstructContentType());
 		args.put(SettingKeys.REQUEST_METHOD, view.getSelectedTabSettings().getRequestMethod());
-		args.putAll(view.getSelectedTabSettings().getQueryArgs());
+		args.putAll(view.getSelectedTabSettings().getCustomQueryArgs());
 		return args;
 	}
 	
-	private String getLink(TreeMap<String, String> args) {
+	private String getLink(TreeMultimap<String, String> args) {
 		String url = JsMethods.getLocation();
 		
 		//remove these, as we will be adding these again
@@ -221,15 +217,16 @@ public class LinkCreator extends ImgButton {
 		}
 		Iterator<String> iterator = args.keySet().iterator();
 		while (iterator.hasNext()) {
-			if (firstItem) {
-				url += "?";
-				firstItem = false;
-			} else {
-				url += "&";
-			}
 			String key = iterator.next();
-			String value = URL.encodeQueryString(args.get(key));
-			url += key + "=" + value;
+			for (String value: args.get(key)) {
+				if (firstItem) {
+					url += "?";
+					firstItem = false;
+				} else {
+					url += "&";
+				}
+				url += key + "=" + value;
+			}
 		}
 		return url;
 		

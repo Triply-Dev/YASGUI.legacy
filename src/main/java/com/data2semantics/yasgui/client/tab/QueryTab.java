@@ -41,6 +41,7 @@ import com.data2semantics.yasgui.client.tab.optionbar.OutputSelection;
 import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
 import com.data2semantics.yasgui.client.tab.optionbar.bookmarks.BookmarkedQueries;
 import com.data2semantics.yasgui.client.tab.optionbar.endpoints.EndpointInput;
+import com.data2semantics.yasgui.client.tab.optionbar.endpoints.EndpointInputIcon;
 import com.data2semantics.yasgui.client.tab.optionbar.endpoints.EndpointSearch;
 import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
@@ -60,6 +61,7 @@ public class QueryTab extends Tab {
 	private View view;
 	private QueryTextArea queryTextArea;
 	private EndpointInput endpointInput;
+	private EndpointInputIcon endpointInputIcon;
 	private VLayout vLayout = new VLayout();
 	private ResultContainer queryResultContainer;
 	private TabSettings tabSettings;
@@ -81,7 +83,6 @@ public class QueryTab extends Tab {
 		
 		//For each tab we create, check the cors setting of the endpoint
 		JsMethods.checkCorsEnabled(getTabSettings().getEndpoint());
-		
 		vLayout.addMember(getQueryOptionBar());
 		
 		queryTextArea = new QueryTextArea(view, this);
@@ -99,12 +100,16 @@ public class QueryTab extends Tab {
 	private HLayout getQueryOptionBar() {
 		HLayout queryOptions = new HLayout();
 		queryOptions.setDefaultLayoutAlign(VerticalAlignment.BOTTOM);
-		queryOptions.setHeight(35);
+		queryOptions.setHeight(25);
+		if (view.getEnabledFeatures().endpointSelectionEnabled() && view.getEnabledFeatures().propertyAutocompletionEnabled()) {
+			endpointInputIcon = new EndpointInputIcon(view);
+			queryOptions.addMember(endpointInputIcon);
+		}
 		if (view.getSettings().isDbSet()) {
 			bookmarkedQueries = new BookmarkedQueries(view);
 			queryOptions.addMember(bookmarkedQueries);
 		}
-		if (!view.getSettings().inSingleEndpointMode()) {
+		if (view.getEnabledFeatures().endpointSelectionEnabled()) {
 			endpointInput = new EndpointInput(view, this);
 			queryOptions.addMember(endpointInput);
 		
@@ -121,11 +126,15 @@ public class QueryTab extends Tab {
 			queryOptions.addMember(downloadLink);
 		}
 		
-		queryConfigMenu = new QueryConfigMenu(view);
-		queryOptions.addMember(queryConfigMenu);
+		try {
+			queryConfigMenu = new QueryConfigMenu(view);
+			queryOptions.addMember(queryConfigMenu);
+		} catch (IllegalStateException e) {
+			//we don't have anything to add to this menu (everything is disabled)
+			//just ignore
+		}
 		
 		queryOptions.addMember(Helper.getHSpacer());
-		
 		
 		linkCreator = new LinkCreator(view);
 		queryOptions.addMember(linkCreator);
@@ -147,7 +156,7 @@ public class QueryTab extends Tab {
 		Menu menu = new Menu();
 		MenuItem copy = new MenuItem();
 		copy.setTitle("Create copy");
-		copy.setIcon(Imgs.get(Imgs.COPY_TAB));
+		copy.setIcon(Imgs.COPY_TAB.get());
 		copy.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(MenuItemClickEvent event) {
@@ -161,7 +170,7 @@ public class QueryTab extends Tab {
 
 		MenuItem renameTab = new MenuItem();
 		renameTab.setTitle("Rename Tab");
-		renameTab.setIcon(Imgs.get(Imgs.EDIT_TEXT));
+		renameTab.setIcon(Imgs.EDIT_TEXT.get());
 		renameTab.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -171,7 +180,7 @@ public class QueryTab extends Tab {
 		});
 		MenuItem closeTab = new MenuItem();
 		closeTab.setTitle("Close");
-		closeTab.setIcon(Imgs.get(Imgs.CLOSE_TAB_SINGLE));
+		closeTab.setIcon(Imgs.CLOSE_TAB_SINGLE.get());
 		closeTab.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -182,7 +191,7 @@ public class QueryTab extends Tab {
 		});
 		MenuItem closeOtherTabs = new MenuItem();
 		closeOtherTabs.setTitle("Close others");
-		closeOtherTabs.setIcon(Imgs.get(Imgs.CLOSE_TAB_OTHERS));
+		closeOtherTabs.setIcon(Imgs.CLOSE_TAB_OTHERS.get());
 		closeOtherTabs.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -194,7 +203,7 @@ public class QueryTab extends Tab {
 
 		MenuItem closeAll = new MenuItem();
 		closeAll.setTitle("Close all");
-		closeAll.setIcon(Imgs.get(Imgs.CLOSE_TAB_ALL));
+		closeAll.setIcon(Imgs.CLOSE_TAB_ALL.get());
 		closeAll.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -212,7 +221,9 @@ public class QueryTab extends Tab {
 	public void showTooltips(int fromVersionId) throws ElementIdException {
 		queryTextArea.showTooltips(fromVersionId);
 		showSearchIconTooltip(fromVersionId);
-		queryConfigMenu.showTooltips(fromVersionId);
+		if (queryConfigMenu != null) {
+			queryConfigMenu.showTooltips(fromVersionId);
+		}
 		linkCreator.showToolTips(fromVersionId);
 		if (addToBookmarks != null) {
 			addToBookmarks.showToolTips(fromVersionId);
@@ -253,6 +264,10 @@ public class QueryTab extends Tab {
 	}
 	public void setQueryType(String queryType) {
 		this.queryType = queryType;
+		adaptInterfaceToQueryType();
+	}
+	
+	public void adaptInterfaceToQueryType() {
 		outputSelection.adaptToQueryType(queryType);
 	}
 	
@@ -273,5 +288,9 @@ public class QueryTab extends Tab {
 	}
 	public AddToBookmarks getAddToBookmarks() {
 		return this.addToBookmarks;
+	}
+
+	public EndpointInputIcon getEndpointInputIcon() {
+		return endpointInputIcon;
 	}
 }

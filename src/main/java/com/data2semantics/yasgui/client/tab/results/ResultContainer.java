@@ -26,14 +26,18 @@ package com.data2semantics.yasgui.client.tab.results;
  * #L%
  */
 
+import java.util.ArrayList;
 import java.util.HashMap;
+
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
+import com.data2semantics.yasgui.client.tab.results.input.DlvResults;
 import com.data2semantics.yasgui.client.tab.results.input.JsonResults;
+import com.data2semantics.yasgui.client.tab.results.input.ResultsHelper;
 import com.data2semantics.yasgui.client.tab.results.input.SparqlResults;
 import com.data2semantics.yasgui.client.tab.results.input.XmlResults;
 import com.data2semantics.yasgui.client.tab.results.output.Csv;
@@ -42,7 +46,10 @@ import com.data2semantics.yasgui.client.tab.results.output.ResultGrid;
 import com.data2semantics.yasgui.client.tab.results.output.SimpleGrid;
 import com.data2semantics.yasgui.shared.Output;
 import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
+import com.data2semantics.yasgui.shared.exceptions.SparqlParseException;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
@@ -57,24 +64,26 @@ import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ResizedEvent;
 import com.smartgwt.client.widgets.events.ResizedHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
-import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 public class ResultContainer extends VLayout {
 	public static String XSD_DATA_PREFIX = "http://www.w3.org/2001/XMLSchema#";
-	public static int RESULT_TYPE_TABLE = 1;
-	public static int RESULT_TYPE_BOOLEAN = 2;
-	public static int RESULT_TYPE_INSERT = 3;
+	
+	public enum ResultType {
+		Table, Boolean, Insert;
+	}
 	
 	public static int CONTENT_TYPE_JSON = 1;
 	public static int CONTENT_TYPE_XML = 2;
 	public static int CONTENT_TYPE_TURTLE = 3;
+	public static int CONTENT_TYPE_CSV = 4;
+	public static int CONTENT_TYPE_TSV = 5;
 	
 	private String contentType;
 	private View view;
 	private QueryTab queryTab;
 	private RawResponse rawResponseOutput;
-	HashMap<String, Integer> queryTypes = new HashMap<String, Integer>();
+	HashMap<String, ResultType> queryTypes = new HashMap<String, ResultType>();
 	public ResultContainer(View view, QueryTab queryTab) {
 		setPossibleQueryTypes();
 		this.view = view;
@@ -82,21 +91,21 @@ public class ResultContainer extends VLayout {
 	}
 	
 	private void setPossibleQueryTypes() {
-		queryTypes.put("SELECT", RESULT_TYPE_TABLE);
-		queryTypes.put("ASK", RESULT_TYPE_BOOLEAN);
-		queryTypes.put("CONSTRUCT", RESULT_TYPE_TABLE);
-		queryTypes.put("INSERT", RESULT_TYPE_INSERT);
-		queryTypes.put("DESCRIBE", RESULT_TYPE_TABLE);
-		queryTypes.put("LOAD", RESULT_TYPE_INSERT);
-		queryTypes.put("CLEAR", RESULT_TYPE_INSERT);
-		queryTypes.put("DROP", RESULT_TYPE_INSERT);
-		queryTypes.put("ADD", RESULT_TYPE_INSERT);
-		queryTypes.put("MOVE", RESULT_TYPE_INSERT);
-		queryTypes.put("COPY", RESULT_TYPE_INSERT);
-		queryTypes.put("CREATE", RESULT_TYPE_INSERT);
-		queryTypes.put("INSERT", RESULT_TYPE_INSERT);
-		queryTypes.put("DELETE", RESULT_TYPE_INSERT);
-		queryTypes.put("WITH", RESULT_TYPE_INSERT); //used in MODIFY
+		queryTypes.put("SELECT", ResultType.Table);
+		queryTypes.put("ASK", ResultType.Boolean);
+		queryTypes.put("CONSTRUCT", ResultType.Table);
+		queryTypes.put("INSERT", ResultType.Insert);
+		queryTypes.put("DESCRIBE", ResultType.Table);
+		queryTypes.put("LOAD", ResultType.Insert);
+		queryTypes.put("CLEAR", ResultType.Insert);
+		queryTypes.put("DROP", ResultType.Insert);
+		queryTypes.put("ADD", ResultType.Insert);
+		queryTypes.put("MOVE", ResultType.Insert);
+		queryTypes.put("COPY", ResultType.Insert);
+		queryTypes.put("CREATE", ResultType.Insert);
+		queryTypes.put("INSERT", ResultType.Insert);
+		queryTypes.put("DELETE", ResultType.Insert);
+		queryTypes.put("WITH", ResultType.Insert); //used in MODIFY
 	}
 	
 	/**
@@ -126,8 +135,8 @@ public class ResultContainer extends VLayout {
 		this.contentType = contentType;
 		
 		
-		if (queryTab.getQueryType().equals("CONSTRUCT") || queryTab.getQueryType().equals("DESCRIBE")) {
-			drawConstructResult(resultString);
+		if ((queryTab.getQueryType().equals("CONSTRUCT") || queryTab.getQueryType().equals("DESCRIBE")) && !ResultsHelper.tabularContentType(contentType)) {
+			drawGraphResult(resultString);
 			return;
 		}
 		
@@ -142,6 +151,10 @@ public class ResultContainer extends VLayout {
 			resultFormat = ResultContainer.CONTENT_TYPE_JSON;
 		} else if (contentType.contains("sparql-results+xml")) {
 			resultFormat = ResultContainer.CONTENT_TYPE_XML;
+		} else if (contentType.contains(QueryConfigMenu.CONTENT_TYPE_SELECT_CSV)) {
+			resultFormat = ResultContainer.CONTENT_TYPE_CSV;
+		} else if (contentType.contains(QueryConfigMenu.CONTENT_TYPE_SELECT_TSV)) {
+			resultFormat = ResultContainer.CONTENT_TYPE_TSV;
 		} else {
 			//assuming select query here (no construct)
 			resultFormat = detectContentType(resultString);
@@ -153,7 +166,9 @@ public class ResultContainer extends VLayout {
 		addQueryResult(resultString, resultFormat);
 	}
 	
-	private void drawConstructResult(String responseString) {
+
+	
+	private void drawGraphResult(String responseString) {
 		int mode = 0;
 		if (contentType.contains(QueryConfigMenu.CONTENT_TYPE_CONSTRUCT_TURTLE)) {
 			mode = CONTENT_TYPE_TURTLE;
@@ -165,70 +180,120 @@ public class ResultContainer extends VLayout {
 	
 	public void addQueryResult(String responseString, int resultFormat) {
 		reset();
-		String queryType = JsMethods.getQueryType(view.getSelectedTab().getQueryTextArea().getInputId());
-		if (!queryTypes.containsKey(queryType)) {
-			view.getElements().onError("No valid query type detected for this query");
-			return;
-		}
-		int queryMode = queryTypes.get(queryType);
-		
 		try {
-			if (queryMode == RESULT_TYPE_INSERT) {
-				setResultMessage(Imgs.get(Imgs.CHECKBOX), "Done");
-			} else if (queryMode == RESULT_TYPE_BOOLEAN || queryMode == RESULT_TYPE_TABLE) {
-				String outputFormat = view.getSelectedTabSettings().getOutputFormat();
+			String queryType = JsMethods.getQueryType(view.getSelectedTab().getQueryTextArea().getInputId());
+			if (!queryTypes.containsKey(queryType)) {
+				throw new SparqlParseException("No valid query type detected for this query");
+			}
+			ResultType queryMode = queryTypes.get(queryType);
+			switch (queryTypes.get(queryType)) {
+            case Insert:
+            	addMember(getResultsLabel(Imgs.CHECKBOX.get(), "Done"));
+                    break;
+            case Boolean:
+            case Table:
+            	String outputFormat = view.getSelectedTabSettings().getOutputFormat();
 				if (outputFormat.equals(Output.OUTPUT_RAW_RESPONSE)) {
 					drawRawResponse(responseString, resultFormat);
 				} else {
-					SparqlResults results;
-					if (resultFormat == CONTENT_TYPE_JSON) {
-						results = new JsonResults(responseString, view, queryMode);
-					} else {
-						//xml
-						results = new XmlResults(responseString, view, queryMode);
-					}
-					if (queryMode == RESULT_TYPE_BOOLEAN){
+					SparqlResults results = getResultsFromString(responseString, resultFormat, queryMode);
+					if (queryMode == ResultType.Boolean){
 						drawResultsAsBoolean(results);
-					} else if (queryMode == RESULT_TYPE_TABLE) {
+					} else if (queryMode == ResultType.Table) {
 						drawResultsInTable(results, outputFormat);
 					}
 				}
-			}
+				break;
+                  
+    }
+		
 		} catch (SparqlEmptyException e) {
-			setResultMessage(Imgs.get(Imgs.CROSS), e.getMessage());
+			VLayout vLayout = new VLayout();
+			vLayout.setWidth100();
+			vLayout.setHeight100();
+			
+			ArrayList<String> usedNamedGraphs = view.getSelectedTabSettings().getNamedGraphs();
+			ArrayList<String> usedDefaultGraphs = view.getSelectedTabSettings().getDefaultGraphs();
+			if (
+					(view.getEnabledFeatures().defaultGraphsSpecificationEnabled() && usedDefaultGraphs.size() > 0) ||
+					(view.getEnabledFeatures().namedGraphsSpecificationEnabled() && usedNamedGraphs.size() > 0)) {
+				vLayout.addMember(getResultsLabelWithWarning(Imgs.CROSS.get(), e.getMessage(), "You have specified named and/or default graphs in your query request, which may explain this empty result set"));
+			} else {
+				vLayout.addMember(getResultsLabel(Imgs.CROSS.get(), e.getMessage()));
+			}
+			
+			addMember(vLayout);
 		} catch (Exception e) {
 			view.getElements().onError(e);
 			
 		} 
 	}
 	
-	public void setResultMessage(String iconSrc, String message) {
-		HLayout empty = new HLayout();
-		empty.setDefaultLayoutAlign(VerticalAlignment.CENTER);
-		empty.setHeight(50);
-		empty.setWidth100();
+	private SparqlResults getResultsFromString(String responseString, int resultFormat, ResultType queryMode) {
+		SparqlResults results = null;
+		if (resultFormat == CONTENT_TYPE_JSON) {
+			results = new JsonResults(responseString, view, queryMode);
+		} else if (resultFormat == CONTENT_TYPE_XML) {
+			results = new XmlResults(responseString, view, queryMode);
+		} else if (resultFormat == CONTENT_TYPE_CSV) {
+			results = new DlvResults(responseString, view, queryMode, ",");
+		} else if (resultFormat == CONTENT_TYPE_TSV) {
+			results = new DlvResults(responseString, view, queryMode, "\t");
+		} else {
+			throw new SparqlParseException("no valid content type found for this response");
+		}
+		return results;
+	}
+	public HLayout getResultsLabelWithWarning(String iconSrc, String message, String warningMessage) {
+		HLayout resultLayout = new HLayout();
+		resultLayout.setDefaultLayoutAlign(VerticalAlignment.CENTER);
+		resultLayout.setHeight(60);
+		resultLayout.setWidth100();
+		
+		Img cross = new Img();
+		cross.setSrc(iconSrc);
+		cross.setSize(20);
+		
+		Img warning = new Img();
+		warning.setSrc(Imgs.WARNING.get());
+		warning.setSize(13);
+		warning.setTooltip(warningMessage);
+		
+		Label messageLabel = new Label("&nbsp;" + message);
+		messageLabel.setAutoHeight();
+		messageLabel.setStyleName("queryResultText");
+		messageLabel.setWidth(70);
+		resultLayout.addMembers(Helper.getHSpacer(), cross, messageLabel, warning, Helper.getHSpacer());
+		return resultLayout;
+	}
+	
+	public HLayout getResultsLabel(String iconSrc, String message) {
+		HLayout resultLayout = new HLayout();
+		resultLayout.setDefaultLayoutAlign(VerticalAlignment.CENTER);
+		resultLayout.setHeight(60);
+		resultLayout.setWidth100();
 		
 		Img cross = new Img();
 		cross.setSrc(iconSrc);
 		cross.setSize(16);
 		
 		
-		Label emptyMessage = new Label("&nbsp;" + message);
-		emptyMessage.setAutoHeight();
-		emptyMessage.setStyleName("queryResultText");
-		emptyMessage.setWidth(70);
-		empty.addMember(Helper.getHSpacer());
-		empty.addMember(cross);
-		empty.addMember(emptyMessage);
-		empty.addMember(Helper.getHSpacer());
+		Label messageLabel = new Label("&nbsp;" + message);
+		messageLabel.setAutoHeight();
+		messageLabel.setStyleName("queryResultText");
+		messageLabel.setWidth(70);
+		resultLayout.addMember(Helper.getHSpacer());
+		resultLayout.addMember(cross);
+		resultLayout.addMember(messageLabel);
+		resultLayout.addMember(Helper.getHSpacer());
 		
-		addMember(empty);
+		return resultLayout;
 	}
 	private void drawResultsAsBoolean(SparqlResults sparqlResults) {
 		if (sparqlResults.getBooleanResult()) {
-			setResultMessage(Imgs.get(Imgs.CHECKBOX), "true");
+			addMember(getResultsLabel(Imgs.CHECKBOX.get(), "true"));
 		} else {
-			setResultMessage(Imgs.get(Imgs.CROSS), "false");
+			addMember(getResultsLabel(Imgs.CROSS.get(), "false"));
 		}
 	}
 	
@@ -272,7 +337,7 @@ public class ResultContainer extends VLayout {
 			public void onResized(ResizedEvent event) {
 				Scheduler.get().scheduleDeferred(new Command() {
 					public void execute() {
-						JsMethods.attachCodeMirrorToQueryResult(rawResponseOutput.getInputId(), mode);
+						JsMethods.initializeQueryResponseCodemirror(rawResponseOutput.getInputId(), mode);
 						rawResponseOutput.adjustForContent(true);
 					}
 				});
@@ -303,5 +368,7 @@ public class ResultContainer extends VLayout {
 		
 		return contentType;
 	}
+	
+
 	
 }

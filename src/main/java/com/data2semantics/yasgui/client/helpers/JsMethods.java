@@ -1,5 +1,7 @@
 package com.data2semantics.yasgui.client.helpers;
 
+import com.data2semantics.yasgui.client.tab.results.input.dlv.DlvWrapper;
+
 /*
  * #%L
  * YASGUI
@@ -55,66 +57,8 @@ public class JsMethods {
 	 * 
 	 * @param queryInputId Id of text area to attach codemirror to
 	 */
-	public static native void attachCodeMirrorToQueryInput(String queryInputId) /*-{
-		var qInput = $doc.getElementById(queryInputId);
-		if (qInput) {
-			if ($wnd.sparqlHighlight[queryInputId] == null) { 
-				//Only add if it hasnt been drawn yet
-				$wnd.sparqlHighlight[queryInputId] = $wnd.CodeMirror.fromTextArea(qInput, {
-					mode : "application/x-sparql-query",
-					tabMode : "indent",
-					lineNumbers : true,
-					matchBrackets : true,
-					fixedGutter: true,
-					onCursorActivity : function() {
-						$wnd.sparqlHighlight[queryInputId]
-								.matchHighlight("CodeMirror-matchhighlight");
-					},
-					onChange : function(cm) {
-						$wnd.CodeMirror.simpleHint(cm, $wnd.CodeMirror.prefixHint);
-						$wnd.appendPrefixIfNeeded(cm);
-					},
-					onFocus: function(cm) {
-						$wnd.saveTabTitle();
-					},
-					onGutterClick: function(cm) {
-						$wnd.saveTabTitle();
-					},
-					extraKeys : {
-						"Ctrl-Space" : "autocomplete",
-						"Ctrl-D" : "deleteLines",
-						"Ctrl-/" : "commentLines",
-						"Ctrl-Alt-Down" : "copyLineDown",
-						"Ctrl-Alt-Up" : "copyLineUp",
-					},
-					onHighlightComplete : function(cm) {
-						$wnd.checkSyntax(cm, true);
-						$wnd.setQueryType(cm.getStateAfter().queryType);
-						height = $wnd.sparqlHighlight[queryInputId].getWrapperElement().offsetHeight;
-						if ($wnd.sparqlHighlightHeight[queryInputId]) {
-							if (height != $wnd.sparqlHighlightHeight[queryInputId]) {
-								$wnd.sparqlHighlightHeight[queryInputId] = height;
-								$wnd.adjustQueryInputForContent();
-							}
-						} else {
-							$wnd.sparqlHighlightHeight[queryInputId] = height;
-						}
-					},
-					onBlur: function() {
-						$wnd.storeQueryInCookie();
-					},
-				});
-				//Append another classname to the codemirror div, so we can set width and height via css
-				if (qInput.nextSibling != null && qInput.nextSibling.className == "CodeMirror") {
-					qInput.nextSibling.className = "CodeMirror queryCm";
-					scrollElement = qInput.nextSibling.getElementsByClassName("CodeMirror-scroll");
-					//use jquery for this (a bit easier). for this element, find scroll class, and append another class
-					$wnd.$("#"+queryInputId).next().find($wnd.$(".CodeMirror-scroll")).addClass("queryScrollCm");
-				}
-			}
-		} else {
-			$wnd.onError("no text area for query input id: " + queryInputId);
-		}
+	public static native void initializeQueryCodemirror(String elementId) /*-{
+		$wnd.initializeQueryCodemirror(elementId);
 	}-*/;
 	
 	/**
@@ -122,53 +66,17 @@ public class JsMethods {
 	 * 
 	 * @param queryInputId Id of text area to attach codemirror to
 	 */
-	public static native void attachCodeMirrorToBookmarkedQuery(String queryInputId) /*-{
-		var qInput = $doc.getElementById(queryInputId);
-		if (qInput) {
-			$wnd.sparqlHighlight[queryInputId] = $wnd.CodeMirror.fromTextArea(qInput, {
-				mode : "application/x-sparql-query",
-				tabMode : "indent",
-				lineNumbers : true,
-				matchBrackets : true,
-				fixedGutter: true,
-				viewportMargin: Infinity,
-				onCursorActivity : function() {
-					$wnd.sparqlHighlight[queryInputId]
-							.matchHighlight("CodeMirror-matchhighlight");
-				},
-				onChange : function(cm) {
-					$wnd.CodeMirror.simpleHint(cm, $wnd.CodeMirror.prefixHint);
-					$wnd.appendPrefixIfNeeded(cm);
-					
-				},
-				extraKeys : {
-					"Ctrl-Space" : "autocomplete",
-					"Ctrl-D" : "deleteLines",
-					"Ctrl-/" : "commentLines",
-					"Ctrl-Alt-Down" : "copyLineDown",
-					"Ctrl-Alt-Up" : "copyLineUp",
-				},
-				onHighlightComplete : function(cm) {
-					$wnd.checkSyntax(cm, false);
-					$wnd.setQueryType(cm.getStateAfter().queryType);
-					$wnd.updateBookmarkCmHeight(queryInputId);
-					
-				},
-				onBlur: function() {
-					$wnd.updateBookmarkedQuery();
-				},
-			});
-			$wnd.updateBookmarkCmHeight(queryInputId);
-			//Append another classname to the codemirror div, so we can set width and height via css
-			if (qInput.nextSibling != null && qInput.nextSibling.className == "CodeMirror") {
-				qInput.nextSibling.className = "CodeMirror bookmarkCm";
-				scrollElement = qInput.nextSibling.getElementsByClassName("CodeMirror-scroll");
-				//use jquery for this (a bit easier). for this element, find scroll class, and append another class
-				$wnd.$("#"+queryInputId).next().find($wnd.$(".CodeMirror-scroll")).addClass("bookmarkScrollCm");
-			}
-		} else {
-			$wnd.onError("no text area for bookmark query input id: " + queryInputId);
-		}
+	public static native void initializeQueryBookmarkCodemirror(String elementId) /*-{
+		$wnd.initializeQueryBookmarkCodemirror(elementId);
+	}-*/;
+	
+	/**
+	 * Initialize and atatch codemirror to a text area used for displaying json/xml results of query
+	 * 
+	 * @param queryInputId Id of text area to attach codemirror to
+	 */
+	public static native void initializeQueryResponseCodemirror(String elementId, String mode) /*-{
+		$wnd.initializeQueryResponseCodemirror(elementId, mode);
 	}-*/;
 	
 	public static native void resizeQueryInput(String queryInputId, int width, int height) /*-{
@@ -177,54 +85,24 @@ public class JsMethods {
 		}
 	}-*/;
 
-	/**
-	 * Initialize and atatch codemirror to a text area used for displaying json/xml results of query
-	 * 
-	 * @param queryInputId Id of text area to attach codemirror to
-	 */
-	public static native void attachCodeMirrorToQueryResult(String queryInputId, String mode) /*-{
-		var qInput = $doc.getElementById(queryInputId);
-		if (qInput) {
-			var drawCodeMirror = false;
-			if ($wnd.sparqlResponseHighlight[queryInputId] == null) drawCodeMirror = true;
-			
-			//also check if it isnt drawn yet. Checking for just the javascript object in the sparqlResponseHighlight object is not enough
-			//The object can be there, while visually you see the text area. a goof that happens between codemirror and smartgwt I believe (having to do with the way smartgwt loads pages icw resizing pages)
-			if (qInput.nextSibling == null) drawCodeMirror = true;
 
-			if (drawCodeMirror) {
-				var cmMode = mode;
-				if (mode == "json") {
-					cmMode = {
-						name: "javascript",
-						json: true
-					};
-				}
-				$wnd.sparqlResponseHighlight[queryInputId] = $wnd.CodeMirror.fromTextArea($doc.getElementById(queryInputId), {
-					mode : cmMode,
-					lineNumbers : true,
-					matchBrackets : true,
-					readOnly: true,
-					fixedGutter: true,
-					hideVScroll: true
-				});
-				
-				//Append another classname to the codemirror div, so we can set width and height via css
-				if (qInput.nextSibling != null && qInput.nextSibling.className == "CodeMirror") {
-					qInput.nextSibling.className = "CodeMirror resultCm";
-					scrollElement = qInput.nextSibling.getElementsByClassName("CodeMirror-scroll");
-					//use jquery for this (a bit easier). for this element, find scroll class, and append another class
-					$wnd.$("#"+queryInputId).next().find($wnd.$(".CodeMirror-scroll")).addClass("resultScrollCm");
-				}
-			}
-		} else {
-			$wnd.onError("no text area to create sparql response highlight for. Input id: " + queryInputId);
-		}
-	}-*/;
 	
 	
 	public static native void setAutocompletePrefixes(String prefixes) /*-{
 		$wnd.prefixes = eval(prefixes);
+	}-*/;
+	
+	public static native void setAutocompleteProperties(String endpoint, String properties) /*-{
+		var propertiesArray =  eval(properties);
+		var T = new $wnd.Trie();
+	    var i;
+	    for(i = 0; i < propertiesArray.length; i++) {
+	        T.insert(propertiesArray[i]);
+	    }
+		$wnd.properties[endpoint] = T;
+	}-*/;
+	public static native boolean propertiesRetrieved(String endpoint) /*-{
+		return $wnd.properties[endpoint] != null && $wnd.properties[endpoint].length > 0;
 	}-*/;
 	
 
@@ -304,12 +182,6 @@ public class JsMethods {
 		$wnd.checkCorsEnabled(endpointUri);
 	}-*/;
 	
-	
-	
-	
-	
-	
-	
 	/**
 	 * Define the url of the sparql proxy servlet in javascript
 	 * 
@@ -356,7 +228,9 @@ public class JsMethods {
 	}-*/;
 	
 	public static native void cancelQuery() /*-{
-		$wnd.queryRequest.abort();
+		if ($wnd.queryRequest != null && $wnd.queryRequest != undefined) {
+			$wnd.queryRequest.abort();
+		}
 	}-*/;
 	
 	
@@ -523,6 +397,11 @@ public class JsMethods {
 			location = $wnd.document.referrer;
 		}
 		return location;
+	}-*/;
+
+	
+	public static native DlvWrapper getDlv(String csvString, String separator) /*-{
+		return $wnd.$.csv.toArrays(csvString, {"separator": separator});
 	}-*/;
 
 	public static native String getUncommentedSparql(String sparqlQuery) /*-{

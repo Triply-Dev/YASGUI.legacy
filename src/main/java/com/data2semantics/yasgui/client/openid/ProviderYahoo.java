@@ -46,7 +46,7 @@ public class ProviderYahoo implements OpenIdProvider{
 	}
 
 	public String getImageLocation() {
-		return Imgs.get(Imgs.LOGO_YAHOO);
+		return Imgs.LOGO_YAHOO.get();
 	}
 	
 	public int getMaxIconHeight() {

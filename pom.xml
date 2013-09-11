@@ -23,22 +23,7 @@
 	</properties>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.4</version>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
-		</dependency>
 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.2</version>
-		</dependency>
 		<dependency>
 			<groupId>net.sf.opencsv</groupId>
 			<artifactId>opencsv</artifactId>
@@ -83,12 +68,12 @@
 		<dependency>
 			<groupId>com.smartgwt</groupId>
 			<artifactId>smartgwt</artifactId>
-			<version>3.1</version>
+			<version>4.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.smartgwt</groupId>
 			<artifactId>smartgwt-skins</artifactId>
-			<version>3.1</version>
+			<version>4.0</version>
 		</dependency>
 		<!-- <dependency> <groupId>com.d2s</groupId> <artifactId>smartgwt</artifactId> 
 			<version>3.1p</version> </dependency> <dependency> <groupId>com.d2s</groupId> 
@@ -154,6 +139,16 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.25</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava-gwt</artifactId>
+			<version>14.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>14.0.1</version>
 		</dependency>
 	</dependencies>
 
@@ -249,7 +244,10 @@
 					</execution>
 				</executions>
 				<configuration>
-					<sourceDirectory>${webappDirectory}/externals</sourceDirectory>
+					<jswarn>false</jswarn>
+					<sourceDirectory>${project.basedir}/src/main/webapp/assets</sourceDirectory>
+					<warSourceDirectory>${project.basedir}/src/main/webapp/assets</warSourceDirectory>
+					<outputDirectory>${webappDirectory}/assets</outputDirectory>
 					<nosuffix>true</nosuffix>
 					<jswarn>false</jswarn>
 					<aggregations>
@@ -260,22 +258,25 @@
 							<insertNewLine>true</insertNewLine>
 							<output>${webappDirectory}/static/yasgui.js</output>
 							<includes>
-								<include>../externals/jquery-1.10.0.min.js</include>
-								<include>../externals/jquery.browser.min.js</include>
-								<include>../externals/qtip/jquery.qtip.min.js</include>
-								<include>../externals/history.js/scripts/bundled/html5/jquery.history.js</include>
-								<include>../externals/codemirror/codemirror.js</include>
-								<include>../externals/codemirror/mode/javascript/javascript.js</include>
-								<include>../externals/codemirror/mode/xml/xml.js</include>
-								<include>../externals/codemirror/mode/turtle/turtle.js</include>
-								<include>../externals/codemirror/util/simple-hint.js</include>
-								<include>../externals/prefix-hint.js</include>
-								<include>../externals/codemirror/util/searchcursor.js</include>
-								<include>../externals/codemirror/util/match-highlighter.js</include>
-								<include>../externals/flint/sparql.js</include>
-								<include>../externals/addCommands.js</include>
-								<include>../externals/yasgui.js</include>
-								<include>../externals/codemirror/util/runmode.js</include>
+								<include>../assets/jquery-1.10.0.min.js</include>
+								<include>../assets/jquery.browser.min.js</include>
+								<include>../assets/jquery.qtip.min.js</include>
+								<include>../assets/jquery.csv-0.71.min.js</include>
+								<include>../assets/jquery.history.js</include>
+								<include>../assets/codemirror/codemirror.js</include>
+								<include>../assets/codemirror/mode/javascript/javascript.js</include>
+								<include>../assets/codemirror/mode/xml/xml.js</include>
+								<include>../assets/codemirror/mode/turtle/turtle.js</include>
+								<include>../assets/trie.js</include>
+								<include>../assets/codemirror/addon/hint/show-hint.js</include>
+								<include>../assets/yasguiHint.js</include>
+								<include>../assets/codemirror/addon/search/searchcursor.js</include>
+								<include>../assets/codemirror/addon/search/match-highlighter.js</include>
+								<include>../assets/codemirror/addon/edit/matchbrackets.js</include>
+								<include>../assets/codemirror/addon/runmode/runmode.js</include>
+								<include>../assets/flint/sparql.js</include>
+								<include>../assets/codemirrorCommands.js</include>
+								<include>../assets/yasgui.js</include>
 							</includes>
 						</aggregation>
 						<aggregation>
@@ -285,11 +286,12 @@
 							<insertNewLine>true</insertNewLine>
 							<output>${webappDirectory}/static/yasgui.css</output>
 							<includes>
-								<include>../externals/qtip/jquery.qtip.css</include>
-								<include>../externals/codemirror/codemirror.css</include>
-								<include>../externals/codemirror/util/simple-hint.css</include>
-								<include>../externals/flint/sparql.css</include>
-								<include>../externals/yasgui.css</include>
+								<include>../assets/jquery.qtip.css</include>
+								<include>../assets/codemirror/codemirror.css</include>
+								<include>../assets/codemirror/theme/yasgui.css</include>
+								<include>../assets/codemirror/addon/hint/show-hint.css</include>
+								<include>../assets/flint/sparql.css</include>
+								<include>../assets/yasgui.css</include>
 							</includes>
 						</aggregation>
 					</aggregations>
@@ -428,10 +430,6 @@
 		<repository>
 			<id>com.smartgwt</id>
 			<url>http://www.smartclient.com/maven2</url>
-		</repository>
-		<repository>
-			<id>smartgwtNightly</id>
-			<url>file://${basedir}/localRepo</url>
 		</repository>
 	</repositories>
 

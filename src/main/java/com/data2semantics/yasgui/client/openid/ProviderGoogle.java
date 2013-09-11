@@ -46,7 +46,7 @@ public class ProviderGoogle implements OpenIdProvider{
 	}
 
 	public String getImageLocation() {
-		return Imgs.get(Imgs.LOGO_GOOGLE);
+		return Imgs.LOGO_GOOGLE.get();
 	}
 	public int getMaxIconHeight() {
 		return MAX_ICON_HEIGHT;
