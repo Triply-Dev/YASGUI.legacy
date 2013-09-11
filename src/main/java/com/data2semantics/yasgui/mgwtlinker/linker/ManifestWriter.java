@@ -27,6 +27,8 @@ package com.data2semantics.yasgui.mgwtlinker.linker;
  */
 
 import java.util.Date;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -45,7 +47,7 @@ public class ManifestWriter {
 	 * @param cacheResources the gwt output artifacts like cache.html files
 	 * @return the manifest as a string
 	 */
-	public String writeManifest(Set<String> staticResources, Set<String> cacheResources) {
+	public String writeManifest(Set<String> staticResources, Set<String> cacheResources, Map<String, String> fallbacks) {
 		if (staticResources == null)
 			throw new IllegalArgumentException("staticResources can not be null");
 		if (cacheResources == null)
@@ -65,6 +67,14 @@ public class ManifestWriter {
 		sb.append("\n# GWT compiled files\n");
 		for (String resources : cacheResources) {
 			sb.append(resources + "\n");
+		}
+		
+		if (fallbacks != null && fallbacks.size() > 0) {
+			sb.append("\n\n");
+			sb.append("FALLBACK:\n");
+			for (Entry<String, String> entry: fallbacks.entrySet()) {
+				sb.append(entry.getKey() + " " + entry.getValue());
+			}
 		}
 
 		sb.append("\n\n");

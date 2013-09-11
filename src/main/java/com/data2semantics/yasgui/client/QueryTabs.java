@@ -169,7 +169,7 @@ public class QueryTabs extends TabSet {
 		addTabButton = new ImgButton();
 		addTabButton.setSrc(Imgs.ADD_TAB.get());
 		addTabButton.setShowDown(false);
-		addTabButton.setShowRollOver(true);
+		addTabButton.setShowRollOver(false);
 		addTabButton.setWidth(25);
 		
 		addTabButton.setHeight(25);

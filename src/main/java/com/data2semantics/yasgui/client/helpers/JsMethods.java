@@ -432,7 +432,10 @@ public class JsMethods {
 	 */
 	public static native boolean isDevPageLoaded() /*-{
 		var devPageLoaded = false;
-		if ($wnd.location.pathname.substring(location.pathname.lastIndexOf('/')+1) == "dev.jsp") {
+		var path = $wnd.location.pathname;
+		//replace whitespace:
+		path = path.split(' ').join('');
+		if (path.substring(path.lastIndexOf('/')+1) == "dev.jsp") {
 			devPageLoaded = true;
 		}
 		return devPageLoaded; 
