@@ -47,21 +47,23 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 public class Compatabilities extends Window {
 	
-	private static int HEIGHT = 250;
+	private static int HEIGHT = 290;
 	private static int WIDTH = 700;
 	private static int ROW_HEIGHT = 40;
 	private static int BUTTON_WIDTH = 150;
+	
 	private static String URL_COMPATABILTIES_LOCAL_STORAGE = "http://caniuse.com/#feat=namevalue-storage";
 	private static String URL_COMPATABILTIES_HISTORY = "http://caniuse.com/#search=history";
 	private static String URL_COMPATABILITIES_DOWNLOAD_ATTRIBUTE = "http://caniuse.com/#feat=download";
 	private static String URL_COMPATABILITIES_DOWNLOAD_FILE = "http://caniuse.com/#feat=bloburls";
-	
+	private static String URL_COMPATABILITIES_APPCACHE = "http://caniuse.com/offline-apps";
 	
 	public static int VERSION_NUMBER = 4; //used for determining whether we need warning icon (i.e. something not compatible, and not shown before)
 	private boolean html5StorageSupported = false;
 	private boolean downloadAttributeSupported = false;
 	private boolean downloadFileSupported = false;
 	private boolean historySupported = false;
+	private boolean offlineSupported = false;
 	private boolean allSupported = false;
 	private View view;
 	private VLayout layout = new VLayout();;
@@ -84,6 +86,7 @@ public class Compatabilities extends Window {
 		downloadFileSupported = JsMethods.stringToDownloadSupported();
 		downloadAttributeSupported = JsMethods.downloadAttributeSupported();
 		historySupported = JsMethods.historyApiSupported();
+		offlineSupported = JsMethods.offlineSupported();
 		allSupported = (html5StorageSupported && downloadFileSupported && downloadAttributeSupported && historySupported);
 	}
 	
@@ -114,17 +117,35 @@ public class Compatabilities extends Window {
 		drawDownloadFunctionality();
 		drawDownloadFilenameFunctionality();
 		drawHistoryFunctionality();
+		drawOfflineFunctionality();
 		draw();
 		
 		//ok, so we've shown the stuff. reload the menu button, as we might still have an exclamation mark there
 		view.getElements().redrawConfigMenu();
 	}
+	private void drawOfflineFunctionality() {
+		HLayout hlayout = new HLayout();
+		hlayout.setHeight(ROW_HEIGHT);
+		
+		hlayout.addMember(getIcon(offlineSupported));
+		hlayout.addMember(getRowName("Offline Functionality"));
+		if (historySupported) {
+			hlayout.addMember(getExplanation("Supported by your browser. YASGUI will still function without internet connection (e.g. on localhost endpoints)"));
+		} else {
+			hlayout.addMember(getExplanation("Not supported by your browser. You won't be able to use YASGUI without internet connection (e.g. on localhost endpoints)"));
+		}
+		hlayout.addMember(getLink(URL_COMPATABILITIES_APPCACHE));
+		
+		layout.addMember(hlayout);
+		
+	}
+
 	private void drawHistoryFunctionality() {
 		HLayout hlayout = new HLayout();
 		hlayout.setHeight(ROW_HEIGHT);
 		
 		hlayout.addMember(getIcon(historySupported));
-		hlayout.addMember(getRowName("HTML5 History"));
+		hlayout.addMember(getRowName("History"));
 		if (historySupported) {
 			hlayout.addMember(getExplanation("Supported by your browser. You can use the browser 'back' button to return to previous YASGUI states"));
 		} else {
@@ -140,7 +161,7 @@ public class Compatabilities extends Window {
 		hlayout.setHeight(ROW_HEIGHT);
 		
 		hlayout.addMember(getIcon(html5StorageSupported));
-		hlayout.addMember(getRowName("HTML5 Local Storage"));
+		hlayout.addMember(getRowName("Local Storage"));
 		if (html5StorageSupported) {
 			hlayout.addMember(getExplanation("Supported by your browser. Allows for client-side caching, resulting in faster page loads"));
 		} else {
