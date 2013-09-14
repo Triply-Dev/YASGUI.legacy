@@ -189,6 +189,10 @@ public class EndpointInput extends DynamicForm {
 		if (view.getEnabledFeatures().propertyAutocompletionEnabled()) view.getSelectedTab().getEndpointInputIcon().updateFetchIcon();
 	}
 	
+	public void storeEndpointInSettings() {
+		setEndpointCallback(getEndpoint());
+	}
+	
 	private QueryTab getQueryTab() {
 		return this.queryTab;
 	}
