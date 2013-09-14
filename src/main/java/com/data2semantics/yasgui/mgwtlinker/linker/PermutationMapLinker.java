@@ -264,7 +264,7 @@ public class PermutationMapLinker extends AbstractLinker {
 	private Set<String> getFontFiles() {
 		HashSet<String> set = new HashSet<String>();
 		set.add("../fonts/fonts.css?" + StaticConfig.VERSION);
-		set.addAll(getExternalFilesFromDir("fonts", false, "eot", "svg", "ttf", "woff"));//don't append version string here
+		set.addAll(getExternalFilesFromDir("fonts", "", "eot", "svg", "ttf", "woff"));//don't append version string here
 		return set;
 	}
 
@@ -281,7 +281,7 @@ public class PermutationMapLinker extends AbstractLinker {
 		set.add("../static/yasgui.css?" + StaticConfig.VERSION);
 		set.add("../index.jsp");
 		set.addAll(getFontFiles());
-		set.addAll(getExternalFilesFromDir("images", true, "png", "jpg", "gif"));
+		set.addAll(getExternalFilesFromDir("images", "?" + StaticConfig.VERSION.replace(".", ""), "png", "jpg", "gif"));
 		return set;
 	}
 
@@ -292,8 +292,8 @@ public class PermutationMapLinker extends AbstractLinker {
 	 * @return
 	 */
 	protected Set<String> getDevExternalFiles(TreeLogger logger, LinkerContext context) {
-		HashSet<String> set = new HashSet<String>(getExternalFilesFromDir("assets", true, "js", "css"));
-		set.addAll(getExternalFilesFromDir("images", true, "png", "jpg", "gif"));
+		HashSet<String> set = new HashSet<String>(getExternalFilesFromDir("assets", "?" + StaticConfig.VERSION, "js", "css"));
+		set.addAll(getExternalFilesFromDir("images", "?" + StaticConfig.VERSION.replace(".", ""), "png", "jpg", "gif"));
 		set.addAll(getFontFiles());
 		set.add("../dev.jsp");
 		return set;
@@ -349,7 +349,7 @@ public class PermutationMapLinker extends AbstractLinker {
 		return webappPath;
 	}
 	
-	private Set<String> getExternalFilesFromDir(String dir, boolean appendVersion, String... includeExtensions) {
+	private Set<String> getExternalFilesFromDir(String dir, String append, String... includeExtensions) {
 		HashSet<String> fileSet = new HashSet<String>();
 		String webappPath = getWebappPath();
 		@SuppressWarnings("unchecked")
@@ -361,7 +361,7 @@ public class PermutationMapLinker extends AbstractLinker {
 				manifestFile = manifestFile.substring(webappPath.length());
 			}
 			//the manifest file is located in the Yasgui subdir of our webapp. The files we are adding are in the parent folder:
-			fileSet.add("../" + manifestFile + (appendVersion? "?" + StaticConfig.VERSION: ""));
+			fileSet.add("../" + manifestFile + append);
 		};
 		return fileSet;
 	}

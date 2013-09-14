@@ -27,6 +27,7 @@ package com.data2semantics.yasgui.client.tab.optionbar;
  */
 
 import java.util.Iterator;
+
 import com.smartgwt.client.types.Positioning;
 import com.smartgwt.client.widgets.AnimationCallback;
 import com.smartgwt.client.widgets.Button;
@@ -39,6 +40,8 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
+import com.data2semantics.yasgui.client.GwtCallbackWrapper;
+import com.data2semantics.yasgui.client.RpcElement;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
@@ -52,7 +55,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class LinkCreator extends ImgButton {
+public class LinkCreator extends ImgButton implements RpcElement {
 	private static final int TOOLTIP_VERSION_LINK = 2;
 	private View view;
 	private Window window;
@@ -134,17 +137,24 @@ public class LinkCreator extends ImgButton {
 			@Override
 			public void onClick(ClickEvent event) {
 				view.getElements().onLoadingStart("Fetching short url");
-				view.getRemoteService().getShortUrl(urlTextBox.getValueAsString(), new AsyncCallback<String>() {
-					public void onFailure(Throwable caught) {
-						view.getElements().onError(caught);
+				
+				new GwtCallbackWrapper<String>(view) {
+					public void onCall(AsyncCallback<String> callback) {
+						view.getRemoteService().getShortUrl(urlTextBox.getValueAsString(), callback);
 					}
 
-					public void onSuccess(String shortUrl) {
+					protected void onFailure(Throwable throwable) {
+						view.getElements().onError(throwable);
+					}
+
+					protected void onSuccess(String shortUrl) {
 						updateLink(shortUrl);
 						shortenUrlButton.setDisabled(true);
 						view.getElements().onLoadingFinish();
 					}
-				});
+
+				}.call();
+				
 			}});
 		return shortenUrlButton;
 	}
@@ -250,5 +260,18 @@ public class LinkCreator extends ImgButton {
 	public void changeHorizontalOffset() {
 		int windowWidth = com.google.gwt.user.client.Window.getClientWidth();
 		setLeft(windowWidth - ICON_WIDTH - OFFSET_RIGHT);//compensate for smargwt scrollbar, so subtract some more
+	}
+
+	public void disableRpcElements() {
+		if (shortenUrlButton != null) {
+			shortenUrlButton.setDisabled(true);
+		}
+		
+	}
+
+	public void enableRpcElements() {
+		if (shortenUrlButton != null) {
+			shortenUrlButton.setDisabled(false);
+		}
 	}
 }

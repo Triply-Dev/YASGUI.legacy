@@ -28,7 +28,7 @@ package com.data2semantics.yasgui.client.tab.optionbar;
 
 import com.smartgwt.client.types.Cursor;
 import com.smartgwt.client.widgets.Button;
-import com.smartgwt.client.widgets.Img;
+import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -36,6 +36,8 @@ import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.layout.HLayout;
+import com.data2semantics.yasgui.client.GwtCallbackWrapper;
+import com.data2semantics.yasgui.client.RpcElement;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
@@ -46,7 +48,7 @@ import com.data2semantics.yasgui.shared.Bookmark;
 import com.data2semantics.yasgui.shared.exceptions.OpenIdException;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class AddToBookmarks extends Img {
+public class AddToBookmarks extends ImgButton implements RpcElement {
 	private View view;
 	private Window window;
 	private CheckboxItem includeEndpoint;
@@ -139,7 +141,7 @@ public class AddToBookmarks extends Img {
 		bookmarkButton.setWidth(60);
 		bookmarkButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				Bookmark bookmark = new Bookmark();
+				final Bookmark bookmark = new Bookmark();
 				if (includeEndpoint != null && includeEndpoint.getValueAsBoolean()) {
 					bookmark.setEndpoint(view.getSelectedTabSettings().getEndpoint());
 				}
@@ -148,23 +150,26 @@ public class AddToBookmarks extends Img {
 
 				window.clear();
 				setSrc(Imgs.LOADING.get());
-				view.getRemoteService().addBookmark(bookmark, new AsyncCallback<Void>() {
-					public void onFailure(Throwable caught) {
-						setSrc(Imgs.BOOKMARK_QUERY.get());
-						if (caught instanceof OpenIdException) {
-							view.getElements().onError(caught.getMessage() + ". Logging out");
-							view.getOpenId().logOut();
-						} else {
-							view.getElements().onError(caught);
-						}
-						
+				new GwtCallbackWrapper<Void>(view) {
+					public void onCall(AsyncCallback<Void> callback) {
+						view.getRemoteService().addBookmark(bookmark, callback);
 					}
 
-					@Override
-					public void onSuccess(Void result) {
+					protected void onFailure(Throwable throwable) {
+						setSrc(Imgs.BOOKMARK_QUERY.get());
+						if (throwable instanceof OpenIdException) {
+							view.getElements().onError(throwable.getMessage() + ". Logging out");
+							view.getOpenId().logOut();
+						} else {
+							view.getElements().onError(throwable);
+						}
+					}
+
+					protected void onSuccess(Void t) {
 						setSrc(Imgs.BOOKMARK_QUERY.get());
 					}
-				});
+
+				}.call();
 			}
 		});
 		hlayout.addMembers(form, Helper.getHSpacer(), bookmarkButton);
@@ -185,6 +190,15 @@ public class AddToBookmarks extends Img {
 			tProp.setYOffset(2);
 			Helper.drawTooltip(tProp);
 		}
+	}
+
+	public void disableRpcElements() {
+		setEnabled(false);
+		
+	}
+
+	public void enableRpcElements() {
+		setEnabled(true);
 	}
 
 }
