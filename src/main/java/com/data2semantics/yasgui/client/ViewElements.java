@@ -26,6 +26,7 @@ package com.data2semantics.yasgui.client;
  * #L%
  */
 
+import com.data2semantics.yasgui.client.ConnectivityHelper.ConnCallback;
 import com.data2semantics.yasgui.client.configmenu.Compatabilities;
 import com.data2semantics.yasgui.client.configmenu.ConfigMenu;
 import com.data2semantics.yasgui.client.helpers.GoogleAnalytics;
@@ -49,9 +50,11 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.http.client.URL;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
+import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
@@ -64,7 +67,7 @@ import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.menu.IconMenuButton;
 
-public class ViewElements {
+public class ViewElements implements RpcElement {
 	private static int TOOLTIP_VERSION_MENU_CONFIG = 7;
 	private View view;
 	private ImgButton queryButton;
@@ -80,8 +83,12 @@ public class ViewElements {
 	private static int CONSENT_WINDOW_WIDTH = 750;
 	private static int CONSENT_BUTTON_HEIGHT = 40;
 	private static int CONSENT_BUTTON_WIDTH = 175;
+	private static int OFFLINE_WINDOW_HEIGHT = 130;
+	private static int OFFLINE_WINDOW_WIDTH = 750;
 	private Window consentWindow;
+	private HLayout offlineNotification;
 	private Label loading;
+	private ConfigMenu configMenu;
 	
 	public ViewElements(View view) {
 		this.view = view;
@@ -90,6 +97,7 @@ public class ViewElements {
 		initLoadingWidget();
 		drawConfigMenu();
 		checkOpera();
+		initOfflineNotification();
 	}
 	
 
@@ -528,7 +536,8 @@ public class ViewElements {
 		configButton.getElement().getStyle().setRight(50, Unit.PX);
 		configButton.setIcon(icon);
 		configButton.setZIndex(ZIndexes.TAB_CONTROLS);
-		configButton.setMenu(new ConfigMenu(view));
+		configMenu = new ConfigMenu(view);
+		configButton.setMenu(configMenu);
 		configButton.setCanFocus(false);
 		configButton.addClickHandler(new ClickHandler(){
 
@@ -577,6 +586,66 @@ public class ViewElements {
 		if (JsMethods.getBrowserName().equals("opera")) {
 			onError("You are using an opera browser. Users are known to encounter issues in YASGUI using this browser. <br>" +
 					"We recommend you switch to Opera 15+, or to any other modern browser");
+		}
+	}
+
+
+
+	public void disableRpcElements() {
+		configMenu.disableRpcElements();
+	}
+	public void enableRpcElements() {
+		configMenu.enableRpcElements();
+	}
+	
+	public void initOfflineNotification() {
+		offlineNotification = new HLayout();
+		offlineNotification.setWidth(320);
+		offlineNotification.setHeight(30);
+		offlineNotification.getElement().getStyle().setPosition(Position.ABSOLUTE);
+		offlineNotification.getElement().getStyle().setTop(0, Unit.PX);
+		offlineNotification.getElement().getStyle().setLeft(150, Unit.PX);
+		offlineNotification.setZIndex(ZIndexes.LOADING_WIDGET);
+		offlineNotification.setBackgroundColor("#f0f0f0");
+		offlineNotification.setBorder("1px solid #C0C3C7");
+		Img disconnectedImg = new Img(Imgs.DISCONNECTED.get());
+		disconnectedImg.setHeight(30);
+		disconnectedImg.setWidth(30);
+		
+		Label offlineText = new Label();
+		offlineText.setHeight(20);
+		offlineText.setWidth(250);
+		offlineText.setContents("YASGUI server is unreachable. YASGUI will still work on most localhost (CORS-enabled) endpoints");
+		offlineText.setLayoutAlign(VerticalAlignment.CENTER);
+		Button tryConnectButton = new Button("Try to reconnect");
+		tryConnectButton.addClickHandler(new ClickHandler(){
+
+			@Override
+			public void onClick(ClickEvent event) {
+				view.getConnHelper().checkOnlineStatus(new ConnCallback() {
+					
+					@Override
+					public void connectedCallback() {
+						//do nothing
+					}
+				});
+				
+			}});
+		tryConnectButton.setLayoutAlign(VerticalAlignment.CENTER);
+		
+		LayoutSpacer spacer = new LayoutSpacer();
+		spacer.setWidth(5);
+		offlineNotification.setMembers(disconnectedImg, offlineText, tryConnectButton, spacer);
+		offlineNotification.hide();
+		offlineNotification.redraw();
+	}
+
+
+	public void showOfflineNotification(boolean isOnline) {
+		if (isOnline) {
+			offlineNotification.hide();
+		} else {
+			offlineNotification.show();
 		}
 	}
 	

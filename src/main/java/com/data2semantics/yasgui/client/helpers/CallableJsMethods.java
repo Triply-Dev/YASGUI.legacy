@@ -79,6 +79,10 @@ public class CallableJsMethods {
 		view.getSelectedTab().getResultContainer().reset();
 	}
 	
+	public boolean isOnline() {
+		return view.getConnHelper().isOnline();
+	}
+	
 	/**
 	 * Draw json or xml results
 	 * Keep this method in the view object, so that it is easily callable from js
@@ -243,6 +247,9 @@ public class CallableJsMethods {
 		}
 		$wnd.inDebugMode = function() {
 			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::inDebugMode()();
+		}
+		$wnd.isOnline = function() {
+			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::isOnline()();
 		}
 	}-*/;
 }

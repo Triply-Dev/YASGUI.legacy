@@ -26,6 +26,8 @@ package com.data2semantics.yasgui.client.tab.optionbar.endpoints;
  * #L%
  */
 
+import com.data2semantics.yasgui.client.GwtCallbackWrapper;
+import com.data2semantics.yasgui.client.RpcElement;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.settings.Imgs;
@@ -33,7 +35,6 @@ import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.smartgwt.client.types.Positioning;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
@@ -41,17 +42,15 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.MovedEvent;
 import com.smartgwt.client.widgets.events.MovedHandler;
-import com.smartgwt.client.widgets.events.ResizedEvent;
-import com.smartgwt.client.widgets.events.ResizedHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 
-public class EndpointInputIcon extends HLayout {
+public class EndpointInputIcon extends HLayout implements RpcElement {
 	private View view;
 	private static int OFFSET_Y = 18;
 	private static int OFFSET_X =  375;//offset from left of endpoint input
+	private ImgButton canvasImg;
 	public EndpointInputIcon(View view) {
 		this.view = view;
-
 		setAutoWidth();
 		setZIndex(ZIndexes.DOWNLOAD_ICON);
 		Scheduler.get().scheduleDeferred(new Command() {
@@ -78,21 +77,21 @@ public class EndpointInputIcon extends HLayout {
 	
 	private void addFetchAutocompletionsButton() {
 		resetButtonSpace();
-		ImgButton imgButton = new ImgButton();
-		imgButton.setSrc(Imgs.DOWNLOAD_ROUND.get());
-		imgButton.setHeight(16);
-		imgButton.setWidth(16);
-		imgButton.setShowRollOverIcon(false);
-		imgButton.setShowOverCanvas(false);
-		imgButton.setShowDownIcon(false);
-		imgButton.setTooltip("Fetch predicate autocompletion information for this endpoint");
-		imgButton.addClickHandler(new ClickHandler(){
+		canvasImg = new ImgButton();
+		canvasImg.setSrc(Imgs.DOWNLOAD_ROUND.get());
+		canvasImg.setHeight(16);
+		canvasImg.setWidth(16);
+		canvasImg.setShowRollOverIcon(false);
+		canvasImg.setShowOverCanvas(false);
+		canvasImg.setShowDownIcon(false);
+		canvasImg.setTooltip("Fetch predicate autocompletion information for this endpoint");
+		canvasImg.addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
 				getProperties();
 			}});
-		imgButton.setZIndex(ZIndexes.DOWNLOAD_ICON);
-		addMember(imgButton);
+		canvasImg.setZIndex(ZIndexes.DOWNLOAD_ICON);
+		addMember(canvasImg);
 		
 	}
 	private void addFetchingAutocompletionsIcon() {
@@ -115,28 +114,32 @@ public class EndpointInputIcon extends HLayout {
 	
 	private void addAutocompletionsFetchedIcon() {
 		resetButtonSpace();
-		Img img = new Img(Imgs.CHECKMARK.get());
-		img.setHeight(16);
-		img.setWidth(16);
-		img.setTooltip("Autocompletion information fetched for this endpoint");
-		addMember(img);
+		canvasImg = new ImgButton();
+		canvasImg.setSrc(Imgs.CHECKMARK.get());
+		canvasImg.setHeight(16);
+		canvasImg.setWidth(16);
+		canvasImg.setShowOverCanvas(false);
+		canvasImg.setShowRollOverIcon(false);
+		canvasImg.setShowDownIcon(false);
+		canvasImg.setTooltip("Autocompletion information fetched for this endpoint");
+		addMember(canvasImg);
 	}
 	private void addFetchingFailedIcon() {
 		resetButtonSpace();
-		ImgButton imgButton = new ImgButton();
-		imgButton.setSrc(Imgs.CROSS.get());
-		imgButton.setHeight(16);
-		imgButton.setWidth(16);
-		imgButton.setShowOverCanvas(false);
-		imgButton.setShowRollOverIcon(false);
-		imgButton.setShowDownIcon(false);
-		imgButton.setTooltip("Unable to fetch predicate autocompletion information for this endpoint. Click to retry");
-		imgButton.addClickHandler(new ClickHandler(){
+		canvasImg = new ImgButton();
+		canvasImg.setSrc(Imgs.CROSS.get());
+		canvasImg.setHeight(16);
+		canvasImg.setWidth(16);
+		canvasImg.setShowOverCanvas(false);
+		canvasImg.setShowRollOverIcon(false);
+		canvasImg.setShowDownIcon(false);
+		canvasImg.setTooltip("Unable to fetch predicate autocompletion information for this endpoint. Click to retry");
+		canvasImg.addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
 				getProperties();
 			}});
-		addMember(imgButton);
+		addMember(canvasImg);
 	}
 	
 	private void resetButtonSpace() {
@@ -152,14 +155,17 @@ public class EndpointInputIcon extends HLayout {
 			addAutocompletionsFetchedIcon();
 		} else {
 			addFetchingAutocompletionsIcon();
-			view.getRemoteService().fetchProperties(endpoint, false, new AsyncCallback<String>() {
-				public void onFailure(Throwable caught) {
-					view.getLogger().severe("failure in getting properties");
-					view.getElements().onError(caught);
+			new GwtCallbackWrapper<String>(view) {
+				public void onCall(AsyncCallback<String> callback) {
+					view.getRemoteService().fetchProperties(endpoint, false, callback);
+				}
+
+				protected void onFailure(Throwable throwable) {
+					view.getElements().onError(throwable);
 					addFetchingFailedIcon();
 				}
-	
-				public void onSuccess(String properties) {
+
+				protected void onSuccess(String properties) {
 					if (properties.length() > 0) {
 						JsMethods.setAutocompleteProperties(endpoint, properties);
 						view.getLogger().severe("we've retrieved properties");
@@ -169,9 +175,21 @@ public class EndpointInputIcon extends HLayout {
 						view.getLogger().severe("empty properties returned");
 					}
 				}
-			});
+
+			}.call();
 		}
 	}
-	
-	
+
+	public void disableRpcElements() {
+		if (canvasImg != null) {
+			canvasImg.setDisabled(true);
+		}
+		
+	}
+
+	public void enableRpcElements() {
+		if (canvasImg != null) {
+			canvasImg.setDisabled(false);
+		}
+	}
 }

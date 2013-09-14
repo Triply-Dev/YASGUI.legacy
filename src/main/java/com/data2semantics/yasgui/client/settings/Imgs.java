@@ -29,6 +29,7 @@ import com.data2semantics.yasgui.shared.StaticConfig;
  */
 
 public enum Imgs {
+	DISCONNECTED("nounproject/disconnected.png"),
 	OUTPUT_TABLE("outputFormats/table.png"),
 	OUTPUT_TABLE_SIMPLE("outputFormats/simpleTable.png"),
 	OUTPUT_RAW("outputFormats/rawResponse.png"),
@@ -81,14 +82,14 @@ public enum Imgs {
 	}
 	
 	public String get() {
-		return path + "?" + StaticConfig.VERSION;
+		return path + "?" + getVersion();
 	}
 	
 	public String getUnprocessed() {
 		return path;
 	}
 	public String getDisabled() {
-		return appendToBasename(path, "Disabled") + "?" + StaticConfig.VERSION;
+		return appendToBasename(path, "Disabled") + "?" + getVersion();
 	}
 
 	/**
@@ -113,5 +114,11 @@ public enum Imgs {
 			path = iconPath.substring(0, lastSlash);
 		}
 		return path + "/" + basename + "_" + append + "." + extension;
+	}
+	
+	private String getVersion() {
+		//replace dot. SmartGWT has some issues when dot is in img url after the '?' 
+		//this messes up the 'Over' and 'Disabled' icons
+		return StaticConfig.VERSION.replace(".", ""); 
 	}
 }

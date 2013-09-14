@@ -27,6 +27,7 @@ package com.data2semantics.yasgui.client.tab;
  */
 
 import com.data2semantics.yasgui.client.QueryTabs;
+import com.data2semantics.yasgui.client.RpcElement;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
@@ -56,7 +57,7 @@ import com.smartgwt.client.widgets.menu.events.ClickHandler;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 import com.smartgwt.client.widgets.tab.Tab;
 
-public class QueryTab extends Tab {
+public class QueryTab extends Tab implements RpcElement {
 	private static final int TOOLTIP_VERSION_SEARCH_ICON = 1;
 	private View view;
 	private QueryTextArea queryTextArea;
@@ -292,5 +293,20 @@ public class QueryTab extends Tab {
 
 	public EndpointInputIcon getEndpointInputIcon() {
 		return endpointInputIcon;
+	}
+
+	public void disableRpcElements() {
+		if (bookmarkedQueries != null) bookmarkedQueries.disableRpcElements();
+		if (linkCreator != null) linkCreator.disableRpcElements();
+		if (addToBookmarks != null) addToBookmarks.disableRpcElements();
+		if (endpointInputIcon != null) endpointInputIcon.disableRpcElements();
+	}
+
+	@Override
+	public void enableRpcElements() {
+		if (bookmarkedQueries != null) bookmarkedQueries.enableRpcElements();
+		if (linkCreator != null) linkCreator.enableRpcElements();
+		if (addToBookmarks != null) addToBookmarks.enableRpcElements();
+		if (endpointInputIcon != null) endpointInputIcon.enableRpcElements();
 	}
 }
