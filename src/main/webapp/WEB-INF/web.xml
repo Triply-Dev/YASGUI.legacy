@@ -16,6 +16,10 @@
 		<servlet-name>sparqlServlet</servlet-name>
 		<servlet-class>com.data2semantics.yasgui.server.servlets.SparqlServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>appcacheServlet</servlet-name>
+		<servlet-class>com.data2semantics.yasgui.server.servlets.AppCacheServlet</servlet-class>
+	</servlet>
 
 	<servlet>
 		<servlet-name>openIdServlet</servlet-name>
@@ -36,6 +40,10 @@
 	<servlet-mapping>
 		<servlet-name>sparqlServlet</servlet-name>
 		<url-pattern>/Yasgui/sparql</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>appcacheServlet</servlet-name>
+		<url-pattern>/Yasgui/manifest.appcache</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>openIdServlet</servlet-name>

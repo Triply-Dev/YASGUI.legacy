@@ -60,6 +60,8 @@ import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.useragent.client.UserAgentAsserter;
+import com.google.gwt.useragent.rebind.UserAgentPropertyGenerator;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
