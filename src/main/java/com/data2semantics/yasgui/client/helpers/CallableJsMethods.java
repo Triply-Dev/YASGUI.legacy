@@ -26,6 +26,7 @@ package com.data2semantics.yasgui.client.helpers;
  * #L%
  */
 
+import com.data2semantics.yasgui.client.ConnectivityHelper.ConnCallback;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 
@@ -81,6 +82,10 @@ public class CallableJsMethods {
 	
 	public boolean isOnline() {
 		return view.getConnHelper().isOnline();
+	}
+	
+	public void checkIsOnline() {
+		view.getConnHelper().checkOnlineStatus();
 	}
 	
 	/**
@@ -250,6 +255,9 @@ public class CallableJsMethods {
 		}
 		$wnd.isOnline = function() {
 			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::isOnline()();
+		}
+		$wnd.checkIsOnline = function() {
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::checkIsOnline()();
 		}
 	}-*/;
 }

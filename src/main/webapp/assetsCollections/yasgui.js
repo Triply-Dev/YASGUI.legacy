@@ -61,20 +61,22 @@ function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader,
 	if (corsEnabled[endpoint]) {
 		uri = endpoint;
 	} else {
-		if (!inDebugMode() && endpointSelectionEnabled() && corsEnabled[endpoint] == false && endpoint.match(/https*:\/\/(localhost|127).*/) != null) {
-			//we are trying to access a local endpoint via the proxy: this won't work...
-			var errorString = "You are trying to send a query to an endpoint installed on your local computer.<br>" +
-					"This only works when the endpoint is <a href=\"http://enable-cors.org/\" target=\"_blank\">CORS enabled</a> or when the endpoint is accessible on the same port as YASGUI (i.e. port 80).<br>" +
-					"Documentation on how to enable CORS for some endpoints:<ul>" +
-					"<li><a href=\"http://4store.org/trac/wiki/SparqlServer\" target=\"_blank\">4store</a></li>" +
-					"<li><a href=\"http://www.openlinksw.com/dataspace/doc/dav/wiki/Main/VirtTipsAndTricksGuideCORSSetup\" target=\"_blank\">virtuoso</a></li>" +
-					"<li>OpenRDF Sesame: not possible yet (see <a href=\"https://openrdf.atlassian.net/browse/SES-1757\" target=\"_blank\">this issue</a>)" +
-					"</ul>" +
-					"Instead, you can also configure the endpoint to run via port 80 (the same as YASGUI)";
-			
+		if (!isOnline()) {
+			//cors disabled and not online: problem!
+			var errorString = "YASGUI is current not connected to the YASGUI server. " +
+				"This mean you can only access endpoints on your own computer (e.g. localhost), which are <a href=\"http://enable-cors.org/\" target=\"_blank\">CORS enabled</a> or which are running on the same port as YASGUI (i.e. port 80).<br>" +
+				"The endpoint you try to access is either not running on your computer, or not CORS-enabled.<br>" +
+				"If it is the latter, the following documentation might helpt you in CORS-enabling your endpoint:<ul>" +
+				"<li><a href=\"http://4store.org/trac/wiki/SparqlServer\" target=\"_blank\">4store</a></li>" +
+				"<li><a href=\"http://www.openlinksw.com/dataspace/doc/dav/wiki/Main/VirtTipsAndTricksGuideCORSSetup\" target=\"_blank\">virtuoso</a></li>" +
+				"<li>OpenRDF Sesame: not possible yet (see <a href=\"https://openrdf.atlassian.net/browse/SES-1757\" target=\"_blank\">this issue</a>)" +
+				"</ul>" +
+				"Instead, you can also configure the endpoint to run via port 80 (the same as YASGUI)";
+	
 			onQueryError(tabId, errorString);
 			return;
 		}
+		
 		//query via proxy
 		ajaxData.push({name: "endpoint", value: endpoint});
 		ajaxData.push({name: "requestMethod", value: requestMethod});
@@ -104,10 +106,24 @@ function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader,
 						clearQueryResult();
 						var errorMsg;
 						if (jqXHR.status == 0 && errorThrown.length == 0) {
+							checkIsOnline();
 							errorMsg = "Error querying endpoint: empty response returned";
 						} else {
 							errorMsg = "Error querying endpoint: "
 									+ jqXHR.status + " - " + errorThrown;
+						}
+						
+						
+						if (!inDebugMode() && endpointSelectionEnabled() && corsEnabled[endpoint] == false && endpoint.match(/https*:\/\/(localhost|127).*/) != null) {
+							//we were trying to access a local endpoint via the proxy: this won't work...
+							errorMsg += "<br><br>A possible reason for this error (next to an incorrect endpoint URL) is that you tried to send a query to an endpoint installed on your computer.<br>" +
+									"This only works when the endpoint is <a href=\"http://enable-cors.org/\" target=\"_blank\">CORS enabled</a> or when the endpoint is accessible on the same port as YASGUI (i.e. port 80).<br>" +
+									"Documentation on how to enable CORS for some endpoints:<ul>" +
+									"<li><a href=\"http://4store.org/trac/wiki/SparqlServer\" target=\"_blank\">4store</a></li>" +
+									"<li><a href=\"http://www.openlinksw.com/dataspace/doc/dav/wiki/Main/VirtTipsAndTricksGuideCORSSetup\" target=\"_blank\">virtuoso</a></li>" +
+									"<li>OpenRDF Sesame: not possible yet (see <a href=\"https://openrdf.atlassian.net/browse/SES-1757\" target=\"_blank\">this issue</a>)" +
+									"</ul>" +
+									"Instead, you can also configure the endpoint to run via port 80 (the same as YASGUI)";
 						}
 						onQueryError(tabId, errorMsg);
 					}
