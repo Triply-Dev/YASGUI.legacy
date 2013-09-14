@@ -309,4 +309,7 @@ public class QueryTab extends Tab implements RpcElement {
 		if (addToBookmarks != null) addToBookmarks.enableRpcElements();
 		if (endpointInputIcon != null) endpointInputIcon.enableRpcElements();
 	}
+	public QueryConfigMenu getQueryConfigMenu() {
+		return queryConfigMenu;
+	}
 }

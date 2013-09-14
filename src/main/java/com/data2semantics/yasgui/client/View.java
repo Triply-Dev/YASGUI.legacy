@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 import com.data2semantics.yasgui.client.helpers.CallableJsMethods;
+import com.data2semantics.yasgui.client.helpers.ChangelogHelper;
 import com.data2semantics.yasgui.client.helpers.GoogleAnalytics;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.HistoryHelper;
@@ -81,6 +82,7 @@ public class View extends VLayout implements RpcElement {
 	private OpenId openId;
 	private HistoryHelper historyHelper = new HistoryHelper(this);
 	private ConnectivityHelper connHelper;
+	private ChangelogHelper changelogHelper;
 
 	public View() {
 		boolean newUser = false;
@@ -118,9 +120,11 @@ public class View extends VLayout implements RpcElement {
 		if (settings.useGoogleAnalytics() && !settings.cookieConsentAnswered() && !Helper.isCrawler()) {
 			getElements().askCookieConsent();
 		}
-
+		
+		changelogHelper = new ChangelogHelper(this);
+		
 		processUrlParameters(newUser);
-
+		
 		getHistory().replaceHistoryState();
 		
 		connHelper.checkOnlineStatus();
@@ -157,6 +161,10 @@ public class View extends VLayout implements RpcElement {
 			getTabs().addTab(tabSettings, true);
 			LocalStorageHelper.storeSettingsInCookie(getSettings());
 		}
+	}
+	
+	public ChangelogHelper getChangelogHelper() {
+		return changelogHelper;
 	}
 
 	private void retrieveSettings() {
