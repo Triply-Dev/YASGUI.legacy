@@ -41,6 +41,7 @@ import com.data2semantics.yasgui.client.settings.TooltipText;
 import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.client.tab.optionbar.LinkCreator;
+import com.data2semantics.yasgui.client.tab.optionbar.endpoints.EndpointInput;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Position;
@@ -176,6 +177,12 @@ public class ViewElements implements RpcElement {
 		}
 		//onblur might not always fire (will have to check that). for now, store query in settings before query execution just to be sure
 		view.getCallableJsMethods().storeQueryInCookie();
+		
+		//the same happens whenever our endpointinput has focus
+		EndpointInput endpointInput = view.getSelectedTab().getEndpointInput();
+		if (endpointInput != null) {
+			endpointInput.storeEndpointInSettings();
+		}
 		
 		String tabId = view.getSelectedTab().getID();
 		String endpoint = view.getSelectedTabSettings().getEndpoint();
