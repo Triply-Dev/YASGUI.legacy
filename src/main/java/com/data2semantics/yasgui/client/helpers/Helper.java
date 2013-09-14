@@ -347,15 +347,14 @@ public class Helper {
 	}
 
 	public static void includeOfflineManifest() {
-		String strongName = GWT.getPermutationStrongName();
-		if (!strongName.equals("HostedMode")) {
-			if (JsMethods.isDevPageLoaded()) {
-				JsMethods.appendManifestIframe("Yasgui/" + GWT.getPermutationStrongName() + ".dev.appcache.html");
-			} else {
-				JsMethods.appendManifestIframe("Yasgui/" + GWT.getPermutationStrongName() + ".appcache.html");
-			}
+		//store strongname in cookie. this way we can use the strongname in the appcache servlet as well
+		//we don't want to use strongname a url parameter in get request, as the user might end up with lots of different appcache things on disk
+		//(as every new version gets a different strongname, every new version will be fetched separately to disk, instead of overwriting the previous appcache)
+		LocalStorageHelper.setStrongName();
+		if (JsMethods.isDevPageLoaded()) {
+			JsMethods.appendManifestIframe("Yasgui/manifest.dev.appcache.html");
 		} else {
-			logger.info("We are in hosted mode. Not including appcache manifest");
+			JsMethods.appendManifestIframe("Yasgui/manifest.appcache.html");
 		}
 		
 	}

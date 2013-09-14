@@ -57,7 +57,6 @@ public class PermutationMapLinker extends AbstractLinker {
 
 	public static final String EXTERNAL_FILES_CONFIGURATION_PROPERTY_NAME = "html5manifestlinker_files";
 	public static final String PERMUTATION_MANIFEST_FILE_ENDING = ".appcache";
-	public static final String PERMUTATION_MANIFEST_HTML_FILE_ENDING = ".appcache.html";
 	public static final String PERMUTATION_FILE_ENDING = ".perm.xml";
 	public static final String MANIFEST_MAP_FILE_NAME = "manifest.map";
 
@@ -118,6 +117,15 @@ public class PermutationMapLinker extends AbstractLinker {
 		Set<String> stableExternalFiles = getStableExternalFiles(logger, context);
 		Set<String> devExternalFiles = getDevExternalFiles(logger, context);
 		
+
+		// build manifest html page for our stable version (included as iframe in our webapp)
+		String appcacheService = "manifest.appcache";
+		String manifestHtmlPage = buildManifestHtmlPage(appcacheService);
+		toReturn.add(emitString(logger, manifestHtmlPage, appcacheService + ".html"));
+		
+		// build manifest html page for our stable version (included as iframe in our webapp)
+		String devManifestHtmlPage = buildManifestHtmlPage(appcacheService + "?type=dev");
+		toReturn.add(emitString(logger, devManifestHtmlPage, "manifest.dev.appcache.html"));
 		
 		Set<String> allPermutationFiles = getAllPermutationFiles(permutationArtifactAsMap);
 
@@ -145,7 +153,7 @@ public class PermutationMapLinker extends AbstractLinker {
 			// build manifest for our stable version
 			String manifestFile = entry.getKey() + PERMUTATION_MANIFEST_FILE_ENDING;
 			@SuppressWarnings("serial")
-			Map<String, String> fallbacks = new HashMap<String, String>(){{put("/", "/index.jsp");}};
+			Map<String, String> fallbacks = new HashMap<String, String>(){{put("/", "../index.jsp");}};
 			String maniFest = buildManiFest(entry.getKey(), stableExternalFiles, filesForCurrentPermutation, fallbacks);
 			toReturn.add(emitString(logger, maniFest, manifestFile));
 			
@@ -154,13 +162,6 @@ public class PermutationMapLinker extends AbstractLinker {
 			String devManiFest = buildManiFest(entry.getKey(), devExternalFiles, filesForCurrentPermutation);
 			toReturn.add(emitString(logger, devManiFest, devManifestFile));
 
-			// build manifest html page for our stable version (included as iframe in our webapp)
-			String manifestHtmlPage = buildManifestHtmlPage(manifestFile);
-			toReturn.add(emitString(logger, manifestHtmlPage, entry.getKey() + PERMUTATION_MANIFEST_HTML_FILE_ENDING));
-			
-			// build manifest html page for our stable version (included as iframe in our webapp)
-			String devManifestHtmlPage = buildManifestHtmlPage(devManifestFile);
-			toReturn.add(emitString(logger, devManifestHtmlPage, entry.getKey() + ".dev" + PERMUTATION_MANIFEST_HTML_FILE_ENDING));
 		}
 
 		toReturn.add(createPermutationMap(logger, map));

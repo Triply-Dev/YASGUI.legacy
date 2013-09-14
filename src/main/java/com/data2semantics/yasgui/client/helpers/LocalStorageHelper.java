@@ -29,20 +29,15 @@ package com.data2semantics.yasgui.client.helpers;
 import java.util.Date;
 
 import com.data2semantics.yasgui.client.settings.Settings;
+import com.data2semantics.yasgui.shared.CookieKeys;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.storage.client.StorageMap;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.datepicker.client.CalendarUtil;
 
 public class LocalStorageHelper {
-	private static String COOKIE_SETTINGS = "settings";
-	private static String COOKIE_TOOLTIPS_SHOWN = "tooltipsShown";
-	private static String COOKIE_PREFIXES = "prefixes";
-	private static String COOKIE_PROPERTIES = "properties";
-	private static String COOKIE_ENDPOINTS = "endpoints";
-	private static String COOKIE_VERSION = "version";
-	private static String COOKIE_VERSION_ID = "versionId";
-	private static String COOKIE_COMPATABILITIES_SHOWN = "compatabilitiesShown";
+
 	
 	private static String LOCAL_STORAGE_EXPIRE_SEPARATOR = "_"; //used to separate content and long value containing timestamp of insertion
 	private static int PREFIXES_EXPIRE_DAYS = 30;
@@ -52,6 +47,7 @@ public class LocalStorageHelper {
 	private static int TOOLTIPS_EXPIRE_DAYS = 1000;
 	private static int COMPATABILITIES_SHOWN_EXPIRE_DAYS = 1000;
 	private static int PROPERTIES_EXPIRE_DAYS = 360;
+	private static int DEFAULT_EXPIRE_DAYS = 1000;
 	private static int UNKNOWN_EXPIRE_DAYS = 30;
 	
 	
@@ -153,29 +149,26 @@ public class LocalStorageHelper {
 		return date;
 	}
 	
-	public static void setAsCookie(String key, String value, int expireDays) {
-		key = Helper.getCurrentHost() + "_" + key;
+	public static String setAsCookie(String key, String value, int expireDays) {
+		return setAsCookie(key, value, expireDays, false);
+	}
+	
+	public static String setAsCookie(String key, String value, int expireDays, boolean prependDomain) {
+		if (prependDomain) key = Helper.getCurrentHost() + "_" + key;
 		Cookies.removeCookie(key);
 		Cookies.setCookie(key, value, getExpireDate(expireDays));
+		return key;
+	}
+	
+	public static String getAsCookie(String key, boolean prependDomain) {
+		if (prependDomain) key = Helper.getCurrentHost() + "_" + key;
+		
+		return Cookies.getCookie(key);
 	}
 	
 	public static String getAsCookie(String key) {
-		String domain = Helper.getCurrentHost();
-		
-		
-		if (Cookies.getCookie(domain + "_" + key) != null) {
-			return Cookies.getCookie(domain + "_" + key);
-		} else if (Cookies.getCookie(key) != null) {
-			//for backwards compatability (i.e. the time when we didnt use the basedomain as part of the key)
-			String value = Cookies.getCookie(key);
-			setAsCookie(key, value, UNKNOWN_EXPIRE_DAYS); //now store it under correct key
-			Cookies.removeCookie(key);//remove old key
-			return value;
-		}
-		return null;
+		return getAsCookie(key, false);
 	}
-	
-	
 
 	/**
 	 * Store settings as json string in cookie. If html5 local storage is possible, use that. 
@@ -185,10 +178,10 @@ public class LocalStorageHelper {
 	 */
 	public static void storeSettingsInCookie(Settings settings) {
 		if (Storage.isLocalStorageSupported()) {
-			setInLocalStorage(COOKIE_SETTINGS, settings.toString(), true);
+			setInLocalStorage(CookieKeys.SETTINGS, settings.toString(), true);
 		} else {
 			//We are using a browser which does not support html5
-			setAsCookie(COOKIE_SETTINGS, settings.toString(), SETTINGS_EXPIRE_DAYS);
+			setAsCookie(CookieKeys.SETTINGS, settings.toString(), SETTINGS_EXPIRE_DAYS, true);
 		}
 	}
 	
@@ -198,16 +191,16 @@ public class LocalStorageHelper {
 	 * @return
 	 */
 	public static String getSettingsStringFromCookie() {
-		String jsonString = getFromLocalStorage(COOKIE_SETTINGS, SETTINGS_EXPIRE_DAYS);
+		String jsonString = getFromLocalStorage(CookieKeys.SETTINGS, SETTINGS_EXPIRE_DAYS);
 		if (jsonString == null) {
 			//We are using a browser which does not support html5
-			jsonString = getAsCookie(COOKIE_SETTINGS);
+			jsonString = getAsCookie(CookieKeys.SETTINGS, true);
 		}
 		return jsonString;
 	}
 	
 	public static void setPrefixes(String prefixes) {
-		setInLocalStorage(COOKIE_PREFIXES, prefixes, true);
+		setInLocalStorage(CookieKeys.PREFIXES, prefixes, true);
 	}
 	
 	/**
@@ -216,12 +209,12 @@ public class LocalStorageHelper {
 	 * @return
 	 */
 	public static String getPrefixesFromLocalStorage() {
-		return getFromLocalStorage(COOKIE_PREFIXES, PREFIXES_EXPIRE_DAYS);
+		return getFromLocalStorage(CookieKeys.PREFIXES, PREFIXES_EXPIRE_DAYS);
 	}
 	
 	
 	public static void setProperties(String endpoint, String properties) {
-		setInLocalStorage(COOKIE_PROPERTIES + "_" + endpoint, properties, true);
+		setInLocalStorage(CookieKeys.PROPERTIES + "_" + endpoint, properties, true);
 	}
 	
 	
@@ -231,7 +224,7 @@ public class LocalStorageHelper {
 	 * @return
 	 */
 	public static String getProperties(String endpoint) {
-		return getFromLocalStorage(COOKIE_PROPERTIES + "_" + endpoint, PROPERTIES_EXPIRE_DAYS);
+		return getFromLocalStorage(CookieKeys.PROPERTIES + "_" + endpoint, PROPERTIES_EXPIRE_DAYS);
 	}
 	
 	
@@ -241,36 +234,36 @@ public class LocalStorageHelper {
 	 * @return
 	 */
 	public static String getEndpointsFromLocalStorage() {
-		return getFromLocalStorage(COOKIE_ENDPOINTS, ENDPOINTS_EXPIRE_DAYS);
+		return getFromLocalStorage(CookieKeys.ENDPOINTS, ENDPOINTS_EXPIRE_DAYS);
 	}
 	
 	public static void setEndpoints(String endpoints) {
-		setInLocalStorage(COOKIE_ENDPOINTS, endpoints, true);
+		setInLocalStorage(CookieKeys.ENDPOINTS, endpoints, true);
 	}
 	
 	public static boolean showTooltips() {
-		return (getAsCookie(COOKIE_TOOLTIPS_SHOWN) == null);
+		return (getAsCookie(CookieKeys.TOOLTIPS_SHOWN, true) == null);
 	}
 	
 	public static void setTooltipsShown() {
-		setAsCookie(COOKIE_TOOLTIPS_SHOWN, "1", TOOLTIPS_EXPIRE_DAYS);
+		setAsCookie(CookieKeys.TOOLTIPS_SHOWN, "1", TOOLTIPS_EXPIRE_DAYS, true);
 	}
 	
 	public static void setVersion(String version) {
-		setAsCookie(COOKIE_VERSION, version, VERSION_EXPIRE_DAYS);
+		setAsCookie(CookieKeys.VERSION, version, VERSION_EXPIRE_DAYS, true);
 	}
 	
 	public static String getVersion() {
-		return getAsCookie(COOKIE_VERSION);
+		return getAsCookie(CookieKeys.VERSION, true);
 	}
 	
 	public static void setVersionId(int version) {
-		setAsCookie(COOKIE_VERSION_ID, Integer.toString(version), VERSION_EXPIRE_DAYS);
+		setAsCookie(CookieKeys.VERSION_ID, Integer.toString(version), VERSION_EXPIRE_DAYS, true);
 	}
 	
 	public static int getVersionId() {
 		int versionId = 0;
-		String versionIdString = getAsCookie(COOKIE_VERSION_ID);
+		String versionIdString = getAsCookie(CookieKeys.VERSION_ID, true);
 		if (versionIdString != null && versionIdString.length() > 0) {
 			versionId = Integer.parseInt(versionIdString);
 		}
@@ -278,12 +271,12 @@ public class LocalStorageHelper {
 	}
 	
 	public static void setCompatabilitiesShown(int versionNumber) {
-		setAsCookie(COOKIE_COMPATABILITIES_SHOWN, Integer.toString(versionNumber), COMPATABILITIES_SHOWN_EXPIRE_DAYS);
+		setAsCookie(CookieKeys.COMPATABILITIES_SHOWN, Integer.toString(versionNumber), COMPATABILITIES_SHOWN_EXPIRE_DAYS, true);
 	}
 	
 	public static int getCompatabilitiesShownVersionNumber() {
 		int versionId = 0;
-		String versionIdString = getAsCookie(COOKIE_COMPATABILITIES_SHOWN);
+		String versionIdString = getAsCookie(CookieKeys.COMPATABILITIES_SHOWN, true);
 		if (versionIdString != null && versionIdString.length() > 0) {
 			versionId = Integer.parseInt(versionIdString);
 		}
@@ -291,7 +284,10 @@ public class LocalStorageHelper {
 	}
 	
 	public static boolean newUser() {
-		return (getAsCookie(COOKIE_VERSION_ID) == null);
+		return (getAsCookie(CookieKeys.VERSION_ID, true) == null);
+	}
+	public static String setStrongName() {
+		return setAsCookie(CookieKeys.GWT_STRONG_NAME, GWT.getPermutationStrongName(), DEFAULT_EXPIRE_DAYS);
 	}
 	
 
