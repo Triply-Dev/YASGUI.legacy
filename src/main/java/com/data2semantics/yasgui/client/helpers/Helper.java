@@ -53,6 +53,8 @@ package com.data2semantics.yasgui.client.helpers;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.logging.Logger;
+
 import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.google.gwt.core.client.GWT;
@@ -69,6 +71,7 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
 
 public class Helper {
+	private static Logger logger = Logger.getLogger(Helper.class.getName());
 	private static String CRAWL_USER_AGENTS = "googlebot|msnbot|baidu|curl|wget|Mediapartners-Google|slurp|ia_archiver|Gigabot|libwww-perl|lwp-trivial|bingbot";
 	private static String PREFIX_PATTERN = "\\s*PREFIX\\s*(\\w*):\\s*<(.*)>\\s*$";
 	/**
@@ -341,5 +344,18 @@ public class Helper {
 			}
 		}
 		return result;
+	}
+
+	public static void includeOfflineManifest() {
+		//store strongname in cookie. this way we can use the strongname in the appcache servlet as well
+		//we don't want to use strongname a url parameter in get request, as the user might end up with lots of different appcache things on disk
+		//(as every new version gets a different strongname, every new version will be fetched separately to disk, instead of overwriting the previous appcache)
+		LocalStorageHelper.setStrongName();
+		if (JsMethods.isDevPageLoaded()) {
+			JsMethods.appendManifestIframe("Yasgui/manifest.dev.appcache.html");
+		} else {
+			JsMethods.appendManifestIframe("Yasgui/manifest.appcache.html");
+		}
+		
 	}
 }

@@ -60,15 +60,17 @@ import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.useragent.client.UserAgentAsserter;
+import com.google.gwt.useragent.rebind.UserAgentPropertyGenerator;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
 
-public class View extends VLayout {
+public class View extends VLayout implements RpcElement {
 	private static int TOP_SPACING = 34;
-	private Logger logger = Logger.getLogger("");
+	private Logger logger = Logger.getLogger(View.class.getName());
 	private YasguiServiceAsync remoteService = YasguiServiceAsync.Util.getInstance();
 	private OpenIdServiceAsync openIdService = OpenIdServiceAsync.Util.getInstance();
 	private EndpointDataSource endpointDataSource;
@@ -78,88 +80,91 @@ public class View extends VLayout {
 	private CallableJsMethods jsEvents;
 	private OpenId openId;
 	private HistoryHelper historyHelper = new HistoryHelper(this);
+	private ConnectivityHelper connHelper;
+
 	public View() {
 		boolean newUser = false;
-		if (LocalStorageHelper.newUser()) newUser = true;
-		
+		if (LocalStorageHelper.newUser())
+			newUser = true;
+
+		Helper.includeOfflineManifest();
+
 		setViewLayout();
-		
+
 		retrieveSettings();
-		
+
 		viewElements = new ViewElements(this);
 		jsEvents = new CallableJsMethods(this);
 		if (getSettings().isDbSet()) {
 			openId = new OpenId(this);
 		}
-		
-		
+
 		processVersionChanges();
 		if (getSettings().useGoogleAnalytics()) {
 			GoogleAnalytics.init(getSettings().getGoogleAnalyticsId());
 		}
 		setOverflow(Overflow.HIDDEN);
-		
-		
+		connHelper = new ConnectivityHelper(this);
 		if (getEnabledFeatures().endpointSelectionEnabled()) {
 			initEndpointDataSource(false);
 		}
 		setAutocompletePrefixes(false);
-		
+
 		initJs();
 
-		
 		queryTabs = new QueryTabs(this);
 		addMember(queryTabs);
-		
-	
+
 		if (settings.useGoogleAnalytics() && !settings.cookieConsentAnswered() && !Helper.isCrawler()) {
 			getElements().askCookieConsent();
 		}
-		
+
 		processUrlParameters(newUser);
-		
+
 		getHistory().replaceHistoryState();
 	}
-	
+
 	private void setViewLayout() {
 		setWidth100();
 		setHeight100();
-		//Setting margins on tabset messes up layout. Therefore use spacer
+		// Setting margins on tabset messes up layout. Therefore use spacer
 		LayoutSpacer spacer = new LayoutSpacer();
 		spacer.setHeight(TOP_SPACING);
-		addMember(spacer);	
+		addMember(spacer);
 	}
-	
+
 	private void processUrlParameters(boolean newUser) {
 		String query = Window.Location.getParameter(SettingKeys.QUERY_STRING);
 		String endpoint = Window.Location.getParameter(SettingKeys.ENDPOINT);
 		if (query != null && endpoint != null && query.length() > 0 && endpoint.length() > 0) {
 			if (newUser) {
-				//If we are a new user, just show the results in the same query tab. Otherwise, show in a new query tab
-				//to do this, we simple remove the only open tab, and re-open a new one
+				// If we are a new user, just show the results in the same query
+				// tab. Otherwise, show in a new query tab
+				// to do this, we simple remove the only open tab, and re-open a
+				// new one
 				QueryTab selectedTab = getSelectedTab();
 				if (selectedTab != null) {
 					queryTabs.removeTab(selectedTab, false, true);
 				}
 			}
-			
+
 			TabSettings tabSettings = new TabSettings(getSettings());
 			tabSettings.setValuesFromUrlParams();
-			
+
 			getSettings().addTabSettings(tabSettings);
 			getTabs().addTab(tabSettings, true);
 			LocalStorageHelper.storeSettingsInCookie(getSettings());
 		}
 	}
-	
-	private void retrieveSettings()  {
+
+	private void retrieveSettings() {
 		try {
 			settings = Settings.retrieveSettings();
 		} catch (IOException e) {
 			getElements().onError(e);
 		}
 	}
-	
+
 	private void processVersionChanges() {
 		final int versionId = LocalStorageHelper.getVersionId();
 		if (versionId < StaticConfig.VERSION_ID) {
@@ -172,14 +177,15 @@ public class View extends VLayout {
 			});
 		} else {
 			String versionString = LocalStorageHelper.getVersion();
-			//the version ID might have stayed the same (no major changes which might have influenced stale caches or needing tooltip popups),
-			//but version string might have been upped. Keep track of this
+			// the version ID might have stayed the same (no major changes which
+			// might have influenced stale caches or needing tooltip popups),
+			// but version string might have been upped. Keep track of this
 			if (!versionString.equals(StaticConfig.VERSION)) {
 				LocalStorageHelper.setVersion(StaticConfig.VERSION);
 			}
 		}
 	}
-	
+
 	public void showTooltips(int fromVersionId) {
 		if (!Helper.isCrawler()) {
 			try {
@@ -191,16 +197,17 @@ public class View extends VLayout {
 			}
 		}
 	}
-	
+
 	private void initJs() {
 		JsMethods.setTabBarProperties(QueryTabs.INDENT_TABS);
 		JsMethods.setProxyUriInVar(GWT.getModuleBaseURL() + "sparql");
 		JsMethods.setQtipZIndex(ZIndexes.HELP_TOOLTIPS);
 	}
+
 	public void showPlayButton(java.lang.Boolean queryValid) {
-		
+
 	}
-	
+
 	public ViewElements getElements() {
 		return this.viewElements;
 	}
@@ -208,7 +215,7 @@ public class View extends VLayout {
 	public YasguiServiceAsync getRemoteService() {
 		return remoteService;
 	}
-	
+
 	public OpenIdServiceAsync getOpenIdService() {
 		return openIdService;
 	}
@@ -220,12 +227,11 @@ public class View extends VLayout {
 	public Settings getSettings() {
 		return this.settings;
 	}
-	
+
 	public void setSettings(Settings settings) {
 		this.settings = settings;
 	}
-	
-	
+
 	/**
 	 * This method is used relatively often, so for easier use put it here
 	 * 
@@ -244,49 +250,67 @@ public class View extends VLayout {
 	public QueryTab getSelectedTab() {
 		return (QueryTab) queryTabs.getSelectedTab();
 	}
-	
+
 	/**
-	 * Load prefixes from the server, and stores in javascript. Used for autocompletion of prefixes
+	 * Load prefixes from the server, and stores in javascript. Used for
+	 * autocompletion of prefixes
 	 * 
 	 * @param forceUpdate
 	 */
-	public void setAutocompletePrefixes(boolean forceUpdate) {
+	public void setAutocompletePrefixes(final boolean forceUpdate) {
 		String prefixes = LocalStorageHelper.getPrefixesFromLocalStorage();
 		if (forceUpdate || prefixes == null) {
 			// get prefixes from server
 			viewElements.onLoadingStart("Fetching prefixes");
-			getRemoteService().fetchPrefixes(forceUpdate, new AsyncCallback<String>() {
-				public void onFailure(Throwable caught) {
-					getElements().onError(caught);
+
+			new GwtCallbackWrapper<String>(this) {
+				public void onCall(AsyncCallback<String> callback) {
+					JsMethods.logConsole("in prefix on call");
+					getRemoteService().fetchPrefixes(forceUpdate, callback);
+					JsMethods.logConsole("after prefix on call");
 				}
-	
-				public void onSuccess(String prefixes) {
+
+				protected void onFailure(Throwable throwable) {
+					JsMethods.logConsole("in prefix on failure");
+					getElements().onError(throwable);
+					JsMethods.logConsole("after prefix on failure");
+				}
+
+				protected void onSuccess(String prefixes) {
+					JsMethods.logConsole("in prefix on success");
 					LocalStorageHelper.setPrefixes(prefixes);
 					JsMethods.setAutocompletePrefixes(prefixes);
 					viewElements.onLoadingFinish();
 				}
-			});
+
+			}.call();
 		} else {
 			JsMethods.setAutocompletePrefixes(prefixes);
 		}
 	}
-	
+
 	/**
-	 * Initialize datasource containing endpoint info. Used in autocompletion input, as well as endpoint search grid
+	 * Initialize datasource containing endpoint info. Used in autocompletion
+	 * input, as well as endpoint search grid
 	 * 
 	 * @param forceUpdate
 	 */
-	public void initEndpointDataSource(boolean forceUpdate) {
+	public void initEndpointDataSource(final boolean forceUpdate) {
 		endpointDataSource = new EndpointDataSource(this);
 		String endpoints = LocalStorageHelper.getEndpointsFromLocalStorage();
 		if (forceUpdate || endpoints == null || endpoints.length() == 0) {
 			// get endpoint data from server
 			viewElements.onLoadingStart("Fetching endpoint data");
-			getRemoteService().fetchEndpoints(forceUpdate, new AsyncCallback<String>() {
-				public void onFailure(Throwable caught) {
-					getElements().onError(caught);
+			new GwtCallbackWrapper<String>(this) {
+				public void onCall(AsyncCallback<String> callback) {
+					getRemoteService().fetchEndpoints(forceUpdate, callback);
 				}
-				public void onSuccess(String endpoints) {
+
+				protected void onFailure(Throwable throwable) {
+					getElements().onError(throwable);
+				}
+
+				protected void onSuccess(String endpoints) {
 					if (endpoints.length() > 0) {
 						LocalStorageHelper.setEndpoints(endpoints);
 						try {
@@ -294,33 +318,28 @@ public class View extends VLayout {
 						} catch (Exception e) {
 							getElements().onError(e);
 						}
-						
+
 					} else {
 						getElements().onError("Failed to retrieve list of endpoints from server");
 					}
 					viewElements.onLoadingFinish();
 				}
-			});
-		} else {
-			try {
-				endpointDataSource.addEndpointsFromJson(endpoints);
-			} catch (Exception e) {
-				getElements().onError(e);
-			}
+
+			}.call();
 		}
 	}
-	
+
 	public EndpointDataSource getEndpointDataSource() {
 		return this.endpointDataSource;
 	}
-	
+
 	public QueryTabs getTabs() {
 		return queryTabs;
 	}
-	
+
 	/**
-	 * For a given endpoint, check whether it is defined in our endpoints datasource.
-	 * If it isnt, add it 
+	 * For a given endpoint, check whether it is defined in our endpoints
+	 * datasource. If it isnt, add it
 	 * 
 	 * @param endpoint
 	 */
@@ -328,36 +347,39 @@ public class View extends VLayout {
 		if (getEnabledFeatures().endpointSelectionEnabled()) {
 			Record[] records = endpointDataSource.getCacheData();
 			boolean exists = false;
-			for (Record record:records) {
+			for (Record record : records) {
 				String recordEndpoint = record.getAttribute(Endpoints.KEY_ENDPOINT);
 				if (recordEndpoint != null && recordEndpoint.equals(endpoint)) {
 					exists = true;
 					break;
 				}
 			}
-			
+
 			if (!exists) {
-				//Ok, so endpoint is not in our datasource. let's add it
+				// Ok, so endpoint is not in our datasource. let's add it
 				ListGridRecord listGridRecord = new ListGridRecord();
 				listGridRecord.setAttribute(Endpoints.KEY_ENDPOINT, endpoint);
-				Record[] newRecords = new Record[records.length+1];
+				Record[] newRecords = new Record[records.length + 1];
 				newRecords[0] = listGridRecord;
 				System.arraycopy(records, 0, newRecords, 1, records.length);
 				endpointDataSource = new EndpointDataSource(this, newRecords);
-				
+
 				if (Storage.isSupported()) {
-					//we have html5. add it to local storage as well so we keep it persistent between sessions
+					// we have html5. add it to local storage as well so we keep
+					// it persistent between sessions
 					String endpointsJsonString = LocalStorageHelper.getEndpointsFromLocalStorage();
 					if (endpointsJsonString == null) {
-						//There are no endpoints in our storage. 
-						//This is kinda strange, but lets create a json array with this new endpoint anyway
+						// There are no endpoints in our storage.
+						// This is kinda strange, but lets create a json array
+						// with this new endpoint anyway
 						JSONArray jsonArray = new JSONArray();
 						JSONObject newEndpointObject = new JSONObject();
 						newEndpointObject.put(Endpoints.KEY_ENDPOINT, new JSONString(endpoint));
 						jsonArray.set(0, newEndpointObject);
 						LocalStorageHelper.setEndpoints(jsonArray.toString());
 					} else {
-						//Prepend the new endpoint to the array in our json object
+						// Prepend the new endpoint to the array in our json
+						// object
 						JSONValue jsonVal = JSONParser.parseStrict(endpointsJsonString);
 						if (jsonVal != null) {
 							JSONArray endpoints = jsonVal.isArray();
@@ -380,25 +402,45 @@ public class View extends VLayout {
 
 	/**
 	 * get openid object
+	 * 
 	 * @return
 	 */
 	public OpenId getOpenId() {
 		return this.openId;
 	}
 
-	
 	/**
 	 * Get java methods callable from JS
+	 * 
 	 * @return
 	 */
 	public CallableJsMethods getCallableJsMethods() {
 		return jsEvents;
-		
+
 	}
+
 	public HistoryHelper getHistory() {
 		return this.historyHelper;
 	}
+
 	public EnabledFeatures getEnabledFeatures() {
 		return getSettings().getEnabledFeatures();
 	}
+
+	public ConnectivityHelper getConnHelper() {
+		return this.connHelper;
+	}
+
+	public void disableRpcElements() {
+		getTabs().disableRpcElements();
+		viewElements.disableRpcElements();
+	}
+
+	@Override
+	public void enableRpcElements() {
+		getTabs().enableRpcElements();
+		viewElements.enableRpcElements();
+
+	}
+
 }

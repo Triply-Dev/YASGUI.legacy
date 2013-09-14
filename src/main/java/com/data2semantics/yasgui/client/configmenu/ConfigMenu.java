@@ -28,6 +28,7 @@ package com.data2semantics.yasgui.client.configmenu;
 
 import java.util.ArrayList;
 
+import com.data2semantics.yasgui.client.RpcElement;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.shared.StaticConfig;
@@ -36,9 +37,12 @@ import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.ClickHandler;
 import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 
-public class ConfigMenu extends Menu {
+public class ConfigMenu extends Menu implements RpcElement {
 	private View view;
 	ArrayList<MenuItem> items = new ArrayList<MenuItem>();
+	private MenuItem refreshMenuItem;
+	private MenuItem logOutMenuItem;
+	private MenuItem logInMenuItem;
 	public ConfigMenu(View view) {
 		this.view = view;
 		addOpenIdItem();
@@ -64,21 +68,21 @@ public class ConfigMenu extends Menu {
 	private void addOpenIdItem() {
 		if (view.getSettings().isDbSet()) {
 			if (view.getOpenId() != null && view.getOpenId().isLoggedIn()) {
-				MenuItem logOut = new MenuItem("Log out");
-				logOut.setIcon(Imgs.LOG_OUT.get());
-				logOut.addClickHandler(new ClickHandler(){
+				logOutMenuItem = new MenuItem("Log out");
+				logOutMenuItem.setIcon(Imgs.LOG_OUT.get());
+				logOutMenuItem.addClickHandler(new ClickHandler(){
 					public void onClick(MenuItemClickEvent event) {
 						view.getOpenId().logOut();
 					}});
-				items.add(logOut);
+				items.add(logOutMenuItem);
 			} else {
-				MenuItem logIn = new MenuItem("Log in");
-				logIn.setIcon(Imgs.LOG_IN.get());
-				logIn.addClickHandler(new ClickHandler(){
+				logInMenuItem = new MenuItem("Log in");
+				logInMenuItem.setIcon(Imgs.LOG_IN.get());
+				logInMenuItem.addClickHandler(new ClickHandler(){
 					public void onClick(MenuItemClickEvent event) {
 						view.getOpenId().showOpenIdProviders();
 					}});
-				items.add(logIn);
+				items.add(logInMenuItem);
 			}
 		}
 	}
@@ -136,8 +140,32 @@ public class ConfigMenu extends Menu {
 		}
 		
 		
-		MenuItem refresh = new MenuItem("Refresh Data", Imgs.REFRESH.get()); 
-		refresh.setSubmenu(refreshSubMenu);
-		items.add(refresh);
+		refreshMenuItem = new MenuItem("Refresh Data", Imgs.REFRESH.get()); 
+		refreshMenuItem.setSubmenu(refreshSubMenu);
+		items.add(refreshMenuItem);
+	}
+
+	public void disableRpcElements() {
+		if (refreshMenuItem != null) {
+			refreshMenuItem.setEnabled(false);
+		}
+		if (logInMenuItem != null) {
+			logInMenuItem.setEnabled(false);
+		}
+		if (logOutMenuItem != null) {
+			logOutMenuItem.setEnabled(false);
+		}
+	}
+
+	public void enableRpcElements() {
+		if (refreshMenuItem != null) {
+			refreshMenuItem.setEnabled(true);
+		}
+		if (logInMenuItem != null) {
+			logInMenuItem.setEnabled(true);
+		}
+		if (logOutMenuItem != null) {
+			logOutMenuItem.setEnabled(true);
+		}
 	}
 }
