@@ -44,4 +44,5 @@ public interface YasguiService extends RemoteService {
 	void updateBookmarks(Bookmark[] bookmarks) throws IllegalArgumentException, FetchException;
 	void deleteBookmarks(int[] bookmarkIds) throws IllegalArgumentException, FetchException;
 	Bookmark[] getBookmarks() throws IllegalArgumentException, FetchException;
+	boolean isOnline() throws IllegalArgumentException;
 }

@@ -63,7 +63,7 @@ import com.smartgwt.client.widgets.tab.events.TabTitleChangedHandler;
 import com.smartgwt.client.widgets.tab.events.TabsReorderedEvent;
 import com.smartgwt.client.widgets.tab.events.TabsReorderedHandler;
 
-public class QueryTabs extends TabSet {
+public class QueryTabs extends TabSet implements RpcElement {
 	private View view;
 	private static boolean STORE_SETTINGS_ON_CLOSE_DEFAULT = true;
 	private ImgButton addTabButton;
@@ -169,7 +169,7 @@ public class QueryTabs extends TabSet {
 		addTabButton = new ImgButton();
 		addTabButton.setSrc(Imgs.ADD_TAB.get());
 		addTabButton.setShowDown(false);
-		addTabButton.setShowRollOver(true);
+		addTabButton.setShowRollOver(false);
 		addTabButton.setWidth(25);
 		
 		addTabButton.setHeight(25);
@@ -405,4 +405,20 @@ public class QueryTabs extends TabSet {
 			queryTab.getAddToBookmarks().setEnabled(true);
 		}
 	}
+
+	public void disableRpcElements() {
+		Tab[] tabs = getTabs();
+		for (Tab tab: tabs) {
+			QueryTab queryTab = (QueryTab) tab;
+			queryTab.disableRpcElements();
+		}
+	}
+	public void enableRpcElements() {
+		Tab[] tabs = getTabs();
+		for (Tab tab: tabs) {
+			QueryTab queryTab = (QueryTab) tab;
+			queryTab.enableRpcElements();
+		}
+	}
+
 }

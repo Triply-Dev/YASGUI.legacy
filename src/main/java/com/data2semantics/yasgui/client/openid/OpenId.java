@@ -2,6 +2,7 @@ package com.data2semantics.yasgui.client.openid;
 
 import java.util.ArrayList;
 
+import com.data2semantics.yasgui.client.GwtCallbackWrapper;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.settings.ZIndexes;
@@ -17,7 +18,6 @@ import com.smartgwt.client.types.Cursor;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.TitleOrientation;
 import com.smartgwt.client.widgets.Button;
-import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -78,28 +78,28 @@ public class OpenId {
 	 * Update login status, and (re)draws widget containing session info (in YASGUI config menu)
 	 */
 	private void updateLoginStatus() {
-		view.getOpenIdService().getCurrentUser(
-		new AsyncCallback<UserDetails>() {
-
-			public void onFailure(Throwable caught) {
-				view.getElements().onError(caught);
+		new GwtCallbackWrapper<UserDetails>(view) {
+			public void onCall(AsyncCallback<UserDetails> callback) {
+				view.getOpenIdService().getCurrentUser(callback);
 			}
 
-			public void onSuccess(UserDetails details) {
+			protected void onFailure(Throwable throwable) {
+				view.getElements().onError(throwable);
+			}
+
+			protected void onSuccess(UserDetails details) {
 				if (details.isLoggedIn()) {
 					loggedIn = true;
 					drawSessionWidgetLoggedIn(details);
 					loggedInCallback();
-					
-					
 				} else {
 					loggedIn = false;
 					drawSessionWidgetLogin();
-					
 				}
 			}
 
-		});
+		}.call();
+		
 
 	}
 
@@ -107,27 +107,27 @@ public class OpenId {
 	 * Try to log in for a given openId service
 	 * @param openIdService
 	 */
-	public void login(String openIdService) {
-		view.getOpenIdService().login(GWT.getHostPageBaseURL(),
-				!GWT.isProdMode(), openIdService,
-				new AsyncCallback<LoginResult>() {
+	public void login(final String openIdService) {
+		new GwtCallbackWrapper<LoginResult>(view) {
+			public void onCall(AsyncCallback<LoginResult> callback) {
+				view.getOpenIdService().login(GWT.getHostPageBaseURL(), !GWT.isProdMode(), openIdService, callback);
+			}
 
-					public void onFailure(Throwable caught) {
-						view.getElements().onError("error " + caught.getMessage());
-					}
+			protected void onFailure(Throwable throwable) {
+				view.getElements().onError(throwable);
+			}
 
-					public void onSuccess(LoginResult result) {
-						if (result.isLoggedIn()) {
-							//already logged in
-						} else {
-							// redirect user to login page
-							Window.Location.assign(result
-									.getAuthenticationLink());
-						}
+			protected void onSuccess(LoginResult result) {
+				if (result.isLoggedIn()) {
+					//already logged in
+				} else {
+					// redirect user to login page
+					Window.Location.assign(result
+							.getAuthenticationLink());
+				}
+			}
 
-					}
-
-				});
+		}.call();
 	}
 
 	/**
@@ -177,12 +177,6 @@ public class OpenId {
 	 */
 	public void showOpenIdProviders() {
 		com.smartgwt.client.widgets.Window window = new com.smartgwt.client.widgets.Window();
-//		window.setScrollbarSize(0);
-//		window.setOverflow(Overflow.HIDDEN);
-//		for (Canvas canvas: window.getItems()) {
-//			canvas.setScrollbarSize(0);
-////			canvas.setOverflow(Overflow.HIDDEN);
-//		}
 		window.setAutoSize(true);
 		window.setOverflow(Overflow.HIDDEN);
 		window.setZIndex(ZIndexes.MODAL_WINDOWS);
