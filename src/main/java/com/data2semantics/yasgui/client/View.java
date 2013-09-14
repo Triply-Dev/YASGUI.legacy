@@ -122,6 +122,8 @@ public class View extends VLayout implements RpcElement {
 		processUrlParameters(newUser);
 
 		getHistory().replaceHistoryState();
+		
+		connHelper.checkOnlineStatus();
 	}
 
 	private void setViewLayout() {

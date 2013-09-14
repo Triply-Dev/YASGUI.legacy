@@ -56,6 +56,17 @@ public class ConnectivityHelper {
 		});
 	}
 	
+	public void checkOnlineStatus() {
+		checkOnlineStatus(new ConnCallback() {
+			
+			@Override
+			public void connectedCallback() {
+				//do nothing
+				
+			}
+		});
+	}
+	
 	public void setIsOnline(boolean isOnline) {
 		if (this.isOnline != isOnline) {
 			this.isOnline = isOnline;
