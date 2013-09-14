@@ -198,6 +198,16 @@ public class LocalStorageHelper {
 		}
 		return jsonString;
 	}
+	public static void clearSettings() {
+		String key = Helper.getCurrentHost() + "_" + CookieKeys.SETTINGS;
+		if (Storage.isLocalStorageSupported()) {
+			Storage html5Storage = Storage.getLocalStorageIfSupported();
+			html5Storage.removeItem(key);
+		} else {
+			//We are using a browser which does not support html5
+			Cookies.removeCookie(key);
+		}
+	}
 	
 	public static void setPrefixes(String prefixes) {
 		setInLocalStorage(CookieKeys.PREFIXES, prefixes, true);

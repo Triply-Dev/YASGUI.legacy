@@ -30,8 +30,10 @@ import java.util.ArrayList;
 
 import com.data2semantics.yasgui.client.RpcElement;
 import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.shared.StaticConfig;
+import com.google.gwt.user.client.Window;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
 import com.smartgwt.client.widgets.menu.events.ClickHandler;
@@ -47,7 +49,7 @@ public class ConfigMenu extends Menu implements RpcElement {
 		this.view = view;
 		addOpenIdItem();
 		addRefreshSubMenu();
-		
+		addResetSettings();
 		addCompatabilityItem();
 		addTooltips();
 		addAboutItem();
@@ -55,6 +57,18 @@ public class ConfigMenu extends Menu implements RpcElement {
 		setItems(items.toArray(new MenuItem[items.size()]));
 	}
 	
+	private void addResetSettings() {
+		MenuItem about = new MenuItem("Reset my settings");
+		about.setIcon(Imgs.CROSS.get());
+		about.addClickHandler(new ClickHandler(){
+			public void onClick(MenuItemClickEvent event) {
+				LocalStorageHelper.clearSettings();
+				Window.Location.reload();
+			}});
+		items.add(about);
+		
+	}
+
 	private void addTooltips() {
 		MenuItem about = new MenuItem("Show help bubbles");
 		about.setIcon(Imgs.TOOLTIP.get());
