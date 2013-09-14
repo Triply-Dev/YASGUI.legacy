@@ -440,5 +440,12 @@ public class JsMethods {
 		}
 		return devPageLoaded; 
 	}-*/;
-	
+
+	public static native boolean offlineSupported() /*-{
+		var supported = true;
+		if ($wnd.applicationCache == undefined || $wnd.applicationCache == null) {
+			supported = false;
+		}
+		return supported;
+	}-*/;
 }
