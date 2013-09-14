@@ -51,12 +51,24 @@ public class ConfigMenu extends Menu implements RpcElement {
 		addRefreshSubMenu();
 		addResetSettings();
 		addCompatabilityItem();
+		addRecentChangelogItem();
 		addTooltips();
 		addAboutItem();
 		
 		setItems(items.toArray(new MenuItem[items.size()]));
 	}
 	
+	private void addRecentChangelogItem() {
+		MenuItem about = new MenuItem("Show recent changes");
+		about.setIcon(Imgs.TOOLTIP.get());
+		about.addClickHandler(new ClickHandler(){
+			public void onClick(MenuItemClickEvent event) {
+				view.getChangelogHelper().draw(); //show from version 0 onwards
+			}});
+		items.add(about);
+		
+	}
+
 	private void addResetSettings() {
 		MenuItem about = new MenuItem("Reset my settings");
 		about.setIcon(Imgs.CROSS.get());

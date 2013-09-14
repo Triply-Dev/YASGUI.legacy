@@ -655,5 +655,8 @@ public class ViewElements implements RpcElement {
 			offlineNotification.show();
 		}
 	}
+	public IconMenuButton getConfigMenu() {
+		return configButton;
+	}
 	
 }

@@ -30,5 +30,6 @@ public class ExternalLinks {
 	public static String GITHUB_PAGE = "http://github.com/LaurensRietveld/yasgui";
 	public static String DATA2SEMANTICS = "http://data2semantics.org";
 	public static String YASGUI_HTML = "http://laurensrietveld.nl/yasgui";
+	public static String YASGUI_CHANGELOG = "http://laurensrietveld.nl/yasgui/changelog.html";
 	
 }
