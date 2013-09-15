@@ -84,8 +84,6 @@ public class ViewElements implements RpcElement {
 	private static int CONSENT_WINDOW_WIDTH = 750;
 	private static int CONSENT_BUTTON_HEIGHT = 40;
 	private static int CONSENT_BUTTON_WIDTH = 175;
-	private static int OFFLINE_WINDOW_HEIGHT = 130;
-	private static int OFFLINE_WINDOW_WIDTH = 750;
 	private Window consentWindow;
 	private HLayout offlineNotification;
 	private Label loading;

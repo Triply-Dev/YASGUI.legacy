@@ -64,6 +64,7 @@ public class ConfigMenu extends Menu implements RpcElement {
 		about.addClickHandler(new ClickHandler(){
 			public void onClick(MenuItemClickEvent event) {
 				view.getChangelogHelper().draw(); //show from version 0 onwards
+				view.showTooltips(StaticConfig.VERSION_ID-1);
 			}});
 		items.add(about);
 		
