@@ -101,7 +101,7 @@ public class View extends VLayout implements RpcElement {
 			openId = new OpenId(this);
 		}
 
-		processVersionChanges();
+		
 		if (getSettings().useGoogleAnalytics()) {
 			GoogleAnalytics.init(getSettings().getGoogleAnalyticsId());
 		}
@@ -122,7 +122,7 @@ public class View extends VLayout implements RpcElement {
 		}
 		
 		changelogHelper = new ChangelogHelper(this);
-		
+		processVersionChanges();
 		processUrlParameters(newUser);
 		
 		getHistory().replaceHistoryState();
