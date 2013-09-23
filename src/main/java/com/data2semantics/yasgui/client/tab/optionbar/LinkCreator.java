@@ -27,6 +27,7 @@ package com.data2semantics.yasgui.client.tab.optionbar;
  */
 
 import java.util.Iterator;
+
 import com.smartgwt.client.types.Positioning;
 import com.smartgwt.client.widgets.AnimationCallback;
 import com.smartgwt.client.widgets.Button;
@@ -50,6 +51,7 @@ import com.data2semantics.yasgui.shared.SettingKeys;
 import com.google.common.collect.TreeMultimap;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class LinkCreator extends ImgButton {
@@ -219,6 +221,7 @@ public class LinkCreator extends ImgButton {
 		while (iterator.hasNext()) {
 			String key = iterator.next();
 			for (String value: args.get(key)) {
+				value = URL.encodeQueryString(value);
 				if (firstItem) {
 					url += "?";
 					firstItem = false;
