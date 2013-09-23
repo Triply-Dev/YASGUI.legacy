@@ -7,7 +7,7 @@
 	<groupId>com.data2semantics.yasgui</groupId>
 	<artifactId>yasgui</artifactId>
 	<packaging>war</packaging>
-	<version>13.07</version><!-- also defined in view.java and index.html -->
+	<version>13.07</version>
 
 	<properties>
 		<!-- Convenience property to set the GWT version -->
@@ -19,6 +19,7 @@
 		<generated-sources>target/generated-sources/gwt</generated-sources>
 		<license.organizationName>Laurens Rietveld</license.organizationName>
 		<license.inceptionYear>2013</license.inceptionYear>
+		
 	</properties>
 
 	<dependencies>
