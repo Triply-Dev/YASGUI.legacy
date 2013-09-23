@@ -18,7 +18,7 @@
 		"defaultGraphs": true,
 		"acceptHeaders": true,
 		"requestMethod": true,
-		"propertyAutocompletion": true	
+		"propertyAutocompletion": false	
 	},
 	"browserTitle": "YASGUI",
 	"singleEndpointMode": false,

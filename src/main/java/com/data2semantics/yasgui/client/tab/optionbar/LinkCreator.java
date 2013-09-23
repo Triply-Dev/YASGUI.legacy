@@ -53,6 +53,7 @@ import com.data2semantics.yasgui.shared.SettingKeys;
 import com.google.common.collect.TreeMultimap;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class LinkCreator extends ImgButton implements RpcElement {
@@ -229,6 +230,7 @@ public class LinkCreator extends ImgButton implements RpcElement {
 		while (iterator.hasNext()) {
 			String key = iterator.next();
 			for (String value: args.get(key)) {
+				value = URL.encodeQueryString(value);
 				if (firstItem) {
 					url += "?";
 					firstItem = false;

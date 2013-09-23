@@ -45,6 +45,9 @@
 <!-- Code for efficiently looping through all tokens (used for removing comments) -->
 <script src="assets/codemirror/addon/runmode/runmode.js?<% out.print(StaticConfig.VERSION); %>"></script>
 
+<!-- Code for efficiently looping through all tokens (used for removing comments) -->
+<script src="externals/codemirror/util/runmode.js"></script>
+
 <!-- Flint code for sparql mode -->
 <script src="assets/flint/sparql.js?<% out.print(StaticConfig.VERSION); %>"></script>
 <link rel="stylesheet" href="assets/flint/sparql.css?<% out.print(StaticConfig.VERSION); %>">
