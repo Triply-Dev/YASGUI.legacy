@@ -247,10 +247,10 @@ public class QueryConfigMenu extends IconMenuButton {
 		selectCsv.setCheckIfCondition(getContentTypeCheckIfCondition(false, CONTENT_TYPE_SELECT_CSV));
 		selectTsv.setCheckIfCondition(getContentTypeCheckIfCondition(false, CONTENT_TYPE_SELECT_TSV));
 		
-		selectJson.addClickHandler(getContentTypeClickHandler(CONTENT_TYPE_SELECT_JSON));
-		selectXml.addClickHandler(getContentTypeClickHandler(CONTENT_TYPE_SELECT_XML));
-		selectCsv.addClickHandler(getContentTypeClickHandler(CONTENT_TYPE_SELECT_CSV));
-		selectTsv.addClickHandler(getContentTypeClickHandler(CONTENT_TYPE_SELECT_TSV));
+		selectJson.addClickHandler(getContentTypeClickHandler(false, CONTENT_TYPE_SELECT_JSON));
+		selectXml.addClickHandler(getContentTypeClickHandler(false, CONTENT_TYPE_SELECT_XML));
+		selectCsv.addClickHandler(getContentTypeClickHandler(false, CONTENT_TYPE_SELECT_CSV));
+		selectTsv.addClickHandler(getContentTypeClickHandler(false, CONTENT_TYPE_SELECT_TSV));
 
 		acceptHeadersSubMenu.setItems(selectXml, selectJson, selectCsv, selectTsv);
 		return acceptHeadersSubMenu;
@@ -263,19 +263,24 @@ public class QueryConfigMenu extends IconMenuButton {
 		constructCsv.setCheckIfCondition(getContentTypeCheckIfCondition(true, CONTENT_TYPE_SELECT_CSV));
 		constructTsv.setCheckIfCondition(getContentTypeCheckIfCondition(true, CONTENT_TYPE_SELECT_TSV));
 		
-		constructTurtle.addClickHandler(getContentTypeClickHandler(CONTENT_TYPE_CONSTRUCT_TURTLE));
-		constructXml.addClickHandler(getContentTypeClickHandler(CONTENT_TYPE_CONSTRUCT_XML));
-		constructCsv.addClickHandler(getContentTypeClickHandler(CONTENT_TYPE_SELECT_CSV));
-		constructTsv.addClickHandler(getContentTypeClickHandler(CONTENT_TYPE_SELECT_TSV));
+		constructTurtle.addClickHandler(getContentTypeClickHandler(true, CONTENT_TYPE_CONSTRUCT_TURTLE));
+		constructXml.addClickHandler(getContentTypeClickHandler(true, CONTENT_TYPE_CONSTRUCT_XML));
+		constructCsv.addClickHandler(getContentTypeClickHandler(true, CONTENT_TYPE_SELECT_CSV));
+		constructTsv.addClickHandler(getContentTypeClickHandler(true, CONTENT_TYPE_SELECT_TSV));
 		
 		acceptHeadersSubMenu.setItems(constructTurtle, constructXml, constructCsv, constructTsv);
 		return acceptHeadersSubMenu;
 	}
 	
-	private ClickHandler getContentTypeClickHandler(final String contentType) {
+	private ClickHandler getContentTypeClickHandler(final boolean isConstruct, final String contentType) {
 		return new ClickHandler() {
 			@Override
 			public void onClick(MenuItemClickEvent event) {
+				if (isConstruct) {
+					view.getSelectedTabSettings().setConstructContentType(contentType);
+				} else {
+					view.getSelectedTabSettings().setSelectContentType(contentType);
+				}
 				view.getSelectedTabSettings().setConstructContentType(contentType);
 				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
 				view.getSelectedTab().adaptInterfaceToQueryType();
@@ -283,11 +288,11 @@ public class QueryConfigMenu extends IconMenuButton {
 		};
 	}
 	
-	private MenuItemIfFunction getContentTypeCheckIfCondition(final boolean construct, final String contentType) {
+	private MenuItemIfFunction getContentTypeCheckIfCondition(final boolean isConstruct, final String contentType) {
 		return new MenuItemIfFunction(){
 			@Override
 			public boolean execute(Canvas target, Menu menu, MenuItem item) {
-				if (construct) {
+				if (isConstruct) {
 					return view.getSelectedTabSettings().getConstructContentType().equals(contentType);
 				} else {
 					return view.getSelectedTabSettings().getSelectContentType().equals(contentType);
