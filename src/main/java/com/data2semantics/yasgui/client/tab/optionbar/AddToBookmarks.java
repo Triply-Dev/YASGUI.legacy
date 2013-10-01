@@ -94,10 +94,10 @@ public class AddToBookmarks extends Img {
 			public void onClick(ClickEvent event) {
 				if (enabled) {
 					window = new Window();
+					window.setShowHeader(false);
 					window.setZIndex(ZIndexes.MODAL_WINDOWS);
 					window.setIsModal(true);
 					window.setDismissOnOutsideClick(true);
-					window.setShowHeader(false);
 					int left = (getAbsoluteLeft() + ICON_WIDTH) - WINDOW_WIDTH;
 					int top = getAbsoluteTop() + ICON_HEIGHT;
 					window.setRect(left, top, WINDOW_WIDTH, WINDOW_HEIGHT);
