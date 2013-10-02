@@ -69,7 +69,7 @@ public class About extends Window {
 		middleSpacer.setWidth(40);
 		hLayout.addMember(middleSpacer);
 		
-		hLayout.addMember(view.getElements().getYasguiLogo(45, "Show YASGUI page"));
+		hLayout.addMember(view.getElements().getYasguiLogo(45, "Show YASGUI page", "aboutYasguiLogo"));
 		
 		
 		hLayout.addMember(middleSpacer);

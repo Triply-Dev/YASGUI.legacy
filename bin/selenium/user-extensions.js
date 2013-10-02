@@ -140,7 +140,6 @@ Selenium.prototype.doClick = function(locator, eventParams)
 {
     LOG.info("Located in doScClick : " + locator);
     var element = this.page().findElement(locator);
-
     if(this.isSCLocator(locator)) {
         var autWindow = this.getAutWindow();
       
@@ -413,7 +412,8 @@ Selenium.prototype.doMouseOver = function(locator, eventParams) {
 
     LOG.info("Locator in doMouseOver : " + locator);
     var element = this.page().findElement(locator);
-    if(this.hasSC()) {
+    //if(this.hasSC()) {
+	if (this.isSCLocator(locator)) {
         var autWindow = this.getAutWindow();
         var canvas = autWindow.isc.AutoTest.locateCanvasFromDOMElement(element);
         if(canvas == null) {
@@ -443,10 +443,10 @@ Selenium.prototype.doMouseMove = function(locator, eventParams) {
    *
    * @param locator an <a href="#locators">element locator</a>
    */
-
     LOG.info("Locator in doMouseMove : " + locator);
     var element = this.page().findElement(locator);
-    if(this.hasSC()) {
+    if(this.isSCLocator(locator)) {
+		LOG.info("new mouse move");
         var autWindow = this.getAutWindow();
         var canvas = autWindow.isc.AutoTest.locateCanvasFromDOMElement(element);
         if(canvas == null) {
@@ -464,6 +464,7 @@ Selenium.prototype.doMouseMove = function(locator, eventParams) {
         this.browserbot.triggerMouseEvent(element, "mousemove", true, clientX, clientY);
         autWindow.isc.EH.immediateMouseMove = null;
     } else {
+		LOG.info("orig mouse move");
         this.orig_doMouseMove(locator);
     }
 

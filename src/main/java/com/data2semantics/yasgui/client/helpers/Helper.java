@@ -356,6 +356,14 @@ public class Helper {
 		} else {
 			JsMethods.appendManifestIframe("Yasgui/manifest.appcache.html");
 		}
-		
+	}
+	
+	public static boolean isSeleniumVisitor() {
+		boolean isSeleniumVisitor = false;
+		String seleniumParam = Window.Location.getParameter("sc_selenium");
+		if (seleniumParam != null && seleniumParam.equals("true")) {
+			isSeleniumVisitor = true;
+		}
+		return isSeleniumVisitor;
 	}
 }
