@@ -277,6 +277,7 @@
 					</execution>
 				</executions>
 				<configuration>
+					<encoding>utf-8</encoding>
 					<jswarn>false</jswarn>
 					<sourceDirectory>${project.basedir}/src/main/webapp/assets</sourceDirectory>
 					<warSourceDirectory>${project.basedir}/src/main/webapp/assets</warSourceDirectory>
