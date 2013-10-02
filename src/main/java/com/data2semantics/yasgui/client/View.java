@@ -61,8 +61,6 @@ import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.useragent.client.UserAgentAsserter;
-import com.google.gwt.useragent.rebind.UserAgentPropertyGenerator;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
@@ -275,19 +273,14 @@ public class View extends VLayout implements RpcElement {
 
 			new GwtCallbackWrapper<String>(this) {
 				public void onCall(AsyncCallback<String> callback) {
-					JsMethods.logConsole("in prefix on call");
 					getRemoteService().fetchPrefixes(forceUpdate, callback);
-					JsMethods.logConsole("after prefix on call");
 				}
 
 				protected void onFailure(Throwable throwable) {
-					JsMethods.logConsole("in prefix on failure");
 					getElements().onError(throwable);
-					JsMethods.logConsole("after prefix on failure");
 				}
 
 				protected void onSuccess(String prefixes) {
-					JsMethods.logConsole("in prefix on success");
 					LocalStorageHelper.setPrefixes(prefixes);
 					JsMethods.setAutocompletePrefixes(prefixes);
 					viewElements.onLoadingFinish();

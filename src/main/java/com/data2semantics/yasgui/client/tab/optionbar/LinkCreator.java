@@ -87,6 +87,7 @@ public class LinkCreator extends ImgButton implements RpcElement {
 			@Override
 			public void onClick(ClickEvent event) {
 				window = new Window();
+				window.setID("linkCreatorWindow");
 				window.setShowHeader(false);
 				window.setZIndex(ZIndexes.MODAL_WINDOWS);
 				window.setTitle("Get link");
@@ -133,6 +134,7 @@ public class LinkCreator extends ImgButton implements RpcElement {
 
 	private Button getShortenUrlButton() {
 		shortenUrlButton = new Button("Shorten url");
+		shortenUrlButton.setID("shortenUrlButton");
 		shortenUrlButton.setWidth(75);
 		shortenUrlButton.addClickHandler(new ClickHandler(){
 			@Override
@@ -164,6 +166,7 @@ public class LinkCreator extends ImgButton implements RpcElement {
 		urlTextBoxAnim = new Canvas(); 
 		urlTextBoxAnim.setWidth100();
 		DynamicForm form = new DynamicForm();
+		form.setID("linkCreatorForm");
 		form.setWidth100();
 
 		urlTextBox = new TextItem();
