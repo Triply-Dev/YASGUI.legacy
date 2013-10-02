@@ -46,7 +46,7 @@ function runSelenium($deployConfigs) {
 		//run selenium test
 		$result = shell_exec("mvn test -DskipTests=false");
 		if (file_exists("errorOutput.txt") && strpos(file_get_contents("errorOutput.txt"), "error:") !== false) {
-			Helper::mailError(__FILE__, __LINE__, "Unable to run selenium tests: \n".file_get_contents("errorOutput.txt"));
+			Helper::mailError(__FILE__, __LINE__, "Unable to run selenium tests: \n".str_replace("\n", "<br>", file_get_contents("errorOutput.txt")));
 		}
 	}
 }
@@ -80,7 +80,7 @@ function pull() {
 	shell_exec("rm errorOutput.txt");//remove previous log
 	$result = shell_exec("git pull 2> errorOutput.txt");
 	if (file_exists("errorOutput.txt") && strpos(file_get_contents("errorOutput.txt"), "error:") !== false) {
-		Helper::mailError(__FILE__, __LINE__, "Unable to pull from git: \n".file_get_contents("errorOutput.txt"));
+		Helper::mailError(__FILE__, __LINE__, "Unable to pull from git: \n".str_replace("\n", "<br>", file_get_contents("errorOutput.txt")));
 	}
 }
 
@@ -93,7 +93,7 @@ function package($deployConfig) {
 	}
 	$succes = shell_exec("mvn clean package 2> errorOutput.txt");
 	if (!$succes || strpos($succes, "BUILD FAILURE")) {
-		Helper::mailError(__FILE__, __LINE__, "Unable to compile ".$argv[1]." project: \n".file_get_contents("errorOutput.txt")."\n".$succes);
+		Helper::mailError(__FILE__, __LINE__, "Unable to compile ".$argv[1]." project: \n".str_replace("\n", "<br>", file_get_contents("errorOutput.txt"))."\n".$succes);
 	}
 }
 
