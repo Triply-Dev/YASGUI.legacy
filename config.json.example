@@ -1,4 +1,5 @@
 {
+	"checkSelenium": false,
 	"mailSettings": {
 		"username": "",
 		"password": "",
@@ -23,6 +24,7 @@
 		],
 		"dev": [
 			{
+				"checkSeleniumHost": "http://host",
 				"src": "/home/lrd900/gitCode/yasgui_dev",
 				"target": "/usr/share/tomcat7/webapps/yasgui-dev",
 				"overwriteConfig" : {
@@ -30,8 +32,8 @@
 				}
 			},
 			{
-				"src": "/home/lrd900/gitCode/yasgui_dev",
-				"target": "/usr/share/tomcat7/webapps/yasgui-dev",
+				"src": "/home/lrd900/gitCode/yasgui_dev2",
+				"target": "/usr/share/tomcat7/webapps/yasgui-dev2",
 				"compileDetailed": true,
 				"overwriteConfig" : {
 				

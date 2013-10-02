@@ -13,17 +13,43 @@ error_reporting(E_ERROR);
 include_once __DIR__.'/Helper.php';
 $config = Helper::getConfig();
 
+$seleniumRuns = array();
 if (count($cleanedArgs) > 1) {
         if (is_array($config['deployTargets'][$cleanedArgs[1]])) {
                 foreach ($config['deployTargets'][$cleanedArgs[1]] as $deployConfig) {
                 	echo "\n== deploying to target ".$deployConfig['target']."\n";
+                	if (array_key_exists("checkSeleniumHost",$deployConfig)) $seleniumRuns[] = $deployConfig;
                     compileAndDeploy($deployConfig);
                 }
         }
 } else {
         echo "not enough arguments: \n ./CompileAndDeploy <branch>\n";
 }
+runSelenium($seleniumRuns);
 
+function runSelenium($deployConfigs) {
+	global $config;
+	
+	foreach ($deployConfigs as $deployConfig) {
+		//create java props array
+		$propsArray = array();
+		$propsArray[] = "sendMail=true";
+		$propsArray[] = "mailUserName=".$config['mailSettings']['username'];
+		$propsArray[] = "mailPassword=".$config['mailSettings']['password'];
+		$propsArray[] = "mailSendTo=".$config['mailSettings']['to'];
+		$propsArray[] = "checkHost=".$deployConfig['checkSeleniumHost'];
+		
+		//write props to file
+		chdir($deployConfig['src']);
+		file_put_contents("bin/selenium/selenium.properties", implode("\n", $propsArray));
+		
+		//run selenium test
+		$result = shell_exec("mvn test -DskipTests=false");
+		if (file_exists("errorOutput.txt") && strpos(file_get_contents("errorOutput.txt"), "error:") !== false) {
+			Helper::mailError(__FILE__, __LINE__, "Unable to run selenium tests: \n".file_get_contents("errorOutput.txt"));
+		}
+	}
+}
 
 function compileAndDeploy($deployConfig) {
 	
@@ -48,7 +74,7 @@ function compileAndDeploy($deployConfig) {
 }
 
 function checkout() {
-	shell_exec("git checkout");
+	shell_exec("git checkout .");
 }
 function pull() {
 	shell_exec("rm errorOutput.txt");//remove previous log
