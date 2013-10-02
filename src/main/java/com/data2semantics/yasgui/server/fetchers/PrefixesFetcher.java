@@ -44,6 +44,7 @@ import org.json.JSONTokener;
 import com.data2semantics.yasgui.server.Helper;
 
 public class PrefixesFetcher {
+	public static String PREFIX_FETCH_EXCEPTION_MSG = "Unable to fetch prefixes";
 	public static String CACHE_FILENAME = "prefixes.json";
 	public static String PREFIX_CC_URL = "http://prefix.cc/popular/all.file.json";
 	private static int CACHE_EXPIRES_DAYS = 10;//cache expires after 1 day

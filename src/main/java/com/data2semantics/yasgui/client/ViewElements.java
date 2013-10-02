@@ -76,6 +76,7 @@ public class ViewElements implements RpcElement {
 	private LinkCreator linkCreator;
 	public IconMenuButton configButton;
 	public static String DEFAULT_LOADING_MESSAGE = "Loading...";
+	public static String CONFIG_MENU_LABEL = "Configure YASGUI";
 	private static int QUERY_BUTTON_POS_TOP = 5;
 	private static int QUERY_BUTTON_POS_RIGHT = 2;
 	private static int QUERY_BUTTON_HEIGHT = 48;
@@ -303,6 +304,7 @@ public class ViewElements implements RpcElement {
 	
 	private Window getErrorWindow() {
 		final Window window = new Window();
+		window.setID("errorWindow");
 		window.setDismissOnOutsideClick(true);
 		window.setIsModal(true);
 		window.setZIndex(ZIndexes.MODAL_WINDOWS);
@@ -330,10 +332,13 @@ public class ViewElements implements RpcElement {
 	 */
 	public void onQueryError(String error, final String endpoint, final String query, final String argsString) {
 		final Window window = getErrorWindow();
+		window.setWidth(350);
 		window.setZIndex(ZIndexes.MODAL_WINDOWS);
 		VLayout vLayout = new VLayout();
 		vLayout.setWidth100();
-		Label label = new Label(error);
+		Label label = new Label();
+		label.setID("queryErrorMessage");
+		label.setContents(error);
 		label.setMargin(4);
 		label.setHeight100();
 		label.setWidth100();
@@ -363,13 +368,12 @@ public class ViewElements implements RpcElement {
 		buttons.setLayoutAlign(Alignment.CENTER);
 		vLayout.addMember(buttons);
 		window.addItem(vLayout);
-		window.setWidth(350);
 		window.draw();
 	}
 
 	
 	public void addLogo() {
-		HTMLFlow html = getYasguiLogo(31, "Show YASGUI page");
+		HTMLFlow html = getYasguiLogo(31, "Show YASGUI page", "mainYasguiLogo");
 		html.getElement().getStyle().setPosition(Position.ABSOLUTE);
 		html.getElement().getStyle().setTop(-2, Unit.PX);
 		html.getElement().getStyle().setLeft(4, Unit.PX);
@@ -383,10 +387,11 @@ public class ViewElements implements RpcElement {
 		}
 	}
 	
-	public HTMLFlow getYasguiLogo(int fontSize, String title) {
+	public HTMLFlow getYasguiLogo(int fontSize, String title, String id) {
 		HTMLFlow html = new HTMLFlow();
+		html.setID(id);
 		html.setContents("<span title='" + title + "' style=\"font-family: 'Audiowide'; font-size: " + fontSize + "px;cursor:pointer;\" onclick=\"window.open('" + ExternalLinks.YASGUI_HTML +  "')\">YASGUI</span>");
-		html.setWidth(100);
+		html.setWidth(140);
 		html.setHeight(30);
 		return html;
 	}
@@ -526,7 +531,7 @@ public class ViewElements implements RpcElement {
 			icon = Imgs.TOOLS.get();
 		}
 		
-		String label = "Configure YASGUI";
+		String label = CONFIG_MENU_LABEL;
 		if (!view.getSettings().isDbSet()) {
 			//openid not supported. leave label as-is
 		} else if (view.getOpenId() != null && view.getOpenId().isLoggedIn()) {

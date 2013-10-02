@@ -68,7 +68,7 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 			prefixes = PrefixesFetcher.fetch(forceUpdate, new File(getServletContext().getRealPath(CACHE_DIR)));
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, "exception", e);
-			throw new FetchException("Unable to fetch prefixes", e);
+			throw new FetchException(PrefixesFetcher.PREFIX_FETCH_EXCEPTION_MSG, e);
 		}
 		return prefixes;
 	}
