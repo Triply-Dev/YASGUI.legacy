@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 
+import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.JsonHelper;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
@@ -162,7 +163,7 @@ public class Settings extends JsonHelper {
 	
 	public boolean useGoogleAnalytics() {
 		String analyticsId = getGoogleAnalyticsId();
-		return (analyticsId != null && analyticsId.length() > 0 && getTrackingConsent());
+		return (analyticsId != null && analyticsId.length() > 0 && !Helper.isSeleniumVisitor() && getTrackingConsent());
 	}
 	
 	public void setTrackingConsent(boolean consent) {
