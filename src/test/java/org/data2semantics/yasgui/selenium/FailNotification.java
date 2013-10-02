@@ -91,7 +91,8 @@ public class FailNotification {
 		failInfo += "<strong>Browser:</strong> " + SeleniumBase.runningBrowser + "<br>";
 		failInfo += "<strong>Exception:</strong> " + exception.getMessage() + "<br>";
 		failInfo += "<hr>";
-		failInfo += "<strong>Stack trace:</strong><br>" + ExceptionUtils.getStackTrace(exception);
+		failInfo += "<strong>Stack trace:</strong><br>";
+		failInfo += ExceptionUtils.getStackTrace(exception).replaceAll("(\r\n|\n)", "<br />");
 	}
 
 	private String getSubject() {
