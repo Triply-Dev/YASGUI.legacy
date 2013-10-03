@@ -12,7 +12,7 @@ foreach ($argv as $arg) {
 error_reporting(E_ERROR);
 include_once __DIR__.'/Helper.php';
 $config = Helper::getConfig();
-
+$deploymentsComplete = array();
 $seleniumRuns = array();
 if (count($cleanedArgs) > 1) {
         if (is_array($config['deployTargets'][$cleanedArgs[1]])) {
@@ -20,12 +20,21 @@ if (count($cleanedArgs) > 1) {
                 	echo "\n== deploying to target ".$deployConfig['target']."\n";
                 	if (array_key_exists("checkSeleniumHost",$deployConfig)) $seleniumRuns[] = $deployConfig;
                     compileAndDeploy($deployConfig);
+                    $deploymentsComplete[] = $deployConfig['target'];
                 }
         }
 } else {
         echo "not enough arguments: \n ./CompileAndDeploy <branch>\n";
 }
-runSelenium($seleniumRuns);
+$seleniumResults = runSelenium($seleniumRuns);
+$subject = "Succesfully deployed YASGUI as ".$argv[1]." on ".gethostname();
+$body = "<strong>Modes deployed</strong>: <br>".implode("<br>", $deploymentsComplete);
+if (strlen($seleniumResults)) {
+	$body .= "<strong>Selenium failed</strong>:<br>".$seleniumResults;
+} else {
+	$body .= "<i>selenium tests success</i>";
+}
+Helper::sendMail($subject, $body);
 
 function runSelenium($deployConfigs) {
 	global $config;
@@ -44,9 +53,10 @@ function runSelenium($deployConfigs) {
 		file_put_contents("bin/selenium/selenium.properties", implode("\n", $propsArray));
 		
 		//run selenium test
-		$result = shell_exec("mvn test -DskipTests=false");
+		shell_exec("rm errorOutput.txt");//remove previous log
+		$result = shell_exec("mvn test -DskipTests=false 2> errorOutput.txt");
 		if (file_exists("errorOutput.txt") && strpos(file_get_contents("errorOutput.txt"), "error:") !== false) {
-			Helper::mailError(__FILE__, __LINE__, "Unable to run selenium tests: \n".str_replace("\n", "<br>", file_get_contents("errorOutput.txt")));
+			return "Unable to run selenium tests: \n".str_replace("\n", "<br>", file_get_contents("errorOutput.txt"));
 		}
 	}
 }
@@ -68,9 +78,7 @@ function compileAndDeploy($deployConfig) {
 	
 	echo "deploying to tomcat\n";
 	deployToTomcat($yasguiDir, $deployConfig);
-	$subject = "Succesfully deployed YASGUI as ".$argv[1]." on ".gethostname();
-	$body = $subject."\nmode: ".$deployConfig['target'];
- 	Helper::sendMail($subject, $body);
+	
 }
 
 function checkout() {
