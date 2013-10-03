@@ -30,6 +30,8 @@ import java.util.ArrayList;
 
 import com.data2semantics.yasgui.client.RpcElement;
 import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.client.helpers.Helper;
+import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.shared.StaticConfig;
@@ -49,6 +51,9 @@ public class ConfigMenu extends Menu implements RpcElement {
 		this.view = view;
 		addOpenIdItem();
 		addRefreshSubMenu();
+		if (JsMethods.offlineSupported()) {
+			addOfflineCachingEnabledItem();
+		}
 		addResetSettings();
 		addCompatabilityItem();
 		addRecentChangelogItem();
@@ -58,15 +63,36 @@ public class ConfigMenu extends Menu implements RpcElement {
 		setItems(items.toArray(new MenuItem[items.size()]));
 	}
 	
+	private void addOfflineCachingEnabledItem() {
+		MenuItem offlineEnabled;
+		if (view.getSettings().getEnabledFeatures().offlineCachingEnabled()) {
+			offlineEnabled = new MenuItem("Disable offline caching");
+			offlineEnabled.setIcon(Imgs.CHECKMARK.get());
+		} else {
+			offlineEnabled = new MenuItem("Enable offline caching");
+			offlineEnabled.setIcon(Imgs.CROSS.get());
+		}
+		offlineEnabled.addClickHandler(new ClickHandler(){
+			public void onClick(MenuItemClickEvent event) {
+				view.getSettings().getEnabledFeatures().setOfflineCachingEnabled(!view.getSettings().getEnabledFeatures().offlineCachingEnabled());
+				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+				view.getElements().redrawConfigMenu();
+				if (view.getSettings().getEnabledFeatures().offlineCachingEnabled()) {
+					Helper.includeOfflineManifest();
+				}
+			}});
+		items.add(offlineEnabled);
+	}
+
 	private void addRecentChangelogItem() {
-		MenuItem about = new MenuItem("Show recent changes");
-		about.setIcon(Imgs.TOOLTIP.get());
-		about.addClickHandler(new ClickHandler(){
+		MenuItem reset = new MenuItem("Show recent changes");
+		reset.setIcon(Imgs.TOOLTIP.get());
+		reset.addClickHandler(new ClickHandler(){
 			public void onClick(MenuItemClickEvent event) {
 				view.getChangelogHelper().draw(); //show from version 0 onwards
 				view.showTooltips(StaticConfig.VERSION_ID-1);
 			}});
-		items.add(about);
+		items.add(reset);
 		
 	}
 

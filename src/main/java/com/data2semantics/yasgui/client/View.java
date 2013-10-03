@@ -86,8 +86,8 @@ public class View extends VLayout implements RpcElement {
 		boolean newUser = false;
 		if (LocalStorageHelper.newUser())
 			newUser = true;
-
-		Helper.includeOfflineManifest();
+		
+		if (getSettings().getEnabledFeatures().offlineCachingEnabled()) Helper.includeOfflineManifest();
 
 		setViewLayout();
 
