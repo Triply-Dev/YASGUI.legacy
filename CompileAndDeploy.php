@@ -30,9 +30,9 @@ $seleniumResults = runSelenium($seleniumRuns);
 $subject = "Succesfully deployed YASGUI as ".$argv[1]." on ".gethostname();
 $body = "<strong>Modes deployed</strong>: <br>".implode("<br>", $deploymentsComplete);
 if (strlen($seleniumResults)) {
-	$body .= "<strong>Selenium failed</strong>:<br>".$seleniumResults;
+	$body .= "<br><strong>Selenium failed</strong>:<br>".$seleniumResults;
 } else {
-	$body .= "<i>selenium tests success</i>";
+	$body .= "<br><strong>selenium tests success</strong>";
 }
 Helper::sendMail($subject, $body);
 
