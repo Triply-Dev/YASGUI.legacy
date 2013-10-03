@@ -227,6 +227,9 @@ public class PermutationMapLinker extends AbstractLinker {
 				pathName.startsWith("rpcPolicyManifest") || 
 				pathName.startsWith("soycReport") || 
 				pathName.endsWith(".cssmap") ||
+				pathName.contains("sc/system") ||
+				pathName.contains("sc/schema") ||
+				pathName.contains("skins/Graphite") ||
 				pathName.contains(" ")
 			) {
 			return false;
