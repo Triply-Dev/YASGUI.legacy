@@ -38,7 +38,7 @@ Helper::sendMail($subject, $body);
 
 function runSelenium($deployConfigs) {
 	global $config;
-	
+	shell_exec("export DISPLAY=:99"); //set display to virtual one, so we can launch our browsers
 	foreach ($deployConfigs as $deployConfig) {
 		//create java props array
 		$propsArray = array();
