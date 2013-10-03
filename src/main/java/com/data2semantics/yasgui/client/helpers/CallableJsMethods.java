@@ -26,7 +26,6 @@ package com.data2semantics.yasgui.client.helpers;
  * #L%
  */
 
-import com.data2semantics.yasgui.client.ConnectivityHelper.ConnCallback;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 
@@ -103,7 +102,7 @@ public class CallableJsMethods {
 		if (tab == null) {
 			view.getElements().onError("No tab to draw results in");
 		}
-		tab.getResultContainer().processResult(resultString, contentType);
+		tab.getResultContainer().drawResult(resultString, contentType);
 	}
 
 	public void onError(String error) {

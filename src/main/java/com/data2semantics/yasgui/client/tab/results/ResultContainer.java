@@ -48,8 +48,6 @@ import com.data2semantics.yasgui.shared.Output;
 import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
 import com.data2semantics.yasgui.shared.exceptions.SparqlParseException;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
@@ -83,6 +81,7 @@ public class ResultContainer extends VLayout {
 	private View view;
 	private QueryTab queryTab;
 	private RawResponse rawResponseOutput;
+	private String resultString;
 	HashMap<String, ResultType> queryTypes = new HashMap<String, ResultType>();
 	public ResultContainer(View view, QueryTab queryTab) {
 		setPossibleQueryTypes();
@@ -129,45 +128,65 @@ public class ResultContainer extends VLayout {
 	 * @param resultString
 	 * @param contentType
 	 */
-	public void processResult(String resultString, String contentType) {
-		reset();
-		int resultFormat;
+	public void drawResult(String resultString, String contentType) {
+		storeResult(resultString);
 		this.contentType = contentType;
-		
-		
-		if ((queryTab.getQueryType().equals("CONSTRUCT") || queryTab.getQueryType().equals("DESCRIBE")) && !ResultsHelper.tabularContentType(contentType)) {
-			drawGraphResult(resultString);
-			return;
-		}
-		
-		if (contentType == null) {
-			//assuming select query here (no construct)
-			resultFormat = detectContentType(resultString);
-			if (resultFormat == 0) {
-				view.getElements().onQueryError(queryTab.getID(), "Unable to detect content type<br><br>" + resultString);
+		drawResult(resultString);	
+	}
+	
+	public void drawResult() {
+		drawResult(resultString);
+	}
+	public void drawResult(String resultString) {
+		if (resultString != null && resultString.length() > 0) {
+			reset();
+			int resultFormat;
+			
+			
+			
+			if ((queryTab.getQueryType().equals("CONSTRUCT") || queryTab.getQueryType().equals("DESCRIBE")) && !ResultsHelper.tabularContentType(contentType)) {
+				drawGraphResult(resultString);
 				return;
 			}
-		} else if (contentType.contains("sparql-results+json")) {
-			resultFormat = ResultContainer.CONTENT_TYPE_JSON;
-		} else if (contentType.contains("sparql-results+xml")) {
-			resultFormat = ResultContainer.CONTENT_TYPE_XML;
-		} else if (contentType.contains(QueryConfigMenu.CONTENT_TYPE_SELECT_CSV)) {
-			resultFormat = ResultContainer.CONTENT_TYPE_CSV;
-		} else if (contentType.contains(QueryConfigMenu.CONTENT_TYPE_SELECT_TSV)) {
-			resultFormat = ResultContainer.CONTENT_TYPE_TSV;
-		} else {
-			//assuming select query here (no construct)
-			resultFormat = detectContentType(resultString);
-			if (resultFormat == 0) {
-				view.getElements().onQueryError(queryTab.getID(), "Unable to parse results with content type " + contentType + ".<br><br>" + resultString);
-				return;
+			
+			if (contentType == null) {
+				//assuming select query here (no construct)
+				resultFormat = detectContentType(resultString);
+				if (resultFormat == 0) {
+					view.getElements().onQueryError(queryTab.getID(), "Unable to detect content type<br><br>" + resultString);
+					return;
+				}
+			} else if (contentType.contains("sparql-results+json")) {
+				resultFormat = ResultContainer.CONTENT_TYPE_JSON;
+			} else if (contentType.contains("sparql-results+xml")) {
+				resultFormat = ResultContainer.CONTENT_TYPE_XML;
+			} else if (contentType.contains(QueryConfigMenu.CONTENT_TYPE_SELECT_CSV)) {
+				resultFormat = ResultContainer.CONTENT_TYPE_CSV;
+			} else if (contentType.contains(QueryConfigMenu.CONTENT_TYPE_SELECT_TSV)) {
+				resultFormat = ResultContainer.CONTENT_TYPE_TSV;
+			} else {
+				//assuming select query here (no construct)
+				resultFormat = detectContentType(resultString);
+				if (resultFormat == 0) {
+					view.getElements().onQueryError(queryTab.getID(), "Unable to parse results with content type " + contentType + ".<br><br>" + resultString);
+					return;
+				}
 			}
+			addQueryResult(resultString, resultFormat);
 		}
-		addQueryResult(resultString, resultFormat);
 	}
 	
 
 	
+	private void storeResult(String resultString) {
+		this.resultString = null;
+		if (resultString.length() < 300000) {
+			//this is approximately a resultset of 1000 resultsets. Don't store larger stuff, (memory reasons)
+			this.resultString = resultString;
+		}
+		
+	}
+
 	private void drawGraphResult(String responseString) {
 		int mode = 0;
 		if (contentType.contains(QueryConfigMenu.CONTENT_TYPE_CONSTRUCT_TURTLE)) {
@@ -368,7 +387,4 @@ public class ResultContainer extends VLayout {
 		
 		return contentType;
 	}
-	
-
-	
 }
