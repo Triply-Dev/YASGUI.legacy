@@ -50,5 +50,7 @@ public class Prefix implements Serializable {
 		this.uri = uri;
 	}
 	
-	
+	public String toString() {
+		return "PREFIX " + prefix + ": <" + uri + ">";
+	}
 }
