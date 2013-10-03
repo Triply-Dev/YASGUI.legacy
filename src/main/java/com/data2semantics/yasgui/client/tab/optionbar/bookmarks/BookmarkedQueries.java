@@ -254,7 +254,7 @@ public class BookmarkedQueries extends ImgButton implements RpcElement {
 		};
 
 		listGrid.setShowRollOverCanvas(true);
-
+		listGrid.setEmptyMessage("You have no bookmarks!");
 		listGrid.setWidth100();
 		listGrid.setHeight100();
 		listGrid.setCanExpandRecords(true);
