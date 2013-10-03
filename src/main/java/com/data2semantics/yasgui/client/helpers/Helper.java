@@ -51,11 +51,9 @@ package com.data2semantics.yasgui.client.helpers;
  */
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
@@ -71,9 +69,10 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
 
 public class Helper {
+	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(Helper.class.getName());
 	private static String CRAWL_USER_AGENTS = "googlebot|msnbot|baidu|curl|wget|Mediapartners-Google|slurp|ia_archiver|Gigabot|libwww-perl|lwp-trivial|bingbot";
-	private static String PREFIX_PATTERN = "\\s*PREFIX\\s*(\\w*):\\s*<(.*)>\\s*$";
+	
 	/**
 	 * Implode arraylist into string
 	 * 
@@ -125,21 +124,6 @@ public class Helper {
 			public void onClick(ClickEvent event) {
 				Window.open(url, "_blank", null);
 			}});
-	}
-	
-	/**
-	 * Checks to query string and retrieves/stores all defined prefixes in an object variable
-	 */
-	public static HashMap<String, Prefix> getPrefixHashMapFromQuery(String query) {
-		HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
-		RegExp regExp = RegExp.compile(PREFIX_PATTERN, "gm");
-		while (true) {
-			MatchResult matcher = regExp.exec(query);
-			if (matcher == null)
-				break;
-			queryPrefixes.put(matcher.getGroup(2), new Prefix(matcher.getGroup(1), matcher.getGroup(2)));
-		}
-		return queryPrefixes;
 	}
 	
 	public static String getStackTraceAsString(Throwable e) {

@@ -152,17 +152,7 @@ public class CallableJsMethods {
 	}
 	
 	public void queryForResource(String resource) {
-		String query = "SELECT ?property ?hasValue ?isValueOf\n" +
-				"WHERE {\n" + 
-				"	{ <" + resource + "> ?property ?hasValue }\n" +
-				"	UNION\n" + 
-				"	{ ?isValueOf ?property <" + resource + "> }\n" +
-				"}";
-		view.getSelectedTab().setQueryString(query);
-		view.getSelectedTabSettings().setQueryString(query);
-		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
-		
-		view.getElements().executeQuery();
+		view.getSelectedTab().getQueryTextArea().queryForResource(resource);
 	}
 	
 	public boolean endpointSelectionEnabled() {

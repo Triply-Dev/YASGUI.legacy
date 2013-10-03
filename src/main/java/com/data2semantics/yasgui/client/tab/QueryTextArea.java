@@ -26,21 +26,27 @@ package com.data2semantics.yasgui.client.tab;
  * #L%
  */
 
+import java.util.HashMap;
+
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
+import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
 import com.data2semantics.yasgui.client.settings.TooltipText;
+import com.data2semantics.yasgui.shared.Prefix;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 import com.smartgwt.client.types.DragAppearance;
 import com.smartgwt.client.widgets.HTMLPane;
 import com.smartgwt.client.widgets.events.ResizedEvent;
 import com.smartgwt.client.widgets.events.ResizedHandler;
 
 public class QueryTextArea extends HTMLPane {
+	private static String PREFIX_PATTERN = "\\s*PREFIX\\s*(\\w*):\\s*<(.*)>\\s*$";
 	private static final int TOOLTIP_VERSION_KEYBOARD_SHORTCUTS = 1;
 	private static final int TOOLTIP_VERSION_PREFIX = 1;
-	@SuppressWarnings("unused")
 	private View view;
 	private static String APPEND_INPUT_ID = "_queryInput";
 	private String inputId;
@@ -114,5 +120,37 @@ public class QueryTextArea extends HTMLPane {
 	public void setQuery(String queryString) {
 		JsMethods.setCodemirrorContent(this.inputId, queryString);
 	}
-
+	public void queryForResource(String resource) {
+		String query = "";
+		HashMap<String, Prefix> prefixes = getPrefixHashMap();
+		for (Prefix prefix: prefixes.values()) {
+			query += prefix.toString() + "\n";
+		}
+		if (prefixes.size() > 0) query += "\n";
+		query += "SELECT ?property ?hasValue ?isValueOf\n" +
+				"WHERE {\n" + 
+				"	{ <" + resource + "> ?property ?hasValue }\n" +
+				"	UNION\n" + 
+				"	{ ?isValueOf ?property <" + resource + "> }\n" +
+				"}";
+		setQuery(query);
+		view.getSelectedTabSettings().setQueryString(query);
+		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+		view.getElements().executeQuery();
+	}
+	
+	/**
+	 * Checks to query string and retrieves/stores all defined prefixes in an object variable
+	 */
+	public HashMap<String, Prefix> getPrefixHashMap() {
+		HashMap<String, Prefix> queryPrefixes = new HashMap<String, Prefix>();
+		RegExp regExp = RegExp.compile(PREFIX_PATTERN, "gm");
+		while (true) {
+			MatchResult matcher = regExp.exec(getQuery());
+			if (matcher == null)
+				break;
+			queryPrefixes.put(matcher.getGroup(2), new Prefix(matcher.getGroup(1), matcher.getGroup(2)));
+		}
+		return queryPrefixes;
+	}
 }

@@ -31,7 +31,6 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import com.data2semantics.yasgui.client.View;
-import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.tab.results.input.ResultsHelper;
 import com.data2semantics.yasgui.client.tab.results.input.SparqlResults;
@@ -75,7 +74,7 @@ public class ResultGrid extends ListGrid {
 		setCanResizeFields(true);
 		setShowRollOverCanvas(true);
 		setUseCellRollOvers(true);
-		queryPrefixes = Helper.getPrefixHashMapFromQuery(view.getSelectedTabSettings().getQueryString());
+		queryPrefixes = view.getSelectedTab().getQueryTextArea().getPrefixHashMap();
 		drawQueryResults();
 		
 

@@ -28,8 +28,8 @@ package com.data2semantics.yasgui.client.tab.results.output;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import com.data2semantics.yasgui.client.View;
-import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.tab.results.input.ResultsHelper;
 import com.data2semantics.yasgui.client.tab.results.input.SparqlResults;
@@ -49,7 +49,7 @@ public class SimpleGrid extends HTMLPane {
 		this.view = view;
 		setWidth100();
 		setHeight100();
-		queryPrefixes = Helper.getPrefixHashMapFromQuery(view.getSettings().getSelectedTabSettings().getQueryString());
+		queryPrefixes = view.getSelectedTab().getQueryTextArea().getPrefixHashMap();
 		variables = sparqlResults.getVariables();
 		solutions = sparqlResults.getBindings();
 		drawTable();
