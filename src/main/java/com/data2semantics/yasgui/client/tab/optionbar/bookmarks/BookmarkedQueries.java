@@ -434,7 +434,7 @@ public class BookmarkedQueries extends ImgButton implements RpcElement {
 	}
 
 	public void disableRpcElements() {
-		setDisabled(true);
+		setEnabled(false);
 		
 	}
 
