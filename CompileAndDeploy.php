@@ -40,6 +40,7 @@ function runSelenium($deployConfigs) {
 	global $config;
 	shell_exec("export DISPLAY=:99"); //set display to virtual one, so we can launch our browsers
 	foreach ($deployConfigs as $deployConfig) {
+		echo "Running selenium tests for ".$deployConfig['checkSeleniumHost']."\n";
 		//create java props array
 		$propsArray = array();
 		$propsArray[] = "sendMail=true";
@@ -52,11 +53,9 @@ function runSelenium($deployConfigs) {
 		chdir($deployConfig['src']);
 		file_put_contents("bin/selenium/selenium.properties", implode("\n", $propsArray));
 		
-		//run selenium test
-		shell_exec("rm errorOutput.txt");//remove previous log
 		$result = shell_exec("mvn test -DskipTests=false 2> errorOutput.txt");
-		if (file_exists("errorOutput.txt") && strpos(file_get_contents("errorOutput.txt"), "error:") !== false) {
-			return "Unable to run selenium tests: \n".str_replace("\n", "<br>", file_get_contents("errorOutput.txt"));
+		if (strpos($result, "There are test failures") !== false) {
+			return "Unable to run selenium tests: \n".str_replace("\n", "<br>", $result);
 		}
 	}
 }
