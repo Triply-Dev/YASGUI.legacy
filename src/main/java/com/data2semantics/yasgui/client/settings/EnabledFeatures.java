@@ -78,6 +78,12 @@ public class EnabledFeatures extends JSONObject {
 	public boolean requestParametersEnabled() {
 		return getBoolean(SettingKeys.ENABLED_REQUEST_METHOD);
 	}
+	public boolean offlineCachingEnabled() {
+		return getBoolean(SettingKeys.ENABLED_OFFLINE_CACHING);
+	}
+	public void setOfflineCachingEnabled(boolean enabled) {
+		put(SettingKeys.ENABLED_OFFLINE_CACHING, JSONBoolean.getInstance(enabled));
+	}
 	
 	private boolean getBoolean(String key) {
 		boolean result = true;//everything is supported by default

@@ -67,6 +67,8 @@ public class SettingKeys implements Serializable {
 	public static String ENABLED_DEFAULT_GRAPHS = "defaultGraphs";
 	public static String ENABLED_ACCEPT_HEADERS = "acceptHeaders";
 	public static String ENABLED_REQUEST_METHOD = "requestMethod";
+	public static String ENABLED_OFFLINE_CACHING = "offlineCaching";
+	
 	
 	//other (not used clientside) (actually, not accessible from clientside for security reasons)
 	public static String BITLY_API_KEY = "bitlyApiKey";

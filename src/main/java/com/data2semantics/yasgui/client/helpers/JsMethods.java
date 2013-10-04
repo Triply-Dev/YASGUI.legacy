@@ -420,11 +420,14 @@ public class JsMethods {
 	 * @param manifestIframe
 	 */
 	public static native void appendManifestIframe(String manifestIframe) /*-{
-		var ifrm = document.createElement("iframe"); 
-		ifrm.setAttribute("src", manifestIframe); 
-		ifrm.style.width = 0+"px"; 
-		ifrm.style.height = 0+"px"; 
-		$doc.body.appendChild(ifrm); 
+		if ($doc.getElementById("manifestIframe") == undefined) {
+			var ifrm = document.createElement("iframe"); 
+			ifrm.setAttribute("id", "manifestIframe");
+			ifrm.setAttribute("src", manifestIframe); 
+			ifrm.style.width = 0+"px"; 
+			ifrm.style.height = 0+"px"; 
+			$doc.body.appendChild(ifrm); 
+		}
 	}-*/;
 	
 	/**
