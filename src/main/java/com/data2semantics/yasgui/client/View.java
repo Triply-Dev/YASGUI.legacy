@@ -86,8 +86,9 @@ public class View extends VLayout implements RpcElement {
 		boolean newUser = false;
 		if (LocalStorageHelper.newUser())
 			newUser = true;
-		
-		if (getSettings().getEnabledFeatures().offlineCachingEnabled()) Helper.includeOfflineManifest();
+
+		if (!Helper.isSeleniumVisitor() && JsMethods.offlineSupported() && getSettings().getEnabledFeatures().offlineCachingEnabled())
+			Helper.includeOfflineManifest();
 
 		setViewLayout();
 
@@ -99,7 +100,6 @@ public class View extends VLayout implements RpcElement {
 			openId = new OpenId(this);
 		}
 
-		
 		if (getSettings().useGoogleAnalytics()) {
 			GoogleAnalytics.init(getSettings().getGoogleAnalyticsId());
 		}
@@ -118,13 +118,13 @@ public class View extends VLayout implements RpcElement {
 		if (settings.useGoogleAnalytics() && !settings.cookieConsentAnswered() && !Helper.isCrawler()) {
 			getElements().askCookieConsent();
 		}
-		
+
 		changelogHelper = new ChangelogHelper(this);
 		processVersionChanges();
 		processUrlParameters(newUser);
-		
+
 		getHistory().replaceHistoryState();
-		
+
 		connHelper.checkOnlineStatus();
 	}
 
@@ -160,7 +160,7 @@ public class View extends VLayout implements RpcElement {
 			LocalStorageHelper.storeSettingsInCookie(getSettings());
 		}
 	}
-	
+
 	public ChangelogHelper getChangelogHelper() {
 		return changelogHelper;
 	}

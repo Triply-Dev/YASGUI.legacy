@@ -313,6 +313,11 @@ public class JsMethods {
 	public static native String getBrowserName() /*-{
 		return $wnd.$.browser.name;
 	}-*/;
+	
+	public static native boolean isIeBrowser() /*-{
+		return $wnd.$.browser.msie;
+	}-*/;
+	
 
 	public static native String getBrowserVersionNumber() /*-{
 		return $wnd.$.browser.versionNumber.toString();
@@ -448,7 +453,7 @@ public class JsMethods {
 
 	public static native boolean offlineSupported() /*-{
 		var supported = true;
-		if ($wnd.applicationCache == undefined || $wnd.applicationCache == null) {
+		if ($wnd.$.browser.msie || $wnd.applicationCache == undefined || $wnd.applicationCache == null) {
 			supported = false;
 		}
 		return supported;
