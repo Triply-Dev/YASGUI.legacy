@@ -54,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import com.data2semantics.yasgui.client.services.YasguiServiceAsync;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
@@ -62,6 +63,7 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -349,5 +351,19 @@ public class Helper {
 			isSeleniumVisitor = true;
 		}
 		return isSeleniumVisitor;
+	}
+	
+	/**
+	 * Try to log exception. Do nothing on either fail or success
+	 * @param t
+	 */
+	public static void logExceptionToServer(Throwable t) {
+		YasguiServiceAsync yasguiService = YasguiServiceAsync.Util.getInstance();
+		yasguiService.logException(t, new AsyncCallback<Void>() {
+			public void onFailure(Throwable caught) {
+			}
+			public void onSuccess(Void voidObj) {
+			}
+		});
 	}
 }
