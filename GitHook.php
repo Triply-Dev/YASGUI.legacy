@@ -17,10 +17,9 @@ if (strlen($payload)) {
 	if (is_array($config['deployTargets'][$branch])) {
 		executeIfReady("./CompileAndDeploy.php ".$branch);
 	} else if ($json['ref'] === "refs/heads/deployment-git-hook") {
-		Helper::execWithError("git stash", __FILE__, __LINE__, "Unable to stash changes of git hook code");
+		Helper::execWithError("git checkout .", __FILE__, __LINE__, "Unable to checkout git hook");
 		Helper::execWithError("git pull", __FILE__, __LINE__, "Unable to pull git hub code");
-		Helper::execWithError("git stash pop", __FILE__, __LINE__, "Unable to apply stashed changes of git code");
-		Helper::sendMail("Succesfully updated commit hook code", "Succesfully updated commit hook code");
+		Helper::sendMail("Succesfully updated commit hook code on ".gethostname(), "Succesfully updated commit hook code on ".gethostname());
 	}
 } 
 
