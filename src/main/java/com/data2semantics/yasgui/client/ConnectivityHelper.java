@@ -26,7 +26,6 @@ package com.data2semantics.yasgui.client;
  * #L%
  */
 
-import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ConnectivityHelper {

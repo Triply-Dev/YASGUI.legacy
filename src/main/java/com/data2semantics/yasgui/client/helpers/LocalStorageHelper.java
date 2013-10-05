@@ -28,6 +28,7 @@ package com.data2semantics.yasgui.client.helpers;
 
 import java.util.Date;
 
+import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.shared.CookieKeys;
 import com.google.gwt.core.client.GWT;
@@ -48,8 +49,13 @@ public class LocalStorageHelper {
 	private static int COMPATABILITIES_SHOWN_EXPIRE_DAYS = 1000;
 	private static int PROPERTIES_EXPIRE_DAYS = 360;
 	private static int DEFAULT_EXPIRE_DAYS = 1000;
+	@SuppressWarnings("unused")
 	private static int UNKNOWN_EXPIRE_DAYS = 30;
+	private View view;
 	
+	public LocalStorageHelper(View view) {
+		this.view = view;
+	}
 	
 	/**
 	 * Get value from local storage using expire date. 
@@ -107,7 +113,7 @@ public class LocalStorageHelper {
 		} else if (storageMap.containsKey(key)) {
 			//for backwards compatability (i.e. the time when we didnt use the basedomain as part of the key)
 			String value = storageMap.get(key);
-			setInLocalStorage(key, value); //settings it again stores it under correct key with domain name
+			storeInLocalStorage(key, value); //settings it again stores it under correct key with domain name
 			storageMap.remove(key);//remove old key
 			return value;
 		}
@@ -120,10 +126,14 @@ public class LocalStorageHelper {
 		html5Storage.removeItem(domain + "_" + key);
 	}
 	
-	public static void setInLocalStorage(String key, String value) {
+	private static void storeInLocalStorage(String key, String value) {
 		if (Storage.isLocalStorageSupported()) {
 			Storage html5Storage = Storage.getLocalStorageIfSupported();
-			html5Storage.setItem(Helper.getCurrentHost() + "_" + key, value);
+			try {
+				html5Storage.setItem(Helper.getCurrentHost() + "_" + key, value);
+			} catch (Throwable t) {
+				Helper.logExceptionToServer(t);
+			}
 		}
 	}
 	
@@ -139,7 +149,7 @@ public class LocalStorageHelper {
 			if (addTimeStamp) {
 				value = Long.toString(currentDate.getTime()) + LOCAL_STORAGE_EXPIRE_SEPARATOR + value;
 			}
-			setInLocalStorage(key, value);
+			storeInLocalStorage(key, value);
 		}
 	}
 	
