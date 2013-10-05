@@ -43,12 +43,14 @@ import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.client.tab.optionbar.LinkCreator;
 import com.data2semantics.yasgui.client.tab.optionbar.endpoints.EndpointInput;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.user.client.Command;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.VerticalAlignment;
@@ -136,21 +138,27 @@ public class ViewElements implements RpcElement {
 	
 	
 	private ImgButton getQueryIcon(String icon, ClickHandler clickHandler) {
-		ImgButton imgButton = new ImgButton();
+		final ImgButton imgButton = new ImgButton();
 		imgButton.setHeight(QUERY_BUTTON_HEIGHT);
 		imgButton.setWidth(QUERY_BUTTON_WIDTH);
 		imgButton.setSrc(icon);
 		imgButton.setShowRollOver(false);
 		imgButton.setShowDown(false);
-		imgButton.setZIndex(ZIndexes.TAB_CONTROLS);
 		imgButton.setShowOverCanvas(false);
 		imgButton.addClickHandler(clickHandler);
 		imgButton.getElement().getStyle().setPosition(Position.ABSOLUTE);
 		imgButton.getElement().getStyle().setTop(QUERY_BUTTON_POS_TOP, Unit.PX);
 		imgButton.getElement().getStyle().setRight(QUERY_BUTTON_POS_RIGHT, Unit.PX);
 		imgButton.setCursor(com.smartgwt.client.types.Cursor.POINTER);
-		imgButton.getElement().getStyle().setZIndex(ZIndexes.TAB_CONTROLS);
-		
+		Scheduler.get().scheduleDeferred(new Command() {
+			public void execute() {
+				//tricky: we need a z-index larger than the tabset (otherwise button is not clickable),
+				//and we need one smaller than the config menu (otherwise the overlay is wrong)
+				//therefore set dynamically. we use a scheduled method, as at the time of drawing the 
+				//query button, the tabs arent drawn yet
+				imgButton.getElement().getStyle().setZIndex(view.getTabs().getZIndex()+1);
+			}
+		});
 		return imgButton;
 	}
 	
@@ -547,7 +555,7 @@ public class ViewElements implements RpcElement {
 		configButton.getElement().getStyle().setTop(2, Unit.PX);
 		configButton.getElement().getStyle().setRight(50, Unit.PX);
 		configButton.setIcon(icon);
-		configButton.setZIndex(ZIndexes.TAB_CONTROLS);
+		configButton.setZIndex(ZIndexes.CONFIG_MENU);
 		configMenu = new ConfigMenu(view);
 		configButton.setMenu(configMenu);
 		configButton.setCanFocus(false);
