@@ -35,6 +35,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import javax.servlet.ServletContext;
 
@@ -254,7 +255,8 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 	public void logException(Throwable t) {
 		if (System.getProperty("catalina.base") != null) {
 			try {
-				Handler handler = new FileHandler(System.getProperty("catalina.base") + "/logs/yasgui.err");
+				Handler handler = new FileHandler(System.getProperty("catalina.base") + "/logs/yasgui.err", true);
+				handler.setFormatter(new SimpleFormatter());
 				LOGGER.addHandler(handler);
 				LOGGER.log(Level.SEVERE, t.getMessage(), t);
 				handler.close();
