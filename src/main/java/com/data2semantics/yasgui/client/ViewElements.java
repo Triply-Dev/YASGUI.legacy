@@ -43,12 +43,14 @@ import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.client.tab.optionbar.LinkCreator;
 import com.data2semantics.yasgui.client.tab.optionbar.endpoints.EndpointInput;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
+import com.data2semantics.yasgui.shared.exceptions.FetchException;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.VerticalAlignment;
@@ -282,6 +284,20 @@ public class ViewElements implements RpcElement {
 			errorMsg += "\nCaused by:\n" + Helper.getCausesStackTraceAsString(e);
 		} else {
 			errorMsg = e.getMessage();
+		}
+		if (view.getConnHelper().isOnline()) {
+			//Log exception to server
+			new GwtCallbackWrapper<Void>(view) {
+				public void onCall(AsyncCallback<Void> callback) {
+					view.getRemoteService().logException(new FetchException("blaat"), callback);
+				}
+	
+				protected void onFailure(Throwable throwable) {
+				}
+	
+				protected void onSuccess(Void prefixes) {
+				}
+			}.call();
 		}
 		
 		onError(errorMsg);

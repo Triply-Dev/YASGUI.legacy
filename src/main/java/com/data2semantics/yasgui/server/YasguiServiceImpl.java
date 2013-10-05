@@ -31,6 +31,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,8 +61,11 @@ import static com.rosaloves.bitlyj.Bitly.*;
  */
 @SuppressWarnings("serial")
 public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiService {
+	
 	public static String CACHE_DIR = "/cache";
-	private final static Logger LOGGER = Logger.getLogger(YasguiServiceImpl.class.getName());
+	private static Logger LOGGER = Logger.getLogger(YasguiServiceImpl.class.getName());
+	
+	
 
 	public String fetchPrefixes(boolean forceUpdate) throws IllegalArgumentException, FetchException {
 		String prefixes = "";
@@ -243,5 +248,21 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 	@Override
 	public boolean isOnline() throws IllegalArgumentException {
 		return true;
+	}
+
+	@Override
+	public void logException(Throwable t) {
+		if (System.getProperty("catalina.base") != null) {
+			try {
+				Handler handler = new FileHandler(System.getProperty("catalina.base") + "/logs/yasgui.err");
+				LOGGER.addHandler(handler);
+				LOGGER.log(Level.SEVERE, t.getMessage(), t);
+				handler.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			LOGGER.log(Level.SEVERE, t.getMessage(), t);
+		}
 	}
 }
