@@ -168,11 +168,9 @@ public class EndpointInputIcon extends HLayout implements RpcElement {
 				protected void onSuccess(String properties) {
 					if (properties.length() > 0) {
 						JsMethods.setAutocompleteProperties(endpoint, properties);
-						view.getLogger().severe("we've retrieved properties");
 						addAutocompletionsFetchedIcon();
 					} else {
 						addFetchingFailedIcon();
-						view.getLogger().severe("empty properties returned");
 					}
 				}
 
