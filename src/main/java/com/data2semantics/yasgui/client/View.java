@@ -42,15 +42,14 @@ import com.data2semantics.yasgui.client.services.YasguiServiceAsync;
 import com.data2semantics.yasgui.client.settings.EnabledFeatures;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
-import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.data2semantics.yasgui.client.tab.QueryTab;
+import com.data2semantics.yasgui.client.tab.QueryTabs;
 import com.data2semantics.yasgui.client.tab.optionbar.endpoints.EndpointDataSource;
 import com.data2semantics.yasgui.shared.Endpoints;
 import com.data2semantics.yasgui.shared.SettingKeys;
 import com.data2semantics.yasgui.shared.StaticConfig;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.data2semantics.yasgui.shared.exceptions.SettingsException;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -110,7 +109,7 @@ public class View extends VLayout implements RpcElement {
 		}
 		setAutocompletePrefixes(false);
 
-		initJs();
+		JsMethods.initJs();
 
 		queryTabs = new QueryTabs(this);
 		addMember(queryTabs);
@@ -204,12 +203,6 @@ public class View extends VLayout implements RpcElement {
 				getElements().onError(e);
 			}
 		}
-	}
-
-	private void initJs() {
-		JsMethods.setTabBarProperties(QueryTabs.INDENT_TABS);
-		JsMethods.setProxyUriInVar(GWT.getModuleBaseURL() + "sparql");
-		JsMethods.setQtipZIndex(ZIndexes.HELP_TOOLTIPS);
 	}
 
 	public void showPlayButton(java.lang.Boolean queryValid) {

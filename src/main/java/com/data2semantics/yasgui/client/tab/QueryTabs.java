@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.client;
+package com.data2semantics.yasgui.client.tab;
 
 /*
  * #%L
@@ -28,6 +28,8 @@ package com.data2semantics.yasgui.client;
 
 import java.util.ArrayList;
 
+import com.data2semantics.yasgui.client.RpcElement;
+import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
@@ -37,13 +39,13 @@ import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.settings.TooltipText;
 import com.data2semantics.yasgui.client.settings.ZIndexes;
-import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.client.tab.results.output.RawResponse;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Side;
+import com.smartgwt.client.types.TabBarControls;
 import com.smartgwt.client.types.TabTitleEditEvent;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -68,12 +70,14 @@ public class QueryTabs extends TabSet implements RpcElement {
 	private static boolean STORE_SETTINGS_ON_CLOSE_DEFAULT = true;
 	private ImgButton addTabButton;
 	
-	public static int INDENT_TABS = 50; //space reserved for buttons on lhs
+	public static int INDENT_TABBAR_START = 41; //space reserved for buttons on lhs
+	public static int INDENT_TABBAR_END = 300; //space reserved for exec query on rhs
 	private HLayout controls;
 	private LayoutSpacer controlsSpacer;
 	private static int TOOLTIP_VERSION_TAB_SELECTION = 1;
 	
 	public QueryTabs(View view) {
+		setTabBarControls(TabBarControls.TAB_SCROLLER, TabBarControls.TAB_PICKER, Helper.getHSpacer(50));
 		this.view = view;
 		setTabBarPosition(Side.TOP);
 		setTabBarAlign(Side.LEFT);
@@ -98,8 +102,8 @@ public class QueryTabs extends TabSet implements RpcElement {
 		});
 		setTitleEditEvent(TabTitleEditEvent.DOUBLECLICK);
 		setTabsFromSettings();
+		
 		selectTab(view.getSettings().getSelectedTabNumber());
-		setTabBarThickness(50);
 		// Need to schedule attaching of codemirror. It uses doc.getElementById,
 		// which doesnt work if element hasnt been drawn yet
 		Scheduler.get().scheduleDeferred(new Command() {
@@ -114,9 +118,7 @@ public class QueryTabs extends TabSet implements RpcElement {
 	
 	public void showTooltips(int fromVersionId) throws ElementIdException {
 		showTabSelectionTooltip(fromVersionId);
-		
 	}
-	
 	
 	private void showTabSelectionTooltip(int fromVersionId) throws ElementIdException {
 		if (fromVersionId < TOOLTIP_VERSION_TAB_SELECTION) {
@@ -158,13 +160,12 @@ public class QueryTabs extends TabSet implements RpcElement {
 	 */
 	private void addTabControls() {
 		controls = new HLayout();
+		controls.setBackgroundColor("white");
 		controlsSpacer = new LayoutSpacer();
 		controlsSpacer.setWidth100();
 		controls.addMember(controlsSpacer);
-		controls.setWidth(INDENT_TABS - 2);
+		controls.setWidth(INDENT_TABBAR_START - 2);
 		controls.setHeight(27);
-		
-		
 		
 		addTabButton = new ImgButton();
 		addTabButton.setSrc(Imgs.ADD_TAB.get());
