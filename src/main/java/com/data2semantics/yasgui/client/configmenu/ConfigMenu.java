@@ -34,6 +34,7 @@ import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.settings.Imgs;
+import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.data2semantics.yasgui.shared.StaticConfig;
 import com.google.gwt.user.client.Window;
 import com.smartgwt.client.widgets.menu.Menu;
@@ -85,26 +86,26 @@ public class ConfigMenu extends Menu implements RpcElement {
 	}
 
 	private void addRecentChangelogItem() {
-		MenuItem reset = new MenuItem("Show recent changes");
-		reset.setIcon(Imgs.TOOLTIP.get());
-		reset.addClickHandler(new ClickHandler(){
+		MenuItem changes = new MenuItem("Show recent changes");
+		changes.setIcon(Imgs.TOOLTIP.get());
+		changes.addClickHandler(new ClickHandler(){
 			public void onClick(MenuItemClickEvent event) {
 				view.getChangelogHelper().draw(); //show from version 0 onwards
 				view.showTooltips(StaticConfig.VERSION_ID-1);
 			}});
-		items.add(reset);
+		items.add(changes);
 		
 	}
 
 	private void addResetSettings() {
-		MenuItem about = new MenuItem("Reset my settings");
-		about.setIcon(Imgs.CROSS.get());
-		about.addClickHandler(new ClickHandler(){
+		MenuItem reset = new MenuItem("Reset my settings");
+		reset.setIcon(Imgs.CROSS.get());
+		reset.addClickHandler(new ClickHandler(){
 			public void onClick(MenuItemClickEvent event) {
 				LocalStorageHelper.clearSettings();
 				Window.Location.reload();
 			}});
-		items.add(about);
+		items.add(reset);
 		
 	}
 

@@ -77,7 +77,7 @@ public class QueryTabs extends TabSet implements RpcElement {
 	private static int TOOLTIP_VERSION_TAB_SELECTION = 1;
 	
 	public QueryTabs(View view) {
-		setTabBarControls(TabBarControls.TAB_SCROLLER, TabBarControls.TAB_PICKER, Helper.getHSpacer(50));
+		setTabBarControls(TabBarControls.TAB_SCROLLER, TabBarControls.TAB_PICKER, Helper.getHSpacer(53));
 		this.view = view;
 		setTabBarPosition(Side.TOP);
 		setTabBarAlign(Side.LEFT);
