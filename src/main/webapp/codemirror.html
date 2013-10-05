@@ -5,7 +5,7 @@
 <title>Codemirror Test</title>
 <script type="text/javascript">function showPlayButton(){};function setQueryType(){};</script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-<script src="assets/yasgui.js"></script>
+
 <script src="assets/trie.js"></script>
 
 <script src="assets/codemirror/codemirror.js"></script>
@@ -21,26 +21,28 @@
 <script src="assets/codemirror/addon/search/match-highlighter.js"></script>
 <script src="assets/codemirror/addon/edit/matchbrackets.js"></script>
 <script src="assets/codemirror/addon/runmode/runmode.js"></script>
-
+<script src="assets/codemirror/util/formatting.js"></script>
+<script src="assets/yasgui.js"></script>
 <link rel="stylesheet" href="assets/yasgui.css">
 <!-- Flint code for sparql mode -->
 <script src="assets/flint/sparql.js"></script>
 <link rel="stylesheet" href="assets/flint/sparql.css">
 <!-- Code for adding custom keycombination/mouseclick commands to codemirror -->
-<script src="assets/codemirrorCommands.js"></script>
+<script src="assets/codemirrorHelper.js"></script>
   </head>
   <body>
   
 <br><br>
 	<textarea id="test" style="width:400px;height:300px;">
-PREFIX : &lt;http://aers.data2semantics.org/vocab/&gt; 
-PREFIX #rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
-SELECT DISTINCT *
-{
-#?patient rd:comment ?comment.
+PREFIX abc: &lt;http://example.com/exampleOntology#&gt;
+SELECT ?capital ?country
+WHERE {
+  ?x abc:cityname ?capital ;
+     abc:isCapitalOf ?y .
+  ?y abc:countryname ?country ;
+     abc:isInContinent abc:Africa .
 }
 </textarea>
-
 
 	<script type="text/javascript">
 	function checkAdjustParent() {
@@ -73,7 +75,8 @@ SELECT DISTINCT *
 				"Ctrl-/" : "commentLines",
 				"Ctrl-Alt-Down" : "copyLineDown",
 				"Ctrl-Alt-Up" : "copyLineUp",
-				"Ctrl-S" : "doNothing"
+				"Ctrl-S" : "doNothing",
+				"Shift-Ctrl-F": "doAutoFormat"
 			}
 		});
 		myCodeMirror.on("change", function(cm, change){
@@ -87,18 +90,7 @@ SELECT DISTINCT *
 		//	console.log("bla3");
 		//	cm.matchHighlight("CodeMirror-matchhighlight");
 		//});
-			
-			var bla = "";
-function doHighlight() {
-  CodeMirror.runMode(document.getElementById("test").value, "sparql11",
-                     function(stringVal, className){
-	  if (className != "sp-comment") {
-		  bla += stringVal;
-	  }
-	  });
-}
-doHighlight();
-console.log(bla);
+
 
 			
 			

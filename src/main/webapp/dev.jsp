@@ -27,6 +27,7 @@
 
 <!-- Main codemirror stuff -->
 <script src="assets/codemirror/codemirror.js?<% out.print(StaticConfig.VERSION); %>"></script>
+<script src="assets/codemirror/util/formatting.js?<% out.print(StaticConfig.VERSION); %>"></script>
 <link rel="stylesheet" href="assets/codemirror/codemirror.css?<% out.print(StaticConfig.VERSION); %>">
 <link rel="stylesheet" href="assets/codemirror/theme/yasgui.css?<% out.print(StaticConfig.VERSION); %>">
 <script src="assets/codemirror/mode/javascript/javascript.js?<% out.print(StaticConfig.VERSION); %>"></script>
@@ -52,7 +53,7 @@
 <script src="assets/flint/sparql.js?<% out.print(StaticConfig.VERSION); %>"></script>
 <link rel="stylesheet" href="assets/flint/sparql.css?<% out.print(StaticConfig.VERSION); %>">
 <!-- Code for adding custom keycombination/mouseclick commands to codemirror -->
-<script src="assets/codemirrorCommands.js?<% out.print(StaticConfig.VERSION); %>"></script>
+<script src="assets/codemirrorHelper.js?<% out.print(StaticConfig.VERSION); %>"></script>
 
 
 <script src="assets/yasgui.js?<% out.print(StaticConfig.VERSION); %>"></script>
