@@ -184,7 +184,7 @@ function initializeQueryCodemirror(elementId) {
 		if (sparqlHighlight[elementId] == null) { 
 			//Only add if it hasnt been drawn yet
 			sparqlHighlight[elementId] = CodeMirror.fromTextArea(qInput, {
-				mode : "application/x-sparql-query",
+				mode : "sparql11",
 				theme: "yasgui",
 				highlightSelectionMatches: {showToken: /\w/},
 				tabMode : "indent",
@@ -197,6 +197,7 @@ function initializeQueryCodemirror(elementId) {
 					"Ctrl-/" : "commentLines",
 					"Ctrl-Alt-Down" : "copyLineDown",
 					"Ctrl-Alt-Up" : "copyLineUp",
+					"Shift-Ctrl-F": "doAutoFormat"
 				}
 			});
 			
@@ -287,7 +288,7 @@ function initializeQueryBookmarkCodemirror(elementId) {
 	var qInput = document.getElementById(elementId);
 	if (qInput) {
 		sparqlHighlight[elementId] = CodeMirror.fromTextArea(qInput, {
-			mode : "application/x-sparql-query",
+			mode : "sparql11",
 			tabMode : "indent",
 			theme: "yasgui",
 			highlightSelectionMatches: {showToken: /\w/},
@@ -301,6 +302,7 @@ function initializeQueryBookmarkCodemirror(elementId) {
 				"Ctrl-/" : "commentLines",
 				"Ctrl-Alt-Down" : "copyLineDown",
 				"Ctrl-Alt-Up" : "copyLineUp",
+				"Shift-Ctrl-F": "doAutoFormat"
 			}
 		});
 		
@@ -328,3 +330,26 @@ function initializeQueryBookmarkCodemirror(elementId) {
 	}
 	
 }
+Array.prototype.equals = function (array) {
+    // if the other array is a falsy value, return
+    if (!array)
+        return false;
+
+    // compare lengths - can save a lot of time
+    if (this.length != array.length)
+        return false;
+
+    for (var i = 0; i < this.length; i++) {
+        // Check if we have nested arrays
+        if (this[i] instanceof Array && array[i] instanceof Array) {
+            // recurse into the nested arrays
+            if (!this[i].compare(array[i]))
+                return false;
+        }
+        else if (this[i] != array[i]) {
+            // Warning - two different object instances will never be equal: {x:20} != {x:20}
+            return false;
+        }
+    }
+    return true;
+};
