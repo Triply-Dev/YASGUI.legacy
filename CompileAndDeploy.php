@@ -38,7 +38,6 @@ Helper::sendMail($subject, $body);
 
 function runSelenium($deployConfigs) {
 	global $config;
-	shell_exec("export DISPLAY=:99"); //set display to virtual one, so we can launch our browsers
 	foreach ($deployConfigs as $deployConfig) {
 		echo "Running selenium tests for ".$deployConfig['checkSeleniumHost']."\n";
 		//create java props array
@@ -53,7 +52,7 @@ function runSelenium($deployConfigs) {
 		chdir($deployConfig['src']);
 		file_put_contents("bin/selenium/selenium.properties", implode("\n", $propsArray));
 		
-		$result = shell_exec("mvn test -DskipTests=false 2> errorOutput.txt");
+		$result = shell_exec("export DISPLAY=:99; mvn test -DskipTests=false 2> errorOutput.txt");
 		if (strpos($result, "There are test failures") !== false) {
 			return "Unable to run selenium tests: \n".str_replace("\n", "<br>", $result);
 		}
