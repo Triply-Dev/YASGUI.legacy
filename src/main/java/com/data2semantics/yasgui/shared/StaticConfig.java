@@ -33,7 +33,7 @@ public class StaticConfig implements Serializable {
 	public static final String DEBUG_FILE = "dev.jsp";
 	//YASGUI versions
 	public static int VERSION_ID = 8;
-	public static String VERSION = "13.09a";
+	public static String VERSION = "13.10a";
 	public static String OPEN_ID_SERVLET = "Yasgui/openId";
 	public static String DEBUG_ARGUMENT_KEY = "gwt.codesvr";
 	public static String DEBUG_ARGUMENT_VALUE = "127.0.0.1:9997";
