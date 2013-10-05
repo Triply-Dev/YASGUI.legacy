@@ -1,6 +1,9 @@
 package com.data2semantics.yasgui.client.helpers;
 
+import com.data2semantics.yasgui.client.settings.ZIndexes;
+import com.data2semantics.yasgui.client.tab.QueryTabs;
 import com.data2semantics.yasgui.client.tab.results.input.dlv.DlvWrapper;
+import com.google.gwt.core.client.GWT;
 
 /*
  * #%L
@@ -30,6 +33,11 @@ import com.data2semantics.yasgui.client.tab.results.input.dlv.DlvWrapper;
 
 public class JsMethods {
 	
+	public static void initJs() {
+		setTabBarProperties(QueryTabs.INDENT_TABBAR_START, QueryTabs.INDENT_TABBAR_END);
+		setProxyUriInVar(GWT.getModuleBaseURL() + "sparql");
+		setQtipZIndex(ZIndexes.HELP_TOOLTIPS);
+	}
 	/**
 	 * Unset a tabmirror object. Used when closing a tab
 	 * 
@@ -202,10 +210,10 @@ public class JsMethods {
 	
 	/**
 	 * Cannot set all properties of tab bar after initialization. Therefore use this method to set properties beforehand
-	 * @param margin
+	 * @param startMargin
 	 */
-	public static native void setTabBarProperties(int margin) /*-{
-		$wnd.isc.TabBar.addProperties({layoutStartMargin:margin});
+	public static native void setTabBarProperties(int startMargin, int endMargin) /*-{
+		$wnd.isc.TabBar.addProperties({layoutStartMargin:startMargin, layoutEndMargin:endMargin});
 	}-*/;
 	
 	/*

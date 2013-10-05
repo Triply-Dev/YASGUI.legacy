@@ -308,6 +308,18 @@ public class Helper {
 		return spacer;
 	}
 	
+	public static LayoutSpacer getHSpacer(int width) {
+		LayoutSpacer spacer = new LayoutSpacer();
+		spacer.setWidth(width);
+		return spacer;
+	}
+	
+	public static LayoutSpacer getVSpacer(int height) {
+		LayoutSpacer spacer = new LayoutSpacer();
+		spacer.setHeight(height);
+		return spacer;
+	}
+	
 	public static ArrayList<String> getJsonAsArrayList(JSONValue jsonVal) {
 		ArrayList<String> result = new ArrayList<String>();
 		JSONArray jsonArray = jsonVal.isArray();

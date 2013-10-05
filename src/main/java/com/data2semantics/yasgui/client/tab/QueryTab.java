@@ -26,7 +26,6 @@ package com.data2semantics.yasgui.client.tab;
  * #L%
  */
 
-import com.data2semantics.yasgui.client.QueryTabs;
 import com.data2semantics.yasgui.client.RpcElement;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
