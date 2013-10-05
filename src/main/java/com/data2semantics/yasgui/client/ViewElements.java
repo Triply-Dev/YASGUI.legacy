@@ -555,7 +555,6 @@ public class ViewElements implements RpcElement {
 		configButton.getElement().getStyle().setTop(2, Unit.PX);
 		configButton.getElement().getStyle().setRight(50, Unit.PX);
 		configButton.setIcon(icon);
-		configButton.setZIndex(ZIndexes.CONFIG_MENU);
 		configMenu = new ConfigMenu(view);
 		configButton.setMenu(configMenu);
 		configButton.setCanFocus(false);
