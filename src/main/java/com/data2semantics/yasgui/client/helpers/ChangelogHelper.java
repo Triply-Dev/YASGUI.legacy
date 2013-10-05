@@ -47,6 +47,7 @@ public class ChangelogHelper {
 				"<li>Local installation/integration of YASGUI is now more flexible/easy</li>\n" + 
 				"<li>Moved YASGUI to a more stable version</li>\n" + 
 			"</ul>";
+	private static String AUTO_FORMAT_SHORTCUT_NOTIFICATION = "Autoformat (part of) your query! Use 'CTRL-SHIFT-F'";
 	private static String RESET_SETTINGS_NOTIFICATION = "Now possible to reset your YASGUI settings";
 	private static String SPECIFY_NAMED_GRAPH_NOTIFICATION = "Specify named or default graphs for SPARQL http requests";
 	private View view;
@@ -68,6 +69,7 @@ public class ChangelogHelper {
 		showChangelogNotification();
 		showResetSettingsNotification();
 		showNamedGraphsNotification();
+		showAutoFormatShortcutNotification();
 	}
 
 	private void showNamedGraphsNotification() {
@@ -91,7 +93,17 @@ public class ChangelogHelper {
 		tProp.setMy(TooltipProperties.POS_RIGHT_CENTER);
 		tProp.setAt(TooltipProperties.POS_LEFT_CENTER);
 		Helper.drawTooltip(tProp);
-		
+	}
+	
+	private void showAutoFormatShortcutNotification() {
+		TooltipProperties tProp = new TooltipProperties();
+		tProp.setId(view.getSelectedTab().getQueryTextArea().getDOM().getId());
+		tProp.setContent(AUTO_FORMAT_SHORTCUT_NOTIFICATION);
+		tProp.setMy(TooltipProperties.POS_CENTER);
+		tProp.setAt(TooltipProperties.POS_LEFT_CENTER);
+		tProp.setYOffset(50);
+		tProp.setXOffset(180);
+		Helper.drawTooltip(tProp);
 	}
 
 	private void showChangelogNotification() {

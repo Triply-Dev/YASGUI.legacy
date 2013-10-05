@@ -59,12 +59,22 @@ CodeMirror.commands.copyLineUp = function(cm) {
 	copyLinesBelow(cm);
 };
 CodeMirror.commands.copyLineDown = function(cm) {
-	console.log("copy down");
 	copyLinesBelow(cm);
 	//Make sure cursor goes one down (we are copying downwards)
 	var cursor = cm.getCursor();
 	cursor.line++;
 	cm.setCursor(cursor);
+};
+CodeMirror.commands.doAutoFormat = function(cm) {
+	if (cm.somethingSelected()) {
+		var to = {line: cm.getCursor(false).line, ch: cm.getSelection().length};
+		cm.autoFormatRange(cm.getCursor(true), to);
+	} else {
+		var totalLines = cm.lineCount();
+		var totalChars = cm.getTextArea().value.length;
+		cm.autoFormatRange({line:0, ch:0}, {line:totalLines, ch:totalChars});
+	}
+	
 };
 function copyLinesBelow(cm) {
 	var cursor = cm.getCursor();
@@ -136,7 +146,59 @@ function checkSyntax(cm, updateQueryButton) {
 			}
 		}
 	}
-
+}
+function autoFormatAll(cm) {
 	
 }
-
+CodeMirror.extendMode("sparql11", {
+	autoFormatLineBreaks: function (text, start, end) {
+		text = text.substring(start, end).replace(/\r?\n|\r/g, " ");
+		breakAfterArray = [
+		    ["sp-keyword", "sp-ws", "sp-prefixed", "sp-ws", "sp-uri"], //i.e. prefix declaration
+		    ["sp-keyword", "sp-ws", "sp-uri"]//i.e. base
+		];
+		breakAfterCharacters = ["{", ".", ";"];
+		breakBeforeCharacters = ["}"];
+		getBreakType = function(stringVal, className) {
+			for (var i = 0; i < breakAfterArray.length; i++) {
+				if (stackTrace.equals(breakAfterArray[i])) {
+					return 1;
+				}
+			}
+			for (var i = 0; i < breakAfterCharacters.length; i++) {
+				if (stringVal == breakAfterCharacters[i]) {
+					return 1;
+				}
+			}
+			for (var i = 0; i < breakBeforeCharacters.length; i++) {
+				//don't want to issue 'breakbefore' AND 'breakafter', so check current line
+				if ($.trim(currentLine) != '' && stringVal == breakBeforeCharacters[i]) {
+					return -1;
+				}
+			}
+			return 0;
+		};
+		var formattedQuery = "";
+		var currentLine = "";
+		var stackTrace = [];
+		CodeMirror.runMode(text, "sparql11", function(stringVal, className) {
+			stackTrace.push(className);
+			var breakType = getBreakType(stringVal, className);
+			if (breakType != 0) {
+				if (breakType == 1) {
+					formattedQuery += stringVal + "\n";
+					currentLine = "";
+				} else {//(-1)
+					formattedQuery += "\n" + stringVal;
+					currentLine = stringVal;
+				}
+				stackTrace = [];
+			} else {
+				currentLine += stringVal;
+				formattedQuery += stringVal;
+			}
+			if (stackTrace.length == 1 && stackTrace[0] == "sp-ws") stackTrace = [];
+		});
+		return $.trim(formattedQuery);
+	}
+  });

@@ -309,7 +309,8 @@
 								<include>../assets/codemirror/addon/edit/matchbrackets.js</include>
 								<include>../assets/codemirror/addon/runmode/runmode.js</include>
 								<include>../assets/flint/sparql.js</include>
-								<include>../assets/codemirrorCommands.js</include>
+								<include>../assets/codemirror/util/formatting.js</include>
+								<include>../assets/codemirrorHelper.js</include>
 								<include>../assets/yasgui.js</include>
 							</includes>
 						</aggregation>

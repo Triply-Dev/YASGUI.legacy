@@ -43,6 +43,7 @@ public class TooltipText {
 				"<li><strong>CTRL-ALT-down</strong>: Copy line below</li>\n" + 
 				"<li><strong>CTRL-ALT-up</strong>: Copy line up</li>\n" + 
 				"<li><strong>CTRL-/</strong>: Comment line(s)</li>\n" + 
+				"<li><strong>CTRL-SHIFT-F</strong>: Autoformat (part of) your query</li>\n" + 
 				"<li><strong>CTRL-&lt;enter&gt;</strong>: Execute query</li>\n" + 
 				"<li><strong>ESC</strong>: Cancel query</li>\n" + 
 			"</ul>";
