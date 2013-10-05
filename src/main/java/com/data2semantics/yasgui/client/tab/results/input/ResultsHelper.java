@@ -104,13 +104,6 @@ public class ResultsHelper {
 	public static boolean valueIsLiteral(HashMap<String, String> valueInfo) {
 		return (valueInfo.containsKey("type") && (valueInfo.get("type").equals("literal") || valueInfo.get("type").equals("typed-literal")));
 	}
-	
-	public static void main(String[] args) {
-		HashMap<String, String> binding = new HashMap<String, String>();
-		binding.put("value", "http://www.openlinksw.com/schemas/virtrdapformat");//false
-//		binding.put("value", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type");//true
-		System.out.println(valueIsUri(binding));
-	}
 }
 
 

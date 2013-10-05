@@ -140,7 +140,6 @@ public class GoogleAnalytics {
 				}
 				commands.push([ '_trackEvent', category[i], action[i], optLabel[i], optValue[i] ]);
 			}
-			$wnd.console.log($wnd._gaq);
 			if ($wnd._gaq != null) {
 				$wnd._gaq.push.apply($wnd._gaq.push, commands);
 			} else {

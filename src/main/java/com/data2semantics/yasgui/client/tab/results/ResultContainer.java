@@ -348,7 +348,6 @@ public class ResultContainer extends VLayout {
 		} else {
 			mode = "xml";
 		}
-		view.getLogger().severe(mode);
 		//on window resize, part of the page get redrawn. This means we have to attach to codemirror again
 		//this is also called on first load
 		rawResponseOutput.addResizedHandler(new ResizedHandler(){
