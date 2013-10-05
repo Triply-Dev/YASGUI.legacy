@@ -4076,7 +4076,7 @@ var acceptEmpty=true;
 						style:"sp-prefixed" }
 				],
 
-			}
+			};
 		return terminals;
 	}
 
@@ -4165,7 +4165,7 @@ var acceptEmpty=true;
 					(state.allowBnodes ||
 					 (topSymbol!="blankNode" &&
 						topSymbol!="blankNodePropertyList" &&
-						topSymbol!="blankNodePropertyListPath")))
+						topSymbol!="blankNodePropertyListPath")));
 		}
 
 		// CodeMirror works with one line at a time,
@@ -4191,7 +4191,7 @@ var acceptEmpty=true;
 		if (tokenOb.cat == "WS" ||
 				tokenOb.cat == "COMMENT") {
 			state.possibleCurrent= state.possibleNext;
-			return(tokenOb.style)
+			return(tokenOb.style);
 		}
 		// Otherwise, run the parser until the token is digested
 		// or failure
@@ -4264,9 +4264,9 @@ var acceptEmpty=true;
 
 	var indentTop={
 		"*[,, object]": 3,
-		"*[ (,), object]": 3,
-		"*[ (,), objectPath]": 3,
-		"*[/, pathEltOrInverse]": 2,
+		"*[(,),object]": 3,
+		"*[(,),objectPath]": 3,
+		"*[/,pathEltOrInverse]": 2,
 		"object": 2,
 		"objectPath": 2,
 		"objectList": 2,
@@ -4278,8 +4278,8 @@ var acceptEmpty=true;
 		"propertyList": 1,
 		"propertyListPath": 1,
 		"propertyListPathNotEmpty": 1,
-		"?[verb, objectList]": 1,
-		"?[or([verbPath, verbSimple]), objectList]": 1
+		"?[verb,objectList]": 1,
+		"?[or([verbPath, verbSimple]),objectList]": 1,
 	};
 
 	var indentTable={
@@ -4287,8 +4287,10 @@ var acceptEmpty=true;
 		"]":0,
 		")":1,
 		"{":-1,
-		"(":-1
+		"(":-1,
+		"*[;,?[or([verbPath,verbSimple]),objectList]]": 1,
 	};
+	
 
 	function indent(state, textAfter) {
 		var n = 0; // indent level
@@ -4300,17 +4302,21 @@ var acceptEmpty=true;
 			for( ;i>=0;--i)
 			{
 				if (state.stack[i]==closeBracket)
-				{--i; break};
+				{--i; break;};
 			}
 		} else {
 			// Consider nullable non-terminals if at top of stack
 			var dn=indentTop[state.stack[i]];
-			if (dn) { n+=dn; --i}
+			if (dn) { 
+				n+=dn; --i;
+			}
 		}
 		for( ;i>=0;--i)
 		{
 			var dn=indentTable[state.stack[i]];
-			if (dn) n+=dn;
+			if (dn) {
+				n+=dn;
+			}
 		}
 		return n * config.indentUnit;
 	};
@@ -4331,9 +4337,12 @@ var acceptEmpty=true;
 				allowBnodes : true,
 				storeProperty : false,
 				lastProperty : "",
-				stack: [startSymbol] }; },
+				stack: [startSymbol]
+			}; 
+		},
 		indent: indent,
 		electricChars: "}])"
 	};
-});
+}
+);
 CodeMirror.defineMIME("application/x-sparql-query", "sparql11");
