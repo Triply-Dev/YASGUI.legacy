@@ -136,6 +136,9 @@ public class LinkCreator extends ImgButton implements RpcElement {
 		shortenUrlButton = new Button("Shorten url");
 		shortenUrlButton.setID("shortenUrlButton");
 		shortenUrlButton.setWidth(75);
+		if (!view.getConnHelper().isOnline()) {
+			shortenUrlButton.setDisabled(true);
+		}
 		shortenUrlButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
