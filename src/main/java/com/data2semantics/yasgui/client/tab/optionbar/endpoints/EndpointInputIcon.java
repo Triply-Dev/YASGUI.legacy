@@ -161,7 +161,7 @@ public class EndpointInputIcon extends HLayout implements RpcElement {
 				}
 
 				protected void onFailure(Throwable throwable) {
-					view.getElements().onError(throwable);
+					view.getErrorHelper().onError(throwable);
 					addFetchingFailedIcon();
 				}
 

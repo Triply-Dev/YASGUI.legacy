@@ -34,7 +34,6 @@ import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.settings.Imgs;
-import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.data2semantics.yasgui.shared.StaticConfig;
 import com.google.gwt.user.client.Window;
 import com.smartgwt.client.widgets.menu.Menu;
@@ -48,6 +47,7 @@ public class ConfigMenu extends Menu implements RpcElement {
 	private MenuItem refreshMenuItem;
 	private MenuItem logOutMenuItem;
 	private MenuItem logInMenuItem;
+	private MenuItem bugReportItem;
 	public ConfigMenu(View view) {
 		this.view = view;
 		addOpenIdItem();
@@ -58,12 +58,27 @@ public class ConfigMenu extends Menu implements RpcElement {
 		addResetSettings();
 		addCompatabilityItem();
 		addRecentChangelogItem();
-		addTooltips();
+		addTooltipsItem();
+		if (view.getSettings().bugReportsSupported()) {
+			addBugReportItem();
+		}
 		addAboutItem();
+
+
 		
 		setItems(items.toArray(new MenuItem[items.size()]));
 	}
 	
+	private void addBugReportItem() {
+		bugReportItem = new MenuItem("Report a bug");
+		bugReportItem.setIcon(Imgs.BUG.get());
+		bugReportItem.addClickHandler(new ClickHandler(){
+			public void onClick(MenuItemClickEvent event) {
+				ReportIssue.report(view);
+			}});
+		items.add(bugReportItem);
+	}
+
 	private void addOfflineCachingEnabledItem() {
 		MenuItem offlineEnabled;
 		if (view.getSettings().getEnabledFeatures().offlineCachingEnabled()) {
@@ -109,7 +124,7 @@ public class ConfigMenu extends Menu implements RpcElement {
 		
 	}
 
-	private void addTooltips() {
+	private void addTooltipsItem() {
 		MenuItem about = new MenuItem("Show help bubbles");
 		about.setIcon(Imgs.TOOLTIP.get());
 		about.addClickHandler(new ClickHandler(){
@@ -209,6 +224,9 @@ public class ConfigMenu extends Menu implements RpcElement {
 		if (logOutMenuItem != null) {
 			logOutMenuItem.setEnabled(false);
 		}
+		if (bugReportItem != null) {
+			bugReportItem.setEnabled(false);
+		}
 	}
 
 	public void enableRpcElements() {
@@ -220,6 +238,12 @@ public class ConfigMenu extends Menu implements RpcElement {
 		}
 		if (logOutMenuItem != null) {
 			logOutMenuItem.setEnabled(true);
+		}
+		if (refreshMenuItem != null) {
+			refreshMenuItem.setEnabled(true);
+		}
+		if (bugReportItem != null) {
+			bugReportItem.setEnabled(true);
 		}
 	}
 }

@@ -126,10 +126,10 @@ public class BookmarkedQueries extends ImgButton implements RpcElement {
 						protected void onFailure(Throwable throwable) {
 							setSrc(Imgs.BOOKMARK_QUERY.get());
 							if (throwable instanceof OpenIdException) {
-								view.getElements().onError(throwable.getMessage() + ". Logging out");
+								view.getErrorHelper().onError(throwable.getMessage() + ". Logging out");
 								view.getOpenId().logOut();
 							} else {
-								view.getElements().onError(throwable);
+								view.getErrorHelper().onError(throwable);
 							}
 						}
 
@@ -393,7 +393,7 @@ public class BookmarkedQueries extends ImgButton implements RpcElement {
 				}
 
 				protected void onFailure(Throwable throwable) {
-					view.getElements().onError(throwable);
+					view.getErrorHelper().onError(throwable);
 				}
 
 				protected void onSuccess(Void t) {
@@ -421,7 +421,7 @@ public class BookmarkedQueries extends ImgButton implements RpcElement {
 				}
 
 				protected void onFailure(Throwable throwable) {
-					view.getElements().onError(throwable);
+					view.getErrorHelper().onError(throwable);
 				}
 
 				protected void onSuccess(Void t) {

@@ -22,13 +22,16 @@
 		"offlineCaching": true	
 	},
 	"browserTitle": "YASGUI",
-	"singleEndpointMode": false,
 	"googleAnalyticsId": "",
+	"defaultBookmarks": [],
 	"bitlyApiKey": "",
 	"bitlyUsername": "",
 	"mysqlDb": "",
 	"mysqlUsername": "",
 	"mysqlPassword": "",
 	"mysqlHost": "",
-	"defaultBookmarks": []
+	"githubUsername": "",
+	"githubOathToken": "",
+	"githubRepo": ""
+	
 }

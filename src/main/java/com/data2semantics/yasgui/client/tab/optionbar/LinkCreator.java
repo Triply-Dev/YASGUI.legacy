@@ -150,7 +150,7 @@ public class LinkCreator extends ImgButton implements RpcElement {
 					}
 
 					protected void onFailure(Throwable throwable) {
-						view.getElements().onError(throwable);
+						view.getErrorHelper().onError(throwable);
 					}
 
 					protected void onSuccess(String shortUrl) {

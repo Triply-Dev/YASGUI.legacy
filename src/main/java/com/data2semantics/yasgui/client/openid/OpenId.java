@@ -84,7 +84,7 @@ public class OpenId {
 			}
 
 			protected void onFailure(Throwable throwable) {
-				view.getElements().onError(throwable);
+				view.getErrorHelper().onError(throwable);
 			}
 
 			protected void onSuccess(UserDetails details) {
@@ -114,7 +114,7 @@ public class OpenId {
 			}
 
 			protected void onFailure(Throwable throwable) {
-				view.getElements().onError(throwable);
+				view.getErrorHelper().onError(throwable);
 			}
 
 			protected void onSuccess(LoginResult result) {

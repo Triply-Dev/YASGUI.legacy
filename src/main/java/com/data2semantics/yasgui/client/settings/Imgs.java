@@ -66,6 +66,7 @@ public enum Imgs {
 	COMPATIBLE("nounproject/compatible.png"),
 	EXTERNAL_LINK("nounproject/external_link.png"),
 	INTERNAL_LINK("nounproject/internal_link.png"),
+	BUG("nounproject/bug.png"),
 	
 	LOGO_GITHUB("logos/github.jpg"),
 	LOGO_GOOGLE("logos/google.png"),

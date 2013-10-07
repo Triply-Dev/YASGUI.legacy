@@ -118,6 +118,10 @@ public class ConfigFetcher {
 		if (jsonObject.has(SettingKeys.MYSQL_PASSWORD)) jsonObject.remove(SettingKeys.MYSQL_PASSWORD);
 		if (jsonObject.has(SettingKeys.MYSQL_USERNAME)) jsonObject.remove(SettingKeys.MYSQL_USERNAME);
 		if (jsonObject.has(SettingKeys.MYSQL_DB)) jsonObject.remove(SettingKeys.MYSQL_DB);
+		
+		if (jsonObject.has(SettingKeys.GITHUB_OATH_TOKEN)) jsonObject.remove(SettingKeys.GITHUB_OATH_TOKEN);
+		if (jsonObject.has(SettingKeys.GITHUB_REPOSITORY)) jsonObject.remove(SettingKeys.GITHUB_REPOSITORY);
+		if (jsonObject.has(SettingKeys.GITHUB_USERNAME)) jsonObject.remove(SettingKeys.GITHUB_USERNAME);
 		return jsonObject;
 	}
 	
@@ -134,6 +138,9 @@ public class ConfigFetcher {
 				Helper.containsKey(json, SettingKeys.MYSQL_DB)));
 		json.put(SettingKeys.USE_BITLY, (Helper.containsKey(json, SettingKeys.BITLY_API_KEY) &&
 				Helper.containsKey(json, SettingKeys.BITLY_USERNAME)));
+		json.put(SettingKeys.BUG_REPORTS_SUPPORTED, (Helper.containsKey(json, SettingKeys.GITHUB_OATH_TOKEN) &&
+				Helper.containsKey(json, SettingKeys.GITHUB_REPOSITORY) &&
+				Helper.containsKey(json, SettingKeys.GITHUB_USERNAME)));
 		return json;
 	}
 	

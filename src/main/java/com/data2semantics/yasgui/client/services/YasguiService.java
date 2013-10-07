@@ -27,6 +27,7 @@ package com.data2semantics.yasgui.client.services;
  */
 
 import com.data2semantics.yasgui.shared.Bookmark;
+import com.data2semantics.yasgui.shared.IssueReport;
 import com.data2semantics.yasgui.shared.exceptions.FetchException;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -46,4 +47,5 @@ public interface YasguiService extends RemoteService {
 	Bookmark[] getBookmarks() throws IllegalArgumentException, FetchException;
 	boolean isOnline() throws IllegalArgumentException;
 	void logException(Throwable e);
+	String reportIssue(IssueReport issueReport) throws IllegalArgumentException;
 }

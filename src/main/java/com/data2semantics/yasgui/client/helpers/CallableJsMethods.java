@@ -100,18 +100,18 @@ public class CallableJsMethods {
 		QueryTab tab = (QueryTab)view.getTabs().getTab(tabId);
 		view.getTabs().selectTab(tabId);
 		if (tab == null) {
-			view.getElements().onError("No tab to draw results in");
+			view.getErrorHelper().onError("No tab to draw results in");
 		}
 		tab.getResultContainer().drawResult(resultString, contentType);
 	}
 
 	public void onError(String error) {
-		view.getElements().onError(error);
+		view.getErrorHelper().onError(error);
 	}
 	
 	
 	public void onError(Throwable e) {
-		view.getElements().onError(e);
+		view.getErrorHelper().onError(e);
 	}
 	
 	public void onLoadingStart(String message) {
@@ -135,7 +135,7 @@ public class CallableJsMethods {
 	}
 	
 	public void onQueryError(String tabId, String message) {
-		view.getElements().onQueryError(tabId, message);
+		view.getErrorHelper().onQueryError(tabId, message);
 	}
 	
 	public void showPlayButton(String queryValid) {
