@@ -54,12 +54,12 @@ public class TooltipText {
 		return "Available keyboard shortcuts:" +
 			"<ul>\n" + 
 				"<li><strong>" + osShortcut +"-D</strong>: Delete line</li>\n" + 
-				"<li><strong>" + osShortcut + "-ALT-down</strong>: Copy line below</li>\n" + 
-				"<li><strong>" + osShortcut + "-ALT-up</strong>: Copy line up</li>\n" + 
+				"<li><strong>" + osShortcut + "-Alt-Down</strong>: Copy line down</li>\n" + 
+				"<li><strong>" + osShortcut + "-Alt-Up</strong>: Copy line up</li>\n" + 
 				"<li><strong>" + osShortcut + "-/</strong>: Comment line(s)</li>\n" + 
-				"<li><strong>" + osShortcut + "-SHIFT-F</strong>: Autoformat (part of) your query</li>\n" + 
+				"<li><strong>" + osShortcut + "-Shift-F</strong>: Autoformat (part of) your query</li>\n" + 
 				"<li><strong>" + osShortcut + "-&lt;enter&gt;</strong>: Execute query</li>\n" + 
-				"<li><strong>ESC</strong>: Cancel query</li>\n" + 
+				"<li><strong>Esc</strong>: Cancel query</li>\n" + 
 			"</ul>";
 	}
 }
