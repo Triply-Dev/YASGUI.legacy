@@ -78,9 +78,14 @@ public class SettingKeys implements Serializable {
 	public static String MYSQL_HOST = "mysqlHost";
 	public static String MYSQL_DB = "mysqlDb";
 	
+	public static String GITHUB_USERNAME = "githubUsername";
+	public static String GITHUB_OATH_TOKEN = "githubOathToken";
+	public static String GITHUB_REPOSITORY = "githubRepo";
+	
 	//inferred settings
 	public static String DB_SET = "dbSet";
 	public static String USE_BITLY = "useBitly";
+	public static String BUG_REPORTS_SUPPORTED = "bugReporsSupported";
 	
 	public static String JSON_SETTINGS_ARGUMENT = "jsonSettings";//passed in url to YASGUI, containing all the json settings
 }

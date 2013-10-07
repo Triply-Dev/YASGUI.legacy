@@ -39,7 +39,6 @@ import com.data2semantics.yasgui.client.settings.ExternalLinks;
 import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.settings.TooltipText;
 import com.data2semantics.yasgui.client.settings.ZIndexes;
-import com.data2semantics.yasgui.client.tab.QueryTab;
 import com.data2semantics.yasgui.client.tab.optionbar.LinkCreator;
 import com.data2semantics.yasgui.client.tab.optionbar.endpoints.EndpointInput;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
@@ -49,7 +48,6 @@ import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
-import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Command;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
@@ -63,8 +61,6 @@ import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.Window;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
-import com.smartgwt.client.widgets.events.CloseClickEvent;
-import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.LayoutSpacer;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -272,116 +268,6 @@ public class ViewElements implements RpcElement {
 		queryLoading.hide();
 	}
 	
-	public void onQueryError(String tabId, String error) {
-		onQueryFinish();
-		QueryTab tab = (QueryTab)view.getTabs().getTab(tabId);
-		onQueryError(error, tab.getTabSettings().getEndpoint(), tab.getTabSettings().getQueryString(), tab.getTabSettings().getQueryArgsAsUrlString());
-	}
-	
-	/**
-	 * Show the error window for a trowable. Prints the complete stack trace
-	 * @param throwable
-	 */
-	public void onError(Throwable e) {
-		String errorMsg;
-		
-		if (Helper.inDebugMode()) {
-			errorMsg = Helper.getStackTraceAsString(e);
-			errorMsg += "\nCaused by:\n" + Helper.getCausesStackTraceAsString(e);
-		} else {
-			errorMsg = e.getMessage();
-		}
-		Helper.logExceptionToServer(e);
-		
-		onError(errorMsg);
-	}
-	
-	/**
-	 * Modal popup window to show on error
-	 * 
-	 * @param error
-	 */
-	public void onError(String error) {
-		onLoadingFinish();
-		Window window = getErrorWindow();
-		Label label = new Label(error);
-		label.setMargin(4);
-		label.setHeight100();
-		window.addItem(label);
-		window.setIsModal(true);
-		window.draw();
-	}
-	
-	private Window getErrorWindow() {
-		final Window window = new Window();
-		window.setID("errorWindow");
-		window.setDismissOnOutsideClick(true);
-		window.setIsModal(true);
-		window.setZIndex(ZIndexes.MODAL_WINDOWS);
-		window.setAutoSize(true);
-		window.setMinWidth(400);
-		window.setShowMinimizeButton(false);
-		window.setAutoCenter(true);
-		window.setCanDragResize(true);
-		window.addCloseClickHandler(new CloseClickHandler() {
-			public void onCloseClick(CloseClickEvent event) {
-				window.destroy();
-			}
-		});
-		window.setShowTitle(false);
-		return window;
-	}
-	
-	/**
-	 * Display error when querying endpoint failed. Has buttons for opening query result page of endpoint itself on new page
-	 * 
-	 * @param error Html error msg
-	 * @param endpoint Used endpoint
-	 * @param query Used query
-	 * @param args 
-	 */
-	public void onQueryError(String error, final String endpoint, final String query, final String argsString) {
-		final Window window = getErrorWindow();
-		window.setWidth(350);
-		window.setZIndex(ZIndexes.MODAL_WINDOWS);
-		VLayout vLayout = new VLayout();
-		vLayout.setWidth100();
-		Label label = new Label();
-		label.setID("queryErrorMessage");
-		label.setContents(error);
-		label.setMargin(4);
-		label.setHeight100();
-		label.setWidth100();
-		vLayout.addMember(label);
-		
-		HLayout buttons = new HLayout();
-		buttons.setAlign(Alignment.CENTER);
-		Button executeQuery = new Button("Open endpoint in new window");
-		executeQuery.addClickHandler(new ClickHandler(){
-			@Override
-			public void onClick(ClickEvent event) {
-				String url = endpoint + "?query=" + URL.encodeQueryString(query) + argsString;
-				com.google.gwt.user.client.Window.open(url, "_blank", null);
-			}});
-		executeQuery.setWidth(200);
-		Button closeWindow = new Button("Close window");
-		closeWindow.addClickHandler(new ClickHandler(){
-
-			@Override
-			public void onClick(ClickEvent event) {
-				window.destroy();
-			}});
-		
-		buttons.addMember(executeQuery);
-		buttons.addMember(closeWindow);
-		buttons.setWidth100();
-		buttons.setLayoutAlign(Alignment.CENTER);
-		vLayout.addMember(buttons);
-		window.addItem(vLayout);
-		window.draw();
-	}
-
-	
 	public void addLogo() {
 		HTMLFlow html = getYasguiLogo(31, "Show YASGUI page", "mainYasguiLogo");
 		html.getElement().getStyle().setPosition(Position.ABSOLUTE);
@@ -567,8 +453,10 @@ public class ViewElements implements RpcElement {
 			
 		});
 		if (configButton.isDrawn()) {
+			configButton.bringToFront();
 			configButton.redraw();
 		} else {
+			configButton.bringToFront();
 			configButton.draw();
 		}
 		
@@ -603,7 +491,7 @@ public class ViewElements implements RpcElement {
 		//All incompatible opera versions are 0-14
 		//therefore, just check whether we have as name 'opera'
 		if (JsMethods.getBrowserName().equals("opera")) {
-			onError("You are using an opera browser. Users are known to encounter issues in YASGUI using this browser. <br>" +
+			view.getErrorHelper().onError("You are using an opera browser. Users are known to encounter issues in YASGUI using this browser. <br>" +
 					"We recommend you switch to Opera 15+, or to any other modern browser");
 		}
 	}

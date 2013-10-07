@@ -70,6 +70,18 @@ function checkConfigFile() {
 				echo "the mysql host is still in config file.\n";
 				return false;
 			}
+			if (arrayKeyFilled ( $json, "githubUsername" )) {
+				echo "the github user name is still in config file.\n";
+				return false;
+			}
+			if (arrayKeyFilled ( $json, "githubOathToken" )) {
+				echo "the github oath token is still in config file.\n";
+				return false;
+			}
+			if (arrayKeyFilled ( $json, "githubRepo" )) {
+				echo "the github repo is still in config file.\n";
+				return false;
+			}
 			if ($json ['singleEndpointMode']) {
 				echo "Committing config in single endpoint mode! Shouldnt be the case\n";
 				return false;

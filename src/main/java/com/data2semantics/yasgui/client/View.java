@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 
 import com.data2semantics.yasgui.client.helpers.CallableJsMethods;
 import com.data2semantics.yasgui.client.helpers.ChangelogHelper;
+import com.data2semantics.yasgui.client.helpers.ErrorHelper;
 import com.data2semantics.yasgui.client.helpers.GoogleAnalytics;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.HistoryHelper;
@@ -80,19 +81,20 @@ public class View extends VLayout implements RpcElement {
 	private HistoryHelper historyHelper = new HistoryHelper(this);
 	private ConnectivityHelper connHelper;
 	private ChangelogHelper changelogHelper;
+	private ErrorHelper errorHelper;
 
 	public View() {
 		boolean newUser = false;
 		if (LocalStorageHelper.newUser())
 			newUser = true;
-
+		errorHelper = new ErrorHelper(this);
 		if (!Helper.isSeleniumVisitor() && JsMethods.offlineSupported() && getSettings().getEnabledFeatures().offlineCachingEnabled())
 			Helper.includeOfflineManifest();
 
 		setViewLayout();
 
 		retrieveSettings();
-
+		
 		viewElements = new ViewElements(this);
 		jsEvents = new CallableJsMethods(this);
 		if (getSettings().isDbSet()) {
@@ -168,7 +170,7 @@ public class View extends VLayout implements RpcElement {
 		try {
 			settings = Settings.retrieveSettings();
 		} catch (IOException e) {
-			getElements().onError(e);
+			getErrorHelper().onError(e);
 		}
 	}
 
@@ -200,7 +202,7 @@ public class View extends VLayout implements RpcElement {
 				getElements().showTooltips(fromVersionId);
 				getSelectedTab().showTooltips(fromVersionId);
 			} catch (ElementIdException e) {
-				getElements().onError(e);
+				getErrorHelper().onError(e);
 			}
 		}
 	}
@@ -243,7 +245,7 @@ public class View extends VLayout implements RpcElement {
 		try {
 			tabSettings = getSettings().getSelectedTabSettings();
 		} catch (SettingsException e) {
-			getElements().onError(e);
+			getErrorHelper().onError(e);
 		}
 		return tabSettings;
 	}
@@ -270,7 +272,7 @@ public class View extends VLayout implements RpcElement {
 				}
 
 				protected void onFailure(Throwable throwable) {
-					getElements().onError(throwable);
+					getErrorHelper().onError(throwable);
 				}
 
 				protected void onSuccess(String prefixes) {
@@ -303,7 +305,7 @@ public class View extends VLayout implements RpcElement {
 				}
 
 				protected void onFailure(Throwable throwable) {
-					getElements().onError(throwable);
+					getErrorHelper().onError(throwable);
 				}
 
 				protected void onSuccess(String endpoints) {
@@ -312,11 +314,11 @@ public class View extends VLayout implements RpcElement {
 						try {
 							endpointDataSource.addEndpointsFromJson(endpoints);
 						} catch (Exception e) {
-							getElements().onError(e);
+							getErrorHelper().onError(e);
 						}
 
 					} else {
-						getElements().onError("Failed to retrieve list of endpoints from server");
+						getErrorHelper().onError("Failed to retrieve list of endpoints from server");
 					}
 					viewElements.onLoadingFinish();
 				}
@@ -425,6 +427,9 @@ public class View extends VLayout implements RpcElement {
 
 	public ConnectivityHelper getConnHelper() {
 		return this.connHelper;
+	}
+	public ErrorHelper getErrorHelper() {
+		return this.errorHelper;
 	}
 
 	public void disableRpcElements() {

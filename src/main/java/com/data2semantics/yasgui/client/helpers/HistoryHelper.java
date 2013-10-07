@@ -71,7 +71,7 @@ public class HistoryHelper {
 		try {
 			updateView(JsMethods.getHistoryState().getData());
 		} catch (Exception e) {
-			view.getElements().onError(e);
+			view.getErrorHelper().onError(e);
 		}
 	}
 	

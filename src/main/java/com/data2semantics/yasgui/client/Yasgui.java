@@ -50,7 +50,7 @@ public class Yasgui implements EntryPoint {
 			public void onUncaughtException(Throwable e) {
 				Throwable unwrapped = unwrap(e);  
 				view.getLogger().log(Level.SEVERE, "Exception caught", e);  
-				view.getElements().onError(unwrapped);
+				view.getErrorHelper().onError(unwrapped);
 			}
 		});
 		if (!GWT.isScript()) { 

@@ -210,6 +210,14 @@ public class Settings extends JsonHelper {
 		return dbSet;
 	}
 	
+	public boolean bugReportsSupported() {
+		boolean bugReportsSupported = false;
+		if (containsKey(SettingKeys.BUG_REPORTS_SUPPORTED) && get(SettingKeys.BUG_REPORTS_SUPPORTED).isBoolean() != null) {
+			bugReportsSupported = get(SettingKeys.BUG_REPORTS_SUPPORTED).isBoolean().booleanValue();
+		}
+		return bugReportsSupported;
+	}
+	
 	public boolean useUrlAsSnorql() {
 		boolean result = true;//default value, i.e. regular behaviour
 		if (containsKey(SettingKeys.URI_AS_SNORQL) && get(SettingKeys.URI_AS_SNORQL).isBoolean() != null){

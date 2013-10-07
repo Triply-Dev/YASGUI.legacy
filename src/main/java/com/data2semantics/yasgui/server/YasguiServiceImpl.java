@@ -26,6 +26,9 @@ package com.data2semantics.yasgui.server;
  * #L%
  */
 
+import static com.rosaloves.bitlyj.Bitly.as;
+import static com.rosaloves.bitlyj.Bitly.shorten;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -49,13 +52,12 @@ import com.data2semantics.yasgui.server.fetchers.PrefixesFetcher;
 import com.data2semantics.yasgui.server.fetchers.PropertiesFetcher;
 import com.data2semantics.yasgui.server.fetchers.endpoints.EndpointsFetcher;
 import com.data2semantics.yasgui.shared.Bookmark;
+import com.data2semantics.yasgui.shared.IssueReport;
 import com.data2semantics.yasgui.shared.SettingKeys;
 import com.data2semantics.yasgui.shared.exceptions.FetchException;
 import com.data2semantics.yasgui.shared.exceptions.OpenIdException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.rosaloves.bitlyj.*;
-
-import static com.rosaloves.bitlyj.Bitly.*;
+import com.rosaloves.bitlyj.Url;
 
 /**
  * The server side implementation of the RPC service.
@@ -261,6 +263,16 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 			}
 		} else {
 			LOGGER.log(Level.SEVERE, t.getMessage(), t);
+		}
+	}
+
+	@Override
+	public String reportIssue(IssueReport issueReport) throws IllegalArgumentException {
+		try {
+			String url = IssueReporter.reportIssue(new File(getServletContext().getRealPath("/")), issueReport);
+			return "Your issue is reported. To keep track of any progress, visit <a href='" + url + "' target='_blank'>this GitHub page</a>";
+		} catch (Exception e) {
+			throw new IllegalArgumentException(e);
 		}
 	}
 }
