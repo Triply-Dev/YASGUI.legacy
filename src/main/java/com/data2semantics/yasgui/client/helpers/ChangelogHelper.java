@@ -46,7 +46,7 @@ public class ChangelogHelper {
 				"<li>Version change notifications</li>\n" + 
 				"<li>Local installation/integration of YASGUI is now more flexible/easy</li>\n" + 
 			"</ul>";
-	private static String AUTO_FORMAT_SHORTCUT_NOTIFICATION = "Autoformat (part of) your query! Use 'CTRL-SHIFT-F'";
+	private static String AUTO_FORMAT_SHORTCUT_NOTIFICATION = "Autoformat (part of) your query! Use ";
 	private static String BUG_REPORT_NOTIFICATION = "Submit any bugs you encounter or features you desire!";
 	private static String SPECIFY_NAMED_GRAPH_NOTIFICATION = "Specify named or default graphs for SPARQL http requests";
 	private View view;
@@ -66,7 +66,7 @@ public class ChangelogHelper {
 	
 	public void draw() {
 		showChangelogNotification();
-		showResetSettingsNotification();
+		showBugReportNotification();
 		showNamedGraphsNotification();
 		showAutoFormatShortcutNotification();
 	}
@@ -85,7 +85,7 @@ public class ChangelogHelper {
 		
 	}
 
-	private void showResetSettingsNotification() {
+	private void showBugReportNotification() {
 		TooltipProperties tProp = new TooltipProperties();
 		tProp.setId(view.getElements().getConfigMenu().getDOM().getId());
 		tProp.setContent(BUG_REPORT_NOTIFICATION);
@@ -97,7 +97,8 @@ public class ChangelogHelper {
 	private void showAutoFormatShortcutNotification() {
 		TooltipProperties tProp = new TooltipProperties();
 		tProp.setId(view.getSelectedTab().getQueryTextArea().getDOM().getId());
-		tProp.setContent(AUTO_FORMAT_SHORTCUT_NOTIFICATION);
+		String shortcut = "'" + (JsMethods.isMac()?"Command":"Ctrl") + "-Shift-F'";
+		tProp.setContent(AUTO_FORMAT_SHORTCUT_NOTIFICATION + shortcut);
 		tProp.setMy(TooltipProperties.POS_CENTER);
 		tProp.setAt(TooltipProperties.POS_LEFT_CENTER);
 		tProp.setYOffset(50);

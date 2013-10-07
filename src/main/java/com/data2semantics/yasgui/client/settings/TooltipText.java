@@ -1,5 +1,7 @@
 package com.data2semantics.yasgui.client.settings;
 
+import com.data2semantics.yasgui.client.helpers.JsMethods;
+
 /*
  * #%L
  * YASGUI
@@ -37,16 +39,7 @@ public class TooltipText {
 	public static String TAB_SELECTION = "Double click to rename. Right click for tab options";
 	public static String ENDPOINT_SEARCH_ICON = "Search for endpoints";
 	public static String QUERY_PREFIXES_AUTOCOMPLETE = "Start typing the PREFIX definition to get an autocompletion list of prefixes.<br>Prefix missing? Add your prefix to <a href=\"http://prefix.cc/\" target=\"_blank\">prefix.cc</a>, and refresh autocompletion list (via config menu)";
-	public static String QUERY_KEYBOARD_SHORTCUTS = "Available keyboard shortcuts:" +
-			"<ul>\n" + 
-				"<li><strong>CTRL-D</strong>: Delete line</li>\n" + 
-				"<li><strong>CTRL-ALT-down</strong>: Copy line below</li>\n" + 
-				"<li><strong>CTRL-ALT-up</strong>: Copy line up</li>\n" + 
-				"<li><strong>CTRL-/</strong>: Comment line(s)</li>\n" + 
-				"<li><strong>CTRL-SHIFT-F</strong>: Autoformat (part of) your query</li>\n" + 
-				"<li><strong>CTRL-&lt;enter&gt;</strong>: Execute query</li>\n" + 
-				"<li><strong>ESC</strong>: Cancel query</li>\n" + 
-			"</ul>";
+	
 	public static String QUERY_CONFIG_MENU = "Advanced options which you normally wont need, including:" +
 			"<ul style=\"margin: 1px;\">\n" + 
 			"<li>Change request method (POST / GET)</li>\n" + 
@@ -55,4 +48,18 @@ public class TooltipText {
 		"</ul>";
 	public static String LINK_GENERATOR = "Share your queries with others by <br>generating a YASGUI link for them";
 	public static String ADD_TO_BOOKMARKS = "Add queries as a bookmark (requires login)";
+	
+	public static String getKeyboardShortcuts() {
+		String osShortcut = (JsMethods.isMac()? "Command": "Ctrl");
+		return "Available keyboard shortcuts:" +
+			"<ul>\n" + 
+				"<li><strong>" + osShortcut +"-D</strong>: Delete line</li>\n" + 
+				"<li><strong>" + osShortcut + "-ALT-down</strong>: Copy line below</li>\n" + 
+				"<li><strong>" + osShortcut + "-ALT-up</strong>: Copy line up</li>\n" + 
+				"<li><strong>" + osShortcut + "-/</strong>: Comment line(s)</li>\n" + 
+				"<li><strong>" + osShortcut + "-SHIFT-F</strong>: Autoformat (part of) your query</li>\n" + 
+				"<li><strong>" + osShortcut + "-&lt;enter&gt;</strong>: Execute query</li>\n" + 
+				"<li><strong>ESC</strong>: Cancel query</li>\n" + 
+			"</ul>";
+	}
 }

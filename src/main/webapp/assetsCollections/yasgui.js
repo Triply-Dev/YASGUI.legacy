@@ -194,10 +194,17 @@ function initializeQueryCodemirror(elementId) {
 				fixedGutter: true,
 				extraKeys : {
 					"Ctrl-D" : "deleteLines",
+					"Ctrl-K" : "deleteLines",
+					"Cmd-D" : "deleteLines",
+					"Cmd-K" : "deleteLines",
 					"Ctrl-/" : "commentLines",
+					"Cmd-/" : "commentLines",
 					"Ctrl-Alt-Down" : "copyLineDown",
 					"Ctrl-Alt-Up" : "copyLineUp",
-					"Shift-Ctrl-F": "doAutoFormat"
+					"Cmd-Alt-Down" : "copyLineDown",
+					"Cmd-Alt-Up" : "copyLineUp",
+					"Shift-Ctrl-F": "doAutoFormat",
+					"Shift-Cmd-F": "doAutoFormat"
 				}
 			});
 			
@@ -299,10 +306,17 @@ function initializeQueryBookmarkCodemirror(elementId) {
 			viewportMargin: Infinity,
 			extraKeys : {
 				"Ctrl-D" : "deleteLines",
+				"Ctrl-K" : "deleteLines",
+				"Cmd-D" : "deleteLines",
+				"Cmd-K" : "deleteLines",
 				"Ctrl-/" : "commentLines",
+				"Cmd-/" : "commentLines",
 				"Ctrl-Alt-Down" : "copyLineDown",
 				"Ctrl-Alt-Up" : "copyLineUp",
-				"Shift-Ctrl-F": "doAutoFormat"
+				"Cmd-Alt-Down" : "copyLineDown",
+				"Cmd-Alt-Up" : "copyLineUp",
+				"Shift-Ctrl-F": "doAutoFormat",
+				"Shift-Cmd-F": "doAutoFormat"
 			}
 		});
 		
