@@ -178,6 +178,9 @@ After making your changes, make sure the json configuration is valid, by validat
     "mysqlUsername": "YASGUI",
     "mysqlPassword": "S0M3P4ssW0rd",
     "mysqlHost": "localhost",
+    "githubUsername": "githubUserName",
+    "githubOathToken": "oathToken",
+    "githubRepo": "repository",
     "defaultBookmarks": [
         {
             "title": "Get 10 triples",
@@ -276,10 +279,16 @@ After making your changes, make sure the json configuration is valid, by validat
 					<dd>Password of SQL user</dd>
 					<dt>mysqlHost*</dt>
 					<dd>Host where SQL backend is running</dd>
+					<dt>githubUsername*</dt>
+					<dd>Username of your github account. Used for creating github issues from within the YASGUI interface</dd>
+					<dt>githubRepo*</dt>
+					<dd>Github repository where you'd like to create the issues (e.g. a fork of YASGUI). The github user specified above should have push rights to this repository</dd>
+					<dt>githubOathToken*</dt>
+					<dd>Github oath token (click on 'create new token' here <a href="https://github.com/settings/applications" target="_blank">here</a></dd>
 					<dt>defaultBookmarks*</dt>
 					<dd>When bookmark functionality is supported (i.e. sql settings are valid), these bookmarks are added as example queries.</dd>
 				</dl>
-				<small><strong>* removing this setting or adding an empty value will disable this functionality</strong></small>
+				<small><strong>* removing this setting or using an empty value will disable this functionality</strong></small>
 
 						</div>
 					</div>
