@@ -82,10 +82,6 @@ function checkConfigFile() {
 				echo "the github repo is still in config file.\n";
 				return false;
 			}
-			if ($json ['singleEndpointMode']) {
-				echo "Committing config in single endpoint mode! Shouldnt be the case\n";
-				return false;
-			}
 		}
 	} else {
 		echo "Config file not found\n";
