@@ -95,7 +95,7 @@ public class QueryTextArea extends HTMLPane {
 		if (fromVersionId < TOOLTIP_VERSION_KEYBOARD_SHORTCUTS) {
 			TooltipProperties tProp = new TooltipProperties();
 			tProp.setId(getDOM().getId());
-			tProp.setContent(TooltipText.QUERY_KEYBOARD_SHORTCUTS);
+			tProp.setContent(TooltipText.getKeyboardShortcuts());
 			tProp.setMy(TooltipProperties.POS_CENTER);
 			tProp.setAt(TooltipProperties.POS_RIGHT_BOTTOM);
 			tProp.setXOffset(-150);

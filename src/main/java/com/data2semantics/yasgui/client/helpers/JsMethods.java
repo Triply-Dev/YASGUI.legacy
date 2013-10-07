@@ -466,4 +466,7 @@ public class JsMethods {
 		}
 		return supported;
 	}-*/;
+	public static native boolean isMac() /*-{
+		return $wnd.navigator.platform.toUpperCase().indexOf('MAC')>=0;
+	}-*/;
 }
