@@ -147,19 +147,48 @@ function checkSyntax(cm, updateQueryButton) {
 		}
 	}
 }
-function autoFormatAll(cm) {
+
+/**
+ * loop through line. return true if we have a line break. return false if we find a non-ws token
+ */
+function nextTokenIsLinebreak(cm, lineNumber, charNumber) {
+	if (charNumber == undefined)
+		charNumber = 1;
+	var token = cm.getTokenAt({
+		line : lineNumber,
+		ch : charNumber
+	});
+	if (token.end < charNumber) {
+		//hmm, can't find a new token on this line: we've reached the line break
+		return true;
+	}
+	if (token == null || token == undefined || token.end < charNumber || token.type != "sp-ws") {
+		return false;
+	} else {
+		if (/\r?\n|\r/.test(token.string)) {
+			//line break!
+			return true;
+		} else {
+			//just a space. get next token
+			return nextTokenIsLinebreak(cm, lineNumber, token.end + 1);
+		}
+	}
+	
 	
 }
+
+
 CodeMirror.extendMode("sparql11", {
 	autoFormatLineBreaks: function (text, start, end) {
-		text = text.substring(start, end).replace(/\r?\n|\r/g, " ");
+//		text = text.substring(start, end).replace(/\r?\n|\r/g, " ");
+		text = text.substring(start, end);
 		breakAfterArray = [
 		    ["sp-keyword", "sp-ws", "sp-prefixed", "sp-ws", "sp-uri"], //i.e. prefix declaration
 		    ["sp-keyword", "sp-ws", "sp-uri"]//i.e. base
 		];
 		breakAfterCharacters = ["{", ".", ";"];
 		breakBeforeCharacters = ["}"];
-		getBreakType = function(stringVal, className) {
+		getBreakType = function(stringVal, type) {
 			for (var i = 0; i < breakAfterArray.length; i++) {
 				if (stackTrace.equals(breakAfterArray[i])) {
 					return 1;
@@ -181,9 +210,9 @@ CodeMirror.extendMode("sparql11", {
 		var formattedQuery = "";
 		var currentLine = "";
 		var stackTrace = [];
-		CodeMirror.runMode(text, "sparql11", function(stringVal, className) {
-			stackTrace.push(className);
-			var breakType = getBreakType(stringVal, className);
+		CodeMirror.runMode(text, "sparql11", function(stringVal, type) {
+			stackTrace.push(type);
+			var breakType = getBreakType(stringVal, type);
 			if (breakType != 0) {
 				if (breakType == 1) {
 					formattedQuery += stringVal + "\n";
@@ -199,6 +228,6 @@ CodeMirror.extendMode("sparql11", {
 			}
 			if (stackTrace.length == 1 && stackTrace[0] == "sp-ws") stackTrace = [];
 		});
-		return $.trim(formattedQuery);
+		return $.trim(formattedQuery.replace(/\n\s*\n/g, '\n'));
 	}
   });
