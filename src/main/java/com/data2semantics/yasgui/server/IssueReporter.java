@@ -77,14 +77,4 @@ public class IssueReporter {
 		IssueReporter issueReporter = new IssueReporter(configDir, report);
 		return issueReporter.report();
 	}
-	
-	public static void main(String[] args) throws IOException, ParseException, JSONException {
-		File configDir = new File("src/main/webapp/");
-		IssueReport issueReport = new IssueReport();
-		issueReport.setSubject("subject!!");
-		issueReport.setBody("body!!");
-		issueReport.setThrowable(new Exception("exception!!"));
-		issueReport.setReportType("bug");
-		reportIssue(configDir, issueReport);
-	}
 }
