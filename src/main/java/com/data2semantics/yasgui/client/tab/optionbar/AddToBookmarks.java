@@ -181,7 +181,7 @@ public class AddToBookmarks extends ImgButton implements RpcElement {
 	 * @param fromVersionId
 	 */
 	public void showToolTips(int fromVersionId) {
-		if (fromVersionId <= TOOLTIP_VERSION_BOOKMARKS) {
+		if (fromVersionId < TOOLTIP_VERSION_BOOKMARKS) {
 			TooltipProperties tProp = new TooltipProperties();
 			tProp.setId(getDOM().getId());
 			tProp.setContent(TooltipText.ADD_TO_BOOKMARKS);
