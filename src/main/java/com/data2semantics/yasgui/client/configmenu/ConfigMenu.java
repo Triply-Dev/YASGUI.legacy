@@ -70,7 +70,7 @@ public class ConfigMenu extends Menu implements RpcElement {
 	}
 	
 	private void addBugReportItem() {
-		bugReportItem = new MenuItem("Report a bug");
+		bugReportItem = new MenuItem("Report a bug or request a new feature");
 		bugReportItem.setIcon(Imgs.BUG.get());
 		bugReportItem.addClickHandler(new ClickHandler(){
 			public void onClick(MenuItemClickEvent event) {
