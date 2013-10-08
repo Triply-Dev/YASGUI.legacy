@@ -45,7 +45,6 @@ public class AppCacheServlet extends HttpServlet {
 	
 	
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getCookies();
 		String strongName = getPermutationFromCookies(request.getCookies());
 		if (strongName != null && strongName.length() > 0) {
 			response.setHeader("Cache-Control", "no-cache");
@@ -80,7 +79,6 @@ public class AppCacheServlet extends HttpServlet {
 	private String getPermutationFromCookies(Cookie[] cookies) {
 		String permutationStrongName = null;
 		for (Cookie cookie: cookies) {
-			System.out.println("cookie " + cookie.getName() + ": " + cookie.getValue());
 			if (cookie.getName().equals(CookieKeys.GWT_STRONG_NAME)) {
 				permutationStrongName = cookie.getValue();
 			}

@@ -259,10 +259,10 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 				LOGGER.log(Level.SEVERE, t.getMessage(), t);
 				handler.close();
 			} catch (Exception e) {
-				e.printStackTrace();
+				LOGGER.log(Level.SEVERE, "Unable to log exception to server", t);
 			}
 		} else {
-			LOGGER.log(Level.SEVERE, t.getMessage(), t);
+			LOGGER.log(Level.SEVERE, "Unable to log exception to server", t);
 		}
 	}
 
@@ -272,7 +272,8 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 			String url = IssueReporter.reportIssue(new File(getServletContext().getRealPath("/")), issueReport);
 			return "Your issue is reported. To keep track of any progress, visit <a href='" + url + "' target='_blank'>this GitHub page</a>";
 		} catch (Exception e) {
-			throw new IllegalArgumentException(e);
+			LOGGER.log(Level.SEVERE, "Unable to report issue", e);
+			throw new IllegalArgumentException("Unsuccesfull in reporting this issue. Please report manually at http://github.com/LaurensRietveld/issues");
 		}
 	}
 }
