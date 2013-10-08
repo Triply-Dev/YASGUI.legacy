@@ -53,11 +53,13 @@ public class IssueReporter {
 		return issue;
 	}
 	private String getBodyHtml() {
-		String html;
-		html = report.getBody() + "<br><br>";
+		String html = "";
+		if (report.getBody() != null) html += report.getBody() + "<br><br>";
 		if (report.getUserAgent() != null) html += "<strong>UserAgent</strong>: " + report.getUserAgent() + "<br>";
-		if (report.getThrowable() != null) html += "<strong>Stacktrace</strong>: <br>";
-		html += ExceptionUtils.getStackTrace(report.getThrowable());
+		if (report.getThrowable() != null) {
+			html += "<strong>Stacktrace</strong>: <br>";
+			html += ExceptionUtils.getStackTrace(report.getThrowable());
+		}
 		return html;
 	}
 	
