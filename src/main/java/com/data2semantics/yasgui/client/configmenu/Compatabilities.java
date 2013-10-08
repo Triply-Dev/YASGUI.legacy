@@ -129,7 +129,7 @@ public class Compatabilities extends Window {
 		
 		hlayout.addMember(getIcon(offlineSupported));
 		hlayout.addMember(getRowName("Offline Functionality"));
-		if (historySupported) {
+		if (offlineSupported) {
 			hlayout.addMember(getExplanation("Supported by your browser. YASGUI will still function without internet connection (e.g. on localhost endpoints)"));
 		} else {
 			hlayout.addMember(getExplanation("Not supported by your browser. You won't be able to use YASGUI without internet connection (e.g. on localhost endpoints)"));
