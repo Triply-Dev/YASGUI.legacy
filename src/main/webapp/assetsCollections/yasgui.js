@@ -159,7 +159,7 @@ $(document).keydown(function(e) {
 	}
 	if (
 			(code == 10 || code == 13) //enter
-			&& (e.ctrlKey || code == e.metaKey) //ctrl or apple cmd key
+			&& (e.ctrlKey || e.metaKey) //ctrl or apple cmd key
 		) {
 		executeQuery();
 	}
