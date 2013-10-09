@@ -250,6 +250,26 @@ public class Settings extends JsonHelper {
 		put(SettingKeys.BROWSER_TITLE, new JSONString(title));
 	}
 	
+	public boolean useOfflineCaching() {
+		boolean useOfflineCaching = false;
+		if (enabledFeatures.offlineCachingEnabled()) {
+			//only check this setting if the enabled features config allows us to!
+			if (containsKey(SettingKeys.ENABLED_OFFLINE_CACHING) && get(SettingKeys.ENABLED_OFFLINE_CACHING).isBoolean() != null){
+				useOfflineCaching = get(SettingKeys.ENABLED_OFFLINE_CACHING).isBoolean().booleanValue();
+			} else {
+				//offline caching key is not defined in the setting objects. however, our 'enabledSetting' object has offline caching as enabled
+				//therefore, set offline caching as 'true'
+				enableOfflineCaching(true);
+				useOfflineCaching = true;
+			}
+		}
+		return useOfflineCaching;
+	}
+	
+	public void enableOfflineCaching(boolean enabled) {
+		put(SettingKeys.ENABLED_OFFLINE_CACHING, JSONBoolean.getInstance(enabled));
+	}
+	
 	public static Settings retrieveSettings() throws IOException {
 		Settings settings = new Settings();
 		String defaultSettings = JsMethods.getDefaultSettings();

@@ -52,7 +52,7 @@ public class ConfigMenu extends Menu implements RpcElement {
 		this.view = view;
 		addOpenIdItem();
 		addRefreshSubMenu();
-		if (JsMethods.offlineSupported()) {
+		if (JsMethods.offlineSupported() && view.getSettings().getEnabledFeatures().offlineCachingEnabled()) {
 			addOfflineCachingEnabledItem();
 		}
 		addResetSettings();
@@ -81,7 +81,7 @@ public class ConfigMenu extends Menu implements RpcElement {
 
 	private void addOfflineCachingEnabledItem() {
 		MenuItem offlineEnabled;
-		if (view.getSettings().getEnabledFeatures().offlineCachingEnabled()) {
+		if (view.getSettings().useOfflineCaching()) {
 			offlineEnabled = new MenuItem("Disable offline caching");
 			offlineEnabled.setIcon(Imgs.CHECKMARK.get());
 		} else {
@@ -90,10 +90,10 @@ public class ConfigMenu extends Menu implements RpcElement {
 		}
 		offlineEnabled.addClickHandler(new ClickHandler(){
 			public void onClick(MenuItemClickEvent event) {
-				view.getSettings().getEnabledFeatures().setOfflineCachingEnabled(!view.getSettings().getEnabledFeatures().offlineCachingEnabled());
+				view.getSettings().enableOfflineCaching(!view.getSettings().useOfflineCaching());
 				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
 				view.getElements().redrawConfigMenu();
-				if (view.getSettings().getEnabledFeatures().offlineCachingEnabled()) {
+				if (view.getSettings().useOfflineCaching()) {
 					Helper.includeOfflineManifest();
 				}
 			}});
