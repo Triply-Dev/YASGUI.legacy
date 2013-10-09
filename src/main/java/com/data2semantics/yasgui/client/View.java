@@ -88,12 +88,11 @@ public class View extends VLayout implements RpcElement {
 		if (LocalStorageHelper.newUser())
 			newUser = true;
 		errorHelper = new ErrorHelper(this);
+		retrieveSettings();
 		if (!Helper.isSeleniumVisitor() && JsMethods.offlineSupported() && getSettings().useOfflineCaching())
 			Helper.includeOfflineManifest();
 
 		setViewLayout();
-
-		retrieveSettings();
 		
 		viewElements = new ViewElements(this);
 		jsEvents = new CallableJsMethods(this);
