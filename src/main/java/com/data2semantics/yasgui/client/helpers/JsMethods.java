@@ -37,7 +37,9 @@ public class JsMethods {
 		setTabBarProperties(QueryTabs.INDENT_TABBAR_START, QueryTabs.INDENT_TABBAR_END);
 		setProxyUriInVar(GWT.getModuleBaseURL() + "sparql");
 		setQtipZIndex(ZIndexes.HELP_TOOLTIPS);
+		setAppcacheCallbacks();
 	}
+	
 	/**
 	 * Unset a tabmirror object. Used when closing a tab
 	 * 
@@ -47,6 +49,30 @@ public class JsMethods {
 			if ($wnd.sparqlHighlight[queryInputId] != null) { 
 				$wnd.sparqlHighlight[queryInputId] = null;
 			}
+	}-*/;
+	public static native void setAppcacheCallbacks() /*-{
+		// Fired after the first cache of the manifest.
+		$wnd.window.applicationCache.addEventListener('cached', $wnd.appcacheFetchSuccesfull, false);
+
+		// Checking for an update. Always the first event fired in the sequence.
+		$wnd.window.applicationCache.addEventListener('checking', $wnd.appcacheFechting, false);
+		
+		// An update was found. The browser is fetching resources.
+		$wnd.window.applicationCache.addEventListener('downloading', $wnd.appcacheFechting, false);
+		
+		// The manifest returns 404 or 410, the download failed,
+		// or the manifest changed while the download was in progress.
+		$wnd.window.applicationCache.addEventListener('error', $wnd.appcacheFetchFailed, false);
+		
+		// Fired after the first download of the manifest.
+		$wnd.window.applicationCache.addEventListener('noupdate', $wnd.appcacheFetchSuccesfull, false);
+		
+		// Fired if the manifest file returns a 404 or 410.
+		// This results in the application cache being deleted.
+		$wnd.window.applicationCache.addEventListener('obsolete', $wnd.appcacheFetchFailed, false);
+		
+		// Fired when the manifest resources have been newly redownloaded.
+		$wnd.window.applicationCache.addEventListener('updateready', $wnd.appcacheFetchSuccesfull, false);
 	}-*/;
 	
 	/**

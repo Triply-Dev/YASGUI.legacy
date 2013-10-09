@@ -1,0 +1,1 @@
+../../assetsCollections/noty/js/noty/jquery.noty.js

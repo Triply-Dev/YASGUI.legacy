@@ -52,6 +52,11 @@
 <!-- Code for adding custom keycombination/mouseclick commands to codemirror -->
 <script src="assets/codemirrorHelper.js?<% out.print(StaticConfig.VERSION); %>"></script>
 
+<!-- notification library -->
+<script src="assets/noty/jquery.noty.js?<% out.print(StaticConfig.VERSION); %>"></script>
+<script src="assets/noty/layouts/bottomRight.js?<% out.print(StaticConfig.VERSION); %>"></script>
+<script src="assets/noty/themes/default.js?<% out.print(StaticConfig.VERSION); %>"></script>
+
 
 <script src="assets/yasgui.js?<% out.print(StaticConfig.VERSION); %>"></script>
 <script src="assets/trie.js?<% out.print(StaticConfig.VERSION); %>"></script>
