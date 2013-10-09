@@ -29,6 +29,7 @@ package com.data2semantics.yasgui.client;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import com.data2semantics.yasgui.client.helpers.AppcacheHelper;
 import com.data2semantics.yasgui.client.helpers.CallableJsMethods;
 import com.data2semantics.yasgui.client.helpers.ChangelogHelper;
 import com.data2semantics.yasgui.client.helpers.ErrorHelper;
@@ -75,25 +76,25 @@ public class View extends VLayout implements RpcElement {
 	private EndpointDataSource endpointDataSource;
 	private QueryTabs queryTabs;
 	private ViewElements viewElements;
-	private Settings settings = new Settings();
+	private Settings settings;
 	private CallableJsMethods jsEvents;
 	private OpenId openId;
 	private HistoryHelper historyHelper = new HistoryHelper(this);
 	private ConnectivityHelper connHelper;
 	private ChangelogHelper changelogHelper;
 	private ErrorHelper errorHelper;
+	private AppcacheHelper appcacheHelper;
 
 	public View() {
 		boolean newUser = false;
 		if (LocalStorageHelper.newUser())
 			newUser = true;
 		errorHelper = new ErrorHelper(this);
-		if (!Helper.isSeleniumVisitor() && JsMethods.offlineSupported() && getSettings().useOfflineCaching())
-			Helper.includeOfflineManifest();
-
-		setViewLayout();
-
 		retrieveSettings();
+		if (!Helper.isSeleniumVisitor() && JsMethods.offlineSupported() && getSettings().getEnabledFeatures().offlineCachingEnabled()) {
+			this.appcacheHelper = new AppcacheHelper(this);
+		}
+		setViewLayout();
 		
 		viewElements = new ViewElements(this);
 		jsEvents = new CallableJsMethods(this);
@@ -444,4 +445,7 @@ public class View extends VLayout implements RpcElement {
 
 	}
 
+	public AppcacheHelper getAppcacheHelper() {
+		return appcacheHelper;
+	}
 }

@@ -30,6 +30,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -114,8 +115,8 @@ public class PermutationMapLinker extends AbstractLinker {
 		Map<String, PermutationArtifact> permutationArtifactAsMap = getPermutationArtifactAsMap(artifacts);
 		
 		//we need different file sets/manifests for our dev version (unminimized js), and our stable version
-		Set<String> stableExternalFiles = getStableExternalFiles(logger, context);
-		Set<String> devExternalFiles = getDevExternalFiles(logger, context);
+		List<String> stableExternalFiles = getStableExternalFiles(logger, context);
+		List<String> devExternalFiles = getDevExternalFiles(logger, context);
 		
 
 		// build manifest html page for our stable version (included as iframe in our webapp)
@@ -181,7 +182,7 @@ public class PermutationMapLinker extends AbstractLinker {
 		return newFileSet;
 	}
 
-	protected String buildPermXml(TreeLogger logger, PermutationArtifact permutationArtifact, Set<String> gwtCompiledFiles, Set<String> otherResources)
+	protected String buildPermXml(TreeLogger logger, PermutationArtifact permutationArtifact, Set<String> gwtCompiledFiles, List<String> otherResources)
 			throws UnableToCompleteException {
 		HashSet<String> namesForPermXml = new HashSet<String>(gwtCompiledFiles);
 		namesForPermXml.addAll(otherResources);
@@ -249,17 +250,58 @@ public class PermutationMapLinker extends AbstractLinker {
 
 	}
 
-	protected String buildManiFest(String moduleName, Set<String> staticResources, Set<String> cacheResources) {
+	protected String buildManiFest(String moduleName, List<String> staticResources, Set<String> cacheResources) {
 		return manifestWriter.writeManifest(staticResources, cacheResources, null);
 	}
 	
-	protected String buildManiFest(String moduleName, Set<String> staticResources, Set<String> cacheResources, Map<String, String> fallbacks) {
+	protected String buildManiFest(String moduleName, List<String> staticResources, Set<String> cacheResources, Map<String, String> fallbacks) {
 		return manifestWriter.writeManifest(staticResources, cacheResources, fallbacks);
 	}
 
 	protected String buildManifestHtmlPage(String manifestFileLocation) {
 		String html = "<html manifest=\"" + manifestFileLocation + "\">\n";
-		html += "<head></head>\n";
+		html += "<head>"
+				+ "<script type=\"text/javascript\">"
+				+ "var appCache = window.applicationCache;\n" + 
+				"\n" + 
+				"if (appCache != undefined && window.parent != undefined) {\n" + 
+				"	if (window.parent.appcacheEventCached != undefined) {\n" + 
+				"		// Fired after the first cache of the manifest.\n" + 
+				"		appCache.addEventListener('cached', window.parent.appcacheEventCached, false);\n" + 
+				"	}\n" + 
+				"	if (window.parent.appcacheEventChecking != undefined) {\n" + 
+				"		// Checking for an update. Always the first event fired in the sequence.\n" + 
+				"		appCache.addEventListener('checking', window.parent.appcacheEventCached, false);\n" + 
+				"	}\n" + 
+				"	if (window.parent.appcacheEventDownloading != undefined) {\n" + 
+				"		// An update was found. The browser is fetching resources.\n" + 
+				"		appCache.addEventListener('downloading', window.parent.appcacheEventDownloading, false);\n" + 
+				"	}\n" + 
+				"	if (window.parent.appcacheEventError != undefined) {\n" + 
+				"		// The manifest returns 404 or 410, the download failed,\n" + 
+				"		// or the manifest changed while the download was in progress.\n" + 
+				"		appCache.addEventListener('error', window.parent.appcacheEventError, false);\n" + 
+				"	}\n" + 
+				"	if (window.parent.appcacheEventNoupdate != undefined) {\n" + 
+				"		// Fired after the first download of the manifest.\n" + 
+				"		appCache.addEventListener('noupdate', window.parent.appcacheEventNoupdate, false);\n" + 
+				"	}\n" + 
+				"	if (window.parent.apcacheEventObsolete != undefined) {\n" + 
+				"		// Fired if the manifest file returns a 404 or 410.\n" + 
+				"		// This results in the application cache being deleted.\n" + 
+				"		appCache.addEventListener('obsolete', window.parent.apcacheEventObsolete, false);\n" + 
+				"	}\n" + 
+				"	if (window.parent.appcacheEventProgress != undefined) {\n" + 
+				"		// Fired for each resource listed in the manifest as it is being fetched.\n" + 
+				"		appCache.addEventListener('progress', window.parent.appcacheEventProgress, false);\n" + 
+				"	}\n" + 
+				"	if (window.parent.appcacheEventUpdateReady != undefined) {\n" + 
+				"		// Fired when the manifest resources have been newly redownloaded.\n" + 
+				"		appCache.addEventListener('updateready', window.parent.appcacheEventUpdateReady, false);\n" + 
+				"	}\n" + 
+				"}"
+				+ "</script>"
+				+ "</head>\n";
 		html += "<body></body>\n";
 		html += "</html>\n";
 		return html;
@@ -278,8 +320,8 @@ public class PermutationMapLinker extends AbstractLinker {
 	 * @param context
 	 * @return
 	 */
-	protected Set<String> getStableExternalFiles(TreeLogger logger, LinkerContext context) {
-		HashSet<String> set = new HashSet<String>();
+	protected List<String> getStableExternalFiles(TreeLogger logger, LinkerContext context) {
+		ArrayList<String> set = new ArrayList<String>();
 		//all external js/css files should be minimized/aggregated by our maven plugin
 		set.add("../static/yasgui.js?" + StaticConfig.VERSION);
 		set.add("../static/yasgui.css?" + StaticConfig.VERSION);
@@ -295,8 +337,8 @@ public class PermutationMapLinker extends AbstractLinker {
 	 * @param context
 	 * @return
 	 */
-	protected Set<String> getDevExternalFiles(TreeLogger logger, LinkerContext context) {
-		HashSet<String> set = new HashSet<String>(getExternalFilesFromDir("assets", "?" + StaticConfig.VERSION, "js", "css"));
+	protected List<String> getDevExternalFiles(TreeLogger logger, LinkerContext context) {
+		ArrayList<String> set = new ArrayList<String>(getExternalFilesFromDir("assets", "?" + StaticConfig.VERSION, "js", "css"));
 		set.addAll(getExternalFilesFromDir("images", "?" + StaticConfig.VERSION.replace(".", ""), "png", "jpg", "gif"));
 		set.addAll(getFontFiles());
 		set.add("../dev.jsp");

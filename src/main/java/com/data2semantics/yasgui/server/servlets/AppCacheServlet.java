@@ -31,12 +31,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.IOUtils;
+
 import com.data2semantics.yasgui.shared.CookieKeys;
 
 public class AppCacheServlet extends HttpServlet {
@@ -46,12 +49,13 @@ public class AppCacheServlet extends HttpServlet {
 	
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String strongName = getPermutationFromCookies(request.getCookies());
+		
 		if (strongName != null && strongName.length() > 0) {
+			boolean getCount = request.getParameterMap().keySet().contains("count");
+			
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			response.setDateHeader("Expires", new Date().getTime());
-			response.setContentType("text/cache-manifest");
-			
 			
 			String moduleDir = getServletContext().getRealPath("/Yasgui/");
 			String appcacheFile = moduleDir + "/" + strongName;
@@ -59,13 +63,37 @@ public class AppCacheServlet extends HttpServlet {
 				appcacheFile += ".dev";	
 			}
 			appcacheFile += ".appcache";
+			String manifestString = IOUtils.toString(new FileReader(appcacheFile));
 			
 			PrintWriter out = response.getWriter();
-			String manifestString = IOUtils.toString(new FileReader(appcacheFile));
-			out.println(manifestString);
+			if (getCount) {
+				out.println(Integer.toString(getCacheCount(manifestString)));
+			} else {
+				response.setContentType("text/cache-manifest");
+				out.println(manifestString);
+				
+
+				
+			}
 			out.close();
 		}
 		
+	}
+
+	private int getCacheCount(String manifestString) {
+		//remove the network/fallback stuff
+		manifestString = manifestString.replaceAll("(NETWORK|FALLBACK):((?!(NETWORK|FALLBACK|CACHE):)[\\w\\W]*)", "");
+		
+		//remove the comments
+		manifestString = manifestString.replaceAll("#[^\\r\\n]*(\\r\\n?|\\n)", "");
+		
+		//remove the CACHE: thing
+		manifestString = manifestString.replace("CACHE:", "");
+			
+		//Strip out the cache manifest header and empty lines
+		manifestString = manifestString.replaceAll("CACHE MANIFEST\\s*|\\s*$", "");
+		
+		return manifestString.split("\r\n|\r|\n").length;
 	}
 
 	private boolean fetchManifestForDev(HttpServletRequest request) {

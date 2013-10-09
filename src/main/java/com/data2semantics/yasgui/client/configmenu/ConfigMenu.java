@@ -53,7 +53,7 @@ public class ConfigMenu extends Menu implements RpcElement {
 		addOpenIdItem();
 		addRefreshSubMenu();
 		if (JsMethods.offlineSupported() && view.getSettings().getEnabledFeatures().offlineCachingEnabled()) {
-			addOfflineCachingEnabledItem();
+			addOfflineAvailabilityItem();
 		}
 		addResetSettings();
 		addCompatabilityItem();
@@ -79,25 +79,27 @@ public class ConfigMenu extends Menu implements RpcElement {
 		items.add(bugReportItem);
 	}
 
-	private void addOfflineCachingEnabledItem() {
-		MenuItem offlineEnabled;
-		if (view.getSettings().useOfflineCaching()) {
-			offlineEnabled = new MenuItem("Disable offline caching");
-			offlineEnabled.setIcon(Imgs.CHECKMARK.get());
-		} else {
-			offlineEnabled = new MenuItem("Enable offline caching");
-			offlineEnabled.setIcon(Imgs.CROSS.get());
-		}
-		offlineEnabled.addClickHandler(new ClickHandler(){
+	private void addOfflineAvailabilityItem() {
+		MenuItem offlineAvailabilityItem = new MenuItem("Configure offline availability");
+		offlineAvailabilityItem.setIcon(Imgs.DISCONNECTED.get());
+//		if (view.getSettings().useOfflineCaching()) {
+//			offlineAvailabilityItem = new MenuItem("Disable offline caching");
+//			offlineAvailabilityItem.setIcon(Imgs.CHECKMARK.get());
+//		} else {
+//			offlineAvailabilityItem = new MenuItem("Enable offline caching");
+//			offlineAvailabilityItem.setIcon(Imgs.CROSS.get());
+//		}
+		offlineAvailabilityItem.addClickHandler(new ClickHandler(){
 			public void onClick(MenuItemClickEvent event) {
-				view.getSettings().enableOfflineCaching(!view.getSettings().useOfflineCaching());
-				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
-				view.getElements().redrawConfigMenu();
-				if (view.getSettings().useOfflineCaching()) {
-					Helper.includeOfflineManifest();
-				}
+				new OfflineAvailabilityConfig(view);
+//				view.getSettings().enableOfflineCaching(!view.getSettings().useOfflineCaching());
+//				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+//				view.getElements().redrawConfigMenu();
+//				if (view.getSettings().useOfflineCaching()) {
+//					Helper.includeOfflineManifest();
+//				}
 			}});
-		items.add(offlineEnabled);
+		items.add(offlineAvailabilityItem);
 	}
 
 	private void addRecentChangelogItem() {
