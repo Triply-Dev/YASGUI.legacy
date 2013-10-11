@@ -1,7 +1,7 @@
 <%@ page import="com.data2semantics.yasgui.server.fetchers.ConfigFetcher,org.apache.commons.lang3.StringEscapeUtils,com.data2semantics.yasgui.shared.StaticConfig" %>
 <%        
     response.setHeader("Pragma", "No-cache");
-    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    response.setHeader("Cache-Control", "no-cache, must-revalidate");
     response.setDateHeader("Expires", -1);
 %>
 <!doctype html>
