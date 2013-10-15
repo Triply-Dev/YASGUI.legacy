@@ -171,6 +171,8 @@ After making your changes, make sure the json configuration is valid, by validat
         "requestMethod": true,
         "propertyAutocompletion": true	
     },
+    "downloadOfflineCache": true,
+    "showDownloadProgressBar": true,
     "googleAnalyticsId": "UA-11111111-1",
     "bitlyApiKey": "R_xxxxxxxxxxxxxxxxxxxxxxxxx",
     "bitlyUsername": "SomeUserName",
@@ -249,7 +251,7 @@ After making your changes, make sure the json configuration is valid, by validat
 					<dt>properyAutocompletion</dt>
 					<dd>Set to false to hide the property autocompletion feature. Users won't be presented with the option to fetch the property information, and won't be presented with the suggestionbox when typing the query</dd>
 					<dt>offlineCaching</dt>
-					<dd>Set to false to disable offline caching (this feature is disabled anyway for browsers not supporting it)</dd>
+					<dd>Set to false to disable offline caching (this feature is disabled anyway for browsers not supporting it). Disabling this also hides the 'Offline Availability' item in the 'Configure YASGUI' menu</dd>
 				</dl>
 				<h4>Other options</h4>
 				<dl>
@@ -259,6 +261,10 @@ After making your changes, make sure the json configuration is valid, by validat
 					<del>A boolean value. If set the true, the user won't be able
 						to change the endpoint. Instead, the default endpoint is always
 						used. An example of YASGUI working in single endpoint mode is available <a href="http://single.yasgui.laurensrietveld.nl" target="_blank">here</a>.</del></dd>
+					<dt>downloadOfflineCache</dt>
+					<dd>Automatically download YASGUI to the offline cache, so clients will be able to use YASGUI offline as well</dd>
+					<dt>showDownloadProgressBar</dt>
+					<dd>Show the download progressbar each time the offline cache needs to be updated (i.e. on first view, or whenever YASGUI receives an update)</dd>
 					<dt>googleAnalyticsId*</dt>
 					<dd>Google analytics ID</dd>
 					<dt>bitlyUsername*</dt>
