@@ -126,7 +126,7 @@ public class AppcacheHelper {
 	public void appcacheEventDownloading() {
 		setStatus(Status.DOWNLOADING);
 		getAppcacheSize();
-		notifyAppcacheDownload("<span>Downloading YASGUI for offline use</span><br><div style=\"margin-top:5px;\" id=\"" + PROGRESS_BAR_ID + "\" class=\"progressBarDefault\"><div></div>", true);
+		notifyAppcacheDownload("<span>Downloading (an update of) YASGUI for offline use</span><br><div style=\"margin-top:5px;\" id=\"" + PROGRESS_BAR_ID + "\" class=\"progressBarDefault\"><div></div>", true);
 	}
 
 	// The manifest returns 404 or 410, the download failed,
