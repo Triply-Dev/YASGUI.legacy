@@ -34,6 +34,7 @@ public class ConnectivityHelper {
 	}
 	private View view;
 	private boolean isOnline = true;
+
 	public ConnectivityHelper(View view) {
 		this.view = view;
 	}
@@ -83,4 +84,6 @@ public class ConnectivityHelper {
 	public boolean isOnline() {
 		return isOnline;
 	}
+
+	
 }

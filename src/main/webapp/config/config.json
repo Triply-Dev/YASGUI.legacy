@@ -21,6 +21,8 @@
 		"propertyAutocompletion": false,
 		"offlineCaching": true	
 	},
+	"downloadOfflineCache": true,
+	"showDownloadProgressBar": true,
 	"browserTitle": "YASGUI",
 	"googleAnalyticsId": "",
 	"defaultBookmarks": [],

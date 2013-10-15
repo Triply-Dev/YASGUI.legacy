@@ -45,6 +45,8 @@ public class SettingKeys implements Serializable {
 	public static String DEFAULT_BOOKMARKS = "defaultBookmarks";
 	public static String BROWSER_TITLE = "browserTitle";
 	public static String URI_AS_SNORQL = "uriAsSnorql";
+	public static String DOWNLOAD_APPCACHE = "downloadOfflineCache";
+	public static String SHOW_APPCACHE_DOWNLOAD_NOTIFICATION = "showDownloadProgressBar";
 	
 	//tabsettings object
 	public static String ENDPOINT = "endpoint";

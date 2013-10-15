@@ -51,12 +51,14 @@ package com.data2semantics.yasgui.client.helpers;
  */
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
 import com.data2semantics.yasgui.client.services.YasguiServiceAsync;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
@@ -74,12 +76,14 @@ public class Helper {
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(Helper.class.getName());
 	private static String CRAWL_USER_AGENTS = "googlebot|msnbot|baidu|curl|wget|Mediapartners-Google|slurp|ia_archiver|Gigabot|libwww-perl|lwp-trivial|bingbot";
-	
+
 	/**
 	 * Implode arraylist into string
 	 * 
-	 * @param arrayList ArrayList to implode
-	 * @param glue Glue (separator) for the seting
+	 * @param arrayList
+	 *            ArrayList to implode
+	 * @param glue
+	 *            Glue (separator) for the seting
 	 * @return concatenated arraylist
 	 */
 	public static String implode(ArrayList<String> arrayList, String glue) {
@@ -92,42 +96,48 @@ public class Helper {
 		}
 		return result;
 	}
-	
+
 	/**
-	 * SmartGWT does have a link element, but this requires a form. Use this object to mimic a link by creating a label object
+	 * SmartGWT does have a link element, but this requires a form. Use this
+	 * object to mimic a link by creating a label object
 	 * 
-	 * @param message Text of link
-	 * @param handler Clickhandler: what to do on onclick
+	 * @param message
+	 *            Text of link
+	 * @param handler
+	 *            Clickhandler: what to do on onclick
 	 * @return Label
 	 */
 	public static Label getLink(String message, ClickHandler handler) {
-	   Label link = new Label();
-	   link = new Label(message);
-	   link.setStyleName("clickable");
-	   link.setHeight100();
-	   link.setWidth100();
-	   link.setCanSelectText(true);
-	   link.addClickHandler(handler);
-	   return link;
+		Label link = new Label();
+		link = new Label(message);
+		link.setStyleName("clickable");
+		link.setHeight100();
+		link.setWidth100();
+		link.setCanSelectText(true);
+		link.addClickHandler(handler);
+		return link;
 
 	}
-	
+
 	/**
 	 * Create a label element which opens a new window for a given url
 	 * 
-	 * @param message Text of link
-	 * @param url Url to open page for
+	 * @param message
+	 *            Text of link
+	 * @param url
+	 *            Url to open page for
 	 * @return Label
 	 */
 	public static Label getLinkNewWindow(String message, final String url) {
-		return getLink(message, new ClickHandler(){
+		return getLink(message, new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
 				Window.open(url, "_blank", null);
-			}});
+			}
+		});
 	}
-	
+
 	public static String getStackTraceAsString(Throwable e) {
 		String stackTraceString = e.getClass().getName() + ": " + e.getMessage();
 		for (StackTraceElement ste : e.getStackTrace()) {
@@ -135,7 +145,7 @@ public class Helper {
 		}
 		return stackTraceString;
 	}
-	
+
 	public static String getCausesStackTraceAsString(Throwable e) {
 		String stackTraceString = "";
 		Throwable cause = e.getCause();
@@ -145,10 +155,11 @@ public class Helper {
 		}
 		return stackTraceString;
 	}
+
 	public static boolean recordIsEmpty(ListGridRecord record) {
 		boolean empty = true;
 		String[] attributes = record.getAttributes();
-		for (String attribute: attributes) {
+		for (String attribute : attributes) {
 			if (record.getAttribute(attribute).length() > 0) {
 				empty = false;
 				break;
@@ -156,7 +167,7 @@ public class Helper {
 		}
 		return empty;
 	}
-	
+
 	public static void drawTooltip(TooltipProperties tProp) throws ElementIdException {
 		if (tProp.getId() == null || tProp.getId().length() == 0) {
 			throw new ElementIdException("No Id provided to draw tooltip for");
@@ -166,9 +177,10 @@ public class Helper {
 		}
 		JsMethods.drawTooltip(tProp.getId(), tProp.getContent(), tProp.getMy(), tProp.getAt(), tProp.getXOffset(), tProp.getYOffset());
 	}
-	
+
 	/**
-	 * Check whether visitor is a crawler. This way we can avoid the google screenshot containing lots of popups
+	 * Check whether visitor is a crawler. This way we can avoid the google
+	 * screenshot containing lots of popups
 	 */
 	public static boolean isCrawler() {
 		String userAgent = JsMethods.getUserAgent();
@@ -179,7 +191,9 @@ public class Helper {
 	}
 
 	/**
-	 * We are in debug mode when we are not in production mode, or when we have a debug url parameter set to 1
+	 * We are in debug mode when we are not in production mode, or when we have
+	 * a debug url parameter set to 1
+	 * 
 	 * @return
 	 */
 	public static boolean inDebugMode() {
@@ -200,51 +214,57 @@ public class Helper {
 				}
 			}
 		}
-		return (debugValue == 1? true: false);
-	}
-	
-	public static String getHost(String url){
-	    if(url == null || url.length() == 0)
-	        return "";
-
-	    int doubleslash = url.indexOf("//");
-	    if(doubleslash == -1)
-	        doubleslash = 0;
-	    else
-	        doubleslash += 2;
-
-	    int end = url.indexOf('/', doubleslash);
-	    end = end >= 0 ? end : url.length();
-
-	    return url.substring(doubleslash, end);
+		return (debugValue == 1 ? true : false);
 	}
 
+	public static String getHost(String url) {
+		if (url == null || url.length() == 0)
+			return "";
 
-	/**  Based on : http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/2.3.3_r1/android/webkit/CookieManager.java#CookieManager.getBaseDomain%28java.lang.String%29
-	 * Get the base domain for a given host or url. E.g. mail.google.com:8080 will return google.com:8080
-	 * @param host 
-	 * @return 
+		int doubleslash = url.indexOf("//");
+		if (doubleslash == -1)
+			doubleslash = 0;
+		else
+			doubleslash += 2;
+
+		int end = url.indexOf('/', doubleslash);
+		end = end >= 0 ? end : url.length();
+
+		return url.substring(doubleslash, end);
+	}
+
+	/**
+	 * Based on :
+	 * http://grepcode.com/file/repository.grepcode.com/java/ext/com.google
+	 * .android/android/2.3
+	 * .3_r1/android/webkit/CookieManager.java#CookieManager.getBaseDomain%28java.lang.String%2
+	 * 9 Get the base domain for a given host or url. E.g. mail.google.com:8080
+	 * will return google.com:8080
+	 * 
+	 * @param host
+	 * @return
 	 */
 	public static String getBaseDomain(String url) {
-	    String host = getHost(url);
+		String host = getHost(url);
 
-	    int startIndex = 0;
-	    int nextIndex = host.indexOf('.');
-	    int lastIndex = host.lastIndexOf('.');
-	    while (nextIndex < lastIndex) {
-	        startIndex = nextIndex + 1;
-	        nextIndex = host.indexOf('.', startIndex);
-	    }
-	    if (startIndex > 0) {
-	        return host.substring(startIndex);
-	    } else {
-	        return host;
-	    }
+		int startIndex = 0;
+		int nextIndex = host.indexOf('.');
+		int lastIndex = host.lastIndexOf('.');
+		while (nextIndex < lastIndex) {
+			startIndex = nextIndex + 1;
+			nextIndex = host.indexOf('.', startIndex);
+		}
+		if (startIndex > 0) {
+			return host.substring(startIndex);
+		} else {
+			return host;
+		}
 	}
-	
+
 	/**
-	 * Get host of current location header (or parent location header, in case of iframe).
-	 * Remove port notation as well
+	 * Get host of current location header (or parent location header, in case
+	 * of iframe). Remove port notation as well
+	 * 
 	 * @return
 	 */
 	public static String getCurrentHost() {
@@ -257,26 +277,26 @@ public class Helper {
 
 	public static String removeArgumentsFromUrl(String url, Set<String> keySet) {
 		String[] splittedUrl = url.split("\\?");
-		
+
 		String baseUrl = splittedUrl[0];
 		String argsString = "";
 		if (splittedUrl.length > 1) {
 			argsString = splittedUrl[1];
 			String[] argsArray = argsString.split("&");
 			ArrayList<String> cleanedArgList = new ArrayList<String>();
-			for(String arg: argsArray) {
+			for (String arg : argsArray) {
 				String argKey = arg.split("=")[0];
 				if (!keySet.contains(argKey)) {
 					cleanedArgList.add(arg);
 				} else {
-					//this is one of the arguments we'd like to remove
+					// this is one of the arguments we'd like to remove
 				}
 			}
-			
+
 			boolean firstArg = true;
 			argsString = "";
-			for (String cleanedArg: cleanedArgList) {
-				//ok, so we have some arguments left. add these again to url
+			for (String cleanedArg : cleanedArgList) {
+				// ok, so we have some arguments left. add these again to url
 				if (!firstArg) {
 					argsString += "&";
 				}
@@ -284,42 +304,45 @@ public class Helper {
 				firstArg = false;
 			}
 		}
-		return baseUrl + (argsString.length() > 0 ? "?" + argsString: "");
-		
+		return baseUrl + (argsString.length() > 0 ? "?" + argsString : "");
+
 	}
-	
-	public static boolean validUrl (String url) {
-		 RegExp pattern = RegExp.compile("^(https?:\\/\\/)?"+ // protocol
-			"((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-			"((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-			"(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
-			"(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-			"(\\#[-a-z\\d_]*)?$", "i");
-		 return pattern.test(url);	 
+
+	public static boolean validUrl(String url) {
+		RegExp pattern = RegExp.compile("^(https?:\\/\\/)?" + // protocol
+				"((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain
+																		// name
+				"((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+				"(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+				"(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+				"(\\#[-a-z\\d_]*)?$", "i");
+		return pattern.test(url);
 	}
+
 	public static LayoutSpacer getVSpacer() {
 		LayoutSpacer spacer = new LayoutSpacer();
 		spacer.setHeight100();
 		return spacer;
 	}
+
 	public static LayoutSpacer getHSpacer() {
 		LayoutSpacer spacer = new LayoutSpacer();
 		spacer.setWidth100();
 		return spacer;
 	}
-	
+
 	public static LayoutSpacer getHSpacer(int width) {
 		LayoutSpacer spacer = new LayoutSpacer();
 		spacer.setWidth(width);
 		return spacer;
 	}
-	
+
 	public static LayoutSpacer getVSpacer(int height) {
 		LayoutSpacer spacer = new LayoutSpacer();
 		spacer.setHeight(height);
 		return spacer;
 	}
-	
+
 	public static ArrayList<String> getJsonAsArrayList(JSONValue jsonVal) {
 		ArrayList<String> result = new ArrayList<String>();
 		JSONArray jsonArray = jsonVal.isArray();
@@ -345,9 +368,13 @@ public class Helper {
 	}
 
 	public static void includeOfflineManifest() {
-		//store strongname in cookie. this way we can use the strongname in the appcache servlet as well
-		//we don't want to use strongname a url parameter in get request, as the user might end up with lots of different appcache things on disk
-		//(as every new version gets a different strongname, every new version will be fetched separately to disk, instead of overwriting the previous appcache)
+		// store strongname in cookie. this way we can use the strongname in the
+		// appcache servlet as well
+		// we don't want to use strongname a url parameter in get request, as
+		// the user might end up with lots of different appcache things on disk
+		// (as every new version gets a different strongname, every new version
+		// will be fetched separately to disk, instead of overwriting the
+		// previous appcache)
 		LocalStorageHelper.setStrongName();
 		if (JsMethods.isDevPageLoaded()) {
 			JsMethods.appendManifestIframe("Yasgui/manifest.dev.appcache.html");
@@ -355,7 +382,7 @@ public class Helper {
 			JsMethods.appendManifestIframe("Yasgui/manifest.appcache.html");
 		}
 	}
-	
+
 	public static boolean isSeleniumVisitor() {
 		boolean isSeleniumVisitor = false;
 		String seleniumParam = Window.Location.getParameter("sc_selenium");
@@ -364,9 +391,10 @@ public class Helper {
 		}
 		return isSeleniumVisitor;
 	}
-	
+
 	/**
 	 * Try to log exception. Do nothing on either fail or success
+	 * 
 	 * @param t
 	 */
 	public static void logExceptionToServer(Throwable t) {
@@ -374,10 +402,21 @@ public class Helper {
 		yasguiService.logException(t, new AsyncCallback<Void>() {
 			public void onFailure(Throwable caught) {
 			}
+
 			public void onSuccess(Void voidObj) {
 			}
 		});
 	}
-	
 
+	public static String getParamsAsString(Map<String, String> parmsRequest) {
+		StringBuilder sb = new StringBuilder();
+		for (String key : parmsRequest.keySet()) {
+			String value = URL.encodeQueryString(parmsRequest.get(key));
+			if (sb.length() > 0) {
+				sb.append("&");
+			}
+			sb.append(key).append("=").append(value);
+		}
+		return sb.toString();
+	}
 }

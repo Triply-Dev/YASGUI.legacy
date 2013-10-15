@@ -344,6 +344,27 @@ function initializeQueryBookmarkCodemirror(elementId) {
 	}
 	
 }
+
+function progressbarUpdateAnimated(percent, $element) {
+	var progressBarWidth = percent * $element.width() / 100;
+	$element.find('div').animate({ width: progressBarWidth }, 500).html(percent + "%&nbsp;");
+}
+var latestComplete = -1;
+var easing = 300;
+function progressbarUpdate(percent, $element) {
+	var progressBarWidth = percent * $element.width() / 100;
+	var newText = percent + "%&nbsp;";
+	if ($element.find('div').html() != newText) {
+		if (latestComplete != -1 && latestComplete < (percent-1)) {
+			//the previous animation is still busy... Don't want a lag, so lower our easing factor
+			easing = Math.round(easing / 2);
+		}
+		$element.find('div').animate(
+			{width: progressBarWidth },
+			easing,
+			function(){latestComplete=percent;}).html(newText);
+	}
+}
 Array.prototype.equals = function (array) {
     // if the other array is a falsy value, return
     if (!array)
