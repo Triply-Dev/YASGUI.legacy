@@ -41,9 +41,7 @@ import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.Window;
 
 public class Settings extends JsonHelper {
 	private ArrayList<TabSettings> tabArray = new ArrayList<TabSettings>();
@@ -128,7 +126,7 @@ public class Settings extends JsonHelper {
 	
 	
 	public int getSelectedTabNumber() {
-		int selectedTab = (int)get(SettingKeys.SELECTED_TAB_NUMBER).isNumber().doubleValue();
+		int selectedTab = getInt(SettingKeys.SELECTED_TAB_NUMBER, 99999);
 		if (selectedTab >= tabArray.size()) {
 			//Something is wrong, tab does not exist. take last tab
 			selectedTab = tabArray.size()-1;
@@ -157,8 +155,7 @@ public class Settings extends JsonHelper {
 	}
 	
 	public String getGoogleAnalyticsId() {
-		String id = getString(SettingKeys.GOOGLE_ANALYTICS_ID);
-		return id;
+		return getString(SettingKeys.GOOGLE_ANALYTICS_ID, null);
 	}
 	
 	public boolean useGoogleAnalytics() {
@@ -167,27 +164,19 @@ public class Settings extends JsonHelper {
 	}
 	
 	public void setTrackingConsent(boolean consent) {
-		put(SettingKeys.TRACKING_CONSENT, JSONBoolean.getInstance(consent));
+		set(SettingKeys.TRACKING_CONSENT, consent);
 	}
 	
 	public boolean getTrackingConsent() {
-		boolean consent = true;
-		if (containsKey(SettingKeys.TRACKING_CONSENT)) {
-			consent = get(SettingKeys.TRACKING_CONSENT).isBoolean().booleanValue();
-		}
-		return consent;
+		return getBoolean(SettingKeys.TRACKING_CONSENT, true);
 	}
 	
 	public void setTrackingQueryConsent(boolean consent) {
-		put(SettingKeys.TRACKING_QUERIES_CONSENT, JSONBoolean.getInstance(consent));
+		set(SettingKeys.TRACKING_QUERIES_CONSENT, consent);
 	}
 	
 	public boolean getTrackingQueryConsent() {
-		boolean consent = true;
-		if (containsKey(SettingKeys.TRACKING_QUERIES_CONSENT)) {
-			consent = get(SettingKeys.TRACKING_QUERIES_CONSENT).isBoolean().booleanValue();
-		}
-		return consent;
+		return getBoolean(SettingKeys.TRACKING_QUERIES_CONSENT, true);
 	}
 	
 	public boolean cookieConsentAnswered() {
@@ -195,79 +184,46 @@ public class Settings extends JsonHelper {
 	}
 	
 	public boolean useBitly() {
-		boolean useBitly = false;
-		if (containsKey(SettingKeys.USE_BITLY) && get(SettingKeys.USE_BITLY).isBoolean() != null) {
-			useBitly = get(SettingKeys.USE_BITLY).isBoolean().booleanValue();
-		}
-		return useBitly;
+		return getBoolean(SettingKeys.USE_BITLY, false);
 	}
 	
 	public boolean isDbSet() {
-		boolean dbSet = false;
-		if (containsKey(SettingKeys.DB_SET) && get(SettingKeys.DB_SET).isBoolean() != null) {
-			dbSet = get(SettingKeys.DB_SET).isBoolean().booleanValue();
-		}
-		return dbSet;
+		return getBoolean(SettingKeys.DB_SET, false);
 	}
 	
 	public boolean bugReportsSupported() {
-		boolean bugReportsSupported = false;
-		if (containsKey(SettingKeys.BUG_REPORTS_SUPPORTED) && get(SettingKeys.BUG_REPORTS_SUPPORTED).isBoolean() != null) {
-			bugReportsSupported = get(SettingKeys.BUG_REPORTS_SUPPORTED).isBoolean().booleanValue();
-		}
-		return bugReportsSupported;
+		return getBoolean(SettingKeys.BUG_REPORTS_SUPPORTED, false);
 	}
 	
 	public boolean useUrlAsSnorql() {
-		boolean result = true;//default value, i.e. regular behaviour
-		if (containsKey(SettingKeys.URI_AS_SNORQL) && get(SettingKeys.URI_AS_SNORQL).isBoolean() != null){
-			result = get(SettingKeys.URI_AS_SNORQL).isBoolean().booleanValue();
-		}
-		return result;
-	}
-	
-	
-	
-	/**
-	 * Returns JSON representation of this object
-	 */
-	public String toString() {
-		put(SettingKeys.TAB_SETTINGS, getTabArrayAsJson());
-		put(SettingKeys.DEFAULTS, defaults);
-		return super.toString();
+		return getBoolean(SettingKeys.URI_AS_SNORQL, true);
 	}
 	
 	public String getBrowserTitle() {
-		String title = "YASGUI";//default value
-		if (containsKey(SettingKeys.BROWSER_TITLE)) {
-			title = get(SettingKeys.BROWSER_TITLE).isString().stringValue();
-		}
-		return title;
+		return getString(SettingKeys.BROWSER_TITLE, "YASGUI");
 	}
 	
-	
 	public void setBrowserTitle(String title) {
-		put(SettingKeys.BROWSER_TITLE, new JSONString(title));
+		set(SettingKeys.BROWSER_TITLE, title);
 	}
 	
 	public boolean useOfflineCaching() {
 		boolean useOfflineCaching = false;
 		if (enabledFeatures.offlineCachingEnabled()) {
 			//only check this setting if the enabled features config allows us to!
-			if (containsKey(SettingKeys.ENABLED_OFFLINE_CACHING) && get(SettingKeys.ENABLED_OFFLINE_CACHING).isBoolean() != null){
-				useOfflineCaching = get(SettingKeys.ENABLED_OFFLINE_CACHING).isBoolean().booleanValue();
-			} else {
-				//offline caching key is not defined in the setting objects. however, our 'enabledSetting' object has offline caching as enabled
-				//therefore, set offline caching as 'true'
-				enableOfflineCaching(true);
-				useOfflineCaching = true;
-			}
+			useOfflineCaching = getBoolean(SettingKeys.DOWNLOAD_APPCACHE, false, true);
 		}
 		return useOfflineCaching;
 	}
 	
-	public void enableOfflineCaching(boolean enabled) {
-		put(SettingKeys.ENABLED_OFFLINE_CACHING, JSONBoolean.getInstance(enabled));
+	public void setUseOfflineCaching(boolean useOfflineCaching) {
+		set(SettingKeys.DOWNLOAD_APPCACHE, useOfflineCaching, true);
+	}
+	public boolean showAppcacheDownloadNotification() {
+		return getBoolean(SettingKeys.SHOW_APPCACHE_DOWNLOAD_NOTIFICATION, true, true);
+	}
+	public void setShowAppcacheDownloadNotification(boolean show) {
+		set(SettingKeys.SHOW_APPCACHE_DOWNLOAD_NOTIFICATION, show, true);
 	}
 	
 	public static Settings retrieveSettings() throws IOException {
@@ -280,13 +236,11 @@ public class Settings extends JsonHelper {
 		//First create settings object with the proper default values
 		//need default values when creating settings objects, as not all values might be filled in our cache and stuff
 		settings.addToSettings(defaultSettings);
-		
 		settings = addUrlArgToSettings(settings);
-		
 		String settingsString = LocalStorageHelper.getSettingsStringFromCookie();
+		
 		if (settingsString != null && settingsString.length() > 0) {
 			settings.addToSettings(settingsString);
-			
 			//add installation + url settings again. The settings retrieved from cookie might have stale default values
 			settings.addToSettings(defaultSettings);
 			settings = addUrlArgToSettings(settings);
@@ -297,19 +251,15 @@ public class Settings extends JsonHelper {
 		}
 		return settings;
 	}
-	
 	/**
-	 * If we have settings passed as argument (e.g. in an iframe setting, add these to settings object)
-	 * @param settings
-	 * @return
-	 * @throws IOException
+	 * Returns JSON representation of this object
 	 */
-	private static Settings addUrlArgToSettings(Settings settings) throws IOException {
-		//If we have settings passed as argument (e.g. in an iframe setting, add these to settings object)
-		String jsonSettings = Window.Location.getParameter(SettingKeys.JSON_SETTINGS_ARGUMENT);
-		if (jsonSettings != null && jsonSettings.length() > 0) {
-			settings.addToSettings(jsonSettings);
-		}
-		return settings;
+	public String toString() {
+		put(SettingKeys.TAB_SETTINGS, getTabArrayAsJson());
+		put(SettingKeys.DEFAULTS, defaults);
+		return super.toString();
 	}
+	
+
+
 }

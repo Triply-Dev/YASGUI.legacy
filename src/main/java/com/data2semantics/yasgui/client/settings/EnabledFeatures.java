@@ -28,11 +28,12 @@ package com.data2semantics.yasgui.client.settings;
 
 import java.util.Set;
 
+import com.data2semantics.yasgui.client.helpers.JsonHelper;
 import com.data2semantics.yasgui.shared.SettingKeys;
 import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONObject;
 
-public class EnabledFeatures extends JSONObject {
+public class EnabledFeatures extends JsonHelper {
 	private Settings settings;
 	public EnabledFeatures(Settings settings) {
 		this.settings = settings;
@@ -58,42 +59,28 @@ public class EnabledFeatures extends JSONObject {
 			//now set in this object
 			put(SettingKeys.ENABLED_ENDPOINT_SELECTION, JSONBoolean.getInstance(!singleEndpointMode));
 		}
-		return getBoolean(SettingKeys.ENABLED_ENDPOINT_SELECTION);
+		return getBoolean(SettingKeys.ENABLED_ENDPOINT_SELECTION, true);
 	}
 	public boolean acceptHeadersEnabled() {
-		return getBoolean(SettingKeys.ENABLED_ACCEPT_HEADERS);
+		return getBoolean(SettingKeys.ENABLED_ACCEPT_HEADERS, true);
 	}
 	public boolean propertyAutocompletionEnabled() {
-		return getBoolean(SettingKeys.ENABLED_AUTOCOMPLETION_PROPS);
+		return getBoolean(SettingKeys.ENABLED_AUTOCOMPLETION_PROPS, true);
 	}
 	public boolean defaultGraphsSpecificationEnabled() {
-		return getBoolean(SettingKeys.ENABLED_DEFAULT_GRAPHS);
+		return getBoolean(SettingKeys.ENABLED_DEFAULT_GRAPHS, true);
 	}
 	public boolean namedGraphsSpecificationEnabled() {
-		return getBoolean(SettingKeys.ENABLED_NAMED_GRAPHS);
+		return getBoolean(SettingKeys.ENABLED_NAMED_GRAPHS, true);
 	}
 	public boolean queryParametersEnabled() {
-		return getBoolean(SettingKeys.ENABLED_QUERY_PARAMS);
+		return getBoolean(SettingKeys.ENABLED_QUERY_PARAMS, true);
 	}
 	public boolean requestParametersEnabled() {
-		return getBoolean(SettingKeys.ENABLED_REQUEST_METHOD);
+		return getBoolean(SettingKeys.ENABLED_REQUEST_METHOD, true);
 	}
 	public boolean offlineCachingEnabled() {
-		return getBoolean(SettingKeys.ENABLED_OFFLINE_CACHING);
-	}
-	
-	
-	private boolean getBoolean(String key) {
-		boolean result = true;//everything is supported by default
-		
-		if (get(key) != null) {
-			JSONBoolean objValue = get(key).isBoolean();
-			if (objValue != null) {
-				result = objValue.booleanValue();
-			}
-		}
-		
-		return result;
+		return getBoolean(SettingKeys.ENABLED_OFFLINE_CACHING, true);
 	}
 	
 }

@@ -27,6 +27,7 @@ package com.data2semantics.yasgui.client.helpers;
  */
 
 import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.client.configmenu.OfflineAvailabilityConfig;
 import com.data2semantics.yasgui.client.tab.QueryTab;
 
 public class CallableJsMethods {
@@ -165,6 +166,10 @@ public class CallableJsMethods {
 	public boolean inDebugMode() {
 		return Helper.inDebugMode();
 	}
+	public void showOfflineAvailabilitySettings() {
+		new OfflineAvailabilityConfig(view);
+	}
+	
 	
 	/**
 	 * Add view methods to JS, use this for situations where a non-static GWT method needs to be called
@@ -247,6 +252,9 @@ public class CallableJsMethods {
 		}
 		$wnd.checkIsOnline = function() {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::checkIsOnline()();
+		}
+		$wnd.showOfflineAvailabilitySettings = function() {
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::showOfflineAvailabilitySettings()();
 		}
 	}-*/;
 }
