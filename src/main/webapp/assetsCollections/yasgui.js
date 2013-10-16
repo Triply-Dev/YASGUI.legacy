@@ -1,4 +1,5 @@
 var corsEnabled = {};
+var fetchingCors = {};
 var proxy;
 var sparqlHighlightHeight = {};
 var sparqlHighlight = {};
@@ -49,6 +50,15 @@ $
 				return xhr;
 			}
 		});
+
+var corsNotification = "Documentation on how to CORS enable endpoints:<ul>" +
+"<li><a href=\"http://4store.org/trac/wiki/SparqlServer\" target=\"_blank\">4store</a></li>" +
+"<li><a href=\"http://www.openlinksw.com/dataspace/doc/dav/wiki/Main/VirtTipsAndTricksGuideCORSSetup\" target=\"_blank\">virtuoso</a></li>" +
+"<li>OpenRDF Sesame: not possible yet (see <a href=\"https://openrdf.atlassian.net/browse/SES-1757\" target=\"_blank\">this issue</a>)" +
+"</ul>" +
+"If you cannot CORS-enable your endpoint, there are some workarounds which require installing a browser extension or a simple local application. " +
+"See <a href=\"http://laurensrietveld.nl/yasgui/help.html\" target=\"_blank\">the YASGUI help page</a> for more information.";
+
 function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader,
 		argsJsonString, requestMethod, callback) {
 	
@@ -57,21 +67,15 @@ function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader,
 	var uri;
 	onQueryStart();
 	
-	
 	if (corsEnabled[endpoint]) {
 		uri = endpoint;
 	} else {
 		if (!isOnline()) {
 			//cors disabled and not online: problem!
 			var errorString = "YASGUI is current not connected to the YASGUI server. " +
-				"This mean you can only access endpoints on your own computer (e.g. localhost), which are <a href=\"http://enable-cors.org/\" target=\"_blank\">CORS enabled</a> or which are running on the same port as YASGUI (i.e. port 80).<br>" +
+				"This mean you can only access endpoints on your own computer (e.g. localhost), which are <a href=\"http://enable-cors.org/\" target=\"_blank\">CORS enabled</a>.<br>" +
 				"The endpoint you try to access is either not running on your computer, or not CORS-enabled.<br>" +
-				"If it is the latter, the following documentation might helpt you in CORS-enabling your endpoint:<ul>" +
-				"<li><a href=\"http://4store.org/trac/wiki/SparqlServer\" target=\"_blank\">4store</a></li>" +
-				"<li><a href=\"http://www.openlinksw.com/dataspace/doc/dav/wiki/Main/VirtTipsAndTricksGuideCORSSetup\" target=\"_blank\">virtuoso</a></li>" +
-				"<li>OpenRDF Sesame: not possible yet (see <a href=\"https://openrdf.atlassian.net/browse/SES-1757\" target=\"_blank\">this issue</a>)" +
-				"</ul>" +
-				"Instead, you can also configure the endpoint to run via port 80 (the same as YASGUI)";
+				corsNotification;
 	
 			onQueryError(tabId, errorString);
 			return;
@@ -117,13 +121,8 @@ function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader,
 						if (!inDebugMode() && endpointSelectionEnabled() && corsEnabled[endpoint] == false && endpoint.match(/https*:\/\/(localhost|127).*/) != null) {
 							//we were trying to access a local endpoint via the proxy: this won't work...
 							errorMsg += "<br><br>A possible reason for this error (next to an incorrect endpoint URL) is that you tried to send a query to an endpoint installed on your computer.<br>" +
-									"This only works when the endpoint is <a href=\"http://enable-cors.org/\" target=\"_blank\">CORS enabled</a> or when the endpoint is accessible on the same port as YASGUI (i.e. port 80).<br>" +
-									"Documentation on how to enable CORS for some endpoints:<ul>" +
-									"<li><a href=\"http://4store.org/trac/wiki/SparqlServer\" target=\"_blank\">4store</a></li>" +
-									"<li><a href=\"http://www.openlinksw.com/dataspace/doc/dav/wiki/Main/VirtTipsAndTricksGuideCORSSetup\" target=\"_blank\">virtuoso</a></li>" +
-									"<li>OpenRDF Sesame: not possible yet (see <a href=\"https://openrdf.atlassian.net/browse/SES-1757\" target=\"_blank\">this issue</a>)" +
-									"</ul>" +
-									"Instead, you can also configure the endpoint to run via port 80 (the same as YASGUI)";
+									"This only works when the endpoint is <a href=\"http://enable-cors.org/\" target=\"_blank\">CORS enabled</a>.<br>" +
+									corsNotification;
 						}
 						onQueryError(tabId, errorMsg);
 					}
@@ -138,7 +137,8 @@ function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader,
  */
 function checkCorsEnabled(endpoint) {
 	//Only perform check if it hasnt been done already
-	if (corsEnabled[endpoint] == null) {
+	if (corsEnabled[endpoint] == null && (fetchingCors[endpoint] == null || fetchingCors[endpoint] == false)) {
+		fetchingCors[endpoint] = true;
 		$.ajax({
 			url : endpoint,
 			method : 'get',
@@ -148,6 +148,7 @@ function checkCorsEnabled(endpoint) {
 				} else {
 					corsEnabled[endpoint] = false;
 				}
+				fetchingCors[endpoint] = false;
 			}
 		});
 	}
