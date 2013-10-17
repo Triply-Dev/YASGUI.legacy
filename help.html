@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+<link href="css/bootstrap-theme.css" rel="stylesheet">
+<meta charset='utf-8' />
+<meta http-equiv="X-UA-Compatible" content="chrome=1" />
+<meta name="description" content="Help on using YASGUI" />
+<style type="text/css">
+body { padding-top: 70px; }
+   #deployTab {position:fixed;}
+ </style>
+
+<link rel="stylesheet" type="text/css" media="screen"
+	href="css/yasgui.css">
+<title>YASGUI: Help</title>
+</head>
+
+<body>
+	<a href="https://github.com/LaurensRietveld/yasgui" target="_blank"><img
+		style="z-index: 11111; position: absolute; top: 0; right: 0; border: 0;"
+		src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"
+		alt="Fork me on GitHub"></a>
+
+	<div class="navbar navbar-default navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li><a href="index.html">About YASGUI</a></li>
+					<li><a href="deployment.html">Local Deployment</a></li>
+					<li><a href="changelog.html">Releases</a></li>
+					<li><a class="active" href="#">Help</a></li>
+					<li><a href="http://laurensrietveld.nl">About me</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12 tab-content">
+						<h2 id="whatiscors">What does CORS mean?</h2>
+						Cross-Origin Resource Sharing (<a href="http://enable-cors.org/" target="_blank">CORS</a>) is a <a href="http://www.w3.org/TR/cors/" target="_blank">specification</a>
+						which enables javascript access to resources on other domains. Not all endpoints are CORS-enabled, meaning they do not set the <code> Access-Control-Allow-Origin: *</code> header in their response. 
+						As a results these endpoints are not accessible via your browser (i.e. javascript)<i>directly</i>, unless these endpoints are on the same domain as YASGUI (i.e. yasgui.laurensrietveld.nl) <strong>and</strong> the endpoint is using the same port as YASGUI (e.g. port 80). A CORS-disabled endpoints <i>are</i> accessible via other non-browser based tools such as command-line tools or java / python / php / etc.
+						<h2 id="dealWithCors">How does YASGUI deal with CORS-disabled endpoints?</h2>
+						YASGUI prefers accessing endpoints via javascript as this decreases latency. Whenever you enter your endpoint in the YASGUI interface, YASGUI detects whether this endpoint is CORS-enabled. When it is, every query is executed via javascript directly. 
+						When the endpoint is CORS-disabled, the YASGUI server acts as a proxy. The YASGUI server <i>is</i> able to access a CORS-disabled endpoint, which is why we use this as a middle-man in accessing the CORS-disabled endpoint.
+						
+						<h2 id="accessCorsDisabledEndpoints">How can I access CORS-disabled endpoints which are installed locally?</h2>
+						Using this proxy is a great solution in accessing all <strong>public</strong> SPARQL endpoints. However, when you have a CORS-disabled endpoint installed locally on your computer, the YASGUI server is not able to access this endpoint from the outside.
+						To access these endpoints, choose one of the options below
+						
+<div class="panel-group" id="accordion">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#enableEndpoint">
+          Enable CORS for your endpoint
+        </a>
+      </h4>
+    </div>
+    <div id="enableEndpoint" class="panel-collapse collapse">
+      <div class="panel-body">
+        If possible, we recommend this approach. Several endpoints support enabling or disabling cross-domain javascript access via a simple configuration setting.
+		<h4>4Store</h4>
+		Change the config file (locate in <code>/etc/4store.conf</code>), and add (under the <code>default</code> category) <code>cors = true</code>. More about CORS-enabling 4Store <a href="http://4store.org/trac/wiki/SparqlServer" target="_blank">here</a>. 
+		<h4>Virtuoso</h4>
+		To CORS-enable virtuoso via their web interface, follow the steps described <a href="http://www.openlinksw.com/dataspace/doc/dav/wiki/Main/VirtTipsAndTricksGuideCORSSetup#Server-level CORS Setup" target="_blank">here</a>.
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#corsProxy">
+          Install a simple CORS proxy
+        </a>
+      </h4>
+    </div>
+    <div id="corsProxy" class="panel-collapse collapse">
+      <div class="panel-body">
+       A simple CORS proxy around uses node-js: <a href="https://github.com/gr2m/CORS-Proxy" target="_blank">CORS-Proxy</a>.
+		After installing and running this proxy, you can use this proxy like this:
+		<code>http://localhost:9292/localhost:3000/query</code>, where <code>http://localhost:9292</code> is the location of the proxy,
+		and <code>localhost:3000/query</code> is the CORS-disable endpoint.
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#extension">
+          Use a browser extension
+        </a>
+      </h4>
+    </div>
+    <div id="extension" class="panel-collapse collapse">
+      <div class="panel-body">
+        Possible the easiest way of accessing CORS-disabled endpoints is by installing a browser extension. 
+		Such browser extensions can modify the response headers, and add the CORS headers automatically for all responses the browser receives.
+		<h4>Firefox</h4>
+		Download and install the firefox browser addon <a href="https://addons.mozilla.org/nl/firefox/addon/forcecors" target="_blank">here</a>. After restarting the browser, make sure you have the addons bar enabled (via <code>View &rarr; Toolbars &rarr; Add-on Bar</code>). 
+		To enable cross-domain access to all endpoints, click on the <i>CORS</i> button in the bottom-right of your screen.
+		<h4>Chrome</h4>
+		Download and install the chrome browser extension <a href="https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi" target="_blank">here</a>. 
+		To enable cross-domain access to all endpoints, click on the <i>CORS</i> button in the top-right of your screen.
+		<br><span class="label label-danger">Forcing cross-domain access for all responses, reduces your browser security. Only enable these plugins during the period you use the CORS-disable endpoints</span>
+      </div>
+    </div>
+  </div>
+</div>
+						
+				</div>
+			</div>
+		</div>
+
+	<script type="text/javascript">
+		var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl."
+				: "http://www.");
+		document
+				.write(unescape("%3Cscript src='"
+						+ gaJsHost
+						+ "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+		try {
+			var pageTracker = _gat._getTracker("UA-35569470-2");
+			pageTracker._trackPageview();
+		} catch (err) {
+		}
+	</script>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>
+<script type="text/javascript" src="js/yasgui.js"></script>
+</body>
+</html>

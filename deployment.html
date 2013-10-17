@@ -4,19 +4,15 @@
 
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/bootstrap.min.css">
-<style type="text/css">
-body {
-	padding-top: 60px;
-	padding-bottom: 40px;
-}
-</style>
-<link href="css/bootstrap-responsive.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+<link href="css/bootstrap-theme.css" rel="stylesheet">
 <meta charset='utf-8' />
 <meta http-equiv="X-UA-Compatible" content="chrome=1" />
 <meta name="description" content="How to deploy YASGUI on a server" />
-
+<style type="text/css">
+body { padding-top: 70px; }
+   #deployTab {position:fixed;}
+ </style>
 
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/yasgui.css">
@@ -29,120 +25,117 @@ body {
 		src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"
 		alt="Fork me on GitHub"></a>
 
-	<div class="navbar navbar-fixed-top">
-		<div class="navbar-inner">
-			<div class="container">
-
-				<div class="nav-collapse">
-					<ul class="nav">
-						<li><a href="index.html">About YASGUI</a></li>
-						<li class="active"><a href="#">Local Deployment</a></li>
-						<li><a href="changelog.html">Releases</a></li>
-						<li><a href="http://laurensrietveld.nl">About me</a></li>
-					</ul>
-				</div>
+	<div class="navbar navbar-default navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li><a href="index.html">About YASGUI</a></li>
+					<li class="active"><a href="#">Local Deployment</a></li>
+					<li><a href="changelog.html">Releases</a></li>
+					<li><a href="help.html">Help</a></li>
+					<li><a href="http://laurensrietveld.nl">About me</a></li>
+				</ul>
 			</div>
 		</div>
-
 	</div>
 
 
 	<div class="container">
 		<div class="row">
-			<div class="span10">
-				<div class="tabbable tabs-left">
-					<ul id="deployTab" class="nav nav-pills nav-tabs">
-						<li class="active"><a href="#about" data-toggle="tab">Deploying</a></li>
-						<li class="dropdown">
-							<a class="dropdown-toggle" data-toggle="dropdown" href="#">Deploy menthods<b class="caret"></b></a>
-							  <ul class="dropdown-menu">
-							    <li><a href="#iframe" data-toggle="tab">Via iframe</a></li>
-							    <li><a href="#install" data-toggle="tab">As installation</a></li>
-							  </ul>
-							</li>
-						<li><a href="#config" data-toggle="tab">YASGUI configuration</a></li>
-					</ul>
-					<div class="tab-content">
-						<div class="tab-pane active" id="about">
-							<p>YASGUI works on any SPARQL endpoint, even endpoints installed on the
-							computer you are using (i.e. using localhost). This means regular
-							users won't need to follow this guide. This guide is meant for
-							people who would like to deploy YASGUI as GUI interface for their
-							dataset/endpoint.
-							</p>
-							<p>
-							
-							There are two ways of deploying YASGUI on your server. 
-							Via an <a href="#" onclick="selectItemFromTab('deployTab', 'iframe')">iframe</a>, or by <a href="#" onclick="selectItemFromTab('deployTab', 'install')">installing</a> it on your server.
-							Choose a method depending on your use-case. An overview of advantages and disadvantages:
-							
-							</p>
-							<table class="table table-striped">
-							<thead><tr><th>html page with iframe</th><th>installation on server</th></tr></thead>
-							<tbody>
-								<tr>
-									<td><img src="img/cross.png" style="width:20px;height:20px;"/>&nbsp;Less configuration options</td>
-									<td><img src="img/check.png" style="width:20px;height:20px;"/>&nbsp;Greater configuration</td>
-								</tr>
-								<tr>
-									<td><img src="img/check.png" style="width:20px;height:20px;"/>&nbsp;Requires just an html page, no web server</td>
-									<td><img src="img/cross.png" style="width:20px;height:20px;"/>&nbsp;Requires a web server (with optionally a DB as well)</td>
-								</tr>
-								<tr>
-									<td><img src="img/checkCross.png" style="width:20px;height:20px;"/>&nbsp;No version management. YASGUI automatically gets updated whenever the main branch changes. Requires no effort, but you won't receive notifications before YASGUI is updated (i.e. you won't have the chance to test the new version)</td>
-									<td><img src="img/checkCross.png" style="width:20px;height:20px;"/>&nbsp;You are in control of managing the YASGUI version. Takes more effort, but allows you to test new versions before updating.</td>
-								</tr>
-								<tr>
-									<td><img src="img/cross.png" style="width:20px;height:20px;"/>&nbsp;Dependent on other server (including possible downtimes)</td>
-									<td><img src="img/check.png" style="width:20px;height:20px;"/>&nbsp;You control the YASGUI server</td>
-								</tr>
+			<div class="col-md-2">
+				<ul id="deployTab" class="nav nav-pills nav-stacked nav-inverse">
+					<li class="active"><a href="#about" data-toggle="tab">Deploying</a></li>
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#">Deploy menthods<b class="caret"></b></a>
+						  <ul class="dropdown-menu">
+						    <li><a href="#iframe" data-toggle="tab">Via iframe</a></li>
+						    <li><a href="#install" data-toggle="tab">As installation</a></li>
+						  </ul>
+						</li>
+					<li><a href="#config" data-toggle="tab">YASGUI configuration</a></li>
+				</ul>
+			</div>
+			<div class="col-md-10 tab-content">
+					<div class="tab-pane active" id="about">
+						<p>YASGUI works on any SPARQL endpoint, even endpoints installed on the
+						computer you are using (i.e. using localhost). This means regular
+						users won't need to follow this guide. This guide is meant for
+						people who would like to deploy YASGUI as GUI interface for their
+						dataset/endpoint.
+						</p>
+						<p>
+						
+						There are two ways of deploying YASGUI on your server. 
+						Via an <a href="#" onclick="selectItemFromTab('deployTab', 'iframe')">iframe</a>, or by <a href="#" onclick="selectItemFromTab('deployTab', 'install')">installing</a> it on your server.
+						Choose a method depending on your use-case. An overview of advantages and disadvantages:
+						
+						</p>
+						<table class="table table-striped">
+						<thead><tr><th>html page with iframe</th><th>installation on server</th></tr></thead>
+						<tbody>
+							<tr>
+								<td><img src="img/cross.png" style="width:20px;height:20px;"/>&nbsp;Less configuration options</td>
+								<td><img src="img/check.png" style="width:20px;height:20px;"/>&nbsp;Greater configuration</td>
+							</tr>
+							<tr>
+								<td><img src="img/check.png" style="width:20px;height:20px;"/>&nbsp;Requires just an html page, no web server</td>
+								<td><img src="img/cross.png" style="width:20px;height:20px;"/>&nbsp;Requires a web server (with optionally a DB as well)</td>
+							</tr>
+							<tr>
+								<td><img src="img/checkCross.png" style="width:20px;height:20px;"/>&nbsp;No version management. YASGUI automatically gets updated whenever the main branch changes. Requires no effort, but you won't receive notifications before YASGUI is updated (i.e. you won't have the chance to test the new version)</td>
+								<td><img src="img/checkCross.png" style="width:20px;height:20px;"/>&nbsp;You are in control of managing the YASGUI version. Takes more effort, but allows you to test new versions before updating.</td>
+							</tr>
+							<tr>
+								<td><img src="img/cross.png" style="width:20px;height:20px;"/>&nbsp;Dependent on other server (including possible downtimes)</td>
+								<td><img src="img/check.png" style="width:20px;height:20px;"/>&nbsp;You control the YASGUI server</td>
+							</tr>
 
-							</tbody>
-							</table>
-						</div>
-						<div class="tab-pane" id="iframe">
-							<p>The code below show how to use YASGUI via an iframe. (view a running example <a href="iframe.html" target="_blank">here</a>)</p>
-							<code>&lt;iframe src="http://yasgui.laurensrietveld.nl" style="border:0" width="100%" height="100%"&gt;&lt;/iframe&gt;</code>
-							<br><br>
-							<p>Including YASGUI on your website via an iframe still offers you a certain amount of configurability. To configure YASGUI, you need to change the src attribute of the iframe. 
-							Add a jsonSettings argument to the url, with as value the url encoded <a href="#" onclick="selectItemFromTab('deployTab', 'config')">json configuration</a>. (use <a href="http://meyerweb.com/eric/tools/dencoder/" target="_blank">this</a> online URL encoder).
-							E.g. <code>src="http://yasgui.laurensrietveld.nl?jsonSettings=%7B%0A%22singleEndpointMode%22%3A%20true%0A%7D</code>.</p>
-							
-							<p>Important things to consider</p>
+						</tbody>
+						</table>
+					</div>
+					<div class="tab-pane" id="iframe">
+						<p>The code below show how to use YASGUI via an iframe. (view a running example <a href="iframe.html" target="_blank">here</a>)</p>
+						<code>&lt;iframe src="http://yasgui.laurensrietveld.nl" style="border:0" width="100%" height="100%"&gt;&lt;/iframe&gt;</code>
+						<br><br>
+						<p>Including YASGUI on your website via an iframe still offers you a certain amount of configurability. To configure YASGUI, you need to change the src attribute of the iframe. 
+						Add a jsonSettings argument to the url, with as value the url encoded <a href="#" onclick="selectItemFromTab('deployTab', 'config')">json configuration</a>. (use <a href="http://meyerweb.com/eric/tools/dencoder/" target="_blank">this</a> online URL encoder).
+						E.g. <code>src="http://yasgui.laurensrietveld.nl?jsonSettings=%7B%0A%22singleEndpointMode%22%3A%20true%0A%7D</code>.</p>
+						
+						<p>Important things to consider</p>
+						<ul>
+							<li>Only pass the settings via the URL which you would like to change. I.e., you probably won't need to change the default tab title, or the default content type for construct queries. Most probably, you are only interested in changing the default query, default endpoint, and the 'single endpoint mode' setting. Therefore, only pass those.</li>
+							 <li>Internet Explorer has a maximum URL length of 2083 characters. Make sure the URL does not exceed this.</li>
+							 <li>Not all configuration settings are supported when using the iframe method. Only settings solely used on the client-side are allowed. In other words, the following options won't work:
+							 <ul>
+							 <li>All bitly settings</li>
+							 <li>All MySQL settings</li>
+							 <li>The default bookmarks settings</li>
+							 </ul>
+							 </li>
+						
+						</ul>
+					</div>
+					<div class="tab-pane" id="install">
+							<h4>Prerequisites</h4>
 							<ul>
-								<li>Only pass the settings via the URL which you would like to change. I.e., you probably won't need to change the default tab title, or the default content type for construct queries. Most probably, you are only interested in changing the default query, default endpoint, and the 'single endpoint mode' setting. Therefore, only pass those.</li>
-								 <li>Internet Explorer has a maximum URL length of 2083 characters. Make sure the URL does not exceed this.</li>
-								 <li>Not all configuration settings are supported when using the iframe method. Only settings solely used on the client-side are allowed. In other words, the following options won't work:
-								 <ul>
-								 <li>All bitly settings</li>
-								 <li>All MySQL settings</li>
-								 <li>The default bookmarks settings</li>
-								 </ul>
-								 </li>
-							
+								<li>Prerequisites: A java webserver, e.g. <a href="http://tomcat.apache.org/" target="_blank">tomcat</a></li>
+								<li>MySQL Database (optional, required for query bookmarking functionality)</li>
 							</ul>
-						</div>
-						<div class="tab-pane" id="install">
-								<h4>Prerequisites</h4>
-								<ul>
-									<li>Prerequisites: A java webserver, e.g. <a href="http://tomcat.apache.org/" target="_blank">tomcat</a></li>
-									<li>MySQL Database (optional, required for query bookmarking functionality)</li>
-								</ul>
-								<h4>Installation</h4>
-								<ul>
-									<li>Download the zip file <a
-										href="http://github.com/LaurensRietveld/yasgui/archive/master.zip">here</a>,
-										or <a href="http://github.com/LaurensRietveld/yasgui"
-										target="_blank">clone</a> the github repository
-									</li>
-									<li>Package the .war file<pre>mvn package</pre></li>
-									<li>Deploy the war file to your java webserver. For tomcat,
-										you would issue this command <pre>sudo cp target/yasgui-*.war /var/lib/tomcat7/webapps/yasgui.war; </pre>
-									</li>
-									<li>After deployment to the web server, go to the root of the
-										YASGUI directory (for tomcat, this would be <code>/var/lib/tomcat7/webapps/yasgui/</code>)
-									</li>
-									<li>If needed, edit the configuration file located in <code>config/config.json</code> (check <a href="#" onclick="selectItemFromTab('deployTab', 'config')">this</a> page for configuration settings)</li>
+							<h4>Installation</h4>
+							<ul>
+								<li>Download the zip file <a
+									href="http://github.com/LaurensRietveld/yasgui/archive/master.zip">here</a>,
+									or <a href="http://github.com/LaurensRietveld/yasgui"
+									target="_blank">clone</a> the github repository
+								</li>
+								<li>Package the .war file<pre>mvn package</pre></li>
+								<li>Deploy the war file to your java webserver. For tomcat,
+									you would issue this command <pre>sudo cp target/yasgui-*.war /var/lib/tomcat7/webapps/yasgui.war; </pre>
+								</li>
+								<li>After deployment to the web server, go to the root of the
+									YASGUI directory (for tomcat, this would be <code>/var/lib/tomcat7/webapps/yasgui/</code>)
+								</li>
+								<li>If needed, edit the configuration file located in <code>config/config.json</code> (check <a href="#" onclick="selectItemFromTab('deployTab', 'config')">this</a> page for configuration settings)</li>
 								</ul>
 						</div>
 						<div class="tab-pane" id="config">
@@ -212,97 +205,94 @@ After making your changes, make sure the json configuration is valid, by validat
 					<dd>
 						Default output to visualize query results in. Possible values are:
 						<dl style="margin-top:0px;margin-bottom:0px;padding-left:20px;">
-							<dt>rawResponse</dt>
-							<dd>The result as we received it from the endpoint (i.e.
-								something like json or xml)</dd>
-							<dt>table</dt>
-							<dd>Sortable table (not suitable for large resultsets)</dd>
-							<dt>simpleTable</dt>
-							<dd>Simple table (suitable for larger resultsets)</dd>
-						</dl>
-					</dd>
-					<dt>requestMethod</dt>
-					<dd>Either POST or GET</dd>
-					<dt>extraArgs</dt>
-					<dd>
-						Any extra url arguments you'd like to pass on to the endpoint. The
-						following example will at &amp;bla=bla2&amp;bl3=bla4 to the request send to the
-						endpoint:
-						<code>"extraArgs": [{"bla":"bla2"}, {"bla3":"bla4"}]</code>
-					</dd>
-				</dl>
-				<h4>Enabled Features</h4>
-				This part of the settings allow you to disable YASGUI functionality: Not including these in your json file will enable this features by default.
-				All items take as input a boolean value.
-				Setting a value to false,
-				<dl>
-					<dt>endpointSelection</dt>
-					<dd>Set fo false to only use the specified default endpoint. The user won't see the endpoint text input form, and won't be able to search for endpoints. An example of YASGUI working in single endpoint mode is available <a href="http://single.yasgui.laurensrietveld.nl" target="_blank">here</a></dd>
-					<dt>queryParameters</dt>
-					<dd>Set to false to hide the option to add query parameters</dd>
-					<dt>namedGraphs</dt>
-					<dd>Set to false to hide option to specify named graphs for a given query</dd>
-					<dt>defaultGraphs</dt>
-					<dd>Set to false to hide option to specify default graphs for a given query</dd>
-					<dt>acceptHeaders</dt>
-					<dd>Set to false to hide option to specify the accept headers for a given query</dd>
-					<dt>requestMethod</dt>
-					<dd>Set to false to hide option to specify the request method (e.g. GET or POST) for a given query</dd>
-					<dt>properyAutocompletion</dt>
-					<dd>Set to false to hide the property autocompletion feature. Users won't be presented with the option to fetch the property information, and won't be presented with the suggestionbox when typing the query</dd>
-					<dt>offlineCaching</dt>
-					<dd>Set to false to disable offline caching (this feature is disabled anyway for browsers not supporting it). Disabling this also hides the 'Offline Availability' item in the 'Configure YASGUI' menu</dd>
-				</dl>
-				<h4>Other options</h4>
-				<dl>
-					<dt>singleEndpointMode</dt>
-					<dd>
-					<p class="text-error">deprecated: instead, use the <i>enabledFeatures</i> settings ('endpointSelection' key)</p>
-					<del>A boolean value. If set the true, the user won't be able
-						to change the endpoint. Instead, the default endpoint is always
-						used. An example of YASGUI working in single endpoint mode is available <a href="http://single.yasgui.laurensrietveld.nl" target="_blank">here</a>.</del></dd>
-					<dt>downloadOfflineCache</dt>
-					<dd>Automatically download YASGUI to the offline cache, so clients will be able to use YASGUI offline as well</dd>
-					<dt>showDownloadProgressBar</dt>
-					<dd>Show the download progressbar each time the offline cache needs to be updated (i.e. on first view, or whenever YASGUI receives an update)</dd>
-					<dt>googleAnalyticsId*</dt>
-					<dd>Google analytics ID</dd>
-					<dt>bitlyUsername*</dt>
-					<dd>Username for <a href="http://bitly.com" target="_blank">bitly</a> url shortener service. Used for the query permalink feature.
-					</dd>
-					<dt>bitlyApiKey*</dt>
-					<dd>API key for the bitly shortener service. Request one at <a href="http://bitly.com" target="_blank">bitly.com</a>
-					</dd>
-					<dt>mysqlDb*</dt>
-					<dd>Name of database to store YASGUI data in. Using 'YASGUI' will often suffice. This setting is useful when multiple instances of YASGUI are installed on the same server</dd>
-					<dt>mysqlUsername*</dt>
-					<dd>Username for SQL backend. Used for user management and query bookmark functionality. Required permissions for user:
-					<ul>
-						<li>all data access permissions</li>
-						<li>YASGUI automatically creates the DB table structure (and may modify it when needed in future YASGUI updates). Therefore we need these permissions as well: CREATE / ALTER / INDEX  </li>
-					</ul></dd>
-					<dt>mysqlPassword*</dt>
-					<dd>Password of SQL user</dd>
-					<dt>mysqlHost*</dt>
-					<dd>Host where SQL backend is running</dd>
-					<dt>githubUsername*</dt>
-					<dd>Username of your github account. Used for creating github issues from within the YASGUI interface</dd>
-					<dt>githubRepo*</dt>
-					<dd>Github repository where you'd like to create the issues (e.g. a fork of YASGUI). The github user specified above should have push rights to this repository</dd>
-					<dt>githubOathToken*</dt>
-					<dd>Github oath token (click on 'create new token' here <a href="https://github.com/settings/applications" target="_blank">here</a></dd>
-					<dt>defaultBookmarks*</dt>
-					<dd>When bookmark functionality is supported (i.e. sql settings are valid), these bookmarks are added as example queries.</dd>
-				</dl>
-				<small><strong>* removing this setting or using an empty value will disable this functionality</strong></small>
+						<dt>rawResponse</dt>
+						<dd>The result as we received it from the endpoint (i.e.
+							something like json or xml)</dd>
+						<dt>table</dt>
+						<dd>Sortable table (not suitable for large resultsets)</dd>
+						<dt>simpleTable</dt>
+						<dd>Simple table (suitable for larger resultsets)</dd>
+					</dl>
+				</dd>
+				<dt>requestMethod</dt>
+				<dd>Either POST or GET</dd>
+				<dt>extraArgs</dt>
+				<dd>
+					Any extra url arguments you'd like to pass on to the endpoint. The
+					following example will at &amp;bla=bla2&amp;bl3=bla4 to the request send to the
+					endpoint:
+					<code>"extraArgs": [{"bla":"bla2"}, {"bla3":"bla4"}]</code>
+				</dd>
+			</dl>
+			<h4>Enabled Features</h4>
+			This part of the settings allow you to disable YASGUI functionality: Not including these in your json file will enable this features by default.
+			All items take as input a boolean value.
+			Setting a value to false,
+			<dl>
+				<dt>endpointSelection</dt>
+				<dd>Set fo false to only use the specified default endpoint. The user won't see the endpoint text input form, and won't be able to search for endpoints. An example of YASGUI working in single endpoint mode is available <a href="http://single.yasgui.laurensrietveld.nl" target="_blank">here</a></dd>
+				<dt>queryParameters</dt>
+				<dd>Set to false to hide the option to add query parameters</dd>
+				<dt>namedGraphs</dt>
+				<dd>Set to false to hide option to specify named graphs for a given query</dd>
+				<dt>defaultGraphs</dt>
+				<dd>Set to false to hide option to specify default graphs for a given query</dd>
+				<dt>acceptHeaders</dt>
+				<dd>Set to false to hide option to specify the accept headers for a given query</dd>
+				<dt>requestMethod</dt>
+				<dd>Set to false to hide option to specify the request method (e.g. GET or POST) for a given query</dd>
+				<dt>properyAutocompletion</dt>
+				<dd>Set to false to hide the property autocompletion feature. Users won't be presented with the option to fetch the property information, and won't be presented with the suggestionbox when typing the query</dd>
+				<dt>offlineCaching</dt>
+				<dd>Set to false to disable offline caching (this feature is disabled anyway for browsers not supporting it). Disabling this also hides the 'Offline Availability' item in the 'Configure YASGUI' menu</dd>
+			</dl>
+			<h4>Other options</h4>
+			<dl>
+				<dt>singleEndpointMode</dt>
+				<dd>
+				<p class="text-error">deprecated: instead, use the <i>enabledFeatures</i> settings ('endpointSelection' key)</p>
+				<del>A boolean value. If set the true, the user won't be able
+					to change the endpoint. Instead, the default endpoint is always
+					used. An example of YASGUI working in single endpoint mode is available <a href="http://single.yasgui.laurensrietveld.nl" target="_blank">here</a>.</del></dd>
+				<dt>downloadOfflineCache</dt>
+				<dd>Automatically download YASGUI to the offline cache, so clients will be able to use YASGUI offline as well</dd>
+				<dt>showDownloadProgressBar</dt>
+				<dd>Show the download progressbar each time the offline cache needs to be updated (i.e. on first view, or whenever YASGUI receives an update)</dd>
+				<dt>googleAnalyticsId*</dt>
+				<dd>Google analytics ID</dd>
+				<dt>bitlyUsername*</dt>
+				<dd>Username for <a href="http://bitly.com" target="_blank">bitly</a> url shortener service. Used for the query permalink feature.
+				</dd>
+				<dt>bitlyApiKey*</dt>
+				<dd>API key for the bitly shortener service. Request one at <a href="http://bitly.com" target="_blank">bitly.com</a>
+				</dd>
+				<dt>mysqlDb*</dt>
+				<dd>Name of database to store YASGUI data in. Using 'YASGUI' will often suffice. This setting is useful when multiple instances of YASGUI are installed on the same server</dd>
+				<dt>mysqlUsername*</dt>
+				<dd>Username for SQL backend. Used for user management and query bookmark functionality. Required permissions for user:
+				<ul>
+					<li>all data access permissions</li>
+					<li>YASGUI automatically creates the DB table structure (and may modify it when needed in future YASGUI updates). Therefore we need these permissions as well: CREATE / ALTER / INDEX  </li>
+				</ul></dd>
+				<dt>mysqlPassword*</dt>
+				<dd>Password of SQL user</dd>
+				<dt>mysqlHost*</dt>
+				<dd>Host where SQL backend is running</dd>
+				<dt>githubUsername*</dt>
+				<dd>Username of your github account. Used for creating github issues from within the YASGUI interface</dd>
+				<dt>githubRepo*</dt>
+				<dd>Github repository where you'd like to create the issues (e.g. a fork of YASGUI). The github user specified above should have push rights to this repository</dd>
+				<dt>githubOathToken*</dt>
+				<dd>Github oath token (click on 'create new token' here <a href="https://github.com/settings/applications" target="_blank">here</a></dd>
+				<dt>defaultBookmarks*</dt>
+				<dd>When bookmark functionality is supported (i.e. sql settings are valid), these bookmarks are added as example queries.</dd>
+			</dl>
+			<small><strong>* removing this setting or using an empty value will disable this functionality</strong></small>
 
-						</div>
 					</div>
 				</div>
 			</div>
-
 		</div>
-	</div>
 
 	<script type="text/javascript">
 		var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl."

@@ -4,74 +4,79 @@
 
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/bootstrap.min.css">
-<link href='http://fonts.googleapis.com/css?family=Audiowide' rel='stylesheet' type='text/css'>
-<style type="text/css">
-body {
-	padding-top: 60px;
-	padding-bottom: 40px;
-}
-</style>
-<link href="css/bootstrap-responsive.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+<link href="css/bootstrap-theme.css" rel="stylesheet">
+<link href='http://fonts.googleapis.com/css?family=Audiowide'
+	rel='stylesheet' type='text/css'>
 <meta charset='utf-8' />
 <meta http-equiv="X-UA-Compatible" content="chrome=1" />
 <meta name="description" content="Yasgui : Yet another SPARQL GUI" />
 
-
+<style type="text/css">
+body { padding-top: 70px; }
+ </style>
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/yasgui.css">
 <title>About YASGUI</title>
 </head>
 
-<body>
-<a href="https://github.com/LaurensRietveld/yasgui" target="_blank"><img style="z-index:11111;position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
-	<div class="navbar navbar-fixed-top">
-		<div class="navbar-inner">
-			<div class="container">
+<body >
+	<a href="https://github.com/LaurensRietveld/yasgui" target="_blank"><img
+		style="z-index: 11111; position: absolute; top: 0; right: 0; border: 0;"
+		src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"
+		alt="Fork me on GitHub"></a>
+	<div class="navbar navbar-default navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="#">About YASGUI</a></li>
+					<li><a href="deployment.html">Local Deployment</a></li>
+					<li><a href="changelog.html">Releases</a></li>
+					<li><a href="help.html">Help</a></li>
+					<li><a href="http://laurensrietveld.nl">About me</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
 
-				<div class="nav-collapse">
-					<ul class="nav">
-						<li class="active"><a href="#">About YASGUI</a></li>
-						<li><a href="deployment.html">Local Deployment</a></li>
-						<li><a href="changelog.html">Releases</a></li>
-						<li><a href="http://laurensrietveld.nl">About me</a></li>
+	<div class="container">
+		<div class="jumbotron">
+			<h1 style="font-family: 'Audiowide';">YASGUI</h1>
+			<p>
+				Yet another SPARQL GUI, partially funded by <a
+					href="http://data2semantics.org" target="_blank"><img
+					width="30%" src="img/data2semantics.png" /></a>
+			</p>
+			<p>
+				<a class="btn btn-primary btn-large"
+					href="http://yasgui.laurensrietveld.nl" target="_blank"><i
+					class="icon-share-alt icon-white"></i>Try it out!</a> <a
+					class="btn btn-large btn-info"
+					href="https://github.com/LaurensRietveld/yasgui" target="_blank">View
+					source on GitHub&nbsp;<img style="height: 22px;"
+					src="img/blacktocat.png"></img>
+				</a>
+			</p>
+
+		</div>
+
+	</div>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-2">
+				<div id="yasguiNavbar" class="bs-sidebar hidden-print affix-top" role="complementary">
+					<ul class="nav bs-sidenav">
+						<li><a href="#whatisit">What is it?</a></li>
+						<li><a href="#features">Features</a></li>
+						<li><a href="#issues">Issues and feedback</a></li>
+						<li><a href="#libraries">Used services and libraries</a></li>
 					</ul>
 				</div>
 			</div>
-		</div>
 
-	</div>
-	
-	<div class="container">
-		<div class="hero-unit">
-			<div class="row">
-				<div class="span9">
-
-					<h1 style="font-family: 'Audiowide';">YASGUI</h1>
-					<p>Yet another SPARQL GUI, partially funded by <a href="http://data2semantics.org" target="_blank"><img width="30%" src="img/data2semantics.png"/></a></p>
-					<p>
-						<a class="btn btn-primary btn-large"
-							href="http://yasgui.laurensrietveld.nl" target="_blank"><i
-							class="icon-share-alt icon-white"></i>Try it out!</a> <a
-							class="btn btn-large btn-info"
-							href="https://github.com/LaurensRietveld/yasgui" target="_blank">View source
-							on GitHub&nbsp;<img style="height: 22px;"
-							src="img/blacktocat.png"></img>
-						</a>
-					</p>
-
-				</div>
-			</div>
-		</div>
-
-	</div>
-
-	<div class="container">
-		<!-- MAIN CONTENT -->
-		<div class="row">
-			<div class="span9">
-				<h3>What is it?</h3>
+			<div class="col-md-9">
+				<h3 id="whatisit">What is it?</h3>
 
 
 
@@ -85,32 +90,39 @@ body {
 					<li>Easy-to-work user interface (i.e. prefix fetching, syntax
 						highlighting/checking, storing queries)</li>
 				</ul>
-				<h3>Features</h3>
+				<h3 id="features">Features</h3>
 				<ul>
 					<li>Query syntax highlighting and checking</li>
-					<li>Accessing -all- endpoints (including CORS-disabled ones, or endpoints on your localhost)</li>
-					<li>Prefix autocompletion (using <a href="http://prefix.cc" target="_blank">prefix.cc</a>)</li>
-					<li>Endpoint search and autocompletion (Using <a href="http://datahub.io" target="_blank">CKAN</a> and the <a href="http://labs.mondeca.com/sparqlEndpointsStatus/" target="_blank">Mondeca Endpoint Status Catalogue</a>)
+					<li>Accessing -all- endpoints (including CORS-disabled ones,
+						or endpoints on your localhost)</li>
+					<li>Prefix autocompletion (using <a href="http://prefix.cc"
+						target="_blank">prefix.cc</a>)
+					</li>
+					<li>Endpoint search and autocompletion (Using <a
+						href="http://datahub.io" target="_blank">CKAN</a> and the <a
+						href="http://labs.mondeca.com/sparqlEndpointsStatus/"
+						target="_blank">Mondeca Endpoint Status Catalogue</a>)
 					<li>Query permalinks</li>
 					<li>Persistent application states between user sessions</li>
 					<li>Query bookmarking</li>
 					<li>SNORQL-type navigation</li>
-					<li>Configurable requests (e.g. for adding <code>soft-limit=-1</code> in queries to a 4-store endpoint)</li>
+					<li>Works offline as well</li>
+					<li>Configurable requests (e.g. for adding <code>soft-limit=-1</code>
+						in queries to a 4-store endpoint)
+					</li>
 				</ul>
-				
-
-				<h3>Issues and feedback</h3>
-				Do you have any issues with YASGUI or feedback? <a
-					href="http://github.com/LaurensRietveld/yasgui/issues"
-					target="_blank">Submit</a> an an issue on github!
-
-				<h3>Used services and libraries</h3>
+				<h3 id="issues">Issues and feedback</h3>
+				Did you encounter any issues? You can file an issue via YASGUI (see <code>Configure YASGUI</code>&rarr;<code>Report a bug</code>), or 
+				<a href="http://github.com/LaurensRietveld/yasgui/issues" target="_blank">submit</a> an issue directly on github. For other questions related to YASGUI, feel free to <a href="http://laurensrietveld.nl" target="_blank">contact me</a> me directly.
+	
+				<h3 id="libraries">Used services and libraries</h3>
 				<ul>
 					<li>Thanks to Marijn Haverbeke for <a
 						href="http://codemirror.net/" target="_blank">CodeMirror</a> and
 						the SPARQL highlight plugin
 					</li>
-					<li><a href="http://www.smartclient.com/product/smartgwt.jsp" target="_blank">SMARTGWT</a></li>
+					<li><a href="http://www.smartclient.com/product/smartgwt.jsp"
+						target="_blank">SMARTGWT</a></li>
 					<li>Thanks to the people from <a
 						href="https://github.com/TSO-Openup/FlintSparqlEditor"
 						target="_blank">FLINT SPARQL editor</a> and the javascript SPARQL
@@ -118,16 +130,19 @@ body {
 					</li>
 					<li><a href="http://thedatahub.org/" target="_blank">CKAN</a>
 						dataset catalogue</li>
+					<li><a href="http://labs.mondeca.com/endpoint/ends" target="_blank">Mondeca Endpoint Status</a>
+						service </li>
 					<li><a href="http://prefix.cc" target="_blank">prefix.cc</a>
 						namespace lookup service</li>
-					<li><a href="http://jquery.com/" target="_blank">jQuery</a>
-						and the <a href="http://craigsworks.com/projects/qtip/"
-						target="_blank">jQuery qTip plugin</a></li>
-					<li>Icons from <a href="http://thenounproject.com/" target="_blank">The Noun Project</a></li>
+					<li><a href="http://jquery.com/" target="_blank">jQuery</a>,
+						the <a href="http://craigsworks.com/projects/qtip/" target="_blank">jQuery
+							qTip plugin</a>, and the <a href="http://needim.github.io/noty/" target="_blank">jQuery noty plugin</a></li>
+					<li>Icons from <a href="http://thenounproject.com/"
+						target="_blank">The Noun Project</a></li>
 				</ul>
-
-			</div>
 		</div>
+
+	</div>
 	</div>
 
 	<script type="text/javascript">
@@ -146,7 +161,8 @@ body {
 		}
 	</script>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-<script type="text/javascript" src="js/bootstrap.js"></script>
+	<script
+		src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.js"></script>
 </body>
 </html>
