@@ -340,12 +340,9 @@ function initializeQueryBookmarkCodemirror(elementId) {
 	
 }
 
-function progressbarUpdateAnimated(percent, $element) {
-	var progressBarWidth = percent * $element.width() / 100;
-	$element.find('div').animate({ width: progressBarWidth }, 500).html(percent + "%&nbsp;");
-}
+
 var latestComplete = -1;
-var easing = 300;
+var easing = 100;
 function progressbarUpdate(percent, $element) {
 	var progressBarWidth = percent * $element.width() / 100;
 	var newText = percent + "%&nbsp;";
