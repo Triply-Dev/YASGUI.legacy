@@ -215,6 +215,10 @@ public class AppcacheHelper {
 					        $noty.close();
 					        $wnd.showOfflineAvailabilitySettings();
 					      }
+					    },
+					    {addClass: 'btn', text: 'Close', onClick: function($noty) {
+					        $noty.close();
+					      }
 					    }
 					  ]
 				});
