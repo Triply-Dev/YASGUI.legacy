@@ -51,13 +51,7 @@ $
 			}
 		});
 
-var corsNotification = "Documentation on how to CORS enable endpoints:<ul>" +
-"<li><a href=\"http://4store.org/trac/wiki/SparqlServer\" target=\"_blank\">4store</a></li>" +
-"<li><a href=\"http://www.openlinksw.com/dataspace/doc/dav/wiki/Main/VirtTipsAndTricksGuideCORSSetup\" target=\"_blank\">virtuoso</a></li>" +
-"<li>OpenRDF Sesame: not possible yet (see <a href=\"https://openrdf.atlassian.net/browse/SES-1757\" target=\"_blank\">this issue</a>)" +
-"</ul>" +
-"If you cannot CORS-enable your endpoint, there are some workarounds which require installing a browser extension or a simple local application. " +
-"See <a href=\"http://laurensrietveld.nl/yasgui/help.html\" target=\"_blank\">the YASGUI help page</a> for more information.";
+var corsNotification = "For information on CORS, and how to access your endpoint, visit the <a href=\"http://laurensrietveld.nl/yasgui/help.html\" target=\"_blank\">YASGUI help page</a> for more information.";
 
 function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader,
 		argsJsonString, requestMethod, callback) {
