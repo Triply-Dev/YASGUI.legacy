@@ -30,7 +30,6 @@ import java.util.ArrayList;
 
 import com.data2semantics.yasgui.client.RpcElement;
 import com.data2semantics.yasgui.client.View;
-import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.settings.Imgs;
@@ -43,7 +42,7 @@ import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 
 public class ConfigMenu extends Menu implements RpcElement {
 	private View view;
-	ArrayList<MenuItem> items = new ArrayList<MenuItem>();
+	private ArrayList<MenuItem> items = new ArrayList<MenuItem>();
 	private MenuItem refreshMenuItem;
 	private MenuItem logOutMenuItem;
 	private MenuItem logInMenuItem;

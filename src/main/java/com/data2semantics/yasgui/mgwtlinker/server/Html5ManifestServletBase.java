@@ -52,15 +52,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.uadetector.ReadableUserAgent;
-import net.sf.uadetector.UserAgentStringParser;
-import net.sf.uadetector.service.UADetectorServiceFactory;
-
-import com.data2semantics.yasgui.mgwtlinker.linker.ManifestWriter;
 import com.data2semantics.yasgui.mgwtlinker.linker.PermutationMapLinker;
 import com.data2semantics.yasgui.mgwtlinker.linker.XMLPermutationProvider;
 import com.data2semantics.yasgui.mgwtlinker.linker.XMLPermutationProviderException;
-import com.data2semantics.yasgui.mgwtlinker.server.propertyprovider.*;
+import com.data2semantics.yasgui.mgwtlinker.server.propertyprovider.PropertyProvider;
+import com.data2semantics.yasgui.mgwtlinker.server.propertyprovider.PropertyProviderException;
 
 public class Html5ManifestServletBase extends HttpServlet {
 
@@ -91,7 +87,6 @@ public class Html5ManifestServletBase extends HttpServlet {
 		String userAgent = req.getHeader("User-Agent").toLowerCase();
 		getPermutationIdString(baseUrl, moduleName, userAgent);
 
-		Set<BindingProperty> computedBindings = calculateBindinPropertiesForClient(req);
 
 		String strongName = getPermutationIdString(baseUrl, moduleName, userAgent);
 
