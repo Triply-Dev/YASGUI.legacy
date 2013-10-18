@@ -31,6 +31,7 @@ import com.data2semantics.yasgui.client.configmenu.ReportIssue;
 import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.data2semantics.yasgui.client.tab.QueryTab;
+import com.google.common.collect.HashMultimap;
 import com.google.gwt.http.client.URL;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.Button;
@@ -57,7 +58,7 @@ public class ErrorHelper {
 			view.getElements().onQueryFinish();
 		}
 		QueryTab tab = (QueryTab)view.getTabs().getTab(tabId);
-		onQueryError(error, tab.getTabSettings().getEndpoint(), tab.getTabSettings().getQueryString(), tab.getTabSettings().getQueryArgsAsUrlString());
+		onQueryError(error, tab.getTabSettings().getEndpoint(), tab.getTabSettings().getQueryString(), tab.getTabSettings().getQueryArgs());
 	}
 	
 	/**
@@ -151,7 +152,7 @@ public class ErrorHelper {
 	 * @param query Used query
 	 * @param args 
 	 */
-	public void onQueryError(String error, final String endpoint, final String query, final String argsString) {
+	public void onQueryError(String error, final String endpoint, final String query, final HashMultimap<String, String> args) {
 		final Window window = getErrorWindow();
 		window.setWidth(350);
 		window.setZIndex(ZIndexes.MODAL_WINDOWS);
@@ -171,7 +172,7 @@ public class ErrorHelper {
 		executeQuery.addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
-				String url = endpoint + "?query=" + URL.encodeQueryString(query) + argsString;
+				String url = endpoint + "?query=" + URL.encodeQueryString(query) + "&" + Helper.getParamsAsString(args);
 				com.google.gwt.user.client.Window.open(url, "_blank", null);
 			}});
 		executeQuery.setWidth(200);

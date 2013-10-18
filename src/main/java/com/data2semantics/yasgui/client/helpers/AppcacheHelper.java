@@ -119,7 +119,6 @@ public class AppcacheHelper {
 	// Checking for an update. Always the first event fired in the sequence.
 	public void appcacheEventChecking() {
 		setStatus(Status.CHECKING);
-		JsMethods.logConsole("checking");
 	}
 
 	// An update was found. The browser is fetching resources.
@@ -170,7 +169,6 @@ public class AppcacheHelper {
 	// Fired when the manifest resources have been newly redownloaded.
 	public void appcacheEventUpdateReady() {
 		setAppcacheComplete(true);
-		JsMethods.logConsole("updatereadye");
 		setStatus(Status.CACHED);
 	}
 

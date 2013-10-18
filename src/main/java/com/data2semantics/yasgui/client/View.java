@@ -91,7 +91,7 @@ public class View extends VLayout implements RpcElement {
 			newUser = true;
 		errorHelper = new ErrorHelper(this);
 		retrieveSettings();
-		if (!Helper.isSeleniumVisitor() && JsMethods.offlineSupported() && getSettings().getEnabledFeatures().offlineCachingEnabled()) {
+		if (!Helper.isCrawler() && !Helper.isSeleniumVisitor() && JsMethods.offlineSupported() && getSettings().getEnabledFeatures().offlineCachingEnabled()) {
 			this.appcacheHelper = new AppcacheHelper(this);
 		}
 		setViewLayout();

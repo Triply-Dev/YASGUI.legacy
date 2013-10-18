@@ -3,7 +3,6 @@ package com.data2semantics.yasgui.client.helpers;
 import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.data2semantics.yasgui.client.tab.QueryTabs;
 import com.data2semantics.yasgui.client.tab.results.input.dlv.DlvWrapper;
-import com.google.gwt.core.client.GWT;
 
 /*
  * #%L
@@ -35,10 +34,11 @@ public class JsMethods {
 	
 	public static void initJs() {
 		setTabBarProperties(QueryTabs.INDENT_TABBAR_START, QueryTabs.INDENT_TABBAR_END);
-		setProxyUriInVar(GWT.getModuleBaseURL() + "sparql");
 		setQtipZIndex(ZIndexes.HELP_TOOLTIPS);
 		setAppcacheCallbacks();
 	}
+	
+	
 	
 	/**
 	 * Unset a tabmirror object. Used when closing a tab
@@ -216,14 +216,6 @@ public class JsMethods {
 		$wnd.checkCorsEnabled(endpointUri);
 	}-*/;
 	
-	/**
-	 * Define the url of the sparql proxy servlet in javascript
-	 * 
-	 * @param proxy
-	 */
-	public static native void setProxyUriInVar(String proxy) /*-{
-		$wnd.proxy = proxy;
-	}-*/;
 	
 	/**
 	 * Set the proper z-index for the q-tip tooltips
@@ -495,5 +487,8 @@ public class JsMethods {
 	}-*/;
 	public static native boolean isMac() /*-{
 		return $wnd.navigator.platform.toUpperCase().indexOf('MAC')>=0;
+	}-*/;
+	public static native boolean corsEnabled(String endpoint) /*-{
+		return ($wnd.corsEnabled[endpoint] == true);
 	}-*/;
 }

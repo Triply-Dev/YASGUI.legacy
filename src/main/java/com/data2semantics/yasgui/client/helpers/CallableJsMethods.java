@@ -28,7 +28,6 @@ package com.data2semantics.yasgui.client.helpers;
 
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.configmenu.OfflineAvailabilityConfig;
-import com.data2semantics.yasgui.client.tab.QueryTab;
 
 public class CallableJsMethods {
 	private View view;
@@ -72,13 +71,6 @@ public class CallableJsMethods {
 		view.getSelectedTab().getBookmarkedQueries().storeCurrentTextArea();
 	}
 	
-	/**
-	 * Clear current query result table 
-	 * Keep this method in the view object, so that it is easily callable from js
-	 */
-	public void resetQueryResult() {
-		view.getSelectedTab().getResultContainer().reset();
-	}
 	
 	public boolean isOnline() {
 		return view.getConnHelper().isOnline();
@@ -88,23 +80,6 @@ public class CallableJsMethods {
 		view.getConnHelper().checkOnlineStatus();
 	}
 	
-	/**
-	 * Draw json or xml results
-	 * Keep this method in the view object, so that it is easily callable from js
-	 * 
-	 * @param tabId Tab id to draw results in. 
-	 * Pass this, so when you switch tabs just after clicking the query button, the results still gets drawn in the proper tab
-	 * @param resultString
-	 * @param contentType Content type of query result
-	 */
-	public void drawResults(String tabId, String resultString, String contentType) {
-		QueryTab tab = (QueryTab)view.getTabs().getTab(tabId);
-		view.getTabs().selectTab(tabId);
-		if (tab == null) {
-			view.getErrorHelper().onError("No tab to draw results in");
-		}
-		tab.getResultContainer().drawResult(resultString, contentType);
-	}
 
 	public void onError(String error) {
 		view.getErrorHelper().onError(error);
@@ -123,21 +98,10 @@ public class CallableJsMethods {
 		view.getElements().onLoadingFinish();
 	}
 	
-	public void onQueryStart() {
-		view.getElements().onQueryStart();
-	}
-	
-	public void onQueryFinish() {
-		view.getElements().onQueryFinish();
-	}
-	
 	public void executeQuery() {
-		view.getElements().executeQuery();
+		SparqlQuery.exec(view);
 	}
 	
-	public void onQueryError(String tabId, String message) {
-		view.getErrorHelper().onQueryError(tabId, message);
-	}
 	
 	public void showPlayButton(String queryValid) {
 		view.getElements().showPlayButton(queryValid);
@@ -166,6 +130,7 @@ public class CallableJsMethods {
 	public boolean inDebugMode() {
 		return Helper.inDebugMode();
 	}
+	
 	public void showOfflineAvailabilitySettings() {
 		new OfflineAvailabilityConfig(view);
 	}
@@ -178,9 +143,6 @@ public class CallableJsMethods {
 	 */
 	public static native void declareCallableViewMethods(CallableJsMethods viewJs) /*-{
 		var view = view; 
-		$wnd.drawResults = function(tabId, resultString, contentType) {
-			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::drawResults(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(tabId, resultString, contentType);
-		}
 		$wnd.onError = function(errorMsg) {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::onError(Ljava/lang/String;)(errorMsg);
 		}
@@ -190,23 +152,11 @@ public class CallableJsMethods {
 		$wnd.onLoadingFinish = function() {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::onLoadingFinish()();
 		}
-		$wnd.onQueryStart = function() {
-			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::onQueryStart()();
-		}
-		$wnd.onQueryFinish = function() {
-			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::onQueryFinish()();
-		}
-		$wnd.clearQueryResult = function() {
-			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::resetQueryResult()();
-		}
 		$wnd.storeQueryInCookie = function() {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::storeQueryInCookie()();
 		}
 		$wnd.updateBookmarkedQuery = function() {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::updateBookmarkedQuery()();
-		}
-		$wnd.onQueryError = function(tabId, errorMsg) {
-			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::onQueryError(Ljava/lang/String;Ljava/lang/String;)(tabId, errorMsg);
 		}
 		$wnd.showPlayButton = function(queryValid) {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::showPlayButton(Ljava/lang/String;)(queryValid);

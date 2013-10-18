@@ -28,7 +28,6 @@ package com.data2semantics.yasgui.client.helpers;
 
 import java.util.Date;
 
-import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.shared.CookieKeys;
 import com.google.gwt.core.client.GWT;
@@ -51,11 +50,6 @@ public class LocalStorageHelper {
 	private static int DEFAULT_EXPIRE_DAYS = 1000;
 	@SuppressWarnings("unused")
 	private static int UNKNOWN_EXPIRE_DAYS = 30;
-	private View view;
-	
-	public LocalStorageHelper(View view) {
-		this.view = view;
-	}
 	
 	/**
 	 * Get value from local storage using expire date. 

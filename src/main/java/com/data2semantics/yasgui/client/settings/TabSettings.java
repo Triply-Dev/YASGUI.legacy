@@ -267,11 +267,11 @@ public class TabSettings extends JSONObject {
 		return object;
 	}
 	public String getQueryArgsAsJsonString() {
-		return getQueryArgs().toString();
+		return getQueryArgsAsJson().toString();
 	}
 	public String getQueryArgsAsUrlString() {
 		String urlString = "";
-		JSONArray argsArray = getQueryArgs();
+		JSONArray argsArray = getQueryArgsAsJson();
 		for (int i = 0; i < argsArray.size(); i++) {
 			JSONObject argObject = argsArray.get(i).isObject();
 			urlString += "&" + argObject.get("name").isString().stringValue() + 
@@ -280,20 +280,24 @@ public class TabSettings extends JSONObject {
 		return urlString;
 	}
 	
-	public JSONArray getQueryArgs() {
+	public JSONArray getQueryArgsAsJson() {
 		JSONArray argsArray = new JSONArray();
-		HashMultimap<String, String> args = getCustomQueryArgs();
-		
+		HashMultimap<String, String> args = getQueryArgs();
 		for (Entry<String, String> arg: args.entries()) {
 			argsArray.set(argsArray.size(), getSimpleQueryArgObject(arg.getKey(), arg.getValue()));
 		}
+		return argsArray;
+	}
+	
+	public HashMultimap<String, String> getQueryArgs() {
+		HashMultimap<String, String> args = getCustomQueryArgs();
 		for (String defaultGraph: getDefaultGraphs()) {
-			argsArray.set(argsArray.size(), getSimpleQueryArgObject("default-graph-uri", defaultGraph));
+			args.put("default-graph-uri", defaultGraph);
 		}
 		for (String namedGraph: getNamedGraphs()) {
-			argsArray.set(argsArray.size(), getSimpleQueryArgObject("named-graph-uri", namedGraph));
+			args.put("named-graph-uri", namedGraph);
 		}
-		return argsArray;
+		return args;
 	}
 	
 	public HashMultimap<String, String> getCustomQueryArgs() {

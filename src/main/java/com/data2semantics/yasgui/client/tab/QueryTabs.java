@@ -421,5 +421,5 @@ public class QueryTabs extends TabSet implements RpcElement {
 			queryTab.enableRpcElements();
 		}
 	}
-
+	
 }

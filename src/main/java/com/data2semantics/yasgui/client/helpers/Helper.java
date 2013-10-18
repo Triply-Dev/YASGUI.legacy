@@ -51,12 +51,13 @@ package com.data2semantics.yasgui.client.helpers;
  */
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
 
 import com.data2semantics.yasgui.client.services.YasguiServiceAsync;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
+import com.google.common.collect.HashMultimap;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONArray;
@@ -408,15 +409,20 @@ public class Helper {
 		});
 	}
 
-	public static String getParamsAsString(Map<String, String> parmsRequest) {
+	public static String getParamsAsString(HashMultimap<String, String> parmsRequest) {
 		StringBuilder sb = new StringBuilder();
-		for (String key : parmsRequest.keySet()) {
-			String value = URL.encodeQueryString(parmsRequest.get(key));
+		for (Entry<String, String> entry : parmsRequest.entries()) {
+			String value = URL.encodeQueryString(entry.getValue());
 			if (sb.length() > 0) {
 				sb.append("&");
 			}
-			sb.append(key).append("=").append(value);
+			sb.append(entry.getKey()).append("=").append(value);
 		}
 		return sb.toString();
 	}
+
+	public static boolean isLocalhostDomain(String endpoint) {
+		return endpoint.matches("https*://(localhost|127).*");
+	}
+	
 }

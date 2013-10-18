@@ -34,13 +34,13 @@ import com.data2semantics.yasgui.client.helpers.GoogleAnalyticsEvent;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
+import com.data2semantics.yasgui.client.helpers.SparqlQuery;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
 import com.data2semantics.yasgui.client.settings.ExternalLinks;
 import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.settings.TooltipText;
 import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.data2semantics.yasgui.client.tab.optionbar.LinkCreator;
-import com.data2semantics.yasgui.client.tab.optionbar.endpoints.EndpointInput;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Cursor;
@@ -121,7 +121,7 @@ public class ViewElements implements RpcElement {
 		queryButton = getQueryIcon(Imgs.EXECUTE_QUERY.get(), new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				executeQuery();
+				SparqlQuery.exec(view);
 			}
 		});
 		
@@ -166,52 +166,6 @@ public class ViewElements implements RpcElement {
 		onQueryFinish();
 	}
 	
-	/**
-	 * execute query
-	 */
-	public void executeQuery() {
-		//clear current result container -before- query, not after
-		view.getSelectedTab().getResultContainer().reset();
-		
-		view.getHistory().setHistoryCheckpoint();
-		
-		if (JsMethods.stringToDownloadSupported()) {
-			view.getSelectedTab().getDownloadLink().showDisabledIcon();
-		}
-		//onblur might not always fire (will have to check that). for now, store query in settings before query execution just to be sure
-		view.getCallableJsMethods().storeQueryInCookie();
-		
-		//the same happens whenever our endpointinput has focus
-		EndpointInput endpointInput = view.getSelectedTab().getEndpointInput();
-		if (endpointInput != null) {
-			endpointInput.storeEndpointInSettings();
-		}
-		
-		String tabId = view.getSelectedTab().getID();
-		String endpoint = view.getSelectedTabSettings().getEndpoint();
-		String queryString = view.getSelectedTabSettings().getQueryString();
-		
-		String acceptHeader;
-		if (view.getSelectedTab().getQueryType().equals("CONSTRUCT") || view.getSelectedTab().getQueryType().equals("DESCRIBE")) {
-			//Change content type automatically for construct queries
-			acceptHeader = view.getSelectedTabSettings().getConstructContentType();
-		} else {
-			acceptHeader = view.getSelectedTabSettings().getSelectContentType();
-		}
-		acceptHeader += ",*/*;q=0.9";
-	
-		String argsString = view.getSelectedTabSettings().getQueryArgsAsJsonString();
-		String requestMethod = view.getSelectedTabSettings().getRequestMethod();
-		
-		
-		
-		JsMethods.query(tabId, queryString, endpoint, acceptHeader, argsString, requestMethod);
-		view.checkAndAddEndpointToDs(endpoint);
-		if (view.getSettings().useGoogleAnalytics()) {
-			GoogleAnalyticsEvent queryEvent = new GoogleAnalyticsEvent(endpoint, JsMethods.getUncommentedSparql(queryString));
-			GoogleAnalytics.trackEvents(queryEvent);
-		}
-	}
 	
 	/**
 	 * initialize loading widget in top right corner

@@ -32,6 +32,7 @@ import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
+import com.data2semantics.yasgui.client.helpers.SparqlQuery;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
 import com.data2semantics.yasgui.client.settings.TooltipText;
 import com.data2semantics.yasgui.shared.Prefix;
@@ -136,7 +137,7 @@ public class QueryTextArea extends HTMLPane {
 		setQuery(query);
 		view.getSelectedTabSettings().setQueryString(query);
 		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
-		view.getElements().executeQuery();
+		SparqlQuery.exec(view);
 	}
 	
 	/**
