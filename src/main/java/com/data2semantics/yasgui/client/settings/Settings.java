@@ -76,20 +76,22 @@ public class Settings extends JsonHelper {
 	
 	public void addToSettings(JSONObject jsonObject) {
 		Set<String> keys = jsonObject.keySet();
+		//we first need to add defaults (if there are any), as these are needed in the TabSettings initialization
+		if (jsonObject.containsKey(SettingKeys.DEFAULTS)) {
+			if (defaults == null) {
+				defaults = new Defaults(jsonObject.get(SettingKeys.DEFAULTS).isObject());
+			} else {
+				defaults.update(jsonObject.get(SettingKeys.DEFAULTS).isObject());
+			}
+		}
 		for (String key : keys) {
+			if (key.equals(SettingKeys.DEFAULTS)) continue; //already added defaults
 			if (key.equals(SettingKeys.TAB_SETTINGS)) {
 				JSONArray jsonArray = jsonObject.get(key).isArray();
 				for (int i = 0; i < jsonArray.size(); i++) {
 					//Add as TabSettings to tab arraylist
 					tabArray.add(new TabSettings(this, jsonArray.get(i).isObject()));
 				}
-			} else if (key.equals(SettingKeys.DEFAULTS)) {
-				if (defaults == null) {
-					defaults = new Defaults(jsonObject.get(key).isObject());
-				} else {
-					defaults.update(jsonObject.get(key).isObject());
-				}
-				
 			} else if (key.equals(SettingKeys.ENABLED_FEATURES)) {
 				enabledFeatures.update(jsonObject.get(key).isObject());
 			} else {
@@ -224,6 +226,34 @@ public class Settings extends JsonHelper {
 	public void setShowAppcacheDownloadNotification(boolean show) {
 		set(SettingKeys.SHOW_APPCACHE_DOWNLOAD_NOTIFICATION, show, true);
 	}
+	public void clearQueryResults() {
+		for (int i = 0; i < tabArray.size(); i++) {
+			//Add as TabSettings to tab arraylist
+			JSONObject tabItem = tabArray.get(i).isObject();
+			if (tabItem != null) {
+				tabItem.put(SettingKeys.QUERY_RESULT_STRING, null);
+				tabItem.put(SettingKeys.QUERY_RESULT_CONTENT_TYPE, null);
+			}
+		}
+	}
+	public void clearQueryResults(int maxSize) {
+		int currentSize = 0;
+		for (int i = 0; i < tabArray.size(); i++) {
+			//Add as TabSettings to tab arraylist
+			JSONObject tabItem = tabArray.get(i).isObject();
+			if (tabItem != null) {
+				JSONValue queryJsonValue = tabItem.get(SettingKeys.QUERY_RESULT_STRING);
+				if (queryJsonValue != null) {
+					if (queryJsonValue.isString() != null) {
+						currentSize += queryJsonValue.isString().stringValue().length();
+					}
+				}
+			}
+		}
+		if (currentSize > maxSize) {
+			clearQueryResults();
+		}
+	}
 	
 	public static Settings retrieveSettings() throws IOException {
 		Settings settings = new Settings();
@@ -260,5 +290,13 @@ public class Settings extends JsonHelper {
 	}
 	
 
-
+	public Settings clone() {
+		try {
+			Settings clonedSettings = new Settings();
+			clonedSettings.addToSettings(toString());
+			return clonedSettings;
+		} catch (IOException e) {
+			return null;
+		}
+	}
 }

@@ -56,9 +56,20 @@ public class SparqlQuery {
 	}
 	
 	private void fetchProperties() {
-		tabId = view.getSelectedTab().getID();
-		endpoint = view.getSelectedTabSettings().getEndpoint();
+		//onblur might not always fire (will have to check that). for now, store query in settings before query execution just to be sure
+		view.getCallableJsMethods().storeQueryInCookie();
 		queryString = view.getSelectedTabSettings().getQueryString();
+		//the same happens whenever our endpointinput has focus
+		EndpointInput endpointInput = view.getSelectedTab().getEndpointInput();
+		if (endpointInput != null) {
+			endpointInput.storeEndpointInSettings();
+		}
+		endpoint = view.getSelectedTabSettings().getEndpoint();
+		view.checkAndAddEndpointToDs(endpoint);
+		
+		
+		tabId = view.getSelectedTab().getID();
+		
 		
 		if (view.getSelectedTab().getQueryType().equals("CONSTRUCT") || view.getSelectedTab().getQueryType().equals("DESCRIBE")) {
 			//Change content type automatically for construct queries
@@ -177,48 +188,33 @@ public class SparqlQuery {
 
 
 	private void preProcess() {
+		//set history checkpoint (do before resetting resultcontainer, as we need this info)
+		view.getHistory().setHistoryCheckpoint();
+		
 		//clear current result container -before- query, not after
 		view.getSelectedTab().getResultContainer().reset();
-		
-		//set history checkpoint
-		view.getHistory().setHistoryCheckpoint();
 		
 		//disable string to download icon
 		if (JsMethods.stringToDownloadSupported()) {
 			view.getSelectedTab().getDownloadLink().showDisabledIcon();
 		}
 		
-		//onblur might not always fire (will have to check that). for now, store query in settings before query execution just to be sure
-		view.getCallableJsMethods().storeQueryInCookie();
-		//the same happens whenever our endpointinput has focus
-		EndpointInput endpointInput = view.getSelectedTab().getEndpointInput();
-		if (endpointInput != null) {
-			endpointInput.storeEndpointInSettings();
-		}
-		view.checkAndAddEndpointToDs(endpoint);
-		
-		
-		
-		
-		
-//		JsMethods.query(tabId, queryString, endpoint, acceptHeader, argsString, requestMethod);
 		
 		if (view.getSettings().useGoogleAnalytics()) {
 			GoogleAnalyticsEvent queryEvent = new GoogleAnalyticsEvent(endpoint, JsMethods.getUncommentedSparql(queryString));
 			GoogleAnalytics.trackEvents(queryEvent);
 		}
-		
 	}
-	
-	
 	
 	private void drawResults(String resultString, String contentType) {
 		QueryTab tab = (QueryTab)view.getTabs().getTab(tabId);
+		JsMethods.logConsole("selecting tab");
 		view.getTabs().selectTab(tabId);
 		if (tab == null) {
 			view.getErrorHelper().onError("No tab to draw results in");
 		}
-		tab.getResultContainer().drawResult(resultString, contentType);
+		JsMethods.logConsole("Drawing results for query " + queryString);
+		tab.getResultContainer().drawResult(endpoint, queryString, resultString, contentType);
 	}
 	
 	public static void exec(View view) {

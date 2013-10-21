@@ -196,13 +196,13 @@ public class QueryTabs extends TabSet implements RpcElement {
 		addTabSelectedHandler(new TabSelectedHandler() {
 			@Override
 			public void onTabSelected(TabSelectedEvent event) {
-				Settings settings = view.getSettings();
-				settings.setSelectedTabNumber(event.getTabNum());
-				LocalStorageHelper.storeSettingsInCookie(settings);
+				view.getSettings().setSelectedTabNumber(event.getTabNum());
+				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
 				Scheduler.get().scheduleDeferred(new Command() {
 					public void execute() {
 						JsMethods.initializeQueryCodemirror(((QueryTab) getSelectedTab()).getQueryTextArea().getInputId());
 						((QueryTab) getSelectedTab()).getQueryTextArea().adjustForContent(true);
+						((QueryTab) getSelectedTab()).getResultContainer().drawIfPossible();
 						view.getHistory().setHistoryCheckpoint();
 					}
 				});

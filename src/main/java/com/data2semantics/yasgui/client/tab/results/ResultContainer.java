@@ -30,11 +30,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.client.helpers.ContentTypes;
+import com.data2semantics.yasgui.client.helpers.ContentTypes.Type;
 import com.data2semantics.yasgui.client.helpers.Helper;
+import com.data2semantics.yasgui.client.helpers.HistoryHelper.HistQueryResults;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.settings.Imgs;
+import com.data2semantics.yasgui.client.settings.TabSettings;
 import com.data2semantics.yasgui.client.tab.QueryTab;
-import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
 import com.data2semantics.yasgui.client.tab.results.input.DlvResults;
 import com.data2semantics.yasgui.client.tab.results.input.JsonResults;
 import com.data2semantics.yasgui.client.tab.results.input.ResultsHelper;
@@ -67,21 +70,17 @@ import com.smartgwt.client.widgets.layout.VLayout;
 public class ResultContainer extends VLayout {
 	public static String XSD_DATA_PREFIX = "http://www.w3.org/2001/XMLSchema#";
 	
+	//use this setting to keep our memory use low. Only store query results in settings (for re-use) when the char lenght is below this value
+	private static int MAX_CHARS_RESULTS= 300000;//approx resultset of a 1000
+	//use this setting to keep our settings object small enough to fit in local storage. This value covers the aggregate resultset size of all tabs
+	private static int MAX_CHARS_RESULTS_TOTAL= 600000;
 	public enum ResultType {
 		Table, Boolean, Insert;
 	}
 	
-	public static int CONTENT_TYPE_JSON = 1;
-	public static int CONTENT_TYPE_XML = 2;
-	public static int CONTENT_TYPE_TURTLE = 3;
-	public static int CONTENT_TYPE_CSV = 4;
-	public static int CONTENT_TYPE_TSV = 5;
-	
-	private String contentType;
 	private View view;
 	private QueryTab queryTab;
 	private RawResponse rawResponseOutput;
-	private String resultString;
 	HashMap<String, ResultType> queryTypes = new HashMap<String, ResultType>();
 	public ResultContainer(View view, QueryTab queryTab) {
 		setPossibleQueryTypes();
@@ -122,82 +121,92 @@ public class ResultContainer extends VLayout {
 		}
 	}
 	
+	public void drawIfPossible() {
+		JsMethods.logConsole("in draw if possible");
+		TabSettings tabSettings = view.getSelectedTabSettings();
+		if (view.getSelectedTabSettings().getQueryResultsString() != null) {
+			JsMethods.logConsole("found query results in settings!");
+			doDraw(tabSettings.getQueryResultsString(), tabSettings.getQueryResultsContentType());
+		} else if (view.getHistory().getHistQueryResults(tabSettings.getEndpoint(), tabSettings.getQueryString()) != null) {
+			JsMethods.logConsole("found query results in history!");
+			HistQueryResults queryResults = view.getHistory().getHistQueryResults(tabSettings.getEndpoint(), tabSettings.getQueryString());
+			doDraw(queryResults.getString(), queryResults.getContentType());
+		} else {
+			JsMethods.logConsole("resetting in drawifpossible");
+			reset();
+		}
+	}
+	
 	/**
 	 * Process and draw results. Checks for content type. If it is missing or strange, try to detect by parsing to xml or json
 	 * 
+	 * @param queryString query string for which we got these results 
+	 * (this is -not- necessarily the query from the current tab object, as query execute might have a big latency with time to edit the query string)
 	 * @param resultString
 	 * @param contentType
 	 */
-	public void drawResult(String resultString, String contentType) {
-		storeResult(resultString);
-		this.contentType = contentType;
-		drawResult(resultString);	
+	public void drawResult(String endpoint, String queryString, String resultString, String contentType) {
+		storeResult(endpoint, queryString, resultString, contentType);
+		doDraw(resultString, contentType);	
 	}
 	
-	public void drawResult() {
-		drawResult(resultString);
-	}
-	public void drawResult(String resultString) {
+	private void doDraw(String resultString, String contentTypeString) {
 		if (resultString != null && resultString.length() > 0) {
 			reset();
-			int resultFormat;
+			Type contentType;
 			
-			
-			
-			if ((queryTab.getQueryType().equals("CONSTRUCT") || queryTab.getQueryType().equals("DESCRIBE")) && !ResultsHelper.tabularContentType(contentType)) {
-				drawGraphResult(resultString);
+			contentType = ContentTypes.detectContentType(contentTypeString);
+			if (contentType == null) {
+				//assuming select query here (no construct)
+				contentType = detectContentTypeFromResultstring(resultString);
+			}
+			if (contentType == null) {
+				view.getErrorHelper().onQueryError(queryTab.getID(), "Unable to detect content type and parse the query results<br><br>" + resultString);
 				return;
 			}
 			
-			if (contentType == null) {
-				//assuming select query here (no construct)
-				resultFormat = detectContentType(resultString);
-				if (resultFormat == 0) {
-					view.getErrorHelper().onQueryError(queryTab.getID(), "Unable to detect content type<br><br>" + resultString);
-					return;
-				}
-			} else if (contentType.contains("sparql-results+json")) {
-				resultFormat = ResultContainer.CONTENT_TYPE_JSON;
-			} else if (contentType.contains("sparql-results+xml")) {
-				resultFormat = ResultContainer.CONTENT_TYPE_XML;
-			} else if (contentType.contains(QueryConfigMenu.CONTENT_TYPE_SELECT_CSV)) {
-				resultFormat = ResultContainer.CONTENT_TYPE_CSV;
-			} else if (contentType.contains(QueryConfigMenu.CONTENT_TYPE_SELECT_TSV)) {
-				resultFormat = ResultContainer.CONTENT_TYPE_TSV;
+			
+			if ((queryTab.getQueryType().equals("CONSTRUCT") || queryTab.getQueryType().equals("DESCRIBE")) && !ResultsHelper.tabularConstructContentType(contentType)) {
+				drawGraphResult(resultString, contentType);
 			} else {
-				//assuming select query here (no construct)
-				resultFormat = detectContentType(resultString);
-				if (resultFormat == 0) {
-					view.getErrorHelper().onQueryError(queryTab.getID(), "Unable to parse results with content type " + contentType + ".<br><br>" + resultString);
-					return;
-				}
+				addQueryResult(resultString, contentType);
 			}
-			addQueryResult(resultString, resultFormat);
 		}
 	}
 	
 
 	
-	private void storeResult(String resultString) {
-		this.resultString = null;
-		if (resultString.length() < 300000) {
-			//this is approximately a resultset of 1000 resultsets. Don't store larger stuff, (memory reasons)
-			this.resultString = resultString;
+	private void storeResult(String endpoint, String queryString, String resultString, String contentType) {
+		/**
+		 * Store in settings
+		 */
+		JsMethods.logConsole("in store result!");
+		view.getSettings().clearQueryResults(MAX_CHARS_RESULTS_TOTAL);
+		if (resultString.length() < MAX_CHARS_RESULTS) {
+			JsMethods.logConsole("setting results in store result");
+			view.getSelectedTabSettings().setQueryResultsString(resultString);
+			view.getSelectedTabSettings().setQueryResultsContentType(contentType);
+		} else {
+			JsMethods.logConsole("clearing query results string in store result!");
+			view.getSelectedTabSettings().clearQueryResultsString();;
+			view.getSelectedTabSettings().clearQueryResultsContentType();
 		}
 		
+		/**
+		 * Store in history helper as well. We store the resultsets in the settings object (above) and store this in localstorage,
+		 * but we remove this part when storing the history state. If we don't, then every resultset in our history gets stored,
+		 * making the memory size (about) linearly increase each time we execute a query...
+		 * Cleaning our history of our previous states is (for security reason) not possible.. (we can only edit our -current- history state)
+		 * Therefore, keep our last three resultsets in memory manually. Is ugly though (would prefer to use a proper history object for this instead of building on manually), but it'll have to do
+		 */
+		view.getHistory().addQueryResults(endpoint, queryString, resultString, contentType);
 	}
 
-	private void drawGraphResult(String responseString) {
-		int mode = 0;
-		if (contentType.contains(QueryConfigMenu.CONTENT_TYPE_CONSTRUCT_TURTLE)) {
-			mode = CONTENT_TYPE_TURTLE;
-		} else {
-			mode = CONTENT_TYPE_XML;
-		}
-		drawRawResponse(responseString, mode);
+	private void drawGraphResult(String responseString, Type contentType) {
+		drawRawResponse(responseString, contentType);
 	}
 	
-	public void addQueryResult(String responseString, int resultFormat) {
+	public void addQueryResult(String responseString, Type contentType) {
 		reset();
 		try {
 			String queryType = JsMethods.getQueryType(view.getSelectedTab().getQueryTextArea().getInputId());
@@ -213,9 +222,9 @@ public class ResultContainer extends VLayout {
             case Table:
             	String outputFormat = view.getSelectedTabSettings().getOutputFormat();
 				if (outputFormat.equals(Output.OUTPUT_RAW_RESPONSE)) {
-					drawRawResponse(responseString, resultFormat);
+					drawRawResponse(responseString, contentType);
 				} else {
-					SparqlResults results = getResultsFromString(responseString, resultFormat, queryMode);
+					SparqlResults results = getSelectResultsFromString(responseString, contentType, queryTypes.get(queryType));
 					if (queryMode == ResultType.Boolean){
 						drawResultsAsBoolean(results);
 					} else if (queryMode == ResultType.Table) {
@@ -248,16 +257,17 @@ public class ResultContainer extends VLayout {
 		} 
 	}
 	
-	private SparqlResults getResultsFromString(String responseString, int resultFormat, ResultType queryMode) {
+	
+	private SparqlResults getSelectResultsFromString(String responseString, Type contentType, ResultType resultType) {
 		SparqlResults results = null;
-		if (resultFormat == CONTENT_TYPE_JSON) {
-			results = new JsonResults(responseString, view, queryMode);
-		} else if (resultFormat == CONTENT_TYPE_XML) {
-			results = new XmlResults(responseString, view, queryMode);
-		} else if (resultFormat == CONTENT_TYPE_CSV) {
-			results = new DlvResults(responseString, view, queryMode, ",");
-		} else if (resultFormat == CONTENT_TYPE_TSV) {
-			results = new DlvResults(responseString, view, queryMode, "\t");
+		if (contentType == Type.SELECT_JSON) {
+			results = new JsonResults(responseString, view, resultType);
+		} else if (contentType == Type.SELECT_XML) {
+			results = new XmlResults(responseString, view, resultType);
+		} else if (contentType == Type.SELECT_CSV) {
+			results = new DlvResults(responseString, view, resultType, ",");
+		} else if (contentType == Type.SELECT_TSV) {
+			results = new DlvResults(responseString, view, resultType, "\t");
 		} else {
 			throw new SparqlParseException("no valid content type found for this response");
 		}
@@ -332,22 +342,28 @@ public class ResultContainer extends VLayout {
 		}
 	}
 	
-	private void drawRawResponse(String responseString, int resultFormat) {
+	private void drawRawResponse(String responseString, Type contentType) {
 		if (JsMethods.stringToDownloadSupported()) {
-			String url = JsMethods.stringToUrl(responseString, contentType);
-			view.getSelectedTab().getDownloadLink().showDownloadIcon(url, resultFormat);
+			String url = JsMethods.stringToUrl(responseString, contentType.getContentType());
+			view.getSelectedTab().getDownloadLink().showDownloadIcon(url, contentType);
 		}
 		rawResponseOutput = new RawResponse(view, queryTab, responseString);
 		addMember(rawResponseOutput);
-
+		
 		final String mode;
-		if (resultFormat == CONTENT_TYPE_JSON) {
-			mode = "json";
-		} else if (resultFormat == CONTENT_TYPE_TURTLE) {
-			mode = "text/turtle";
+		if (contentType.getCmMode() != null) {
+			mode = contentType.getCmMode();
 		} else {
-			mode = "xml";
+			mode = Type.SELECT_XML.getCmMode();
 		}
+//		final String mode;
+//		if (resultFormat == CONTENT_TYPE_SELECT_JSON) {
+//			mode = "json";
+//		} else if (resultFormat == CONTENT_TYPE_TURTLE) {
+//			mode = "text/turtle";
+//		} else {
+//			mode = "xml";
+//		}
 		//on window resize, part of the page get redrawn. This means we have to attach to codemirror again
 		//this is also called on first load
 		rawResponseOutput.addResizedHandler(new ResizedHandler(){
@@ -365,25 +381,38 @@ public class ResultContainer extends VLayout {
 		return this.rawResponseOutput;
 	}
 	
-	public int detectContentType(String responseString) {
-		int contentType = 0;
+	public Type detectContentTypeFromResultstring(String responseString) {
+		Type contentType = null;
 		try {
 			JSONValue jsonValue = JSONParser.parseStrict(responseString);
 			if (jsonValue != null) {
 				JSONObject jsonObject = jsonValue.isObject();
 				JSONValue head = jsonObject.get("head");
 				if (head != null) {
-					return CONTENT_TYPE_JSON;
+					return Type.SELECT_JSON;
 				}
 			}
 		} catch (Exception e) {}
 		try {
 			Document xmlDoc = XMLParser.parse(responseString);
 			if (xmlDoc != null && xmlDoc.getElementsByTagName("sparql").getLength() > 0) {
-				return CONTENT_TYPE_XML;
+				return Type.SELECT_XML;
 			}
 		} catch (Exception e) {}
 		
 		return contentType;
 	}
+	
+//	public void setResultString(String resultString) {
+//		this.resultString = resultString;
+//	}
+//	public String getResultString() {
+//		return this.resultString;
+//	}
+//	public void setContentType(String contentType) {
+//		this.contentType = contentType;
+//	}
+//	public String getContentType() {
+//		return this.contentType;
+//	}
 }

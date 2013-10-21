@@ -45,6 +45,7 @@ public class CallableJsMethods {
 	}
 	
 	public void setQueryType(String queryType) {
+		JsMethods.logConsole("query type: " + queryType);
 		view.getSelectedTab().setQueryType(queryType);
 	}
 	public void adjustQueryInputForContent() {
@@ -134,7 +135,10 @@ public class CallableJsMethods {
 	public void showOfflineAvailabilitySettings() {
 		new OfflineAvailabilityConfig(view);
 	}
-	
+	public void clearQueryResultsFromSettings() {
+		view.getSettings().clearQueryResults();
+		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+	}
 	
 	/**
 	 * Add view methods to JS, use this for situations where a non-static GWT method needs to be called
@@ -205,6 +209,9 @@ public class CallableJsMethods {
 		}
 		$wnd.showOfflineAvailabilitySettings = function() {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::showOfflineAvailabilitySettings()();
+		}
+		$wnd.clearQueryResultsFromSettings = function() {
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::clearQueryResultsFromSettings()();
 		}
 	}-*/;
 }

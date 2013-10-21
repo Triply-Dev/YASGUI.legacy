@@ -66,7 +66,7 @@ public class OutputSelection extends DynamicForm {
 			public void onChanged(ChangedEvent event) {
 				view.getSelectedTabSettings().setOutputFormat(selectItem.getValueAsString());
 				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
-				view.getSelectedTab().getResultContainer().drawResult();
+				view.getSelectedTab().getResultContainer().drawIfPossible();
 			}
 		});
 		setItems(selectItem);
@@ -78,11 +78,10 @@ public class OutputSelection extends DynamicForm {
 	}
 	
 	public void adaptToQueryType(String queryType) {
-		
 		if (queryType == null) {
 			selectItem.setDisabled(false);
 		} else if ((queryType.equals("CONSTRUCT") || queryType.equals("DESCRIBE")) 
-				&& !ResultsHelper.tabularContentType(view.getSelectedTabSettings().getConstructContentType())) {
+				&& !ResultsHelper.tabularConstructContentType(view.getSelectedTabSettings().getConstructContentType())) {
 			selectItem.setValue(Output.OUTPUT_RAW_RESPONSE);
 			selectItem.setDisabled(true);
 		} else {

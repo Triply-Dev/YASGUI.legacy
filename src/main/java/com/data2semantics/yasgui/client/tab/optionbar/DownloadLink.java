@@ -26,13 +26,13 @@ package com.data2semantics.yasgui.client.tab.optionbar;
  * #L%
  */
 
-import com.smartgwt.client.widgets.Canvas;
-import com.smartgwt.client.widgets.HTMLFlow;
 import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.client.helpers.ContentTypes.Type;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.client.settings.ZIndexes;
-import com.data2semantics.yasgui.client.tab.results.ResultContainer;
+import com.smartgwt.client.widgets.Canvas;
+import com.smartgwt.client.widgets.HTMLFlow;
 
 public class DownloadLink extends Canvas {
 	private View view;
@@ -50,11 +50,11 @@ public class DownloadLink extends Canvas {
 		addDisabledDownload();
 	}
 	
-	public void showDownloadIcon(String url, int contentTypeId) {
+	public void showDownloadIcon(String url, Type contentType) {
 		for (Canvas child: getChildren()) {
 			child.markForDestroy();
 		}
-		addRegularDownload(url, contentTypeId);
+		addRegularDownload(url, contentType);
 	}
 	public void showDisabledIcon() {
 		for (Canvas child: getChildren()) {
@@ -81,7 +81,7 @@ public class DownloadLink extends Canvas {
 		disabledIcon.addChild(html);
 		addChild(disabledIcon);
 	}
-	private void addRegularDownload(String url, int contentTypeId) {
+	private void addRegularDownload(String url, Type contentType) {
 		downloadIcon = new Canvas();
 		downloadIcon.setHeight(HEIGHT);
 		downloadIcon.setWidth(WIDTH);
@@ -90,7 +90,7 @@ public class DownloadLink extends Canvas {
 		html.setHeight(HEIGHT+5);
 		String downloadLink = "<a href='" + url + "' ";
 		if (JsMethods.downloadAttributeSupported()) {
-			downloadLink += "download='" + getDownloadFilename(contentTypeId) + "'";
+			downloadLink += "download='" + getDownloadFilename(contentType) + "'";
 		} else {
 			downloadLink += "target='_blank'";
 		}
@@ -120,29 +120,9 @@ public class DownloadLink extends Canvas {
 	}
 	
 	
-	
-	public String getDownloadLink(String responseString, String contentType) {
-		String url = JsMethods.stringToUrl(responseString, contentType);
-		String style = "style='z-index:" + Integer.toString(ZIndexes.DOWNLOAD_ICON) + ";position:absolute;right:0px;top:0px;'";
-		String downloadLink = "<a " + style + " href='" + url + "' ";
-		if (JsMethods.downloadAttributeSupported()) {
-			downloadLink += "download='" + getDownloadFilename(2) + "'";
-		} else {
-			downloadLink += "target='_blank'";
-		}
-		downloadLink += "><img src='" + Imgs.OTHER_IMAGES_DIR.getUnprocessed() + Imgs.DOWNLOAD.get() + "'></img></a>";
-		return downloadLink;
-	}
-	
-	public String getDownloadFilename(int contentTypeId) {
+	public String getDownloadFilename(Type contentType) {
 		String filename = view.getSelectedTabSettings().getTabTitle();
-		if (contentTypeId == ResultContainer.CONTENT_TYPE_JSON) {
-			filename += ".json";
-		} else if (contentTypeId == ResultContainer.CONTENT_TYPE_TURTLE) {
-			filename += ".ttl";
-		} else if (contentTypeId == ResultContainer.CONTENT_TYPE_XML) {
-			filename += ".xml";
-		}
+		filename += contentType.getFileExtension();
 		return filename;
 	}
 	

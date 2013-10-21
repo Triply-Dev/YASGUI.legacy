@@ -59,6 +59,8 @@ public class SettingKeys implements Serializable {
 	public static String REQUEST_METHOD = "requestMethod";
 	public static String NAMED_GRAPHS = "namedGraphs";
 	public static String DEFAULT_GRAPHS = "defaultGraphs";
+	public static String QUERY_RESULT_STRING = "queryResultString";
+	public static String QUERY_RESULT_CONTENT_TYPE = "queryResultContentType";
 	
 	
 	//enabled features object

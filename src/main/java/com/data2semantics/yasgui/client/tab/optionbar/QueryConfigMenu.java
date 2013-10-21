@@ -30,6 +30,7 @@ package com.data2semantics.yasgui.client.tab.optionbar;
 import java.util.ArrayList;
 
 import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.client.helpers.ContentTypes;
 import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.helpers.TooltipProperties;
@@ -73,12 +74,12 @@ public class QueryConfigMenu extends IconMenuButton {
 	private static int GRAPH_ARG_WINDOW_WIDTH = 300;
 	private ParametersListGrid paramListGrid;
 	private GraphListGrid graphListGrid;
-	public static String CONTENT_TYPE_SELECT_JSON = "application/sparql-results+json";
-	public static String CONTENT_TYPE_SELECT_XML = "application/sparql-results+xml";
-	public static String CONTENT_TYPE_SELECT_CSV = "text/csv";
-	public static String CONTENT_TYPE_SELECT_TSV = "text/tab-separated-values";
-	public static String CONTENT_TYPE_CONSTRUCT_TURTLE = "text/turtle";
-	public static String CONTENT_TYPE_CONSTRUCT_XML = "application/rdf+xml";
+//	public static String CONTENT_TYPE_SELECT_JSON = "application/sparql-results+json";
+//	public static String CONTENT_TYPE_SELECT_XML = "application/sparql-results+xml";
+//	public static String CONTENT_TYPE_SELECT_CSV = "text/csv";
+//	public static String CONTENT_TYPE_SELECT_TSV = "text/tab-separated-values";
+//	public static String CONTENT_TYPE_CONSTRUCT_TURTLE = "text/turtle";
+//	public static String CONTENT_TYPE_CONSTRUCT_XML = "application/rdf+xml";
 	public static String REQUEST_POST = "POST";
 	public static String REQUEST_GET = "GET";
 
@@ -242,15 +243,15 @@ public class QueryConfigMenu extends IconMenuButton {
 	private Menu getQueryAcceptHeadersSubMenu() {
 		Menu acceptHeadersSubMenu = new Menu();
 
-		selectJson.setCheckIfCondition(getContentTypeCheckIfCondition(false, CONTENT_TYPE_SELECT_JSON));
-		selectXml.setCheckIfCondition(getContentTypeCheckIfCondition(false, CONTENT_TYPE_SELECT_XML));
-		selectCsv.setCheckIfCondition(getContentTypeCheckIfCondition(false, CONTENT_TYPE_SELECT_CSV));
-		selectTsv.setCheckIfCondition(getContentTypeCheckIfCondition(false, CONTENT_TYPE_SELECT_TSV));
+		selectJson.setCheckIfCondition(getContentTypeCheckIfCondition(false, ContentTypes.Type.SELECT_JSON.getContentType()));
+		selectXml.setCheckIfCondition(getContentTypeCheckIfCondition(false, ContentTypes.Type.SELECT_XML.getContentType()));
+		selectCsv.setCheckIfCondition(getContentTypeCheckIfCondition(false, ContentTypes.Type.SELECT_CSV.getContentType()));
+		selectTsv.setCheckIfCondition(getContentTypeCheckIfCondition(false, ContentTypes.Type.SELECT_TSV.getContentType()));
 		
-		selectJson.addClickHandler(getContentTypeClickHandler(false, CONTENT_TYPE_SELECT_JSON));
-		selectXml.addClickHandler(getContentTypeClickHandler(false, CONTENT_TYPE_SELECT_XML));
-		selectCsv.addClickHandler(getContentTypeClickHandler(false, CONTENT_TYPE_SELECT_CSV));
-		selectTsv.addClickHandler(getContentTypeClickHandler(false, CONTENT_TYPE_SELECT_TSV));
+		selectJson.addClickHandler(getContentTypeClickHandler(false, ContentTypes.Type.SELECT_JSON.getContentType()));
+		selectXml.addClickHandler(getContentTypeClickHandler(false, ContentTypes.Type.SELECT_XML.getContentType()));
+		selectCsv.addClickHandler(getContentTypeClickHandler(false, ContentTypes.Type.SELECT_CSV.getContentType()));
+		selectTsv.addClickHandler(getContentTypeClickHandler(false, ContentTypes.Type.SELECT_TSV.getContentType()));
 
 		acceptHeadersSubMenu.setItems(selectXml, selectJson, selectCsv, selectTsv);
 		return acceptHeadersSubMenu;
@@ -258,15 +259,15 @@ public class QueryConfigMenu extends IconMenuButton {
 	private Menu getConstructAcceptHeadersSubMenu() {
 		Menu acceptHeadersSubMenu = new Menu();
 		
-		constructTurtle.setCheckIfCondition(getContentTypeCheckIfCondition(true, CONTENT_TYPE_CONSTRUCT_TURTLE));
-		constructXml.setCheckIfCondition(getContentTypeCheckIfCondition(true, CONTENT_TYPE_CONSTRUCT_XML));
-		constructCsv.setCheckIfCondition(getContentTypeCheckIfCondition(true, CONTENT_TYPE_SELECT_CSV));
-		constructTsv.setCheckIfCondition(getContentTypeCheckIfCondition(true, CONTENT_TYPE_SELECT_TSV));
+		constructTurtle.setCheckIfCondition(getContentTypeCheckIfCondition(true, ContentTypes.Type.CONSTRUCT_TURTLE.getContentType()));
+		constructXml.setCheckIfCondition(getContentTypeCheckIfCondition(true, ContentTypes.Type.CONSTRUCT_XML.getContentType()));
+		constructCsv.setCheckIfCondition(getContentTypeCheckIfCondition(true, ContentTypes.Type.CONSTRUCT_CSV.getContentType()));
+		constructTsv.setCheckIfCondition(getContentTypeCheckIfCondition(true, ContentTypes.Type.CONSTRUCT_TSV.getContentType()));
 		
-		constructTurtle.addClickHandler(getContentTypeClickHandler(true, CONTENT_TYPE_CONSTRUCT_TURTLE));
-		constructXml.addClickHandler(getContentTypeClickHandler(true, CONTENT_TYPE_CONSTRUCT_XML));
-		constructCsv.addClickHandler(getContentTypeClickHandler(true, CONTENT_TYPE_SELECT_CSV));
-		constructTsv.addClickHandler(getContentTypeClickHandler(true, CONTENT_TYPE_SELECT_TSV));
+		constructTurtle.addClickHandler(getContentTypeClickHandler(true, ContentTypes.Type.CONSTRUCT_TURTLE.getContentType()));
+		constructXml.addClickHandler(getContentTypeClickHandler(true, ContentTypes.Type.CONSTRUCT_XML.getContentType()));
+		constructCsv.addClickHandler(getContentTypeClickHandler(true, ContentTypes.Type.CONSTRUCT_CSV.getContentType()));
+		constructTsv.addClickHandler(getContentTypeClickHandler(true, ContentTypes.Type.CONSTRUCT_TSV.getContentType()));
 		
 		acceptHeadersSubMenu.setItems(constructTurtle, constructXml, constructCsv, constructTsv);
 		return acceptHeadersSubMenu;

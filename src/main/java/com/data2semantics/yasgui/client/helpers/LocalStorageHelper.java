@@ -185,6 +185,9 @@ public class LocalStorageHelper {
 			setInLocalStorage(CookieKeys.SETTINGS, settings.toString(), true);
 		} else {
 			//We are using a browser which does not support html5
+			
+			//the resultset stuff does not fit in regular cookie storage, so just clear it
+			settings.clearQueryResults();
 			setAsCookie(CookieKeys.SETTINGS, settings.toString(), SETTINGS_EXPIRE_DAYS, true);
 		}
 	}
@@ -303,6 +306,8 @@ public class LocalStorageHelper {
 	public static String setStrongName() {
 		return setAsCookie(CookieKeys.GWT_STRONG_NAME, GWT.getPermutationStrongName(), DEFAULT_EXPIRE_DAYS);
 	}
-	
+	public static boolean localStorageSupported() {
+		return Storage.isLocalStorageSupported();
+	}
 
 }

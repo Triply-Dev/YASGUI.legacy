@@ -438,7 +438,6 @@ public class View extends VLayout implements RpcElement {
 		viewElements.disableRpcElements();
 	}
 
-	@Override
 	public void enableRpcElements() {
 		getTabs().enableRpcElements();
 		viewElements.enableRpcElements();

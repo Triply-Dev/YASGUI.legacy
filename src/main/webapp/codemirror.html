@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Codemirror Test</title>
-<script type="text/javascript">function showPlayButton(){};function setQueryType(){};</script>
+<script type="text/javascript">function showPlayButton(){};function setQueryType(queryType){console.log("set query type: " + queryType)};</script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
 
 <script src="assets/trie.js"></script>
@@ -34,14 +34,7 @@
   
 <br><br>
 	<textarea id="test" style="width:400px;height:300px;">
-PREFIX abc: &lt;http://example.com/exampleOntology#&gt;
-SELECT ?capital ?country
-WHERE {
-  ?x abc:cityname ?capital ;
-     abc:isCapitalOf ?y .
-  ?y abc:countryname ?country ;
-     abc:isInContinent abc:Africa .
-}
+
 </textarea>
 
 	<script type="text/javascript">

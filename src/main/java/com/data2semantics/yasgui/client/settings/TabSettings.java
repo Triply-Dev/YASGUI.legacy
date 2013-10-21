@@ -32,7 +32,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import com.data2semantics.yasgui.client.helpers.Helper;
+import com.data2semantics.yasgui.client.helpers.JsonHelper;
 import com.data2semantics.yasgui.shared.Output;
 import com.data2semantics.yasgui.shared.SettingKeys;
 import com.google.common.collect.HashMultimap;
@@ -43,7 +45,7 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.Window;
 
-public class TabSettings extends JSONObject {
+public class TabSettings extends JsonHelper {
 	private Defaults defaults;
 	private Settings mainSettings;
 
@@ -156,11 +158,7 @@ public class TabSettings extends JSONObject {
 	}
 
 	public String getRequestMethod() {
-		String requestMethod = null;
-		if (containsKey(SettingKeys.REQUEST_METHOD)) {
-			requestMethod = get(SettingKeys.REQUEST_METHOD).isString().stringValue();
-		}
-		return requestMethod;
+		return getString(SettingKeys.REQUEST_METHOD, null);
 	}
 
 	public String getEndpoint() {
@@ -170,7 +168,7 @@ public class TabSettings extends JSONObject {
 			//instead, we just want to use one: the default
 			endpoint = defaults.getDefaultEndpoint();
 		} else if (containsKey(SettingKeys.ENDPOINT)) {
-			endpoint = get(SettingKeys.ENDPOINT).isString().stringValue();
+			endpoint = getString(SettingKeys.ENDPOINT, null);
 		}
 		return endpoint;
 	}
@@ -180,11 +178,7 @@ public class TabSettings extends JSONObject {
 	}
 
 	public String getQueryString() {
-		String queryString = null;
-		if (containsKey(SettingKeys.QUERY_STRING)) {
-			queryString = get(SettingKeys.QUERY_STRING).isString().stringValue();
-		}
-		return queryString;
+		return getString(SettingKeys.QUERY_STRING, null);
 	}
 
 	public void setQueryString(String queryString) {
@@ -196,22 +190,14 @@ public class TabSettings extends JSONObject {
 	}
 
 	public String getTabTitle() {
-		String title = null;
-		if (containsKey(SettingKeys.TAB_TITLE)) {
-			title = get(SettingKeys.TAB_TITLE).isString().stringValue();
-		}
-		return title;
+		return getString(SettingKeys.TAB_TITLE, null);
 	}
 	public void setOutputFormat(String outputFormat) {
 		put(SettingKeys.OUTPUT_FORMAT, new JSONString(outputFormat));
 	}
 	
 	public String getOutputFormat() {
-		String format = null;
-		if (containsKey(SettingKeys.OUTPUT_FORMAT)) {
-			format = get(SettingKeys.OUTPUT_FORMAT).isString().stringValue();
-		}
-		return format;
+		return getString(SettingKeys.OUTPUT_FORMAT, null);
 	}
 	
 	public void setSelectContentType(String contentType) {
@@ -219,22 +205,14 @@ public class TabSettings extends JSONObject {
 	}
 	
 	public String getSelectContentType() {
-		String contentType = "";
-		if (containsKey(SettingKeys.CONTENT_TYPE_SELECT)) {
-			 contentType = get(SettingKeys.CONTENT_TYPE_SELECT).isString().stringValue();
-		}
-		return contentType;
+		return getString(SettingKeys.CONTENT_TYPE_SELECT, "");
 	}
 	public void setConstructContentType(String contentType) {
 		put(SettingKeys.CONTENT_TYPE_CONSTRUCT, new JSONString(contentType));
 	}
 	
 	public String getConstructContentType() {
-		String contentType = "";
-		if (containsKey(SettingKeys.CONTENT_TYPE_CONSTRUCT)) {
-			contentType = get(SettingKeys.CONTENT_TYPE_CONSTRUCT).isString().stringValue();
-		}
-		return contentType;
+		return getString(SettingKeys.CONTENT_TYPE_CONSTRUCT, "");
 	}
 	
 	public ArrayList<String> getNamedGraphs() {
@@ -329,6 +307,26 @@ public class TabSettings extends JSONObject {
 			}
 		}
 		return args;
+	}
+	
+	public void clearQueryResultsString() {
+		put(SettingKeys.QUERY_RESULT_STRING, null);
+	}
+	public void clearQueryResultsContentType() {
+		put(SettingKeys.QUERY_RESULT_CONTENT_TYPE, null);
+	}
+	
+	public void setQueryResultsString(String queryResultsString) {
+		put(SettingKeys.QUERY_RESULT_STRING, new JSONString(queryResultsString));
+	}
+	public String getQueryResultsString() {
+		return getString(SettingKeys.QUERY_RESULT_STRING, null);
+	}
+	public void setQueryResultsContentType(String queryResultsContentType) {
+		put(SettingKeys.QUERY_RESULT_CONTENT_TYPE, new JSONString(queryResultsContentType));
+	}
+	public String getQueryResultsContentType() {
+		return getString(SettingKeys.QUERY_RESULT_CONTENT_TYPE, null);
 	}
 	
 	public void addCustomQueryArg(String key, String value) {

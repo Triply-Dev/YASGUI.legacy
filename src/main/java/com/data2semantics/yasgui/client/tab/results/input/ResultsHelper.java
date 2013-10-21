@@ -29,8 +29,9 @@ package com.data2semantics.yasgui.client.tab.results.input;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.data2semantics.yasgui.client.helpers.ContentTypes;
+import com.data2semantics.yasgui.client.helpers.ContentTypes.Type;
 import com.data2semantics.yasgui.client.helpers.Helper;
-import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
 import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 import com.data2semantics.yasgui.shared.Prefix;
 import com.smartgwt.client.util.StringUtil;
@@ -56,8 +57,12 @@ public class ResultsHelper {
 		return literal;
 	}
 	
-	public static boolean tabularContentType(String contentType) {
-		return contentType.contains(QueryConfigMenu.CONTENT_TYPE_SELECT_CSV) || contentType.contains(QueryConfigMenu.CONTENT_TYPE_SELECT_TSV);
+	public static boolean tabularConstructContentType(String contentTypeString) {
+		Type contentType = ContentTypes.detectContentType(contentTypeString);
+		return tabularConstructContentType(contentType);
+	}
+	public static boolean tabularConstructContentType(Type contentType) {
+		return (contentType == Type.CONSTRUCT_CSV || contentType == Type.CONSTRUCT_TSV);
 	}
 	/**
 	 * Check for a uri whether there is a prefix defined in the query.
