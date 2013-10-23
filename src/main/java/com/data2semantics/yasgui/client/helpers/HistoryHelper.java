@@ -120,6 +120,7 @@ public class HistoryHelper {
 			view.getTabs().redrawTabs();
 		} else if (onlyQueryChanged(currentSettings, histSettings)) {
 			view.getSelectedTab().getQueryTextArea().setQuery(view.getSelectedTabSettings().getQueryString());
+			view.getSelectedTab().getResultContainer().drawIfPossible();
 		} else {
 			view.getTabs().redrawTabs();
 		}
@@ -157,11 +158,6 @@ public class HistoryHelper {
 	public void addQueryResults(String endpoint, String queryString, String resultString, String contentType) {
 		if (historyEnabled) {
 			histQueryResults.put(endpoint + queryString, new HistQueryResults(resultString, contentType));
-			JsMethods.logConsole("size of hist query results " + histQueryResults.size());
-			int i = 0;
-			for (String query: histQueryResults.keySet()) {
-				JsMethods.logConsole("hist query " + i + ": " + query);
-			}
 		}
 	}
 	

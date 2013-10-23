@@ -45,7 +45,6 @@ public class CallableJsMethods {
 	}
 	
 	public void setQueryType(String queryType) {
-		JsMethods.logConsole("query type: " + queryType);
 		view.getSelectedTab().setQueryType(queryType);
 	}
 	public void adjustQueryInputForContent() {
@@ -220,13 +219,11 @@ public class CallableJsMethods {
 		$wnd.showOfflineAvailabilitySettings = function() {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::showOfflineAvailabilitySettings()();
 		}
-<<<<<<< HEAD
 		$wnd.clearQueryResultsFromSettings = function() {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::clearQueryResultsFromSettings()();
-=======
+		}
 		$wnd.sendQueryAnalyticsEvent = function(endpoint, queryString, label, timing) {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::sendQueryAnalyticsEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)(endpoint, queryString, label, timing);
->>>>>>> dev
 		}
 	}-*/;
 }

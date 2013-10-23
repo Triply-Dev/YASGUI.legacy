@@ -217,12 +217,10 @@ public class SparqlQuery {
 	
 	private void drawResults(String resultString, String contentType) {
 		QueryTab tab = (QueryTab)view.getTabs().getTab(tabId);
-		JsMethods.logConsole("selecting tab");
 		view.getTabs().selectTab(tabId);
 		if (tab == null) {
 			view.getErrorHelper().onError("No tab to draw results in");
 		}
-		JsMethods.logConsole("Drawing results for query " + queryString);
 		tab.getResultContainer().drawResult(endpoint, queryString, resultString, contentType);
 	}
 	

@@ -122,17 +122,13 @@ public class ResultContainer extends VLayout {
 	}
 	
 	public void drawIfPossible() {
-		JsMethods.logConsole("in draw if possible");
 		TabSettings tabSettings = view.getSelectedTabSettings();
 		if (view.getSelectedTabSettings().getQueryResultsString() != null) {
-			JsMethods.logConsole("found query results in settings!");
 			doDraw(tabSettings.getQueryResultsString(), tabSettings.getQueryResultsContentType());
 		} else if (view.getHistory().getHistQueryResults(tabSettings.getEndpoint(), tabSettings.getQueryString()) != null) {
-			JsMethods.logConsole("found query results in history!");
 			HistQueryResults queryResults = view.getHistory().getHistQueryResults(tabSettings.getEndpoint(), tabSettings.getQueryString());
 			doDraw(queryResults.getString(), queryResults.getContentType());
 		} else {
-			JsMethods.logConsole("resetting in drawifpossible");
 			reset();
 		}
 	}
@@ -180,14 +176,11 @@ public class ResultContainer extends VLayout {
 		/**
 		 * Store in settings
 		 */
-		JsMethods.logConsole("in store result!");
 		view.getSettings().clearQueryResults(MAX_CHARS_RESULTS_TOTAL);
 		if (resultString.length() < MAX_CHARS_RESULTS) {
-			JsMethods.logConsole("setting results in store result");
 			view.getSelectedTabSettings().setQueryResultsString(resultString);
 			view.getSelectedTabSettings().setQueryResultsContentType(contentType);
 		} else {
-			JsMethods.logConsole("clearing query results string in store result!");
 			view.getSelectedTabSettings().clearQueryResultsString();;
 			view.getSelectedTabSettings().clearQueryResultsContentType();
 		}

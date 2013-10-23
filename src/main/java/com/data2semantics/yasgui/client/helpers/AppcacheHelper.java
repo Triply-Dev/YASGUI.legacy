@@ -113,7 +113,6 @@ public class AppcacheHelper {
 	// Fired after the first cache of the manifest.
 	public void appcacheEventCached() {
 		setStatus(Status.CACHED);
-//		JsMethods.logConsole("cached");
 	}
 
 	// Checking for an update. Always the first event fired in the sequence.

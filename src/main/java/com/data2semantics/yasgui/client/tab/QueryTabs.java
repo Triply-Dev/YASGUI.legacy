@@ -76,7 +76,7 @@ public class QueryTabs extends TabSet implements RpcElement {
 	private LayoutSpacer controlsSpacer;
 	private static int TOOLTIP_VERSION_TAB_SELECTION = 1;
 	
-	public QueryTabs(View view) {
+	public QueryTabs(final View view) {
 		setTabBarControls(TabBarControls.TAB_SCROLLER, TabBarControls.TAB_PICKER, Helper.getHSpacer(53));
 		this.view = view;
 		setTabBarPosition(Side.TOP);
@@ -110,6 +110,7 @@ public class QueryTabs extends TabSet implements RpcElement {
 			public void execute() {
 				JsMethods.initializeQueryCodemirror(((QueryTab) getSelectedTab()).getQueryTextArea().getInputId());
 				((QueryTab) getSelectedTab()).getQueryTextArea().adjustForContent(true);
+				((QueryTab) getSelectedTab()).getResultContainer().drawIfPossible();
 			}
 		});
 		addHandlers();
