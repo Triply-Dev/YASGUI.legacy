@@ -26,8 +26,6 @@ package com.data2semantics.yasgui.client.helpers;
  * #L%
  */
 
-import java.util.ArrayList;
-
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.ScriptElement;
@@ -84,26 +82,15 @@ public class GoogleAnalytics {
 		$wnd._gaq.push([ '" + trackerName + "._trackPageview', pageName ]);
 	}-*/;
 	
-	public static void trackEvents(GoogleAnalyticsEvent... events) throws IllegalArgumentException {
-		if (events != null && events.length > 0) {
-			ArrayList<String> categories = new ArrayList<String>();
-			ArrayList<String> actions = new ArrayList<String>();
-			ArrayList<String> optLabels = new ArrayList<String>();
-			ArrayList<Integer> optValues = new ArrayList<Integer>();
-			for (GoogleAnalyticsEvent event: events) {
-				if (event == null || event.getCategory() == null || event.getAction() == null) {
-					//at least require this
-					throw new IllegalArgumentException("No category or action passed for google analytics event");
-				}
-				categories.add(event.getCategory());
-				actions.add(event.getAction());
-				optLabels.add(event.getOptLabel());
-				optValues.add(event.getOptValue());
-			}
-			try {
-				trackEvents(categories.toArray(new String[categories.size()]), actions.toArray(new String[actions.size()]), optLabels.toArray(new String[optLabels.size()]), optValues.toArray(new Integer[optValues.size()]));
-			} catch (Exception e) {
-				//do nothing, just happens sometimes (e.g. first page load in dev mode, or with ga blockers
+	public static void trackEvent(GoogleAnalyticsEvent event) throws IllegalStateException {
+		if (event != null) {
+			if (event.getLabel() == null) {
+				trackEvent(event.getCategory(), event.getAction());
+			} else if (event.getValue() == null) {
+				trackEvent(event.getCategory(), event.getAction(), event.getLabel());
+			} else {
+				//everything
+				trackEvent(event.getCategory(), event.getAction(), event.getLabel(), event.getValue().intValue());
 			}
 		}
 	}
@@ -117,40 +104,13 @@ public class GoogleAnalytics {
 	}-*/;
 
 	private static native void trackEvent(String category, String action, String optLabel, int optValue) /*-{
-		
 		$wnd._gaq.push([ '_trackEvent', category, action, optLabel, optValue ]);
 	}-*/;
 
 	private static native void trackEvent(String category, String action, String optLabel, int optValue, boolean optNonInteraction) /*-{
-		$wnd._gaq.push([ '_trackEvent', category, action, optLabel, optValue,
-				optNonInteraction ]);
+		$wnd._gaq.push([ '_trackEvent', category, action, optLabel, optValue, optNonInteraction ]);
 	}-*/;
 	
-	
-	private static native void trackEvents(String[] category, String[] action, String[] optLabel, Integer[] optValue) /*-{
-		if (category.length == action.length && action.length == optLabel.length && optLabel.length == optValue.length) {
-			commands = [];
-			for (i = 0; i < category.length; i++) {
-				if (optValue[i] != null && optValue[i] != 0) {
-					commands.push([ '_trackEvent', category[i], action[i], optLabel[i], optValue[i] ]);
-				} else if (optLabel[i] != null && optLabel[i] != "") {
-					commands.push([ '_trackEvent', category[i], action[i], optLabel[i] ]);
-				} else {
-					commands.push([ '_trackEvent', category[i], action[i] ]);
-				}
-				commands.push([ '_trackEvent', category[i], action[i], optLabel[i], optValue[i] ]);
-			}
-			if ($wnd._gaq != null) {
-				$wnd._gaq.push.apply($wnd._gaq.push, commands);
-			} else {
-				throw new Error("No google analyitics found to push results to");
-			}
-		} else {
-			throw new Error("Unequal set of arguments for tracking events: " + category.length + " - " + action.length + " - " + optLabel.length + " - " + optValue.length);
-		}
-	}-*/;
-	
-
 	private static native void trackEventWithTracker(String trackerName, String category, String action) /*-{
 		$wnd._gaq.push([ '" + trackerName + "._trackEvent', category, action ]);
 	}-*/;

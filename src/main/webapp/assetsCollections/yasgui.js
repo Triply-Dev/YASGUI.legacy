@@ -81,6 +81,9 @@ function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader,
 		requestMethod = "POST"; //we stil want to use POST to access the servlet itself
 		uri = proxy;
 	}
+	var startTiming = new Date().getTime();
+	
+	
 	queryRequest = $
 			.ajax({
 				url : uri,
@@ -95,9 +98,12 @@ function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader,
 				},
 				success : function(data, textStatus, jqXHR) {
 					onQueryFinish();
+					var endTiming = new Date().getTime();
+					sendQueryAnalyticsEvent(endpoint, queryStr, "", (endTiming - startTiming));
 					callback(tabId, data, jqXHR.getResponseHeader('Content-Type'));
 				},
 				error : function(jqXHR, textStatus, errorThrown) {
+					sendQueryAnalyticsEvent(endpoint, queryStr, "", -1);
 					if (textStatus != "abort") {
 						//if user cancels query, textStatus will be 'abort'. No need to show error window then
 						onQueryFinish();
