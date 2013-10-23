@@ -102,13 +102,11 @@ public class SparqlQuery {
 		}
 		builder.setHeader("Accept", acceptHeader);
 		try {
+			final long startTime = System.currentTimeMillis();
 			builder.sendRequest((requestMethod == RequestBuilder.POST? Helper.getParamsAsString(queryArgs):null), new RequestCallback() {
 				public void onError(Request request, Throwable e) {
 					//e.g. a timeout
 					queryErrorHandler(e);
-//					view.getElements().onQueryFinish();
-					view.getLogger().severe("in sparql -request- onerror");
-//					view.getErrorHelper().onQueryError(e.getMessage(), endpoint, queryString, args);
 				}
 				
 				@Override
@@ -117,6 +115,10 @@ public class SparqlQuery {
 					if (!response.getStatusText().equals("Abort")) {
 						//if user cancels query, textStatus will be 'abort'. No need to show error window then
 						if (response.getStatusCode() >= 200 && response.getStatusCode() < 300) {
+							if (view.getSettings().useGoogleAnalytics()) {
+								long stopTime = System.currentTimeMillis();
+								GoogleAnalytics.trackEvent(new GoogleAnalyticsEvent(endpoint, JsMethods.getUncommentedSparql(queryString), "", (int)(stopTime - startTime)));
+							}
 							drawResults(response.getText(), response.getHeader("Content-Type"));
 						} else {
 							queryErrorHandler(response);
@@ -129,13 +131,13 @@ public class SparqlQuery {
 			});
 		} catch (RequestException e) {
 			queryErrorHandler(e);
-//			view.getElements().onQueryFinish();
-			view.getLogger().severe("in request -exception-");
-			
 		}
 	}
 	
 	private void queryErrorHandler(Response response) {
+		if (view.getSettings().useGoogleAnalytics()) {
+			GoogleAnalytics.trackEvent(new GoogleAnalyticsEvent(endpoint, JsMethods.getUncommentedSparql(queryString), "", -1));
+		}
 		view.getElements().onQueryFinish();
 		
 		//clear query result
@@ -164,6 +166,10 @@ public class SparqlQuery {
 	
 	private void queryErrorHandler(Throwable throwable) {
 		view.getElements().onQueryFinish();
+		
+		if (view.getSettings().useGoogleAnalytics()) {
+			GoogleAnalytics.trackEvent(new GoogleAnalyticsEvent(endpoint, JsMethods.getUncommentedSparql(queryString), "", -1));
+		}
 		
 		//clear query result
 		QueryTab tab = (QueryTab)view.getTabs().getTab(tabId);
@@ -196,18 +202,6 @@ public class SparqlQuery {
 			endpointInput.storeEndpointInSettings();
 		}
 		view.checkAndAddEndpointToDs(endpoint);
-		
-		
-		
-		
-		
-//		JsMethods.query(tabId, queryString, endpoint, acceptHeader, argsString, requestMethod);
-		
-		if (view.getSettings().useGoogleAnalytics()) {
-			GoogleAnalyticsEvent queryEvent = new GoogleAnalyticsEvent(endpoint, JsMethods.getUncommentedSparql(queryString));
-			GoogleAnalytics.trackEvents(queryEvent);
-		}
-		
 	}
 	
 	
