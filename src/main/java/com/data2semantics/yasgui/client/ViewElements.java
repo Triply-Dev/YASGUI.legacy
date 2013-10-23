@@ -280,7 +280,7 @@ public class ViewElements implements RpcElement {
 			@Override
 			public void onClick(ClickEvent event) {
 				GoogleAnalyticsEvent consentEvent = new GoogleAnalyticsEvent("consent", "yes");
-				GoogleAnalytics.trackEvents(consentEvent);
+				GoogleAnalytics.trackEvent(consentEvent);
 				consentWindow.destroy();
 				view.getSettings().setTrackingConsent(true);
 				view.getSettings().setTrackingQueryConsent(true);
@@ -302,7 +302,7 @@ public class ViewElements implements RpcElement {
 			@Override
 			public void onClick(ClickEvent event) {
 				GoogleAnalyticsEvent consentEvent = new GoogleAnalyticsEvent("consent", "yes/no");
-				GoogleAnalytics.trackEvents(consentEvent);
+				GoogleAnalytics.trackEvent(consentEvent);
 				consentWindow.destroy();
 				view.getSettings().setTrackingConsent(true);
 				view.getSettings().setTrackingQueryConsent(false);
@@ -323,7 +323,7 @@ public class ViewElements implements RpcElement {
 			@Override
 			public void onClick(ClickEvent event) {
 				GoogleAnalyticsEvent consentEvent = new GoogleAnalyticsEvent("consent", "no");
-				GoogleAnalytics.trackEvents(consentEvent);
+				GoogleAnalytics.trackEvent(consentEvent);
 				consentWindow.destroy();
 				view.getSettings().setTrackingConsent(false);
 				view.getSettings().setTrackingQueryConsent(false);

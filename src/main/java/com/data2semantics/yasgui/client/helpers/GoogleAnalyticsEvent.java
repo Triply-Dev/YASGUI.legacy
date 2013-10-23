@@ -32,10 +32,16 @@ public class GoogleAnalyticsEvent {
 		setCategory(category);
 		setAction(action);
 	}
+	public GoogleAnalyticsEvent(String category, String action, String label, Integer value) {
+		setCategory(category);
+		setAction(action);
+		setValue(value);
+		setLabel(label);
+	}
 	private String category;
 	private String action;
-	private String optLabel;
-	private int optValue;
+	private String label;
+	private Integer value;
 	public String getCategory() {
 		return category;
 	}
@@ -48,18 +54,25 @@ public class GoogleAnalyticsEvent {
 	public void setAction(String action) {
 		this.action = action;
 	}
-	public String getOptLabel() {
-		return optLabel;
+	public String getLabel() {
+		return label;
 	}
-	public void setOptLabel(String optLabel) {
-		this.optLabel = optLabel;
+	public void setLabel(String label) {
+		this.label = label;
 	}
-	public int getOptValue() {
-		return optValue;
+	public Integer getValue() {
+		return value;
 	}
-	public void setOptValue(int optValue) {
-		this.optValue = optValue;
+	public void setValue(Integer value) {
+		this.value = value;
 	}
-	
+	public void sanityCheck() throws IllegalStateException {
+		if (category == null && action == null) {
+			throw new IllegalStateException("Google analytics requires a category + action. One of those is not set");
+		}
+		if (value != null && label == null) {
+			throw new IllegalStateException("When setting a value for an google analytics event, we need a label as well. This is not the case");
+		}
+	}
 
 }
