@@ -135,10 +135,20 @@ public class CallableJsMethods {
 	public void showOfflineAvailabilitySettings() {
 		new OfflineAvailabilityConfig(view);
 	}
+
 	public void clearQueryResultsFromSettings() {
 		view.getSettings().clearQueryResults();
 		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
 	}
+
+	public void sendQueryAnalyticsEvent(String endpoint, String queryString, String label, int timing) {
+		if (view.getSettings().useGoogleAnalytics()) {
+			GoogleAnalyticsEvent queryEvent = new GoogleAnalyticsEvent(endpoint, JsMethods.getUncommentedSparql(queryString), label, timing);
+			GoogleAnalytics.trackEvent(queryEvent);
+		}
+	}
+	
+
 	
 	/**
 	 * Add view methods to JS, use this for situations where a non-static GWT method needs to be called
@@ -210,8 +220,13 @@ public class CallableJsMethods {
 		$wnd.showOfflineAvailabilitySettings = function() {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::showOfflineAvailabilitySettings()();
 		}
+<<<<<<< HEAD
 		$wnd.clearQueryResultsFromSettings = function() {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::clearQueryResultsFromSettings()();
+=======
+		$wnd.sendQueryAnalyticsEvent = function(endpoint, queryString, label, timing) {
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::sendQueryAnalyticsEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)(endpoint, queryString, label, timing);
+>>>>>>> dev
 		}
 	}-*/;
 }
