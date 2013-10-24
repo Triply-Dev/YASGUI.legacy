@@ -99,11 +99,11 @@ function sparqlQueryJson(tabId, queryStr, endpoint, acceptHeader,
 				success : function(data, textStatus, jqXHR) {
 					onQueryFinish();
 					var endTiming = new Date().getTime();
-					sendQueryAnalyticsEvent(endpoint, queryStr, "", (endTiming - startTiming));
+					sendQueryAnalyticsEvent(endpoint, queryStr, (endTiming - startTiming), (endTiming - startTiming));
 					callback(tabId, data, jqXHR.getResponseHeader('Content-Type'));
 				},
 				error : function(jqXHR, textStatus, errorThrown) {
-					sendQueryAnalyticsEvent(endpoint, queryStr, "", -1);
+					sendQueryAnalyticsEvent(endpoint, queryStr, -1, -1);
 					if (textStatus != "abort") {
 						//if user cancels query, textStatus will be 'abort'. No need to show error window then
 						onQueryFinish();
