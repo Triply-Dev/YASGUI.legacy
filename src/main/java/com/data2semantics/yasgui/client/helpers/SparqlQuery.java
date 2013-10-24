@@ -128,7 +128,7 @@ public class SparqlQuery {
 						if (response.getStatusCode() >= 200 && response.getStatusCode() < 300) {
 							if (view.getSettings().useGoogleAnalytics()) {
 								long stopTime = System.currentTimeMillis();
-								GoogleAnalytics.trackEvent(new GoogleAnalyticsEvent(endpoint, JsMethods.getUncommentedSparql(queryString), "", (int)(stopTime - startTime)));
+								GoogleAnalytics.trackEvent(new GoogleAnalyticsEvent(endpoint, JsMethods.getUncommentedSparql(queryString), Integer.toString((int)(stopTime - startTime)), (int)(stopTime - startTime)));
 							}
 							drawResults(response.getText(), response.getHeader("Content-Type"));
 						} else {
@@ -147,7 +147,7 @@ public class SparqlQuery {
 	
 	private void queryErrorHandler(Response response) {
 		if (view.getSettings().useGoogleAnalytics()) {
-			GoogleAnalytics.trackEvent(new GoogleAnalyticsEvent(endpoint, JsMethods.getUncommentedSparql(queryString), "", -1));
+			GoogleAnalytics.trackEvent(new GoogleAnalyticsEvent(endpoint, JsMethods.getUncommentedSparql(queryString), "-1", -1));
 		}
 		view.getElements().onQueryFinish();
 		
@@ -179,7 +179,7 @@ public class SparqlQuery {
 		view.getElements().onQueryFinish();
 		
 		if (view.getSettings().useGoogleAnalytics()) {
-			GoogleAnalytics.trackEvent(new GoogleAnalyticsEvent(endpoint, JsMethods.getUncommentedSparql(queryString), "", -1));
+			GoogleAnalytics.trackEvent(new GoogleAnalyticsEvent(endpoint, JsMethods.getUncommentedSparql(queryString), "-1", -1));
 		}
 		
 		//clear query result
