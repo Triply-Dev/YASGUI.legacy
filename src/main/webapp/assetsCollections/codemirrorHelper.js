@@ -76,6 +76,14 @@ CodeMirror.commands.doAutoFormat = function(cm) {
 	}
 	
 };
+CodeMirror.commands.autoComplete = function(cm) {
+	if (cm.somethingSelected()) {
+		//do nothing
+	} else {
+		CodeMirror.showHint(cm, CodeMirror.doPredicateAutocompleteRequest, {async: true,closeCharacters: /(?=a)b/});
+	}
+	
+};
 function copyLinesBelow(cm) {
 	var cursor = cm.getCursor();
 	var lineCount = cm.lineCount();
