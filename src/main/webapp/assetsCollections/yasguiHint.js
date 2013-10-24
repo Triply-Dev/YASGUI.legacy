@@ -138,14 +138,189 @@
 			// our properties autocompletions
 			autocompletions = getPropertiesAutocompletions(editor);
 		}
-
 		return autocompletions;
-
 	}
+
 
 	CodeMirror.allAutoCompletions = function(editor) {
 		return getAllAutoCompletions(editor);
+		
 	};
+	
+	CodeMirror.doPredicateAutocompleteRequest = function(cm, drawCallback) {
+		var predReq = this;
+		this.cur = cm.getCursor();
+		this.token = getCompleteToken(cm);
+		this.tokenPrefix = null;
+		this.tokenPrefixUri = null;
+		this.requestResults = [];
+		this.requestAutocompletions = function() {
+		    var args = {q:predReq.uriStart, page: 1, type: "property"};
+		    var url = "";
+		    var updateUrl = function() {
+		    	url = "http://lov.okfn.org/dataset/lov/api/v2/autocomplete/terms?" + $.param(args);
+		    };
+		    updateUrl();
+		    var increasePage = function(){
+		    	args.page++;
+		    	updateUrl();
+		    };
+		    var requestObj = this;
+		    this.doRequest = function() {
+		    	$.get(url, function(data) {
+					for (var i = 0; i < data.results.length; i++) {
+						predReq.requestResults[predReq.requestResults.length] = data.results[i].uri;
+				 	}
+					var resultsSoFar = data.page_size * data.page;
+					if (resultsSoFar < data.total_results) {
+						increasePage();
+						requestObj.doRequest();
+					} else {
+						//request done, draw!
+						return predReq.draw();
+					}
+				}).fail(function(jqXHR, textStatus, errorThrown) {
+					console.log(errorThrown);
+				  });
+		    };
+		    doRequest();
+		};
+		this.preprocess = function() {
+			var token = predReq.token;
+			if ($.inArray("a", predReq.token.state.possibleCurrent) >= 0) {
+				// ok, so we are in a position where we can add properties
+				if (
+				// we are either writing a uri, or we've already typed the prefix
+				// part, and want to specify the stuff after the colon
+				(token.string.contains(":") || token.string.startsWith("<"))
+				// the cursor is at the end of the string
+				&& token.end == cur.ch
+				// we already have something filled in
+				&& token.className != "sp-ws") {
+					token = getCompleteToken(cm);
+					if (!token.string.startsWith("<")) {
+						predReq.tokenPrefix = token.string.substring(0,
+								token.string.indexOf(":") + 1);
+						var queryPrefixes = getPrefixesFromQuery(cm);
+						if (queryPrefixes[predReq.tokenPrefix] != null) {
+							predReq.tokenPrefixUri = queryPrefixes[predReq.tokenPrefix];
+						}
+					}
+					// preprocess string for which to find the autocompletion
+					predReq.uriStart = getUriFromPrefix(cm, token);
+					if (predReq.uriStart.startsWith("<"))
+						predReq.uriStart = predReq.uriStart.substring(1);
+					if (predReq.uriStart.endsWith(">"))
+						predReq.uriStart = predReq.uriStart.substring(0, predReq.uriStart.length - 1);
+				}
+			}
+		};
+		this.draw = function() {
+			var results = predReq.requestResults;
+			results.sort();
+			var found = [];
+			if (results.length > 0) {
+				// use custom completionhint function, to avoid reaching a loop when the
+				// completionhint is the same as the current token
+				// regular behaviour would keep changing the codemirror dom, hence
+				// constantly calling this callback
+				var completionHint = function(cm, data, completion) {
+					if (completion.text != cm.getTokenAt(cm.getCursor()).string) {
+						cm.replaceRange(completion.text, data.from, data.to);
+					}
+				};
+				
+				for ( var i = 0; i < results.length; i++) {
+					var suggestedString = results[i];
+					if (tokenPrefix != null && tokenPrefixUri != null) {
+						// we need to get the suggested string back to prefixed form
+						suggestedString = suggestedString
+								.substring(tokenPrefixUri.length);
+						suggestedString = tokenPrefix + suggestedString;
+					} else {
+						// it is a regular uri. add '<' and '>' to string
+						suggestedString = "<" + suggestedString + ">";
+					}
+					found.push({
+						text : suggestedString,
+						hint : completionHint
+					});
+				}
+			
+				if (found.length == 1 && found[0].text == token.string)
+					return;// we already have our match
+				
+				if (found.length > 0) {
+					var autocompleteObj =  {
+						list : found,
+						from : {
+							line : cur.line,
+							ch : token.start
+						},
+						to : {
+							line : cur.line,
+							ch : token.end
+						}
+					};
+					drawCallback(autocompleteObj);
+//					CodeMirror.showHint(cm, CodeMirror.doPredicateAutocompleteRequest, {closeCharacters: /(?=a)b/});
+					
+					
+				}
+			} else {
+//				console.log("nothing to draw");
+			}
+		};
+		preprocess();
+		requestAutocompletions();
+	};
+	
+	
+	
+//	// use custom completionhint function, to avoid reaching a loop when the
+//	// completionhint is the same as the current token
+//	// regular behaviour would keep changing the codemirror dom, hence
+//	// constantly calling this callback
+//	var completionHint = function(cm, data, completion) {
+//		if (completion.text != cm.getTokenAt(editor.getCursor()).string) {
+//			cm.replaceRange(completion.text, data.from, data.to);
+//		}
+//	};
+//	var suggestionsList = properties[getCurrentEndpoint()].autoComplete(uriStart, 0, 50);
+//	for ( var i = 0; i < suggestionsList.length; i++) {
+//		var suggestedString = suggestionsList[i];
+//		if (tokenPrefix != null && tokenPrefixUri != null) {
+//			// we need to get the suggested string back to prefixed form
+//			suggestedString = suggestedString
+//					.substring(tokenPrefixUri.length);
+//			suggestedString = tokenPrefix + suggestedString;
+//		} else {
+//			// it is a regular uri. add '<' and '>' to string
+//			suggestedString = "<" + suggestedString + ">";
+//		}
+//		found.push({
+//			text : suggestedString,
+//			hint : completionHint
+//		});
+//	}
+//
+//	if (found.length == 1 && found[0].text == token.string)
+//		return;// we already have our match
+//	
+//	if (found.length > 0) {
+//		return {
+//			list : found,
+//			from : {
+//				line : cur.line,
+//				ch : token.start
+//			},
+//			to : {
+//				line : cur.line,
+//				ch : token.end
+//			}
+//		};
+//	}
+//	return;
 
 	CodeMirror.prefixHint = function(editor) {
 		return getPrefixAutocompletions(editor);

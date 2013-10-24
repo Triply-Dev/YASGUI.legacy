@@ -59,6 +59,7 @@ public class TooltipText {
 				"<li><strong>" + osShortcut + "-/</strong>: Comment line(s)</li>\n" + 
 				"<li><strong>" + osShortcut + "-Shift-F</strong>: Autoformat (part of) your query</li>\n" + 
 				"<li><strong>" + osShortcut + "-&lt;enter&gt;</strong>: Execute query</li>\n" + 
+				"<li><strong>" + osShortcut + "-&lt;space&gt;</strong>: Autocomplete property or class</li>\n" + 
 				"<li><strong>Esc</strong>: Cancel query</li>\n" + 
 			"</ul>";
 	}

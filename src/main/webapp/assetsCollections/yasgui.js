@@ -77,6 +77,8 @@ function initializeQueryCodemirror(elementId) {
 				matchBrackets : true,
 				fixedGutter: true,
 				extraKeys : {
+					"Ctrl-Space" : "autoComplete",
+					"Cmd-Space" : "autoComplete",
 					"Ctrl-D" : "deleteLines",
 					"Ctrl-K" : "deleteLines",
 					"Cmd-D" : "deleteLines",
@@ -189,6 +191,8 @@ function initializeQueryBookmarkCodemirror(elementId) {
 			fixedGutter: true,
 			viewportMargin: Infinity,
 			extraKeys : {
+				"Ctrl-Space" : "autoComplete",
+				"Cmd-Space" : "autoComplete",
 				"Ctrl-D" : "deleteLines",
 				"Ctrl-K" : "deleteLines",
 				"Cmd-D" : "deleteLines",
@@ -246,6 +250,9 @@ function progressbarUpdate(percent, $element) {
 			function(){latestComplete=percent;}).html(newText);
 	}
 }
+
+
+
 Array.prototype.equals = function (array) {
     // if the other array is a falsy value, return
     if (!array)
