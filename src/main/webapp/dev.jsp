@@ -26,9 +26,9 @@
 <link rel="stylesheet" href="assets/jquery.qtip.css?<% out.print(StaticConfig.VERSION); %>">
 
 <!-- Main codemirror stuff -->
-<script src="assets/codemirror/codemirror.js?<% out.print(StaticConfig.VERSION); %>"></script>
+<script src="assets/codemirror/lib/codemirror.js?<% out.print(StaticConfig.VERSION); %>"></script>
 <script src="assets/codemirror/util/formatting.js?<% out.print(StaticConfig.VERSION); %>"></script>
-<link rel="stylesheet" href="assets/codemirror/codemirror.css?<% out.print(StaticConfig.VERSION); %>">
+<link rel="stylesheet" href="assets/codemirror/lib/codemirror.css?<% out.print(StaticConfig.VERSION); %>">
 <link rel="stylesheet" href="assets/codemirror/theme/yasgui.css?<% out.print(StaticConfig.VERSION); %>">
 <script src="assets/codemirror/mode/javascript/javascript.js?<% out.print(StaticConfig.VERSION); %>"></script>
 <script src="assets/codemirror/mode/xml/xml.js?<% out.print(StaticConfig.VERSION); %>"></script>

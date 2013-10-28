@@ -1,1 +1,0 @@
-../../assetsCollections/codemirror/codemirror.js
