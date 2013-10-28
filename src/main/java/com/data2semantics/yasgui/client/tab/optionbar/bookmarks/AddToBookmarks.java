@@ -35,6 +35,8 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
+import com.smartgwt.client.widgets.form.fields.events.KeyPressEvent;
+import com.smartgwt.client.widgets.form.fields.events.KeyPressHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.data2semantics.yasgui.client.GwtCallbackWrapper;
 import com.data2semantics.yasgui.client.RpcElement;
@@ -126,6 +128,13 @@ public class AddToBookmarks extends ImgButton implements RpcElement {
 		form.setTitleWidth(100);
 		bookmarkTitle = new TextItem();
 		bookmarkTitle.setTitle("Title");
+		bookmarkTitle.addKeyPressHandler(new KeyPressHandler(){
+			@Override
+			public void onKeyPress(KeyPressEvent event) {
+				if (event.getKeyName().equalsIgnoreCase("enter")) {
+					bookmark();
+				}
+			}});
 		if (view.getEnabledFeatures().endpointSelectionEnabled()) {
 			includeEndpoint = new CheckboxItem();
 			includeEndpoint.setValue(true);
@@ -141,41 +150,44 @@ public class AddToBookmarks extends ImgButton implements RpcElement {
 		bookmarkButton.setWidth(60);
 		bookmarkButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				final Bookmark bookmark = new Bookmark();
-				if (includeEndpoint != null && includeEndpoint.getValueAsBoolean()) {
-					bookmark.setEndpoint(view.getSelectedTabSettings().getEndpoint());
-				}
-				bookmark.setQuery(view.getSelectedTabSettings().getQueryString());
-				bookmark.setTitle(bookmarkTitle.getValueAsString());
-
-				window.clear();
-				setSrc(Imgs.LOADING.get());
-				new GwtCallbackWrapper<Void>(view) {
-					public void onCall(AsyncCallback<Void> callback) {
-						view.getRemoteService().addBookmark(bookmark, callback);
-					}
-
-					protected void onFailure(Throwable throwable) {
-						setSrc(Imgs.BOOKMARK_QUERY.get());
-						if (throwable instanceof OpenIdException) {
-							view.getErrorHelper().onError(throwable.getMessage() + ". Logging out");
-							view.getOpenId().logOut();
-						} else {
-							view.getErrorHelper().onError(throwable);
-						}
-					}
-
-					protected void onSuccess(Void t) {
-						setSrc(Imgs.BOOKMARK_QUERY.get());
-					}
-
-				}.call();
+				bookmark();
 			}
 		});
 		hlayout.addMembers(form, Helper.getHSpacer(), bookmarkButton);
 		return hlayout;
 	}
 	
+	protected void bookmark() {
+		final Bookmark bookmark = new Bookmark();
+		if (includeEndpoint != null && includeEndpoint.getValueAsBoolean()) {
+			bookmark.setEndpoint(view.getSelectedTabSettings().getEndpoint());
+		}
+		bookmark.setQuery(view.getSelectedTabSettings().getQueryString());
+		bookmark.setTitle(bookmarkTitle.getValueAsString());
+
+		window.clear();
+		setSrc(Imgs.LOADING.get());
+		new GwtCallbackWrapper<Void>(view) {
+			public void onCall(AsyncCallback<Void> callback) {
+				view.getRemoteService().addBookmark(bookmark, callback);
+			}
+
+			protected void onFailure(Throwable throwable) {
+				setSrc(Imgs.BOOKMARK_QUERY.get());
+				if (throwable instanceof OpenIdException) {
+					view.getErrorHelper().onError(throwable.getMessage() + ". Logging out");
+					view.getOpenId().logOut();
+				} else {
+					view.getErrorHelper().onError(throwable);
+				}
+			}
+
+			protected void onSuccess(Void t) {
+				setSrc(Imgs.BOOKMARK_QUERY.get());
+			}
+
+		}.call();
+	}
 	/**
 	 * Show tooltips
 	 * @param fromVersionId
