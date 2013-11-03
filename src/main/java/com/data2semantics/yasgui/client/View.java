@@ -297,7 +297,13 @@ public class View extends VLayout implements RpcElement {
 	public void initEndpointDataSource(final boolean forceUpdate) {
 		endpointDataSource = new EndpointDataSource(this);
 		String endpoints = LocalStorageHelper.getEndpointsFromLocalStorage();
-		if (forceUpdate || endpoints == null || endpoints.length() == 0) {
+		if (!forceUpdate && endpoints != null && endpoints.length() > 0) {
+			try {
+				endpointDataSource.addEndpointsFromJson(endpoints);
+			} catch (Exception e) {
+				getErrorHelper().onError(e);
+			}
+		} else {
 			// get endpoint data from server
 			viewElements.onLoadingStart("Fetching endpoint data");
 			new GwtCallbackWrapper<String>(this) {
