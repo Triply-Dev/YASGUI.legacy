@@ -39,7 +39,7 @@ PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
 PREFIX geo: &lt;http://www.w3.org/2003/01/geo/wgs84_pos#&gt;
 PREFIX foaf: &lt;http://xmlns.com/foaf/0.1/&gt;
 SELECT * WHERE {
-  ?sub foaf:p ?obj
+	?sub foaf:p ?obj
 } LIMIT 100
 </textarea>
 
@@ -75,7 +75,9 @@ SELECT * WHERE {
 				"Ctrl-Alt-Down" : "copyLineDown",
 				"Ctrl-Alt-Up" : "copyLineUp",
 				"Ctrl-S" : "doNothing",
-				"Shift-Ctrl-F": "doAutoFormat"
+				"Shift-Ctrl-F": "doAutoFormat",
+				"Tab" : "indentTab",
+				"Shift-Tab": "unindentTab"
 			}
 		});
 		myCodeMirror.on("change", function(cm, change){

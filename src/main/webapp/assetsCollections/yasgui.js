@@ -6,7 +6,6 @@ var sparqlHighlight = {};
 var sparqlResponseHighlight = {};
 var prefixes = [];
 var properties = {};
-var queryRequest;
 
 //These two variables are ugly workaround with which we can distinguish in our callback between a history state changed issued
 //by the browser, and issued by our code
@@ -90,7 +89,9 @@ function initializeQueryCodemirror(elementId) {
 					"Cmd-Alt-Down" : "copyLineDown",
 					"Cmd-Alt-Up" : "copyLineUp",
 					"Shift-Ctrl-F": "doAutoFormat",
-					"Shift-Cmd-F": "doAutoFormat"
+					"Shift-Cmd-F": "doAutoFormat",
+					"Tab" : "indentTab",
+					"Shift-Tab": "unindentTab"
 				}
 			});
 			
@@ -204,7 +205,9 @@ function initializeQueryBookmarkCodemirror(elementId) {
 				"Cmd-Alt-Down" : "copyLineDown",
 				"Cmd-Alt-Up" : "copyLineUp",
 				"Shift-Ctrl-F": "doAutoFormat",
-				"Shift-Cmd-F": "doAutoFormat"
+				"Shift-Cmd-F": "doAutoFormat",
+				"Tab" : "indentTab",
+				"Shift-Tab": "unindentTab"
 			}
 		});
 		

@@ -58,6 +58,8 @@ public class TooltipText {
 				"<li><strong>" + osShortcut + "-Alt-Up</strong>: Copy line up</li>\n" + 
 				"<li><strong>" + osShortcut + "-/</strong>: Comment line(s)</li>\n" + 
 				"<li><strong>" + osShortcut + "-Shift-F</strong>: Autoformat (part of) your query</li>\n" + 
+				"<li><strong>&lt;tab&gt;</strong>: Indent line(s)</li>\n" + 
+				"<li><strong>Shift-&lt;tab&gt;</strong>: Un-indent line(s)</li>\n" + 
 				"<li><strong>" + osShortcut + "-&lt;enter&gt;</strong>: Execute query</li>\n" + 
 				"<li><strong>" + osShortcut + "-&lt;space&gt;</strong>: Autocomplete property or class</li>\n" + 
 				"<li><strong>Esc</strong>: Cancel query</li>\n" + 

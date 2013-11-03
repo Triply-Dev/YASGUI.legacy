@@ -84,6 +84,34 @@ CodeMirror.commands.autoComplete = function(cm) {
 	}
 	
 };
+CodeMirror.commands.indentTab = function(cm) {
+	var indentSpaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+	if (cm.somethingSelected()) {
+		for (var i = cm.getCursor(true).line; i <= cm.getCursor(false).line; i++) {
+			cm.replaceRange(indentSpaces, {
+				line : i,
+				ch : 0
+			});
+		}
+	} else {
+	    cm.replaceSelection(indentSpaces, "end", "+input");
+	}
+	
+};
+CodeMirror.commands.unindentTab = function(cm) {
+	for (var i = cm.getCursor(true).line; i <= cm.getCursor(false).line; i++) {
+		var line = cm.getLine(i);
+		if (/^\t/.test(line)) {
+			console.log("tab!");
+			line = line.replace(/^\t(.*)/, "$1");
+		} else if (/^ /.test(line)) {
+			var re = new RegExp("^ {1," + cm.getOption("indentUnit") + "}(.*)","");
+			line = line.replace(re, "$1");
+		}
+		cm.setLine(i, line);
+	}
+	
+};
 function copyLinesBelow(cm) {
 	var cursor = cm.getCursor();
 	var lineCount = cm.lineCount();
