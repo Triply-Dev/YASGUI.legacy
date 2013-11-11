@@ -34,12 +34,14 @@ public class AutocompleteKeys implements Serializable {
 	
 	public static String REQUEST_QUERY = "q";
 	public static String REQUEST_TYPE = "type";
+	public static String REQUEST_METHOD = "method";
+	public static String REQUEST_MAX_RESULTS = "max";
 	
 	public static String TYPE_PROPERTY = "property";
 	public static String TYPE_CLASS = "class";
 	
-	public static String RESPONSE_METHOD_PROPERTY = "propertyMethod";
-	public static String RESPONSE_METHOD_LAZY = "lazyMethod";
+	public static String RESPONSE_METHOD_PROPERTY = "property";
+	public static String RESPONSE_METHOD_LAZY = "lazy";
 	
 	public static String RESPONSE_RESULT_SIZE = "resultSize";
 	public static String RESPONSE_RESULTS = "results";

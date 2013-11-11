@@ -28,6 +28,9 @@ package com.data2semantics.yasgui.client.settings;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.data2semantics.yasgui.client.helpers.Helper;
@@ -253,6 +256,40 @@ public class Settings extends JsonHelper {
 		if (currentSize > maxSize) {
 			clearQueryResults();
 		}
+	}
+	
+	public Map<String, Boolean> getPropertyCompletionMethods() {
+		Map<String, Boolean> propertyCompletionMethods = getMap(SettingKeys.ENABLED_PROPERTY_COMPLETION_METHODS, null);
+		if (propertyCompletionMethods == null) {
+			Map<String, Boolean> enabledPropertyCompletionMethods = enabledFeatures.getEnabledPropertyCompletionMethods();
+			propertyCompletionMethods = new HashMap<String, Boolean>();
+			//if something is set to 'false' in enabled features, they should not be added to our final hashmap,
+			//as null means we won't show this method, false means it is disabled (but selectable), and true means it is enabled
+			for (Entry<String, Boolean> entry: enabledPropertyCompletionMethods.entrySet()) {
+				if (entry.getValue()) {
+					propertyCompletionMethods.put(entry.getKey(), true);
+				}
+			}
+		} else {
+			Map<String, Boolean> enabledPropertyCompletionMethods = enabledFeatures.getEnabledPropertyCompletionMethods();
+			if (enabledPropertyCompletionMethods != null) {
+				//check whether our user setting has methods enabled, where our enabled properties have them disabled
+				//occurs in changes where user settings are cached, and site administrator changes the enabled features.
+				for (Entry<String, Boolean> entry: enabledPropertyCompletionMethods.entrySet()) {
+					if (entry.getValue() == false && propertyCompletionMethods.containsKey(entry.getKey())) {
+						propertyCompletionMethods.remove(entry.getKey());
+					}
+				}
+			}
+		}
+		return propertyCompletionMethods;
+	}
+	public JSONObject getPropertCompletionMethodsAsJson() {
+		return getMapAsObject(getPropertyCompletionMethods());
+	}
+
+	public void setPropertyCompletionMethods(JSONObject methods) {
+		put(SettingKeys.ENABLED_PROPERTY_COMPLETION_METHODS, methods);
 	}
 	
 	public static Settings retrieveSettings() throws IOException {

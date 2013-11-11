@@ -26,13 +26,15 @@ package com.data2semantics.yasgui.client.settings;
  * #L%
  */
 
+import java.util.Map;
 import java.util.Set;
 
+import com.data2semantics.yasgui.client.helpers.JsonHelper;
 import com.data2semantics.yasgui.shared.SettingKeys;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 
-public class Defaults extends JSONObject {
+public class Defaults extends JsonHelper {
 
 	public Defaults(JSONObject jsonObject) {
 		update(jsonObject);

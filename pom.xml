@@ -316,8 +316,10 @@
 								<include>../assets/flint/sparql.js</include>
 								<include>../assets/codemirror/util/formatting.js</include>
 								<include>../assets/codemirrorHelper.js</include>
+								<include>../assets/json2.js</include>
 								<include>../assets/noty/jquery.noty.js</include>
 								<include>../assets/noty/layouts/bottomRight.js</include>
+								<include>../assets/noty/layouts/bottomLeft.js</include>
 								<include>../assets/noty/themes/default.js</include>
 								<include>../assets/yasgui.js</include>
 							</includes>

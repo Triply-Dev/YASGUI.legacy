@@ -47,6 +47,7 @@ public class SettingKeys implements Serializable {
 	public static String URI_AS_SNORQL = "uriAsSnorql";
 	public static String DOWNLOAD_APPCACHE = "downloadOfflineCache";
 	public static String SHOW_APPCACHE_DOWNLOAD_NOTIFICATION = "showDownloadProgressBar";
+	public static String ENABLED_PROPERTY_COMPLETION_METHODS = "propertyCompletionMethods";
 	
 	//tabsettings object
 	public static String ENDPOINT = "endpoint";

@@ -161,4 +161,32 @@ div#appcacheProgressBar {
 .btn {
 	cursor: pointer;	
 }
+
+.propertyCompletionsLegend {
+	list-style: none;
+	padding-left:10px;
+	padding-top:20px;
+}
+.propertyCompletionLegend {
+	padding-left: 0px;
+	padding-right:5px;
+}
+.propertyCompletionLegendSelected{
+	background-color:#08f;
+	color:white;
+}
+.propertyTypeIcon {
+	color: white;
+	padding: 5px;
+	font-weight: bold;
+	margin-right:5px;
+}
+.propertyTypeIconLegend {
+	display: inline-block;
+	width:10px;
+}
+.propertyCompletionMethodCheckbox {
+	vertical-align:middle;
+	display:inline;
+	margin-right:6px;
 }
