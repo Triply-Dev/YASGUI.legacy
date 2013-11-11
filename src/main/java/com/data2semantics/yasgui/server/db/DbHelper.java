@@ -36,6 +36,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -316,5 +317,52 @@ public class DbHelper {
         }
         insert.executeBatch();
 		insert.close();
+	}
+	
+	public HashMap<String, String> getProperties(String endpoint, String partialProperty, int maxResults) throws SQLException {
+		return getProperties(endpoint, partialProperty, maxResults, null);
+	}
+	public HashMap<String, String> getProperties(String endpoint, String partialProperty, int maxResults, String method) throws SQLException {
+		HashMap<String, String> autocompletions = new HashMap<String, String>();
+		PreparedStatement preparedStatement;
+		if (method == null) {
+			preparedStatement = connect.prepareStatement("SELECT Uri, Method FROM Properties WHERE Endpoint = ? AND Uri LIKE ? LIMIT ?");
+			preparedStatement.setInt(3, maxResults);
+		} else {
+			preparedStatement = connect.prepareStatement("SELECT Uri, Method FROM Properties WHERE Endpoint = ? AND Uri LIKE ? AND Method = ? LIMIT ?");
+			preparedStatement.setString(3, method);
+			preparedStatement.setInt(4, maxResults);
+		}
+		preparedStatement.setString(1, endpoint);
+		preparedStatement.setString(2, partialProperty + "%");
+		ResultSet result = preparedStatement.executeQuery();
+		while (result.next()) {
+			if (autocompletions.containsKey(result.getString("Uri")) && autocompletions.get(result.getString("Uri")).equals("lazy")) {
+				//dont overwrite value. we prefer returning this value as lazy, instead of a lower quality method
+			}
+			autocompletions.put(result.getString("Uri"), result.getString("Method"));
+		}
+		return autocompletions;
+	}
+	public int getPropertiesCount(String endpoint, String partialProperty, String method) throws SQLException {
+		int count = 0;
+		PreparedStatement preparedStatement;
+		if (method == null) {
+			preparedStatement = connect.prepareStatement("SELECT COUNT(Uri) AS count FROM Properties WHERE Endpoint = ? AND Uri LIKE ?");
+		} else {
+			preparedStatement = connect.prepareStatement("SELECT COUNT(Uri) AS count FROM Properties WHERE Endpoint = ? AND Uri LIKE ? AND Method = ?");
+			preparedStatement.setString(3, method);
+		}
+		preparedStatement.setString(1, endpoint);
+		preparedStatement.setString(2, partialProperty + "%");
+		ResultSet result = preparedStatement.executeQuery();
+		result.next();//only 1 result;
+		count = result.getInt("count");
+		return count;
+	}
+	
+	public static void main(String[] args) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
+		DbHelper dbHelper = new DbHelper(new File("src/main/webapp/"));
+		System.out.println(dbHelper.getPropertiesCount("http://dbpedia.org/sparql", "http://", "property"));
 	}
 }

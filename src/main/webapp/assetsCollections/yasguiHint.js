@@ -217,13 +217,11 @@
 		};
 		this.requestServletAutocompletions = function(methods) {
 			predReq.fetched['servlet'] = false;
-			var obj = jQuery.parseJSON( '{"propertyMethod":{"results":["http://xmlns.com/foaf/0.1/prop","http://xmlns.com/foaf/0.1/prop3","http://xmlns.com/foaf/0.1/same", "http://xmlns.com/foaf/0.1/prop2"],"resultSize":4},"lazyMethod":{"results":["http://xmlns.com/foaf/0.1/lazy2","http://xmlns.com/foaf/0.1/lazy1","http://xmlns.com/foaf/0.1/lazy3","http://xmlns.com/foaf/0.1/same","http://xmlns.com/foaf/0.1/lazy4"],"resultSize":5}}' );
-			
-			
 			var args = {
 				q:predReq.uriStart, 
 				max: predReq.maxResults, 
 				type: "property",
+				endpoint: getCurrentEndpoint()
 			};
 			if (methods.length == 1) {
 				args["method"] = methods[0];

@@ -94,7 +94,9 @@ public class ConnectionFactory  {
 	}
 	
 	/**
-	 * Update a database. Called on an empty database. This method executes an SQL script generating the needed db tables
+	 * Update a database. Called on an empty database. This method executes an SQL script generating the needed db tables.
+	 * Also checks our delta's, to see whether we need to change our database.
+	 * 
 	 * @param connect
 	 * @param config
 	 * @param configDir

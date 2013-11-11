@@ -36,6 +36,7 @@ public class AutocompleteKeys implements Serializable {
 	public static String REQUEST_TYPE = "type";
 	public static String REQUEST_METHOD = "method";
 	public static String REQUEST_MAX_RESULTS = "max";
+	public static String REQUEST_ENDPOINT = "endpoint";
 	
 	public static String TYPE_PROPERTY = "property";
 	public static String TYPE_CLASS = "class";

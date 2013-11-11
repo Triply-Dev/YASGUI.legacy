@@ -27,9 +27,15 @@ package com.data2semantics.yasgui.server.servlets;
  * #L%
  */
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -40,68 +46,100 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.data2semantics.yasgui.server.db.DbHelper;
 import com.data2semantics.yasgui.shared.AutocompleteKeys;
 
 public class AutocompleteServlet extends HttpServlet {
 	private static final long serialVersionUID = -8887854790329786302L;
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String stringToComplete = request.getParameter(AutocompleteKeys.REQUEST_QUERY);
-		String type = (request.getParameter(AutocompleteKeys.REQUEST_TYPE) == null? AutocompleteKeys.TYPE_PROPERTY: request.getParameter(AutocompleteKeys.REQUEST_TYPE));
-		if (stringToComplete != null && stringToComplete.length() > 0) {
+		
+		try {
+			checkRequest(request, AutocompleteKeys.REQUEST_QUERY, AutocompleteKeys.REQUEST_ENDPOINT, AutocompleteKeys.REQUEST_TYPE, AutocompleteKeys.REQUEST_MAX_RESULTS);
 			response.setHeader("Cache-Control", "no-cache");
 			response.setHeader("Pragma", "no-cache");
 			response.setDateHeader("Expires", new Date().getTime());
 			response.setContentType("application/json");
-			
 			try {
 				PrintWriter out = response.getWriter();
-				out.println(getJson(type).toString());
+				out.println(getJson(request, response).toString());
 				out.close();
 			} catch(JSONException e) {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 			}
-			
-		} else {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "No query (" + AutocompleteKeys.REQUEST_QUERY + ")");
+		} catch (IllegalArgumentException e) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+		} catch (Exception e) {
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 		}
-		
 	}
 	
-	private JSONObject getJson(String type) throws JSONException {
+	private void checkRequest(HttpServletRequest request, String... argsToCheck) throws IllegalArgumentException {
+		for (String argToCheck: argsToCheck) {
+			if (request.getParameter(argToCheck) == null || request.getParameter(argToCheck).length() == 0) {
+				throw new IllegalArgumentException("Missing parameter in request (" + argToCheck + ")");
+			}
+		}
+	}
+
+	private JSONObject getJson(HttpServletRequest request, HttpServletResponse response) throws JSONException, ClassNotFoundException, FileNotFoundException, SQLException, IOException, ParseException {
 		JSONObject resultObject = new JSONObject();
-		if (type.equals(AutocompleteKeys.TYPE_CLASS)) {
+		if (request.getParameter(AutocompleteKeys.REQUEST_TYPE).equals(AutocompleteKeys.TYPE_CLASS)) {
 			
 		} else {
-			resultObject = getPropertyJson();
+			resultObject = getPropertyJson(request, response);
 		}
 		
 		return resultObject;
 	}
 	
-	private JSONObject getPropertyJson() throws JSONException {
+	private JSONObject getPropertyJson(HttpServletRequest request, HttpServletResponse response) throws JSONException, ClassNotFoundException, FileNotFoundException, SQLException, IOException, ParseException {
 		JSONObject resultObject = new JSONObject();
 		
-		JSONObject propertyMethodObject = new JSONObject();
+		String method = request.getParameter(AutocompleteKeys.REQUEST_METHOD); //can be null, in that case retrieve both methods
+		String endpoint = request.getParameter(AutocompleteKeys.REQUEST_ENDPOINT); //can be null, in that case retrieve both methods
+		String partialProperty = request.getParameter(AutocompleteKeys.REQUEST_QUERY); //can be null, in that case retrieve both methods
+		int maxResults = Integer.parseInt(request.getParameter(AutocompleteKeys.REQUEST_MAX_RESULTS));
+		
+		DbHelper dbHelper = new DbHelper(new File(request.getContextPath()));
+		HashMap<String, String> map = dbHelper.getProperties(endpoint, partialProperty, maxResults, method);
+		
 		JSONArray propertyMethodResults = new JSONArray();
-		propertyMethodResults.put("http://xmlns.com/foaf/0.1/prop");
-		propertyMethodResults.put("http://xmlns.com/foaf/0.1/prop2");
-		propertyMethodResults.put("http://xmlns.com/foaf/0.1/prop3");
-		propertyMethodObject.put(AutocompleteKeys.RESPONSE_RESULTS, propertyMethodResults);
-		propertyMethodObject.put(AutocompleteKeys.RESPONSE_RESULT_SIZE, 3);
-		resultObject.put(AutocompleteKeys.RESPONSE_METHOD_PROPERTY, propertyMethodObject);
-		
-		JSONObject lazyMethodObject = new JSONObject();
 		JSONArray lazyMethodResults = new JSONArray();
-		lazyMethodResults.put("http://xmlns.com/foaf/0.1/lazy1");
-		lazyMethodResults.put("http://xmlns.com/foaf/0.1/lazy2");
-		lazyMethodResults.put("http://xmlns.com/foaf/0.1/lazy3");
-		lazyMethodResults.put("http://xmlns.com/foaf/0.1/lazy4");
-		lazyMethodObject.put(AutocompleteKeys.RESPONSE_RESULTS, lazyMethodResults);
-		lazyMethodObject.put(AutocompleteKeys.RESPONSE_RESULT_SIZE, 4);
-		resultObject.put(AutocompleteKeys.RESPONSE_METHOD_LAZY, lazyMethodObject);
+		for (Entry<String, String> entry: map.entrySet()) {
+			if (entry.getValue().equals("lazy")) {
+				lazyMethodResults.put(entry.getKey());
+			} else {
+				propertyMethodResults.put(entry.getKey());
+			}
+		}
+		int resultSize = propertyMethodResults.length() + lazyMethodResults.length();
+		
+		if (method == null || method.equals("property")) {
+			JSONObject propertyMethodObject = new JSONObject();
+			int totalSize = propertyMethodResults.length();
+			if (resultSize == maxResults) {
+				//there are probably more results than the maximum we have retrieved
+				totalSize = dbHelper.getPropertiesCount(endpoint, partialProperty, "property");
+			}
+			propertyMethodObject.put(AutocompleteKeys.RESPONSE_RESULTS, propertyMethodResults);
+			propertyMethodObject.put(AutocompleteKeys.RESPONSE_RESULT_SIZE, totalSize);
+			resultObject.put(AutocompleteKeys.RESPONSE_METHOD_PROPERTY, propertyMethodObject);
+		}
+		
+		if (method == null || method.equals("lazy")) {
+			JSONObject lazyMethodObject = new JSONObject();
+			int totalSize = propertyMethodResults.length();
+			if (resultSize == maxResults) {
+				//there are probably more results than the maximum we have retrieved
+				totalSize = dbHelper.getPropertiesCount(endpoint, partialProperty, "lazy");
+			}
+			lazyMethodObject.put(AutocompleteKeys.RESPONSE_RESULTS, lazyMethodResults);
+			lazyMethodObject.put(AutocompleteKeys.RESPONSE_RESULT_SIZE, totalSize);
+			resultObject.put(AutocompleteKeys.RESPONSE_METHOD_LAZY, lazyMethodObject);
+		}
 		return resultObject;
 	}
 
-
+	
 }
