@@ -37,6 +37,7 @@ import java.sql.Statement;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -404,10 +405,10 @@ public class DbHelper {
 		ps.close();
 	}
 	
-	public void storeProperties(String endpoint, String method, com.hp.hpl.jena.query.ResultSet resultSet) throws SQLException, PossiblyNeedPaging {
-		storeProperties(endpoint, method, resultSet, false);
+	public void storePropertiesFromQueryResult(String endpoint, String method, com.hp.hpl.jena.query.ResultSet resultSet) throws SQLException, PossiblyNeedPaging {
+		storePropertiesFromQueryResult(endpoint, method, resultSet, false);
 	}
-	public void storeProperties(String endpoint, String method, com.hp.hpl.jena.query.ResultSet resultSet, boolean bypassPaginationCheck) throws SQLException, PossiblyNeedPaging {
+	public void storePropertiesFromQueryResult(String endpoint, String method, com.hp.hpl.jena.query.ResultSet resultSet, boolean bypassPaginationCheck) throws SQLException, PossiblyNeedPaging {
 		String sql = "insert into Properties (Uri, Endpoint, Method) values (?, ?, ?)";
 		PreparedStatement ps = connect.prepareStatement(sql);
 
@@ -419,7 +420,7 @@ public class DbHelper {
 			
 			ps.setString(1, rdfNode.asResource().getURI());
 			ps.setString(2, endpoint);
-			ps.setString(3, "property");
+			ps.setString(3, method);
 			ps.addBatch();
 			if (++count % batchSize == 0) {
 				System.out.println(count + " done");
@@ -436,6 +437,25 @@ public class DbHelper {
 			throw pagingException;
 		}
 		
+	}
+	
+	public void storePropertiesFromQueryAnalysis(String endpoint, String method, Set<String> properties) throws SQLException {
+		String sql = "insert into Properties (Uri, Endpoint, Method) values (?, ?, ?)";
+		PreparedStatement ps = connect.prepareStatement(sql);
+
+		final int batchSize = 1000;
+		int count = 0;
+		for (String property: properties) {
+			ps.setString(1, property);
+			ps.setString(2, endpoint);
+			ps.setString(3, method);
+			ps.addBatch();
+			if (++count % batchSize == 0) {
+				ps.executeBatch();
+			}
+		}
+		ps.executeBatch(); // insert remaining records
+		ps.close();
 	}
 	
 	public boolean propertyFetchDisabled(String endpoint) throws SQLException {

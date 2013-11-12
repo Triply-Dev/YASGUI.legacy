@@ -264,4 +264,15 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 			throw new IllegalArgumentException("Unsuccesfull in reporting this issue. Please report manually at http://github.com/LaurensRietveld/issues");
 		}
 	}
+
+	@Override
+	public void logLazyQuery(String query, String endpoint) throws IllegalArgumentException {
+		try {
+			
+			QueryPropertyExtractor.store(new DbHelper(new File(getServletContext().getRealPath("/"))), query, endpoint);
+		} catch (Exception e) {
+			//fail silently. doesnt matter when analysis of a single query fails..
+		}
+		
+	}
 }

@@ -81,7 +81,7 @@ public class PropertiesFetcher {
 		
 		
 		System.out.println("finished exec query");
-		dbHelper.storeProperties(endpoint, METHOD, resultSet);
+		dbHelper.storePropertiesFromQueryResult(endpoint, METHOD, resultSet);
 		dbHelper.setPropertyLogStatus(endpoint, "successful");
 	}
 	
@@ -109,7 +109,7 @@ public class PropertiesFetcher {
 			}
 			needPaging = false;
 			try {
-				dbHelper.storeProperties(endpoint, METHOD, resultSet);
+				dbHelper.storePropertiesFromQueryResult(endpoint, METHOD, resultSet);
 			} catch (PossiblyNeedPaging e) {
 				iterator++;
 				needPaging = true;

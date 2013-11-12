@@ -29,6 +29,7 @@ package com.data2semantics.yasgui.client.tab.results;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.data2semantics.yasgui.client.GwtCallbackWrapper;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.ContentTypes;
 import com.data2semantics.yasgui.client.helpers.ContentTypes.Type;
@@ -55,6 +56,7 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.XMLParser;
 import com.smartgwt.client.types.VerticalAlignment;
@@ -81,7 +83,10 @@ public class ResultContainer extends VLayout {
 	private View view;
 	private QueryTab queryTab;
 	private RawResponse rawResponseOutput;
+	private String queryString;
 	HashMap<String, ResultType> queryTypes = new HashMap<String, ResultType>();
+
+	private String endpoint;
 	public ResultContainer(View view, QueryTab queryTab) {
 		setPossibleQueryTypes();
 		this.view = view;
@@ -110,6 +115,8 @@ public class ResultContainer extends VLayout {
 	 * Empty query result area
 	 */
 	public void reset() {
+		queryString = null;
+		endpoint = null;
 		if (rawResponseOutput != null) {
 			//We have an old codemirror object used for showing json results. Clean this up
 			JsMethods.destroyCodeMirrorQueryResponse(rawResponseOutput.getInputId());
@@ -142,6 +149,8 @@ public class ResultContainer extends VLayout {
 	 * @param contentType
 	 */
 	public void drawResult(String endpoint, String queryString, String resultString, String contentType) {
+		this.queryString = queryString;
+		this.endpoint = endpoint;
 		storeResult(endpoint, queryString, resultString, contentType);
 		doDraw(resultString, contentType);	
 	}
@@ -218,6 +227,7 @@ public class ResultContainer extends VLayout {
 					drawRawResponse(responseString, contentType);
 				} else {
 					SparqlResults results = getSelectResultsFromString(responseString, contentType, queryTypes.get(queryType));
+					logQueryForAnalysis(results);
 					if (queryMode == ResultType.Boolean){
 						drawResultsAsBoolean(results);
 					} else if (queryMode == ResultType.Table) {
@@ -250,7 +260,22 @@ public class ResultContainer extends VLayout {
 		} 
 	}
 	
-	
+	private void logQueryForAnalysis(SparqlResults results) {
+		//only log when we actually have results
+		if (results.getBindings().size() > 0) {
+			new GwtCallbackWrapper<Void>(view) {
+				public void onCall(AsyncCallback<Void> callback) {
+					view.getRemoteService().logLazyQuery(queryString, endpoint, callback);
+				}
+
+				protected void onFailure(Throwable throwable) {}
+
+				protected void onSuccess(Void prefixes) {}
+
+
+			}.call();
+		}
+	}
 	private SparqlResults getSelectResultsFromString(String responseString, Type contentType, ResultType resultType) {
 		SparqlResults results = null;
 		if (contentType == Type.SELECT_JSON) {
@@ -349,14 +374,6 @@ public class ResultContainer extends VLayout {
 		} else {
 			mode = Type.SELECT_XML.getCmMode();
 		}
-//		final String mode;
-//		if (resultFormat == CONTENT_TYPE_SELECT_JSON) {
-//			mode = "json";
-//		} else if (resultFormat == CONTENT_TYPE_TURTLE) {
-//			mode = "text/turtle";
-//		} else {
-//			mode = "xml";
-//		}
 		//on window resize, part of the page get redrawn. This means we have to attach to codemirror again
 		//this is also called on first load
 		rawResponseOutput.addResizedHandler(new ResizedHandler(){
@@ -395,17 +412,4 @@ public class ResultContainer extends VLayout {
 		
 		return contentType;
 	}
-	
-//	public void setResultString(String resultString) {
-//		this.resultString = resultString;
-//	}
-//	public String getResultString() {
-//		return this.resultString;
-//	}
-//	public void setContentType(String contentType) {
-//		this.contentType = contentType;
-//	}
-//	public String getContentType() {
-//		return this.contentType;
-//	}
 }
