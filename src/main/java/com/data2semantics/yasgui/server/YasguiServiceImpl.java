@@ -49,7 +49,6 @@ import com.data2semantics.yasgui.client.services.YasguiService;
 import com.data2semantics.yasgui.server.db.DbHelper;
 import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
 import com.data2semantics.yasgui.server.fetchers.PrefixesFetcher;
-import com.data2semantics.yasgui.server.fetchers.PropertiesFetcher;
 import com.data2semantics.yasgui.server.fetchers.endpoints.EndpointsFetcher;
 import com.data2semantics.yasgui.shared.Bookmark;
 import com.data2semantics.yasgui.shared.IssueReport;
@@ -232,17 +231,6 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 		}
 	}
 
-	@Override
-	public String fetchProperties(String endpoint, boolean forceUpdate) throws IllegalArgumentException, FetchException {
-		String properties = "";
-		try {
-			properties = PropertiesFetcher.fetch(endpoint, forceUpdate, new File(getServletContext().getRealPath(CACHE_DIR)));
-		} catch (Throwable e) {
-			e.printStackTrace();
-			throw new FetchException("unable to fetch properties for endpoint " + endpoint, e);
-		}
-		return properties;
-	}
 
 	@Override
 	public boolean isOnline() throws IllegalArgumentException {

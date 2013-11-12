@@ -27,104 +27,102 @@ package com.data2semantics.yasgui.server.fetchers;
  */
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import org.json.JSONArray;
-import com.data2semantics.yasgui.server.Helper;
+import java.sql.SQLException;
+import java.text.ParseException;
+
+import org.json.JSONException;
+
 import com.data2semantics.yasgui.server.SparqlService;
-import com.hp.hpl.jena.query.QuerySolution;
+import com.data2semantics.yasgui.server.db.DbHelper;
+import com.data2semantics.yasgui.shared.exceptions.PossiblyNeedPaging;
 import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.RDFNode;
 
 
 public class PropertiesFetcher {
-	private static String VARNAME = "property";
-	private static String QUERY_EXPENSIVE = "SELECT DISTINCT ?property\n" + 
-			"WHERE {\n" + 
-			"  ?s ?property ?o .\n" + 
-			"}\n" +
-			"";
-	private static String QUERY_CHEAP = "SELECT DISTINCT ?property\n" + 
-			"WHERE {\n" + 
-			"  ?s ?property ?o .\n" + 
-			"}\n" +
-			"";
-	public static String CACHE_BASENAME = "props";
-	private static int CACHE_EXPIRES_DAYS = 360;
-	public static String fetch(String endpoint, boolean forceUpdate, File cacheDir) throws IOException {
-		String result = "";
-		System.out.println("before cache dir create");
-		if (!cacheDir.exists()) {
-			boolean bool = cacheDir.mkdir();
-			if (!bool) {
-				System.out.println("could not make cache dir!!");
-			}
-			forceUpdate = true;
-		}
-		
-		File file = new File(cacheDir + "/" + CACHE_BASENAME + "_" + endpoint.replace(File.separator, "_") + ".json");
-		if (forceUpdate || Helper.needUpdating(file, CACHE_EXPIRES_DAYS)) {
-			System.out.println("updating file");
-			file.createNewFile();
-			JSONArray properties = tryFetches(endpoint);
-			if (properties.length() > 0) {
-				result = properties.toString();
-				Helper.writeFile(file, result);
-			}
-			
-		} else {
-			try {
-				System.out.println("reading file");
-				result = Helper.readFile(file);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return result;
+	private static String METHOD = "property";
+	private DbHelper dbHelper;
+	private String endpoint;
+	public PropertiesFetcher(File configDir, String endpoint) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
+		dbHelper = new DbHelper(configDir);
+		this.endpoint = endpoint;
 	}
-	
-	private static JSONArray tryFetches(String endpoint) {
-		System.out.println("try fetches");
-		JSONArray properties = new JSONArray();
+	public void fetch() throws IOException, SQLException {
+		
 		try {
-			System.out.println("fetching expensive");
-			properties = getProperties(endpoint, QUERY_EXPENSIVE);
-		} catch(Exception e) {
+			System.out.println("fetching regular properties for endpoint " + endpoint);
+			doRegularFetch();
+		} catch (PossiblyNeedPaging ep) {
 			try {
-				System.out.println("fetching cheap");
-				properties = getProperties(endpoint, QUERY_CHEAP);
-			} catch (Exception e2) {
-				e2.printStackTrace();
-				//no other options.. probably just a typo in the endpoint or something
+				System.out.println("fetching paged properties for endpoint " + endpoint);
+				doPagingFetch(ep.getQueryCount());
+			} catch (Exception e) {
+				dbHelper.setPropertyLogStatus(endpoint, "fetching", e.getMessage(), true);
+			}
+		} catch (SQLException e) {
+			dbHelper.setPropertyLogStatus(endpoint, "fetching", e.getMessage());
+			throw e;
+		}
+		
+	}
+	
+	private void doRegularFetch() throws PossiblyNeedPaging, SQLException {
+		dbHelper.setPropertyLogStatus(endpoint, "fetching");
+		String query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" + 
+				"SELECT DISTINCT ?property WHERE{\n" + 
+				"  ?property a rdf:Property\n" + 
+				"}";
+		System.out.println("exec query");
+		ResultSet resultSet = SparqlService.query(endpoint, query);
+		//ok. so we know this paging query returns results (otherwise would have thrown an exception). 
+		//first clear our properties table of previous results
+		dbHelper.clearProperties(endpoint, "property");
+		
+		
+		System.out.println("finished exec query");
+		dbHelper.storeProperties(endpoint, METHOD, resultSet);
+		dbHelper.setPropertyLogStatus(endpoint, "successful");
+	}
+	
+	private String getPaginationQuery(int iterator, int count) {
+		String query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" + 
+				"SELECT DISTINCT ?property WHERE{\n" + 
+				"  ?property a rdf:Property\n" + 
+				"} ORDER BY ?property ";
+		query += "LIMIT " + count;
+		query += " OFFSET " + (iterator * count);
+		return query;
+	}
+	
+	private void doPagingFetch(int count) throws SQLException {
+		dbHelper.setPropertyLogStatus(endpoint, "fetching", null, true);
+		int iterator = 0;
+		boolean needPaging = true;
+		while (needPaging) {
+			String query = getPaginationQuery(iterator, count);
+			ResultSet resultSet = SparqlService.query(endpoint, query);
+			if (iterator == 0) {
+				//ok. so we know this paging query returns results (otherwise would have thrown an exception). 
+				//first clear our properties table of previous results
+				dbHelper.clearProperties(endpoint, "property");
+			}
+			needPaging = false;
+			try {
+				dbHelper.storeProperties(endpoint, METHOD, resultSet);
+			} catch (PossiblyNeedPaging e) {
+				iterator++;
+				needPaging = true;
 			}
 		}
-		return properties;
 	}
 	
-	private static JSONArray getProperties(String endpoint, String query) {
-		ArrayList<String> properties = new ArrayList<String>();
-		ResultSet resultSet = SparqlService.query(endpoint, query);
-		while (resultSet.hasNext()) {
-			QuerySolution querySolution = resultSet.next();
-			RDFNode rdfNode = querySolution.get(VARNAME);
-			properties.add(rdfNode.asResource().getURI());
-		}
-		
-		//we are sorting ourselves instead of letting SPARQL do this
-		//There can be quite a bit of difference in response time when using ORDER BY w.r.t. not ordering
-		//I want to avoid getting SPARQL execution timeouts, so just do this part server-side
-		Collections.sort(properties);
-		JSONArray jsonProperties = new JSONArray();
-		for (String property: properties) {
-			jsonProperties.put(property);
-		}
-		
-		return jsonProperties;
+	public static boolean doubtfullResultSet(int count) {
+		return (count > 0 && count % 100 == 0);
 	}
 	
-	
-	public static void main(String[] args) throws IOException  {
-		System.out.println(PropertiesFetcher.fetch("http://localhost:8080/openrdf-workbench/repositories/sp2b/query", false, new File("/home/lrd900/code/yasgui/target/yasgui-12.10/cache")));
+	public static void main(String[] args) throws IOException, ClassNotFoundException, JSONException, SQLException, ParseException  {
+		PropertiesFetcher fetcher = new PropertiesFetcher(new File("src/main/webapp/"), "http://dbpedia.org/sparql");
+		fetcher.fetch();
 	}
 }

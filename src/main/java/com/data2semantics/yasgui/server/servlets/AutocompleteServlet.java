@@ -47,6 +47,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.data2semantics.yasgui.server.db.DbHelper;
+import com.data2semantics.yasgui.server.fetchers.PropertiesFetcher;
 import com.data2semantics.yasgui.shared.AutocompleteKeys;
 
 public class AutocompleteServlet extends HttpServlet {
@@ -116,7 +117,27 @@ public class AutocompleteServlet extends HttpServlet {
 		int resultSize = propertyMethodResults.length() + lazyMethodResults.length();
 		
 		if (method == null || method.equals("property")) {
+			String status = null;
+			if (propertyMethodResults.length() == 0) {
+				if (dbHelper.lastFetchesFailed(endpoint,5)) {
+					status = "Failed fetching properties";
+				} else {
+					PropertiesFetcher fetcher = new PropertiesFetcher(new File(request.getContextPath()), endpoint);
+					fetcher.fetch();
+					map = dbHelper.getProperties(endpoint, partialProperty, maxResults, "property");
+					lazyMethodResults = new JSONArray();
+					for (Entry<String, String> entry: map.entrySet()) {
+						if (entry.getValue().equals("lazy")) {
+							lazyMethodResults.put(entry.getKey());
+						}
+					}
+				}
+			}
+		
 			JSONObject propertyMethodObject = new JSONObject();
+			if (status != null) {
+				propertyMethodObject.put(AutocompleteKeys.RESPONSE_STATUS, status);
+			}
 			int totalSize = propertyMethodResults.length();
 			if (resultSize == maxResults) {
 				//there are probably more results than the maximum we have retrieved

@@ -167,8 +167,8 @@
 				"description": "Lazy caching of predicates",
 				"priority": 1,
 			}
-			
 		};
+		this.statusMsgs = {};
 		this.resultSizes = {};
 		this.fetched = {};
 		var predReq = this;
@@ -231,6 +231,9 @@
 		    var url = "Yasgui/autocomplete?" + $.param(args);
 			$.get(url, function(data) {
 				if (data.property != undefined) {
+					if (data.property.status != undefined) {
+						predReq.statusMsgs['property'] = data.property.status;
+					}
 					predReq.resultSizes['property'] = data.property.resultSize;
 					for (var i = 0; i < data.property.results.length; i++) {
 						predReq.results.push({
@@ -242,6 +245,9 @@
 				}
 				
 				if (data.lazy != undefined) {
+					if (data.lazy.status != undefined) {
+						predReq.statusMsgs['lazy'] = data.lazy.status;
+					}
 					predReq.resultSizes['lazy'] = data.lazy.resultSize;
 					for (var i = 0; i < data.lazy.results.length; i++) {
 						predReq.results.push({
@@ -385,7 +391,8 @@
 						"<li id='" + method + "Hint' class='" + method + "Hint propertyCompletionLegend'>" +
 							"<span style='background-color:" + methodProps.color + "' class='propertyTypeIconLegend propertyTypeIcon'>" + methodProps.abbreviation + "</span>" +
 							"<input onclick='completionMethodChanged();' class='propertyCompletionMethodCheckbox' type='checkbox' name='propertyCompletions' value='" + method + "' " + (methods[method]? "checked":"") + ">" +
-							methodProps.description + " (" + (predReq.resultSizes[method] != undefined? predReq.resultSizes[method]: "unknown") + ")" +
+							methodProps.description + 
+							" (" + (predReq.resultSizes[method] != undefined? predReq.resultSizes[method]: (predReq.statusMsgs[method] != undefined? predReq.statusMsgs[method]:"unknown")) + ")" +
 						"</li>";
 				}
 				this.legendHtml += 

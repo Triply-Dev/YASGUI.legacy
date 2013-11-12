@@ -186,7 +186,6 @@ public class EndpointInput extends DynamicForm {
 		JsMethods.checkCorsEnabled(endpointString);
 		view.getSelectedTabSettings().setEndpoint(endpointString);
 		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
-		if (view.getEnabledFeatures().propertyAutocompletionEnabled()) view.getSelectedTab().getEndpointInputIcon().updateFetchIcon();
 	}
 	
 	public void storeEndpointInSettings() {

@@ -45,29 +45,35 @@ import org.json.JSONObject;
 
 import com.data2semantics.yasgui.server.Helper;
 import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
+import com.data2semantics.yasgui.server.fetchers.PropertiesFetcher;
 import com.data2semantics.yasgui.server.openid.HttpCookies;
 import com.data2semantics.yasgui.server.openid.OpenIdServlet;
 import com.data2semantics.yasgui.shared.Bookmark;
 import com.data2semantics.yasgui.shared.UserDetails;
 import com.data2semantics.yasgui.shared.exceptions.OpenIdException;
+import com.data2semantics.yasgui.shared.exceptions.PossiblyNeedPaging;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 
 public class DbHelper {
 	private JSONObject config;
 	private Connection connect;
 	private HttpServletRequest request;
-	
-	
-	public DbHelper(File configDir, HttpServletRequest request) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
+
+	public DbHelper(File configDir, HttpServletRequest request) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException,
+			ParseException {
 		this.config = ConfigFetcher.getJsonObjectFromPath(configDir);
 		this.connect = ConnectionFactory.getConnection(configDir);
 		this.request = request;
 	}
+
 	public DbHelper(File configDir) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
 		this(configDir, null);
 	}
-	
+
 	/**
 	 * Store user info (either update or insert)
+	 * 
 	 * @param userDetails
 	 * @throws SQLException
 	 */
@@ -75,21 +81,14 @@ public class DbHelper {
 		// check if user is already stored
 		PreparedStatement preparedStatement = connect.prepareStatement("SELECT UniqueId FROM Users WHERE OpenId = ?");
 		preparedStatement.setString(1, userDetails.getOpenId());
-		
+
 		ResultSet result = preparedStatement.executeQuery();
 		boolean exists = result.next();
 		result.close();
 		preparedStatement.close();
 		if (exists) {
-			PreparedStatement update = connect.prepareStatement("UPDATE Users SET " +
-					"FirstName = ?, " +
-					"LastName = ?, " +
-					"UniqueId = ? ," +
-					"FullName = ? ," +
-					"NickName = ? ," +
-					"Email = ? ," +
-					"LastLogin = default " + 
-					"WHERE OpenId = ?");
+			PreparedStatement update = connect.prepareStatement("UPDATE Users SET " + "FirstName = ?, " + "LastName = ?, " + "UniqueId = ? ,"
+					+ "FullName = ? ," + "NickName = ? ," + "Email = ? ," + "LastLogin = default " + "WHERE OpenId = ?");
 			update.setString(1, userDetails.getFirstName());
 			update.setString(2, userDetails.getLastName());
 			update.setString(3, userDetails.getUniqueId());
@@ -101,9 +100,9 @@ public class DbHelper {
 			update.close();
 		} else {
 			// new user, so insert
-			PreparedStatement insert = connect.prepareStatement("INSERT into Users  " +
-					"(OpenId, UniqueId, FirstName, LastName, FullName, NickName, Email, LastLogin) " +
-					"values (?, ?, ?, ?, ?, ?, ?, default)", Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement insert = connect.prepareStatement("INSERT into Users  "
+					+ "(OpenId, UniqueId, FirstName, LastName, FullName, NickName, Email, LastLogin) " + "values (?, ?, ?, ?, ?, ?, ?, default)",
+					Statement.RETURN_GENERATED_KEYS);
 			insert.setString(1, userDetails.getOpenId());
 			insert.setString(2, userDetails.getUniqueId());
 			insert.setString(3, userDetails.getFirstName());
@@ -115,47 +114,49 @@ public class DbHelper {
 			ResultSet rs = insert.getGeneratedKeys();
 			int userId = -1;
 			if (rs.next()) {
-			  userId = rs.getInt(1);
+				userId = rs.getInt(1);
 			}
 			insert.close();
-			
-			//so we have a new user, store default bookmarks as well
+
+			// so we have a new user, store default bookmarks as well
 			storeDefaultBookmarks(userId);
 		}
 		preparedStatement.close();
 	}
-	
+
 	/**
-	 * get default bookmarks from config file, and insert them for a given user. Ran after a user has his/her first login
+	 * get default bookmarks from config file, and insert them for a given user.
+	 * Ran after a user has his/her first login
+	 * 
 	 * @param userId
 	 * @throws SQLException
 	 */
 	private void storeDefaultBookmarks(int userId) throws SQLException {
 		if (userId >= 0) {
 			ArrayList<Bookmark> bookmarks = Helper.getDefaultBookmarksFromConfig(config);
-			PreparedStatement insert = connect.prepareStatement("INSERT into Bookmarks  " +
-					"(Id, UserId, Title, Endpoint, Query) " +
-					"values (default, ?, ?, ?, ?)");
-	        int i = 0;
-	        for (Bookmark bookmark: bookmarks) {
-	        	i++;
-	    		insert.setInt(1, userId);
-	    		insert.setString(2, bookmark.getTitle());
-	    		insert.setString(3, bookmark.getEndpoint());
-	    		insert.setString(4, bookmark.getQuery());
-	    		
-	            insert.addBatch();
-	            if ((i + 1) % 1000 == 0) {
-	                insert.executeBatch(); // Execute every 1000 items
-	            }
-	        }
-	        insert.executeBatch();
-	        insert.close();
+			PreparedStatement insert = connect.prepareStatement("INSERT into Bookmarks  " + "(Id, UserId, Title, Endpoint, Query) "
+					+ "values (default, ?, ?, ?, ?)");
+			int i = 0;
+			for (Bookmark bookmark : bookmarks) {
+				i++;
+				insert.setInt(1, userId);
+				insert.setString(2, bookmark.getTitle());
+				insert.setString(3, bookmark.getEndpoint());
+				insert.setString(4, bookmark.getQuery());
+
+				insert.addBatch();
+				if ((i + 1) % 1000 == 0) {
+					insert.executeBatch(); // Execute every 1000 items
+				}
+			}
+			insert.executeBatch();
+			insert.close();
 		}
 	}
-	
+
 	/**
 	 * Get user details, given a certain unique user id string
+	 * 
 	 * @param userDetails
 	 * @return
 	 * @throws SQLException
@@ -182,6 +183,7 @@ public class DbHelper {
 
 	/**
 	 * get bookmarks for this user (unique user id retrieved from cookie)
+	 * 
 	 * @return
 	 * @throws SQLException
 	 */
@@ -209,12 +211,13 @@ public class DbHelper {
 		try {
 			connect.close();
 		} catch (Exception e) {
-			//do nothing
+			// do nothing
 		}
 	}
-	
+
 	/**
 	 * get user Id given a unique Id string
+	 * 
 	 * @param uniqueId
 	 * @return
 	 * @throws SQLException
@@ -234,21 +237,23 @@ public class DbHelper {
 		}
 		return userId;
 	}
-	
+
 	/**
 	 * Clear a number of bookmarks from the DB
+	 * 
 	 * @param bookmarkIds
 	 * @throws SQLException
 	 * @throws OpenIdException
 	 */
-	public void clearBookmarks(int... bookmarkIds) throws SQLException, OpenIdException{
+	public void clearBookmarks(int... bookmarkIds) throws SQLException, OpenIdException {
 		if (bookmarkIds.length > 0) {
 			int userId = getUserId(HttpCookies.getCookieValue(request, OpenIdServlet.uniqueIdCookieName));
 			Statement statement = connect.createStatement();
 			String ids = "";
 			boolean hasItemBefore = false;
-			for (int bookmarkId: bookmarkIds) {
-				if (hasItemBefore) ids += ", ";
+			for (int bookmarkId : bookmarkIds) {
+				if (hasItemBefore)
+					ids += ", ";
 				ids += bookmarkId;
 				hasItemBefore = true;
 			}
@@ -260,68 +265,66 @@ public class DbHelper {
 
 	/**
 	 * add a set of bookmarks
+	 * 
 	 * @param bookmarks
 	 * @throws SQLException
 	 * @throws OpenIdException
 	 */
 	public void addBookmarks(Bookmark... bookmarks) throws SQLException, OpenIdException {
 		int userId = getUserId(HttpCookies.getCookieValue(request, OpenIdServlet.uniqueIdCookieName));
-        PreparedStatement insert = connect.prepareStatement("INSERT into Bookmarks  " +
-				"(Id, UserId, Title, Endpoint, Query) " +
-				"values (default, ?, ?, ?, ?)");
-        int i = 0;
-        for (Bookmark bookmark: bookmarks) {
-        	i++;
-    		insert.setInt(1, userId);
-    		insert.setString(2, bookmark.getTitle());
-    		insert.setString(3, bookmark.getEndpoint());
-    		insert.setString(4, bookmark.getQuery());
-    		
-            insert.addBatch();
-            if ((i + 1) % 1000 == 0) {
-                insert.executeBatch(); // Execute every 1000 items
-            }
-        }
-        insert.executeBatch();
-        insert.close();
-		
+		PreparedStatement insert = connect.prepareStatement("INSERT into Bookmarks  " + "(Id, UserId, Title, Endpoint, Query) "
+				+ "values (default, ?, ?, ?, ?)");
+		int i = 0;
+		for (Bookmark bookmark : bookmarks) {
+			i++;
+			insert.setInt(1, userId);
+			insert.setString(2, bookmark.getTitle());
+			insert.setString(3, bookmark.getEndpoint());
+			insert.setString(4, bookmark.getQuery());
+
+			insert.addBatch();
+			if ((i + 1) % 1000 == 0) {
+				insert.executeBatch(); // Execute every 1000 items
+			}
+		}
+		insert.executeBatch();
+		insert.close();
+
 	}
-	
+
 	/**
 	 * update a set of bookmarks
+	 * 
 	 * @param bookmarks
 	 * @throws SQLException
 	 * @throws OpenIdException
 	 */
 	public void updateBookmarks(Bookmark... bookmarks) throws SQLException, OpenIdException {
 		int userId = getUserId(HttpCookies.getCookieValue(request, OpenIdServlet.uniqueIdCookieName));
-        PreparedStatement insert = connect.prepareStatement("UPDATE Bookmarks  " +
-				"SET Title = ?, " +
-				"Endpoint = ?, " +
-				"Query = ? " +
-				"WHERE UserId = ? " +
-				"AND Id = ?");
-        int i = 0;
-        for (Bookmark bookmark: bookmarks) {
-        	i++;
-    		
-    		insert.setString(1, bookmark.getTitle());
-    		insert.setString(2, bookmark.getEndpoint());
-    		insert.setString(3, bookmark.getQuery());
-    		insert.setInt(4, userId);
-    		insert.setInt(5, bookmark.getBookmarkId());
-            insert.addBatch();
-            if ((i + 1) % 1000 == 0) {
-                insert.executeBatch(); // Execute every 1000 items
-            }
-        }
-        insert.executeBatch();
+		PreparedStatement insert = connect.prepareStatement("UPDATE Bookmarks  " + "SET Title = ?, " + "Endpoint = ?, " + "Query = ? " + "WHERE UserId = ? "
+				+ "AND Id = ?");
+		int i = 0;
+		for (Bookmark bookmark : bookmarks) {
+			i++;
+
+			insert.setString(1, bookmark.getTitle());
+			insert.setString(2, bookmark.getEndpoint());
+			insert.setString(3, bookmark.getQuery());
+			insert.setInt(4, userId);
+			insert.setInt(5, bookmark.getBookmarkId());
+			insert.addBatch();
+			if ((i + 1) % 1000 == 0) {
+				insert.executeBatch(); // Execute every 1000 items
+			}
+		}
+		insert.executeBatch();
 		insert.close();
 	}
-	
+
 	public HashMap<String, String> getProperties(String endpoint, String partialProperty, int maxResults) throws SQLException {
 		return getProperties(endpoint, partialProperty, maxResults, null);
 	}
+
 	public HashMap<String, String> getProperties(String endpoint, String partialProperty, int maxResults, String method) throws SQLException {
 		HashMap<String, String> autocompletions = new HashMap<String, String>();
 		PreparedStatement preparedStatement;
@@ -338,12 +341,16 @@ public class DbHelper {
 		ResultSet result = preparedStatement.executeQuery();
 		while (result.next()) {
 			if (autocompletions.containsKey(result.getString("Uri")) && autocompletions.get(result.getString("Uri")).equals("lazy")) {
-				//dont overwrite value. we prefer returning this value as lazy, instead of a lower quality method
+				// dont overwrite value. we prefer returning this value as lazy,
+				// instead of a lower quality method
 			}
 			autocompletions.put(result.getString("Uri"), result.getString("Method"));
 		}
+		preparedStatement.close();
+		close();
 		return autocompletions;
 	}
+
 	public int getPropertiesCount(String endpoint, String partialProperty, String method) throws SQLException {
 		int count = 0;
 		PreparedStatement preparedStatement;
@@ -356,11 +363,109 @@ public class DbHelper {
 		preparedStatement.setString(1, endpoint);
 		preparedStatement.setString(2, partialProperty + "%");
 		ResultSet result = preparedStatement.executeQuery();
-		result.next();//only 1 result;
+		result.next();// only 1 result;
 		count = result.getInt("count");
+		preparedStatement.close();
+		close();
 		return count;
 	}
+
+	public void setPropertyLogStatus(String endpoint, String status, String message, boolean pagination) throws SQLException {
+		PreparedStatement ps;
+		if (message != null) {
+			String sql = "insert into LogPropertyFetcher (Endpoint, Status, Pagination, Message) values (?, ?, ?, ?)";
+			ps = connect.prepareStatement(sql);
+			ps.setString(4, message);
+		} else {
+			String sql = "insert into LogPropertyFetcher (Endpoint, Status, Pagination) values (?, ?, ?)";
+			ps = connect.prepareStatement(sql);
+		}
+		ps.setString(1, endpoint);
+		ps.setString(2, status);
+		ps.setBoolean(3, pagination);
+		
+		ps.execute();
+		ps.close();
+	}
 	
+	public void setPropertyLogStatus(String endpoint, String status, String message) throws SQLException {
+		setPropertyLogStatus(endpoint, status, message, false);
+	}
+	public void setPropertyLogStatus(String endpoint, String status) throws SQLException {
+		setPropertyLogStatus(endpoint, status, null);
+	}
+	
+	public void clearProperties(String endpoint, String method) throws SQLException {
+		String sql = "DELETE FROM Properties WHERE Method = ? AND Endpoint = ?";
+		PreparedStatement ps = connect.prepareStatement(sql);
+		ps.setString(1, method);
+		ps.setString(2, endpoint);
+		ps.execute();
+		ps.close();
+	}
+	
+	public void storeProperties(String endpoint, String method, com.hp.hpl.jena.query.ResultSet resultSet) throws SQLException, PossiblyNeedPaging {
+		storeProperties(endpoint, method, resultSet, false);
+	}
+	public void storeProperties(String endpoint, String method, com.hp.hpl.jena.query.ResultSet resultSet, boolean bypassPaginationCheck) throws SQLException, PossiblyNeedPaging {
+		String sql = "insert into Properties (Uri, Endpoint, Method) values (?, ?, ?)";
+		PreparedStatement ps = connect.prepareStatement(sql);
+
+		final int batchSize = 1000;
+		int count = 0;
+		while (resultSet.hasNext()) {
+			QuerySolution querySolution = resultSet.next();
+			RDFNode rdfNode = querySolution.get("property");
+			
+			ps.setString(1, rdfNode.asResource().getURI());
+			ps.setString(2, endpoint);
+			ps.setString(3, "property");
+			ps.addBatch();
+			if (++count % batchSize == 0) {
+				System.out.println(count + " done");
+				ps.executeBatch();
+			}
+		}
+		System.out.println("looping done");
+		ps.executeBatch(); // insert remaining records
+		ps.close();
+		if (!bypassPaginationCheck && PropertiesFetcher.doubtfullResultSet(count)) {
+			System.out.println("throwing exception (count: " + count + ")");
+			PossiblyNeedPaging pagingException = new PossiblyNeedPaging();
+			pagingException.setQueryCount(count);
+			throw pagingException;
+		}
+		
+	}
+	
+	public boolean propertyFetchDisabled(String endpoint) throws SQLException {
+		String sql = "SELECT * FROM Properties WHERE Endpoint = ?";
+		PreparedStatement ps = connect.prepareStatement(sql);
+		ps.setString(1, endpoint);
+		ResultSet result = ps.executeQuery();
+		boolean disabled = result.next();// only 1 result;
+		ps.close();
+		return disabled;
+	}
+	
+	public boolean lastFetchesFailed(String endpoint, int numberOfFetchesToCheck) throws SQLException {
+		String sql = "SELECT * FROM LogPropertyFetcher WHERE Endpoint = ? ORDER BY Time DESC LIMIT ?";
+		PreparedStatement ps = connect.prepareStatement(sql);
+		ps.setString(1, endpoint);
+		ps.setInt(2, numberOfFetchesToCheck);
+		ResultSet result = ps.executeQuery();
+		boolean allFailed = true;
+		while (result.next()) {
+			if (result.getString("Status").equals("successful")) {
+				allFailed = false;
+				break;
+			}
+		}
+		ps.close();
+		return allFailed;
+	}
+
+
 	public static void main(String[] args) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
 		DbHelper dbHelper = new DbHelper(new File("src/main/webapp/"));
 		System.out.println(dbHelper.getPropertiesCount("http://dbpedia.org/sparql", "http://", "property"));

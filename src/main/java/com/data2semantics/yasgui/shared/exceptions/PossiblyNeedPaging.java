@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.shared;
+package com.data2semantics.yasgui.shared.exceptions;
 
 /*
  * #%L
@@ -28,23 +28,26 @@ package com.data2semantics.yasgui.shared;
 
 import java.io.Serializable;
 
-public class AutocompleteKeys implements Serializable {
+public class PossiblyNeedPaging extends RuntimeException implements Serializable { 
+	
+	private int count;
 
-	private static final long serialVersionUID = -1550708057486559219L;
+	public PossiblyNeedPaging(){}
+	public PossiblyNeedPaging(String message) {
+		super(message);
+	}
 	
-	public static String REQUEST_QUERY = "q";
-	public static String REQUEST_TYPE = "type";
-	public static String REQUEST_METHOD = "method";
-	public static String REQUEST_MAX_RESULTS = "max";
-	public static String REQUEST_ENDPOINT = "endpoint";
+	public void setQueryCount(int count) {
+		this.count = count;
+	}
+	public int getQueryCount() {
+		return this.count;
+	}
+
+	public PossiblyNeedPaging(String message, Throwable e) {
+		super(message, e);
+	}
+
+	private static final long serialVersionUID = 1L;
 	
-	public static String TYPE_PROPERTY = "property";
-	public static String TYPE_CLASS = "class";
-	
-	public static String RESPONSE_METHOD_PROPERTY = "property";
-	public static String RESPONSE_METHOD_LAZY = "lazy";
-	
-	public static String RESPONSE_RESULT_SIZE = "resultSize";
-	public static String RESPONSE_RESULTS = "results";
-	public static String RESPONSE_STATUS = "status";
 }
