@@ -136,7 +136,7 @@ public class ConnectionFactory  {
 	
 	private static void applyDeltas(Connection connect, File configDir) throws UnsupportedEncodingException, IOException, SQLException {
 		@SuppressWarnings("unchecked")
-		ArrayList<File> listFiles = new ArrayList<File>(FileUtils.listFiles(new File(configDir + "/config"), FileFilterUtils.prefixFileFilter("delta_"), null));
+		ArrayList<File> listFiles = new ArrayList<File>(FileUtils.listFiles(new File(configDir.getAbsolutePath() + "/config"), FileFilterUtils.prefixFileFilter("delta_"), null));
 		
 		TreeMap<Integer, File> files = new TreeMap<Integer, File>();
 		for (File file: listFiles) {

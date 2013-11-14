@@ -152,24 +152,25 @@
 			"lov" : {
 				"color":"#25547B;",
 				"abbreviation": "L",
-				"description": "<a href='" + getLovApiLink() + "' target='_blank'>LOV API</a>",
+				"description": "Properties fetched from <a href='" + getLovApiLink() + "' target='_blank'>LOV</a>",
 				"priority": 3,
 			},
 			"property": {
 				"color":"#502982;",
 				"abbreviation": "P",
-				"description": "Pre-fetching all properties",
+				"description": "Properties fetched from dataset (i.e. as rdf:Property)",
 				"priority": 2,
 			},
 			"lazy": {
 				"color":"#BF9C30;",
 				"abbreviation": "C",
-				"description": "Lazy caching of predicates",
+				"description": "Cached properties based on endpoint query logs",
 				"priority": 1,
 			}
 		};
 		this.statusMsgs = {};
 		this.resultSizes = {};
+		this.drawnResultSizes = {};
 		this.fetched = {};
 		var predReq = this;
 		this.cur = cm.getCursor();
@@ -216,6 +217,40 @@
 		    doLovRequest();
 		};
 		this.requestServletAutocompletions = function(methods) {
+			if (location.href.indexOf("codemirror.html") !== -1) {
+				var data = jQuery.parseJSON( '{"property":{"results":["http://xmlns.com/foaf/0.1/prop","http://xmlns.com/foaf/0.1/prop3","http://xmlns.com/foaf/0.1/same", "http://xmlns.com/foaf/0.1/prop2"],"resultSize":4},"lazy":{"results":["http://xmlns.com/foaf/0.1/lazy2","http://xmlns.com/foaf/0.1/lazy1","http://xmlns.com/foaf/0.1/lazy3","http://xmlns.com/foaf/0.1/same","http://xmlns.com/foaf/0.1/lazy4"],"resultSize":5}}' );
+				if (data.property != undefined) {
+					if (data.property.status != undefined) {
+						predReq.statusMsgs['property'] = data.property.status;
+					}
+					predReq.resultSizes['property'] = data.property.resultSize;
+					for (var i = 0; i < data.property.results.length; i++) {
+						predReq.results.push({
+							type: "property", 
+							uri: data.property.results[i],
+							priority: predReq.methodProperties.property.priority
+						});
+					}
+				}
+				
+				if (data.lazy != undefined) {
+					if (data.lazy.status != undefined) {
+						predReq.statusMsgs['lazy'] = data.lazy.status;
+					}
+					predReq.resultSizes['lazy'] = data.lazy.resultSize;
+					for (var i = 0; i < data.lazy.results.length; i++) {
+						predReq.results.push({
+							type: "lazy", 
+							uri: data.lazy.results[i],
+							priority: predReq.methodProperties.lazy.priority
+						});
+					}
+				}
+				predReq.fetched['servlet'] = true;
+				predReq.drawIfNeeded();
+				return;
+			}
+			
 			predReq.fetched['servlet'] = false;
 			var args = {
 				q:predReq.uriStart, 
@@ -262,10 +297,6 @@
 			}).fail(function(jqXHR, textStatus, errorThrown) {
 				console.log(errorThrown);
 			});
-			
-			
-			
-			
 		};
 		this.preprocessToken = function() {
 			var token = predReq.token;
@@ -326,6 +357,11 @@
 			    	//the result before this has same uri (and higher priority, as array is sorted). 
 			    	//so remove current item
 			    	predReq.results.splice(len, 1);
+			    } else {
+			    	if (predReq.drawnResultSizes[predReq.results[len].type] == undefined) {
+			    		predReq.drawnResultSizes[predReq.results[len].type] = 0;
+			    	}
+			    	predReq.drawnResultSizes[predReq.results[len].type]++;
 			    }
 			}
 			
@@ -389,10 +425,35 @@
 					var methodProps = predReq.methodProperties[method];
 					this.legendHtml += 
 						"<li id='" + method + "Hint' class='" + method + "Hint propertyCompletionLegend'>" +
-							"<span style='background-color:" + methodProps.color + "' class='propertyTypeIconLegend propertyTypeIcon'>" + methodProps.abbreviation + "</span>" +
+							"<table style='min-height:25px;border-collapse:collapse'><tr>" + 
+							"<td>" +
+								"<span style='vertical-align: middle;display: inline;background-color:" + methodProps.color + "' class='propertyTypeIconLegend propertyTypeIcon'>" + methodProps.abbreviation + "</span>" +
+							"</td>" +
+							"<td>" + 
 							"<input onclick='completionMethodChanged();' class='propertyCompletionMethodCheckbox' type='checkbox' name='propertyCompletions' value='" + method + "' " + (methods[method]? "checked":"") + ">" +
+							"</td>" +
+							"<td>" +
 							methodProps.description + 
-							" (" + (predReq.resultSizes[method] != undefined? predReq.resultSizes[method]: (predReq.statusMsgs[method] != undefined? predReq.statusMsgs[method]:"unknown")) + ")" +
+							" (";
+					if (predReq.resultSizes[method] != undefined) {
+						if (predReq.drawnResultSizes[method] == undefined || predReq.drawnResultSizes[method] == predReq.resultSizes[method]) {
+							this.legendHtml += predReq.resultSizes[method];
+						} else {
+							this.legendHtml += 
+								"<span title='properties in autocompletion dialogue vs number of available properties for autocompletion'>" +
+									predReq.drawnResultSizes[method] + "/" + predReq.resultSizes[method] +
+								"</span>";
+						}
+					} else {
+						if (predReq.statusMsgs[method] != undefined) {
+							this.legendHtml += predReq.statusMsgs[method];
+						} else {
+							this.legendHtml += "unknown";
+						}
+					}
+					this.legendHtml += ")" +
+						"</td>" +
+						"</tr></table>" +
 						"</li>";
 				}
 				this.legendHtml += 

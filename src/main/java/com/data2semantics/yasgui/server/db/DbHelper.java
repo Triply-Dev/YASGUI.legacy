@@ -37,6 +37,7 @@ import java.sql.Statement;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,6 +54,7 @@ import com.data2semantics.yasgui.shared.Bookmark;
 import com.data2semantics.yasgui.shared.UserDetails;
 import com.data2semantics.yasgui.shared.exceptions.OpenIdException;
 import com.data2semantics.yasgui.shared.exceptions.PossiblyNeedPaging;
+import com.google.common.collect.HashMultimap;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 
@@ -322,12 +324,12 @@ public class DbHelper {
 		insert.close();
 	}
 
-	public HashMap<String, String> getProperties(String endpoint, String partialProperty, int maxResults) throws SQLException {
+	public HashMultimap<String, String> getProperties(String endpoint, String partialProperty, int maxResults) throws SQLException {
 		return getProperties(endpoint, partialProperty, maxResults, null);
 	}
 
-	public HashMap<String, String> getProperties(String endpoint, String partialProperty, int maxResults, String method) throws SQLException {
-		HashMap<String, String> autocompletions = new HashMap<String, String>();
+	public HashMultimap<String, String> getProperties(String endpoint, String partialProperty, int maxResults, String method) throws SQLException {
+		HashMultimap<String, String> autocompletions = HashMultimap.create();
 		PreparedStatement preparedStatement;
 		if (method == null) {
 			preparedStatement = connect.prepareStatement("SELECT Uri, Method FROM Properties WHERE Endpoint = ? AND Uri LIKE ? LIMIT ?");
@@ -341,14 +343,9 @@ public class DbHelper {
 		preparedStatement.setString(2, partialProperty + "%");
 		ResultSet result = preparedStatement.executeQuery();
 		while (result.next()) {
-			if (autocompletions.containsKey(result.getString("Uri")) && autocompletions.get(result.getString("Uri")).equals("lazy")) {
-				// dont overwrite value. we prefer returning this value as lazy,
-				// instead of a lower quality method
-			}
 			autocompletions.put(result.getString("Uri"), result.getString("Method"));
 		}
 		preparedStatement.close();
-		close();
 		return autocompletions;
 	}
 
@@ -367,7 +364,6 @@ public class DbHelper {
 		result.next();// only 1 result;
 		count = result.getInt("count");
 		preparedStatement.close();
-		close();
 		return count;
 	}
 
@@ -459,7 +455,7 @@ public class DbHelper {
 	}
 	
 	public boolean propertyFetchDisabled(String endpoint) throws SQLException {
-		String sql = "SELECT * FROM Properties WHERE Endpoint = ?";
+		String sql = "SELECT * FROM DisabledPropertyEndpoints WHERE Endpoint = ?";
 		PreparedStatement ps = connect.prepareStatement(sql);
 		ps.setString(1, endpoint);
 		ResultSet result = ps.executeQuery();
@@ -488,6 +484,9 @@ public class DbHelper {
 
 	public static void main(String[] args) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
 		DbHelper dbHelper = new DbHelper(new File("src/main/webapp/"));
-		System.out.println(dbHelper.getPropertiesCount("http://dbpedia.org/sparql", "http://", "property"));
+		HashMultimap<String, String> props = dbHelper.getProperties("http://dbpedia.org/sparql", "http://xmlns.com/foaf/0.1/p", 50, null);
+		for (String key: props.keySet()) {
+			System.out.println(key + ": " + props.get(key).size());
+		}
 	}
 }

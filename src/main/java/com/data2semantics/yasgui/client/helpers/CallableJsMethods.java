@@ -149,7 +149,7 @@ public class CallableJsMethods {
 			GoogleAnalytics.trackEvent(queryEvent);
 		}
 	}
-	public String getPropertCompletionMethods() {
+	public String getPropertyCompletionMethods() {
 		return view.getSettings().getPropertCompletionMethodsAsJson().toString();
 	}
 	public String getAutocompletionMoreInfoLink() {
@@ -243,7 +243,7 @@ public class CallableJsMethods {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::sendQueryAnalyticsEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)(endpoint, queryString, label, timing);
 		}
 		$wnd.getPropertyCompletionMethods = function() {
-			var settingsString = viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::getPropertCompletionMethods()();
+			var settingsString = viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::getPropertyCompletionMethods()();
 			return $wnd.jQuery.parseJSON(settingsString);
 		}
 		$wnd.getAutocompletionMoreInfoLink = function() {
