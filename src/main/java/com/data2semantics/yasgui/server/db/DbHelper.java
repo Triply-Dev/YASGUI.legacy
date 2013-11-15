@@ -37,7 +37,7 @@ import java.sql.Statement;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map.Entry;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -180,6 +180,7 @@ public class DbHelper {
 		} else {
 			throw new OpenIdException("User not found in database");
 		}
+		preparedStatement.close();
 		result.close();
 		return userDetails;
 	}
@@ -204,6 +205,8 @@ public class DbHelper {
 			bookmark.setTitle(result.getString("Title"));
 			bookmarks.add(bookmark);
 		}
+		result.close();
+		preparedStatement.close();
 		return bookmarks.toArray(new Bookmark[bookmarks.size()]);
 	}
 
@@ -234,8 +237,10 @@ public class DbHelper {
 		if (result.next()) {
 			userId = result.getInt("Id");
 			result.close();
+			preparedStatement.close();
 		} else {
 			result.close();
+			preparedStatement.close();
 			throw new OpenIdException("User does not exist in database");
 		}
 		return userId;
@@ -346,6 +351,7 @@ public class DbHelper {
 			autocompletions.put(result.getString("Uri"), result.getString("Method"));
 		}
 		preparedStatement.close();
+		result.close();
 		return autocompletions;
 	}
 
@@ -364,7 +370,21 @@ public class DbHelper {
 		result.next();// only 1 result;
 		count = result.getInt("count");
 		preparedStatement.close();
+		result.close();
 		return count;
+	}
+	
+	public Map<String, Boolean> arePropertiesAdded(String endpoint, Set<String> checkUris, String method) throws SQLException {
+		HashMap<String, Boolean> addedProperties = new HashMap<String, Boolean>();
+		PreparedStatement preparedStatement = connect.prepareStatement("SELECT Uri FROM Properties WHERE Endpoint = ? AND Uri LIKE ? AND Method = ?");
+		for (String uri: checkUris) {
+			preparedStatement.setString(1, endpoint.trim());
+			preparedStatement.setString(2, uri.trim());
+			preparedStatement.setString(3, method);
+			ResultSet result = preparedStatement.executeQuery();
+			addedProperties.put(uri, result.next());
+		}
+		return addedProperties;
 	}
 
 	public void setPropertyLogStatus(String endpoint, String status, String message, boolean pagination) throws SQLException {
@@ -377,7 +397,7 @@ public class DbHelper {
 			String sql = "insert into LogPropertyFetcher (Endpoint, Status, Pagination) values (?, ?, ?)";
 			ps = connect.prepareStatement(sql);
 		}
-		ps.setString(1, endpoint);
+		ps.setString(1, endpoint.trim());
 		ps.setString(2, status);
 		ps.setBoolean(3, pagination);
 		
@@ -414,8 +434,8 @@ public class DbHelper {
 			QuerySolution querySolution = resultSet.next();
 			RDFNode rdfNode = querySolution.get("property");
 			
-			ps.setString(1, rdfNode.asResource().getURI());
-			ps.setString(2, endpoint);
+			ps.setString(1, rdfNode.asResource().getURI().trim());
+			ps.setString(2, endpoint.trim());
 			ps.setString(3, method);
 			ps.addBatch();
 			if (++count % batchSize == 0) {
@@ -427,7 +447,6 @@ public class DbHelper {
 		ps.executeBatch(); // insert remaining records
 		ps.close();
 		if (!bypassPaginationCheck && PropertiesFetcher.doubtfullResultSet(count)) {
-			System.out.println("throwing exception (count: " + count + ")");
 			PossiblyNeedPaging pagingException = new PossiblyNeedPaging();
 			pagingException.setQueryCount(count);
 			throw pagingException;
@@ -442,8 +461,8 @@ public class DbHelper {
 		final int batchSize = 1000;
 		int count = 0;
 		for (String property: properties) {
-			ps.setString(1, property);
-			ps.setString(2, endpoint);
+			ps.setString(1, property.trim());
+			ps.setString(2, endpoint.trim());
 			ps.setString(3, method);
 			ps.addBatch();
 			if (++count % batchSize == 0) {
@@ -454,20 +473,35 @@ public class DbHelper {
 		ps.close();
 	}
 	
-	public boolean propertyFetchDisabled(String endpoint) throws SQLException {
-		String sql = "SELECT * FROM DisabledPropertyEndpoints WHERE Endpoint = ?";
+	public boolean propertyRetrievalEnabled(String endpoint, String method) throws SQLException {
+		String sql = "SELECT * FROM DisabledPropertyEndpoints WHERE Endpoint = ? AND Method = ?";
 		PreparedStatement ps = connect.prepareStatement(sql);
-		ps.setString(1, endpoint);
+		ps.setString(1, endpoint.trim());
+		ps.setString(2, method);
 		ResultSet result = ps.executeQuery();
 		boolean disabled = result.next();// only 1 result;
 		ps.close();
-		return disabled;
+		result.close();
+		return !disabled;
+	}
+	
+	public ArrayList<String> getDisabledEndpointsForPropertyFetching() throws SQLException {
+		String sql = "SELECT Endpoint FROM DisabledPropertyEndpoints WHERE 1";
+		Statement statement = connect.createStatement();
+		ResultSet result = statement.executeQuery(sql);
+		ArrayList<String> endpoints = new ArrayList<String>();
+		while (result.next()) {
+			endpoints.add(result.getString("Endpoint"));
+		}
+		statement.close();
+		result.close();
+		return endpoints;
 	}
 	
 	public boolean lastFetchesFailed(String endpoint, int numberOfFetchesToCheck) throws SQLException {
 		String sql = "SELECT * FROM LogPropertyFetcher WHERE Endpoint = ? ORDER BY Time DESC LIMIT ?";
 		PreparedStatement ps = connect.prepareStatement(sql);
-		ps.setString(1, endpoint);
+		ps.setString(1, endpoint.trim());
 		ps.setInt(2, numberOfFetchesToCheck);
 		ResultSet result = ps.executeQuery();
 		boolean allFailed = true;
@@ -478,6 +512,7 @@ public class DbHelper {
 			}
 		}
 		ps.close();
+		result.close();
 		return allFailed;
 	}
 
@@ -489,4 +524,6 @@ public class DbHelper {
 			System.out.println(key + ": " + props.get(key).size());
 		}
 	}
+
+
 }

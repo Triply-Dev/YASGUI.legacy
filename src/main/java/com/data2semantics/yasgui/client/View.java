@@ -27,6 +27,7 @@ package com.data2semantics.yasgui.client;
  */
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import com.data2semantics.yasgui.client.helpers.AppcacheHelper;
@@ -84,9 +85,11 @@ public class View extends VLayout implements RpcElement {
 	private ChangelogHelper changelogHelper;
 	private ErrorHelper errorHelper;
 	private AppcacheHelper appcacheHelper;
-
+	private ArrayList<String> disabledEndpointsForPropertyAnalysis = new ArrayList<String>();
+	
 	public View() {
 		boolean newUser = false;
+		
 		if (LocalStorageHelper.newUser())
 			newUser = true;
 		errorHelper = new ErrorHelper(this);
@@ -127,7 +130,34 @@ public class View extends VLayout implements RpcElement {
 
 		getHistory().replaceHistoryState();
 
+		getDisabledEndpointsForPropertyAnalysis();
+		
+		
 		connHelper.checkOnlineStatus();
+	}
+
+	@SuppressWarnings("rawtypes")
+	private void getDisabledEndpointsForPropertyAnalysis() {
+		new GwtCallbackWrapper<String[]>(this) {
+			public void onCall(AsyncCallback<String[]> callback) {
+				getRemoteService().getDisabledEndpointsForPropertyAnalysis(callback);
+			}
+
+			protected void onFailure(Throwable throwable) {
+				getErrorHelper().onError(throwable);
+			}
+
+			protected void onSuccess(String[] endpoints) {
+				for (int i = 0; i < endpoints.length; i++) {
+					disabledEndpointsForPropertyAnalysis.add((String)endpoints[i]);
+				}
+			}
+
+		}.call();
+	}
+	
+	public boolean endpointsIsDisabledForPropertyAnalysis(String endpoint) {
+		return disabledEndpointsForPropertyAnalysis.contains(endpoint);
 	}
 
 	private void setViewLayout() {

@@ -85,7 +85,7 @@ function storePredicates($options) {
 	
 	$flagSet = getCurrentUpdateFlag($con, $endpoint);
 	if (askSetFlag($flagSet) != $flagSet) {
-		changeUpdateFlag($con, $endpoint, $flagSet);
+		changeUpdateFlag($con, $endpoint, $method, $flagSet);
 	} else {
 		echo "\nwe did not change the flag setting\n";
 	}
@@ -101,14 +101,14 @@ function setSuccessfulStoreLog($con, $endpoint, $method) {
 	}
 }
 
-function changeUpdateFlag($con, $endpoint, $flagSet) {
+function changeUpdateFlag($con, $endpoint, $method, $flagSet) {
 	$sqlQuery = null;
 	if ($flagSet) {
 		//we want to change the flag, i.e. remove it
-		$sqlQuery = "DELETE FROM DisabledPropertyEndpoints WHERE Endpoint = '".mysqli_real_escape_string($con, $endpoint)."'";
+		$sqlQuery = "DELETE FROM DisabledPropertyEndpoints WHERE Endpoint = '".mysqli_real_escape_string($con, $endpoint)."' AND METHOD = '".mysqli_real_escape_string($con, $method)."'";
 	} else {
 		//we want to add a flag
-		$sqlQuery = "INSERT INTO DisabledPropertyEndpoints (Endpoint) VALUES ('".mysqli_real_escape_string($con, $endpoint)."')";
+		$sqlQuery = "INSERT INTO DisabledPropertyEndpoints (Endpoint, Method) VALUES ('".mysqli_real_escape_string($con, $endpoint)."', '".mysqli_real_escape_string($con, $method)."')";
 	}
 	$result=mysqli_query($con, $sqlQuery);
 	if (!$result) {
@@ -116,7 +116,7 @@ function changeUpdateFlag($con, $endpoint, $flagSet) {
 		echo mysqli_error ($con)."\n";
 		exit;
 	}
-	echo "No-update flag for endpoint ".$endpoint." ".($flagSet? "deleted":"added").".\n";
+	echo "No-update flag for endpoint ".$endpoint." and method ".$method." ".($flagSet? "deleted":"added").".\n";
 }
 
 
@@ -140,7 +140,7 @@ function askSetFlag($currentFlagSet) {
 	];
 	echo "\nWe've now stored the properties. Do you want to set a flag in our database which stops YASGUI from adding more properties automatically?\n".
 		"Do this when you are sure you've added all possible properties to the database.\n".
-		"Currently, the flag to stop updating properties for your selected endpoint ".($currentFlagSet?"-set-": "-not- set")."\n";
+		"Currently, the flag to stop updating properties for your selected endpoint and method is ".($currentFlagSet?"-set-": "-not- set")."\n";
 	if ($currentFlagSet) {
 		echo "Do you want to keep this value, and not auto-update your properties? [Y/n]";
 	} else {
@@ -159,7 +159,6 @@ function askSetFlag($currentFlagSet) {
 }
 
 function purgeProperties($con, $endpoint, $method) {
-	
 	$query="DELETE FROM Properties WHERE Endpoint='".mysqli_real_escape_string($con, $endpoint)."' AND Method='".mysqli_real_escape_string($con, $method)."'";
 	$result=mysqli_query($con, $query);
 	if (!$result) {

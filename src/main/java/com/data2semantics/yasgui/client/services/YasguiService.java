@@ -38,6 +38,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("YasguiService")
 public interface YasguiService extends RemoteService {
 	void logLazyQuery(String query, String endpoint) throws IllegalArgumentException;
+	String[] getDisabledEndpointsForPropertyAnalysis() throws IllegalArgumentException, FetchException;
 	String fetchPrefixes(boolean forceUpdate) throws IllegalArgumentException, FetchException;
 	String fetchEndpoints(boolean forceUpdate) throws IllegalArgumentException, FetchException;
 	String getShortUrl(String forceUpdate) throws IllegalArgumentException, FetchException;

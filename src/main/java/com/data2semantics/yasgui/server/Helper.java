@@ -33,8 +33,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
@@ -126,6 +128,27 @@ public class Helper {
 		} else {
 			return redirect;
 		}
+	}
+	
+	public static boolean checkEndpointAccessibility(String endpoint) {
+		//for now, only store properties for endpoints we can access
+		boolean accessible = true;
+		try {
+		    URL myurl;
+			myurl = new URL(endpoint);
+		    HttpURLConnection connection = (HttpURLConnection) myurl.openConnection(); 
+		    connection.setConnectTimeout(5000);
+		    //Set request to header to reduce load as Subirkumarsao said.       
+			connection.setRequestMethod("HEAD");
+		    int code = connection.getResponseCode();
+		    if (code == 404) {
+		    	accessible = false;
+		    }
+		} catch (Exception e) {
+			accessible = false;
+		}
+		if (!accessible) System.out.println("Endpoint " + endpoint + " not accessible");
+		return accessible;
 	}
 	public static void main(String[] args) throws URISyntaxException {
 		System.out.println(getAbsoluteRedirectPath("http://bla.bla2.com/woei", "/redirect/blaredir"));

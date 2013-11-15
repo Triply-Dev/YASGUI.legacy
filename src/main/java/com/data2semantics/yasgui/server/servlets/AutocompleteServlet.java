@@ -123,13 +123,13 @@ public class AutocompleteServlet extends HttpServlet {
 		if (methodInRequest == null || methodInRequest.equals("property")) {
 			String status = null;
 			if (propertyMethodResults.length() == 0) {
-				if (dbHelper.propertyFetchDisabled(endpoint)) {
+				if (!dbHelper.propertyRetrievalEnabled(endpoint, "property")) {
 					status = "Disabled";
 				} else {
 					if (dbHelper.lastFetchesFailed(endpoint,5)) {
 						status = "Failed fetching properties";
 					} else {
-						PropertiesFetcher fetcher = new PropertiesFetcher(new File(request.getContextPath()), endpoint);
+						PropertiesFetcher fetcher = new PropertiesFetcher(new File(getServletContext().getRealPath("/")), endpoint);
 						fetcher.fetch();
 						map = dbHelper.getProperties(endpoint, partialProperty, maxResults, "property");
 						for (String uri: map.keySet()) {

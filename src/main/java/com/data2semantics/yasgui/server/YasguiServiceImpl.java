@@ -34,6 +34,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -274,5 +275,16 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 			//fail silently. doesnt matter when analysis of a single query fails..
 		}
 		
+	}
+
+	@Override
+	public String[] getDisabledEndpointsForPropertyAnalysis() throws IllegalArgumentException, FetchException {
+		try {
+			DbHelper db = new DbHelper(new File(getServletContext().getRealPath("/")), getThreadLocalRequest());
+			ArrayList<String> endpoints = db.getDisabledEndpointsForPropertyFetching();
+			return endpoints.toArray(new String[endpoints.size()]);
+		} catch (Exception e) {
+			throw new FetchException(e.getMessage());
+		}
 	}
 }
