@@ -83,9 +83,10 @@ function storePredicates($options) {
 		setSuccessfulStoreLog($con, $endpoint, $method);
 	}
 	
-	$flagSet = getCurrentUpdateFlag($con, $endpoint);
-	if (askSetFlag($flagSet) != $flagSet) {
-		changeUpdateFlag($con, $endpoint, $method, $flagSet);
+	$currentMethodFlagged = getCurrentUpdateFlag($con, $endpoint);
+	$askedMethodFlagged = askSetFlag($currentMethodFlagged);
+	if ($askedMethodFlagged != $currentMethodFlagged) {
+		changeUpdateFlag($con, $endpoint, $method, $askedMethodFlagged);
 	} else {
 		echo "\nwe did not change the flag setting\n";
 	}
@@ -101,60 +102,71 @@ function setSuccessfulStoreLog($con, $endpoint, $method) {
 	}
 }
 
-function changeUpdateFlag($con, $endpoint, $method, $flagSet) {
-	$sqlQuery = null;
-	if ($flagSet) {
-		//we want to change the flag, i.e. remove it
-		$sqlQuery = "DELETE FROM DisabledPropertyEndpoints WHERE Endpoint = '".mysqli_real_escape_string($con, $endpoint)."' AND METHOD = '".mysqli_real_escape_string($con, $method)."'";
-	} else {
-		//we want to add a flag
-		$sqlQuery = "INSERT INTO DisabledPropertyEndpoints (Endpoint, Method) VALUES ('".mysqli_real_escape_string($con, $endpoint)."', '".mysqli_real_escape_string($con, $method)."')";
-	}
+function changeUpdateFlag($con, $endpoint, $method, $methodFlagged) {
+	//first clear settings for this endpoint
+	
+	$sqlQuery = "DELETE FROM DisabledPropertyEndpoints WHERE Endpoint = '".mysqli_real_escape_string($con, $endpoint)."'";
 	$result=mysqli_query($con, $sqlQuery);
 	if (!$result) {
-		echo "Failed to change the no-update flag. exiting\n";
+		echo "Failed to reset disable property flags. exiting\n";
 		echo mysqli_error ($con)."\n";
 		exit;
 	}
-	echo "No-update flag for endpoint ".$endpoint." and method ".$method." ".($flagSet? "deleted":"added").".\n";
+	if ($methodFlagged == "both") {
+		$sqlQuery = "INSERT INTO DisabledPropertyEndpoints (Endpoint, Method) VALUES ('".mysqli_real_escape_string($con, $endpoint)."', 'property'), ('".mysqli_real_escape_string($con, $endpoint)."', 'lazy')";
+	} else if ($methodFlagged != "none") {
+		$sqlQuery = "INSERT INTO DisabledPropertyEndpoints (Endpoint, Method) VALUES ('".mysqli_real_escape_string($con, $endpoint)."', '".mysqli_real_escape_string($con, $methodFlagged)."')";
+	} 
+	$result=mysqli_query($con, $sqlQuery);
+	if (!$result) {
+		echo "Failed to set no-update flag(s). exiting\n";
+		echo mysqli_error ($con)."\n";
+		exit;
+	}
+	echo "No-update flag(s) for endpoint ".$endpoint." set.\n";
 }
 
 
 function getCurrentUpdateFlag($con, $endpoint) {
-	$flagSet = false;
+	$methodsFlagged = "none";
 	$sqlQuery = "SELECT * FROM DisabledPropertyEndpoints WHERE Endpoint = '".mysqli_real_escape_string($con, $endpoint)."'";
 	$result=mysqli_query($con, $sqlQuery);
 	if (!$result) {
 		echo "failed fetching the current update flag status from db. exiting\n";
 		echo mysqli_error ($con)."\n";
 		exit;
-	} else if ($result->num_rows > 0) {
-		$flagSet = true;
+	} else {
+		if ($result->num_rows == 2) {
+			$methodsFlagged = "both";
+		} else {
+			$row = $result->fetch_assoc();
+			$methodsFlagged = $row['Method'];
+		}
 	}
-	return $flagSet;
+	return $methodsFlagged;
 }
-function askSetFlag($currentFlagSet) {
+function askSetFlag($currentMethodFlagged) {
 	$optionsArray = [
-		"y" => true,
-		"n" => false
+		1 => "lazy",
+		2 => "property",
+		3 => "both",
+		4 => "none"
 	];
+	$selectedOption = array_search($currentMethodFlagged, $optionsArray);
 	echo "\nWe've now stored the properties. Do you want to set a flag in our database which stops YASGUI from adding more properties automatically?\n".
 		"Do this when you are sure you've added all possible properties to the database.\n".
-		"Currently, the flag to stop updating properties for your selected endpoint and method is ".($currentFlagSet?"-set-": "-not- set")."\n";
-	if ($currentFlagSet) {
-		echo "Do you want to keep this value, and not auto-update your properties? [Y/n]";
-	} else {
-		echo "Do you want to change this value, and stop automatically adding properties for this endpoint? [Y/n]\n";
-	}
+		"	[1".($selectedOption == 1? "*": "")."]: Disable automatically fetching from queries executed on this endpoint\n".
+		"	[2".($selectedOption == 2? "*": "")."]: Disable querying the dataset for rdf:properties\n".
+		"	[3".($selectedOption == 3? "*": "")."]: Disable both\n".
+		"	[4".($selectedOption == 4? "*": "")."]: Disable none\n";
+			
 	$handle = fopen ("php://stdin","r");
-	$setFlag = strtolower(trim(fgets($handle)));
-	if(array_key_exists($setFlag, $optionsArray)) {
-		return $optionsArray[$setFlag];
-	} else if (strlen($setFlag) == 0) {
-		return true;
+	$option = strtolower(trim(fgets($handle)));
+	if(array_key_exists($option, $optionsArray)) {
+		return $optionsArray[$option];
 	} else {
 		echo "Invalid input\n\n";
-		return askFlagAsWontUpdate();
+		return askSetFlag($currentFlagSet);
 	}
 }
 

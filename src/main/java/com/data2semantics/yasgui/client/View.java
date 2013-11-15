@@ -136,7 +136,6 @@ public class View extends VLayout implements RpcElement {
 		connHelper.checkOnlineStatus();
 	}
 
-	@SuppressWarnings("rawtypes")
 	private void getDisabledEndpointsForPropertyAnalysis() {
 		new GwtCallbackWrapper<String[]>(this) {
 			public void onCall(AsyncCallback<String[]> callback) {

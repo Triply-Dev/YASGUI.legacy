@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS `DisabledPropertyEndpoints` (
-  `Endpoint` varchar(1000) NOT NULL
+  `Endpoint` varchar(1000) NOT NULL,
+  `Method` enum('lazy','property') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `LogPropertyFetcher` (

@@ -217,6 +217,7 @@
 		    doLovRequest();
 		};
 		this.requestServletAutocompletions = function(methods) {
+			
 			if (location.href.indexOf("codemirror.html") !== -1) {
 				var data = jQuery.parseJSON( '{"property":{"results":["http://xmlns.com/foaf/0.1/prop","http://xmlns.com/foaf/0.1/prop3","http://xmlns.com/foaf/0.1/same", "http://xmlns.com/foaf/0.1/prop2"],"resultSize":4},"lazy":{"results":["http://xmlns.com/foaf/0.1/lazy2","http://xmlns.com/foaf/0.1/lazy1","http://xmlns.com/foaf/0.1/lazy3","http://xmlns.com/foaf/0.1/same","http://xmlns.com/foaf/0.1/lazy4"],"resultSize":5}}' );
 				if (data.property != undefined) {
@@ -574,7 +575,7 @@
 			for (var method in methods) {
 				if (methods[method]) {
 					allDisabled = false;
-					if (method == "lazy") {
+					if (method == "lov") {
 						predReq.requestLovAutocompletions();
 					} else {
 						//both other methods are executed as 1 single request

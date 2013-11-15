@@ -31,7 +31,7 @@ public class ExternalLinks {
 	public static String DATA2SEMANTICS = "http://data2semantics.org";
 	public static String YASGUI_HTML = "http://laurensrietveld.nl/yasgui";
 	public static String YASGUI_CHANGELOG = "http://laurensrietveld.nl/yasgui/changelog.html";
-	public static String YASGUI_AUTOCOMPLETE_INFO = "http://laurensrietveld.nl/yasgui/htlp.html#autocomplete";
+	public static String YASGUI_AUTOCOMPLETE_INFO = "http://laurensrietveld.nl/yasgui/help.html#autocomplete";
 	public static String LOV_API = "http://lov.okfn.org/dataset/lov/apidoc/";
 	
 }
