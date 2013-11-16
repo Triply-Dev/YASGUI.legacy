@@ -1,7 +1,5 @@
 <!DOCTYPE html>
 <html>
-
-
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
@@ -313,5 +311,15 @@ After making your changes, make sure the json configuration is valid, by validat
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 <script type="text/javascript" src="js/bootstrap.js"></script>
 <script type="text/javascript" src="js/yasgui.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    if (location.hash !== '') {
+    	$('a[href="' + location.hash + '"]').tab('show');
+    }
+    $('a[data-toggle="tab"]').on('click', function(e) {
+      return location.hash = $(e.target).attr('href').substr(1);
+    });
+});
+</script>
 </body>
 </html>

@@ -42,16 +42,37 @@ body { padding-top: 70px; }
 
 	<div class="container">
 		<div class="row">
-			<div class="col-md-12 tab-content">
-						<h2 id="whatiscors">What does CORS mean?</h2>
+		<div class="col-md-2">
+				<ul id="deployTab" class="nav nav-pills nav-stacked nav-inverse">
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#">CORS<b class="caret"></b></a>
+						<ul class="dropdown-menu">
+						  <li><a class="active" href="#aboutcors" data-toggle="tab">What is it?</a></li>
+						  <li><a href="#yasguiandcors" data-toggle="tab">How does YASGUI<br> deal with it?</a></li>
+						  <li><a href="#accessEndpoints" data-toggle="tab">Access to CORS<br>disabled endpoints</a></li>
+						</ul>
+					</li>
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#">Property<br>Autocompletion<b class="caret"></b></a>
+						<ul class="dropdown-menu">
+						  <li><a href="#autocompletion" data-toggle="tab">How</a></li>
+						  <li><a href="#autocompletionmethods" data-toggle="tab">Methods</a></li>
+						  <li><a href="#autocompletionranking" data-toggle="tab">Relation between<Br>methods</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+			<div class="col-md-10 tab-content">
+						<h1>CORS</h1>
+						<h3 id="aboutcors">What is it?</h3>
 						Cross-Origin Resource Sharing (<a href="http://enable-cors.org/" target="_blank">CORS</a>) is a <a href="http://www.w3.org/TR/cors/" target="_blank">specification</a>
 						which enables javascript access to resources on other domains. Not all endpoints are CORS-enabled, meaning they do not set the <code> Access-Control-Allow-Origin: *</code> header in their response. 
 						As a results these endpoints are not accessible via your browser (i.e. javascript)<i>directly</i>, unless these endpoints are on the same domain as YASGUI (i.e. yasgui.laurensrietveld.nl) <strong>and</strong> the endpoint is using the same port as YASGUI (e.g. port 80). A CORS-disabled endpoints <i>are</i> accessible via other non-browser based tools such as command-line tools or java / python / php / etc.
-						<h2 id="dealWithCors">How does YASGUI deal with CORS-disabled endpoints?</h2>
+						<h3 id="yasguiandcors">How does YASGUI deal with CORS-disabled endpoints?</h3>
 						YASGUI prefers accessing endpoints via javascript as this decreases latency. Whenever you enter your endpoint in the YASGUI interface, YASGUI detects whether this endpoint is CORS-enabled. When it is, every query is executed via javascript directly. 
 						When the endpoint is CORS-disabled, the YASGUI server acts as a proxy. The YASGUI server <i>is</i> able to access a CORS-disabled endpoint, which is why we use this as a middle-man in accessing the CORS-disabled endpoint.
 						
-						<h2 id="accessCorsDisabledEndpoints">How can I access CORS-disabled endpoints which are installed locally?</h2>
+						<h3 id="accessEndpoints">How can I access CORS-disabled endpoints which are installed locally?</h3>
 						Using this proxy is a great solution in accessing all <strong>public</strong> SPARQL endpoints. However, when you have a CORS-disabled endpoint installed locally on your computer, the YASGUI server is not able to access this endpoint from the outside.
 						To access these endpoints, choose one of the options below
 						
@@ -111,13 +132,63 @@ body { padding-top: 70px; }
 		To enable cross-domain access to all endpoints, click on the <i>CORS</i> button in the top-right of your screen.
 		<br><span class="label label-danger">Forcing cross-domain access for all responses, reduces your browser security. Only enable these plugins during the period you use the CORS-disable endpoints</span>
       </div>
+      
     </div>
   </div>
 </div>
-						
-				</div>
-			</div>
+			<h1>Property Autocompletion</h1>
+			<h3 id="autocompletion">How?</h3>
+			Start typing a predicate (either prefixed or as a complete URI). Then, press <code>CTRL-&lt;space&gt;</code>(or <code>COMMAND-&lt;space&gt;</code> for apple).
+			This results in a autocompletion dialogue with up to three different kind of colour-coded suggestions. Below, we explain each type of suggestion in detail. 
+			
+			
+			<h3 id="autocompletionmethods">Methods</h3>
+			YASGUI uses three different methods for autocompleting properties. Each of these methods have their own advantages and disadvantages:
+			
+			<h4>1. Properties cached from previous SPARQL queries</h4>
+			The properties are fetched from previous SPARQL queries. A property is stored whenever it occurs in the predicate position 
+			(<a href="javascript:void(0);" data-toggle="popover" title="" 
+				data-original-title="How YASGUI retrieves properties from queries"
+				data-content="Whenever a query returns valid results for a query, we send the query to the server for analysis.
+				Here, we dissect the query and loop through the triple patterns. When a triple pattern contains a URI in predicate position (and not a variable), we store this property.
+				<br>Exceptions are properties occuring in SERVICE calls (these are ignored). When a property occurs in an OPTIONAL or UNION clause, the server checks the occurance (via an ASK query) of this property in the endpoint" 
+				>how?</a>). This results in reliable autocompletion suggestions. 
+			Suggestions fetched are 
+			(<a href="javascript:void(0);" data-toggle="popover" title="" 
+				data-original-title="Occurance of fetched properties"
+				data-content="The cached properties on the YASGUI server might become stale when properties occuring in a dataset during the moment a query was analyzed, are changed or removed. Currently, there is no way of purging these properties, though this will be <a href='https://github.com/LaurensRietveld/yasgui/issues/205' target='_blank'>added</a> in the future" 
+				>almost</a>) guaranteerd to be available in the endpoint you are using. A downside of this method is that the queries (most probably) do not cover all possible properties in this endpoint.
+			<br><small>This cached list of properties is the lazy and incomplete equivalent of <a href="http://bit.ly/HREj03" target="_blank">querying for predicates</a>. However, this way of retrieving properties is not feasible for most endpoints, as such queries are very expensive.</small>
+			<h4>2. Properties fetched from querying the dataset for rdf:Property</h4>
+			This type of autocompletion suggestion is fetched by issueing a <a href="http://bit.ly/HW2E5g" target="_blank">rdf:property query</a>, and storing the results on the YASGUI server.
+			The major advantage of this type of query is that it is fast, and might result in a relatively complete set of properties. The downsides are:
+			<ul>
+				<li>Not all endpoints define their properties as being of type rdf:property</li>
+				<li>The list of fetched properties might not correspond with the list of properties occuring in the predicate position. (e.g. a rdf:property in DBPedia has a trailing <code>_</code>, where the predicate equivalent does not have this trailing <code>_</code>)</li>
+				<li>The resultset of this query can be too large to fetch via SPARQL. Something which is the case for DBPedia. 
+				(<a href="javascript:void(0);" data-toggle="popover" title="" 
+				data-original-title="Resultset size issues"
+				data-content="The resultset of endpoints may be to large to retrieve -any- results via SPARQL. Take for example DBPedia:
+				<ul>
+				<li>More than 50.000 properties</li>
+				<li>A size limit of 50.000 for resultsets, therefore SPARQL pagination is needed (i.e. limit + offset + order by)</li>
+				<li>For the use of offset, we would need to use ORDER BY</li>
+				<li>The DBPedia Virtuoso server allows you to order a maximum of 40.000 rows.</li>
+				<li>In other words: retrieving more than 50.000 properties via SPARQL from DBPedia is not possible</li>
+				</ul>" 
+				>Why?</a>)
+			</ul> 
+			<h4>3. Properties fetched from <a href="http://lov.okfn.org/dataset/lov/" target="_blank">Linked Open Vocubulary (LOV)</a></h4>
+			LOV hosts a large set of Linked Data vocabularies. The LOV <a href="http://lov.okfn.org/dataset/lov/apidoc/" target="_blank">API</a> provides an autocompletion service for all the properties defined in these vocabularies.
+			The advantage of this approach is the availability of vocabularies, regardless of the used endpoint. This is particularly useful when using localhost endpoints (i.e. not accessible from the YASGUI server), as the two methods described above do not work on these <small>(this <a href="https://github.com/LaurensRietveld/yasgui/issues/204" target="_blank">issue</a> will be resolved in a future version)</small>.
+			However, the suggestions provided from LOV are not necessarily in the endpoint being queried, making the precision of this approach low.
+			
+			<h3 id="autocompletionranking">How these methods relate to each other</h3>
+			When one property is suggested by more than 1 autocompletion method, the suggestion is shown as coming from the method with the highest 'reliability' (with reliability we mean the chance of this property actually occuring in the dataset).
+			In other words, when method 1 and method 2 provide the same property as a suggestion, we show this property as coming from method 1.
 		</div>
+	</div>
+</div>
 
 	<script type="text/javascript">
 		var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl."
@@ -137,6 +208,36 @@ body { padding-top: 70px; }
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 <script type="text/javascript" src="js/bootstrap.js"></script>
+<script type="text/javascript" src="js/popover.js"></script>
+<script type="text/javascript" src="js/tooltip.js"></script>
 <script type="text/javascript" src="js/yasgui.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    if (location.hash !== '') {
+    	$('a[href="' + location.hash + '"]').tab('show');
+    }
+    $('a[data-toggle="tab"]').on('click', function(e) {
+      return location.hash = $(e.target).attr('href').substr(1);
+    });
+});
+$('a[data-toggle=popover').each(function() {
+	var popoverelement = $(this);
+	popoverelement.popover({
+		html: true,
+		placement: "auto bottom",
+		trigger: "click"
+	});
+	$(this).click(function(event){
+	    event.stopPropagation();
+	    
+	});
+	popoverelement.on('show.bs.popover', function () {
+		$('html').click(function() {
+			popoverelement.popover('hide');
+		});
+	});
+
+});
+</script>
 </body>
 </html>
