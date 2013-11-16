@@ -16,5 +16,6 @@ CREATE TABLE IF NOT EXISTS `LogPropertyFetcher` (
 CREATE TABLE IF NOT EXISTS `Properties` (
   `Uri` varchar(1000) NOT NULL,
   `Endpoint` varchar(1000) NOT NULL,
-  `Method` enum('lazy','property') NOT NULL
+  `Method` enum('lazy','property') NOT NULL,
+  `Added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
