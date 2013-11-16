@@ -146,15 +146,40 @@
 		return getAllAutoCompletions(editor);
 		
 	};
-	
 	CodeMirror.doPredicateAutocompleteRequest = function(cm, drawCallback) {
+		this.maxResults = 50;
+		this.methodProperties = {
+			"lov" : {
+				"color":"#25547B;",
+				"abbreviation": "L",
+				"description": "Properties fetched from <a href='" + getLovApiLink() + "' target='_blank'>LOV</a>",
+				"priority": 3,
+			},
+			"property": {
+				"color":"#502982;",
+				"abbreviation": "P",
+				"description": "Properties fetched from dataset (i.e. as rdf:Property)",
+				"priority": 2,
+			},
+			"lazy": {
+				"color":"#BF9C30;",
+				"abbreviation": "C",
+				"description": "Cached properties based on endpoint query logs",
+				"priority": 1,
+			}
+		};
+		this.statusMsgs = {};
+		this.resultSizes = {};
+		this.drawnResultSizes = {};
+		this.fetched = {};
 		var predReq = this;
 		this.cur = cm.getCursor();
 		this.token = getCompleteToken(cm);
 		this.tokenPrefix = null;
 		this.tokenPrefixUri = null;
-		this.requestResults = [];
-		this.requestAutocompletions = function() {
+		this.results = [];
+		this.requestLovAutocompletions = function() {
+			predReq.fetched['lov'] = false;
 		    var args = {q:predReq.uriStart, page: 1, type: "property"};
 		    var url = "";
 		    var updateUrl = function() {
@@ -166,26 +191,115 @@
 		    	updateUrl();
 		    };
 		    var requestObj = this;
-		    this.doRequest = function() {
+		    this.doLovRequest = function() {
 		    	$.get(url, function(data) {
+		    		predReq.resultSizes['lov'] = data.total_results;
 					for (var i = 0; i < data.results.length; i++) {
-						predReq.requestResults[predReq.requestResults.length] = data.results[i].uri;
+						predReq.results.push({
+							type: "lov", 
+							uri: data.results[i].uri, 
+							priority: predReq.methodProperties.lov.priority
+						});
 				 	}
 					var resultsSoFar = data.page_size * data.page;
-					if (resultsSoFar < data.total_results) {
+					if (resultsSoFar < data.total_results && resultsSoFar < predReq.maxResults) {
 						increasePage();
-						requestObj.doRequest();
+						requestObj.doLovRequest();
 					} else {
 						//request done, draw!
-						return predReq.draw();
+						predReq.fetched['lov'] = true;
+						predReq.drawIfNeeded();
 					}
 				}).fail(function(jqXHR, textStatus, errorThrown) {
 					console.log(errorThrown);
 				  });
 		    };
-		    doRequest();
+		    doLovRequest();
 		};
-		this.preprocess = function() {
+		this.requestServletAutocompletions = function(methods) {
+			
+			if (location.href.indexOf("codemirror.html") !== -1) {
+				var data = jQuery.parseJSON( '{"property":{"results":["http://xmlns.com/foaf/0.1/prop","http://xmlns.com/foaf/0.1/prop3","http://xmlns.com/foaf/0.1/same", "http://xmlns.com/foaf/0.1/prop2"],"resultSize":4},"lazy":{"results":["http://xmlns.com/foaf/0.1/lazy2","http://xmlns.com/foaf/0.1/lazy1","http://xmlns.com/foaf/0.1/lazy3","http://xmlns.com/foaf/0.1/same","http://xmlns.com/foaf/0.1/lazy4"],"resultSize":5}}' );
+				if (data.property != undefined) {
+					if (data.property.status != undefined) {
+						predReq.statusMsgs['property'] = data.property.status;
+					}
+					predReq.resultSizes['property'] = data.property.resultSize;
+					for (var i = 0; i < data.property.results.length; i++) {
+						predReq.results.push({
+							type: "property", 
+							uri: data.property.results[i],
+							priority: predReq.methodProperties.property.priority
+						});
+					}
+				}
+				
+				if (data.lazy != undefined) {
+					if (data.lazy.status != undefined) {
+						predReq.statusMsgs['lazy'] = data.lazy.status;
+					}
+					predReq.resultSizes['lazy'] = data.lazy.resultSize;
+					for (var i = 0; i < data.lazy.results.length; i++) {
+						predReq.results.push({
+							type: "lazy", 
+							uri: data.lazy.results[i],
+							priority: predReq.methodProperties.lazy.priority
+						});
+					}
+				}
+				predReq.fetched['servlet'] = true;
+				predReq.drawIfNeeded();
+				return;
+			}
+			
+			predReq.fetched['servlet'] = false;
+			var args = {
+				q:predReq.uriStart, 
+				max: predReq.maxResults, 
+				type: "property",
+				endpoint: getCurrentEndpoint()
+			};
+			if (methods.length == 1) {
+				args["method"] = methods[0];
+			} else {
+				//no need to add methods to args. We want all!
+			}
+		    var url = "Yasgui/autocomplete?" + $.param(args);
+			$.get(url, function(data) {
+				if (data.property != undefined) {
+					if (data.property.status != undefined) {
+						predReq.statusMsgs['property'] = data.property.status;
+					}
+					predReq.resultSizes['property'] = data.property.resultSize;
+					for (var i = 0; i < data.property.results.length; i++) {
+						predReq.results.push({
+							type: "property", 
+							uri: data.property.results[i],
+							priority: predReq.methodProperties.property.priority
+						});
+					}
+				}
+				
+				if (data.lazy != undefined) {
+					if (data.lazy.status != undefined) {
+						predReq.statusMsgs['lazy'] = data.lazy.status;
+					}
+					predReq.resultSizes['lazy'] = data.lazy.resultSize;
+					for (var i = 0; i < data.lazy.results.length; i++) {
+						predReq.results.push({
+							type: "lazy", 
+							uri: data.lazy.results[i],
+							priority: predReq.methodProperties.lazy.priority
+						});
+					}
+				}
+				predReq.fetched['servlet'] = true;
+				predReq.drawIfNeeded();
+			}).fail(function(jqXHR, textStatus, errorThrown) {
+				console.log(errorThrown);
+			});
+		};
+		this.preprocessToken = function() {
 			var token = predReq.token;
 			if ($.inArray("a", predReq.token.state.possibleCurrent) >= 0) {
 				// ok, so we are in a position where we can add properties
@@ -215,9 +329,182 @@
 				}
 			}
 		};
+		this.drawIfNeeded = function() {
+			//only draw when responses from both calls are in!
+			var done = true;
+			for (request in predReq.fetched) {
+				if (!predReq.fetched[request]) {
+					done = false;
+					break;
+				}
+			}
+			if (done) predReq.draw();
+		};
+		this.prepareResultsForDrawing = function() {
+			//we want to:
+			//- make results distinct (a uri might be fetched by several methods)
+			//- limit results (make sure the ones with highest priority are included)
+			//- sort results alphabetically
+			
+			//make results distinct. Don't want multiple URIs in there. Use 'priority' for retrieval methods.
+			//if a uri is fetched using both the lazy method and the property method, add it as being retrieved as 'lazy'
+			//do this by sorting by uri, and then priority. When encountering multiple uris, select the first one
+			predReq.results.sort(dynamicSortMultiple("uri", "priority"));
+			//increment in reverse, as removing items from the array while looping through it causes problems
+			var len = predReq.results.length;
+			while (len--) {
+			    var result = predReq.results[len];
+			    if (predReq.results[len-1] != undefined && predReq.results[len-1].uri == result.uri) {
+			    	//the result before this has same uri (and higher priority, as array is sorted). 
+			    	//so remove current item
+			    	predReq.results.splice(len, 1);
+			    } else {
+			    	if (predReq.drawnResultSizes[predReq.results[len].type] == undefined) {
+			    		predReq.drawnResultSizes[predReq.results[len].type] = 0;
+			    	}
+			    	predReq.drawnResultSizes[predReq.results[len].type]++;
+			    }
+			}
+			
+			//Only select x results. So first sort by priority / alphabetically, and then select x
+			if (predReq.maxResults < predReq.results.length) {
+				predReq.results.sort(dynamicSortMultiple("priority", "uri"));
+				predReq.results.splice(predReq.maxResults, predReq.results.length - maxResults);
+			}
+			//now sort everything alphabetically again
+			predReq.results.sort(dynamicSortMultiple("uri"));
+		};
+		completionMethodChanged = function() {
+			var button = $("#completionMethodButton");
+			var checkboxElements=document.getElementsByName("propertyCompletions");
+			var newEnabledMethods = {};
+			for (var i = 0;i < checkboxElements.length; i++) {
+				newEnabledMethods[checkboxElements[i].value] = checkboxElements[i].checked;
+			}
+			var oldEnabledMethods = getPropertyCompletionMethods();
+			if (compareObjects(oldEnabledMethods, newEnabledMethods)) {
+				//different, show apply button
+				if (button != null) {
+					button.hide("fast");
+				}
+			} else {
+				//same, hide apply button
+				if (button != null) {
+					button.show("fast");
+				}
+				
+			}
+		};
+		storeCompletionMethods = function() {
+			var checkboxElements=document.getElementsByName("propertyCompletions");
+			var methods = {};
+			for (var i = 0;i < checkboxElements.length; i++) {
+				methods[checkboxElements[i].value] = checkboxElements[i].checked;
+			}
+			storeCompletionMethodsInSettings(JSON.stringify(methods));
+		};
+		this.legendDialogue = {
+			legendId: "propertyLegend",
+			legendHtml: "placeholder",
+			generateHtml: function(dismissOnOutsideClick) {
+				var methods = getPropertyCompletionMethods();
+				var sortedMethods = [];
+				for (var method in methods) {
+					//this is a -very- naive quick way to sort. 
+					//it -only- makes sure our highest priority item is at the top of the array
+					if (sortedMethods.length == 0 || methodProperties[method].priority < methodProperties[sortedMethods[0]].priority) {
+						sortedMethods.unshift(method);
+					} else {
+						sortedMethods.push(method);
+					}
+				}
+				this.legendHtml = 
+					"Methods used for fetching autocompletions: (<a href='" + getAutocompletionMoreInfoLink() + " ' target='_blank'>more info</a>):" +
+					"<ul id='propertyCompletionsLegend' class='propertyCompletionsLegend'>";
+				for (var i = 0; i < sortedMethods.length; i++) {
+					var method = sortedMethods[i];
+					var methodProps = predReq.methodProperties[method];
+					this.legendHtml += 
+						"<li id='" + method + "Hint' class='" + method + "Hint propertyCompletionLegend'>" +
+							"<table style='min-height:25px;border-collapse:collapse'><tr>" + 
+							"<td>" +
+								"<span style='vertical-align: middle;display: inline;background-color:" + methodProps.color + "' class='propertyTypeIconLegend propertyTypeIcon'>" + methodProps.abbreviation + "</span>" +
+							"</td>" +
+							"<td>" + 
+							"<input onclick='completionMethodChanged();' class='propertyCompletionMethodCheckbox' type='checkbox' name='propertyCompletions' value='" + method + "' " + (methods[method]? "checked":"") + ">" +
+							"</td>" +
+							"<td>" +
+							methodProps.description + 
+							" (";
+					if (predReq.resultSizes[method] != undefined) {
+						if (predReq.drawnResultSizes[method] == undefined || predReq.drawnResultSizes[method] == predReq.resultSizes[method]) {
+							this.legendHtml += predReq.resultSizes[method];
+						} else {
+							this.legendHtml += 
+								"<span title='properties in autocompletion dialogue vs number of available properties for autocompletion'>" +
+									predReq.drawnResultSizes[method] + "/" + predReq.resultSizes[method] +
+								"</span>";
+						}
+					} else {
+						if (predReq.statusMsgs[method] != undefined) {
+							this.legendHtml += predReq.statusMsgs[method];
+						} else {
+							this.legendHtml += "unknown";
+						}
+					}
+					this.legendHtml += ")" +
+						"</td>" +
+						"</tr></table>" +
+						"</li>";
+				}
+				this.legendHtml += 
+					"</ul>" +
+					"<button id='completionMethodButton' style='display:none;float: right;' onclick='storeCompletionMethods();$.noty.close(\"" + this.legendId + "\");return false;'>Apply</button>";
+			},
+			draw: function(dismissOnOutsideClick) {
+				this.generateHtml(dismissOnOutsideClick);
+				closeWith = (dismissOnOutsideClick? ['button']:[] );
+				if ($.noty.get(this.legendId) == false) {
+					noty({
+						text: this.legendHtml,
+						layout: 'bottomLeft',
+						type: 'alert',
+						id: this.legendId,
+						closeWith: closeWith,
+					});
+				} else {
+					$.noty.setText(legendId, legendHtml);
+				}
+			},
+			close: function() {
+				$.noty.close(this.legendId);
+			},
+			update: function(completion) {
+				//clear 'selected' class name from 
+				$("#propertyCompletionsLegend").find(".propertyCompletionLegendSelected").each (function() {
+				    $(this).removeClass("propertyCompletionLegendSelected");
+				});
+				if (document.getElementById(completion.className) != undefined) {
+					document.getElementById(completion.className).className += " " + "propertyCompletionLegendSelected";
+				}
+				
+			}
+		};
+		this.appendTypeIconsToAutocomplete = function() {
+			//class: propertyTypeIcon
+			$(".lazyHint.CodeMirror-hint").each(function(){
+				$(this).prepend("<span style='background-color:" + predReq.methodProperties.lazy.color + "' class='propertyTypeIcon'>" + predReq.methodProperties.lazy.abbreviation + "</span>");
+			});
+			$(".propertyHint.CodeMirror-hint").each(function(){
+				$(this).prepend("<span style='background-color:" + predReq.methodProperties.property.color + "' class='propertyTypeIcon'>" + predReq.methodProperties.property.abbreviation + "</span>");
+			});
+			$(".lovHint.CodeMirror-hint").each(function(){
+				$(this).prepend("<span style='background-color:" + predReq.methodProperties.lov.color + "' class='propertyTypeIcon'>" + predReq.methodProperties.lov.abbreviation + "</span>");
+			});
+		};
 		this.draw = function() {
-			var results = predReq.requestResults;
-			results.sort();
+			predReq.prepareResultsForDrawing();
+			results = predReq.results;
 			var found = [];
 			if (results.length > 0) {
 				// use custom completionhint function, to avoid reaching a loop when the
@@ -231,7 +518,7 @@
 				};
 				
 				for ( var i = 0; i < results.length; i++) {
-					var suggestedString = results[i];
+					var suggestedString = results[i].uri;
 					if (tokenPrefix != null && tokenPrefixUri != null) {
 						// we need to get the suggested string back to prefixed form
 						suggestedString = suggestedString
@@ -241,9 +528,12 @@
 						// it is a regular uri. add '<' and '>' to string
 						suggestedString = "<" + suggestedString + ">";
 					}
+					//different style per autocomplete method
 					found.push({
 						text : suggestedString,
-						hint : completionHint
+						displayText: suggestedString,
+						hint : completionHint,
+						className: results[i].type + "Hint"
 					});
 				}
 			
@@ -252,6 +542,14 @@
 				
 				if (found.length > 0) {
 					var autocompleteObj =  {
+						_handlers: {
+							"close": [function(){
+								predReq.legendDialogue.close();
+							}],
+							"select": [function(completion, element) {
+								predReq.legendDialogue.update(completion);
+							}] 
+						},
 						list : found,
 						from : {
 							line : cur.line,
@@ -262,66 +560,41 @@
 							ch : token.end
 						}
 					};
+					predReq.legendDialogue.draw();
 					drawCallback(autocompleteObj);
-//					CodeMirror.showHint(cm, CodeMirror.doPredicateAutocompleteRequest, {closeCharacters: /(?=a)b/});
-					
-					
+					predReq.appendTypeIconsToAutocomplete();
 				}
 			} else {
-//				console.log("nothing to draw");
+				console.log("nothing to draw");
 			}
 		};
-		preprocess();
+		this.requestAutocompletions = function() {
+			var allDisabled = true;
+			var methods = getPropertyCompletionMethods();
+			var servletMethods = [];
+			for (var method in methods) {
+				if (methods[method]) {
+					allDisabled = false;
+					if (method == "lov") {
+						predReq.requestLovAutocompletions();
+					} else {
+						//both other methods are executed as 1 single request
+						servletMethods.push(method);
+					}
+				}
+			}
+			if (servletMethods.length > 0) {
+				predReq.requestServletAutocompletions(servletMethods);
+			}
+			if (allDisabled) {
+				predReq.legendDialogue.draw(true);
+			}
+		};
+		preprocessToken();
 		requestAutocompletions();
 	};
 	
 	
-	
-//	// use custom completionhint function, to avoid reaching a loop when the
-//	// completionhint is the same as the current token
-//	// regular behaviour would keep changing the codemirror dom, hence
-//	// constantly calling this callback
-//	var completionHint = function(cm, data, completion) {
-//		if (completion.text != cm.getTokenAt(editor.getCursor()).string) {
-//			cm.replaceRange(completion.text, data.from, data.to);
-//		}
-//	};
-//	var suggestionsList = properties[getCurrentEndpoint()].autoComplete(uriStart, 0, 50);
-//	for ( var i = 0; i < suggestionsList.length; i++) {
-//		var suggestedString = suggestionsList[i];
-//		if (tokenPrefix != null && tokenPrefixUri != null) {
-//			// we need to get the suggested string back to prefixed form
-//			suggestedString = suggestedString
-//					.substring(tokenPrefixUri.length);
-//			suggestedString = tokenPrefix + suggestedString;
-//		} else {
-//			// it is a regular uri. add '<' and '>' to string
-//			suggestedString = "<" + suggestedString + ">";
-//		}
-//		found.push({
-//			text : suggestedString,
-//			hint : completionHint
-//		});
-//	}
-//
-//	if (found.length == 1 && found[0].text == token.string)
-//		return;// we already have our match
-//	
-//	if (found.length > 0) {
-//		return {
-//			list : found,
-//			from : {
-//				line : cur.line,
-//				ch : token.start
-//			},
-//			to : {
-//				line : cur.line,
-//				ch : token.end
-//			}
-//		};
-//	}
-//	return;
-
 	CodeMirror.prefixHint = function(editor) {
 		return getPrefixAutocompletions(editor);
 	};
@@ -604,20 +877,4 @@ function getIndentFromLine(cm, line, charNumber) {
 	}
 	;
 }
-
-if (typeof String.prototype.startsWith != 'function') {
-	String.prototype.startsWith = function(str) {
-		return this.slice(0, str.length) == str;
-	};
-}
-if (typeof String.prototype.endsWith != 'function') {
-	String.prototype.endsWith = function(str) {
-		return this.slice(-str.length) == str;
-	};
-};
-if (typeof String.prototype.contains != 'function') {
-	String.prototype.contains = function(str) {
-		return this.indexOf(":") >= 0;
-	};
-};
 

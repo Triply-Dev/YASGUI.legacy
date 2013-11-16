@@ -3,8 +3,29 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Codemirror Test</title>
-<script type="text/javascript">function showPlayButton(){};function setQueryType(queryType){};</script>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+<script type="text/javascript">
+	function getLovApiLink() {
+	};
+	function getAutocompletionMoreInfoLink() {
+	};
+	function storeCompletionMethods() {
+	};
+	function getPropertyCompletionMethods() {
+		return {
+			"lov" : true,
+			"property" : true,
+			"lazy" : true
+		};
+	};
+	function cancelQuery() {
+	};
+	function showPlayButton() {
+	};
+	function setQueryType(queryType) {
+	};
+</script>
+<script
+	src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
 
 <script src="assets/trie.js"></script>
 
@@ -29,11 +50,16 @@
 <link rel="stylesheet" href="assets/flint/sparql.css">
 <!-- Code for adding custom keycombination/mouseclick commands to codemirror -->
 <script src="assets/codemirrorHelper.js"></script>
-  </head>
-  <body>
-  
-<br><br>
-	<textarea id="test" style="width:400px;height:300px;">
+<!-- notification library -->
+<script src="assets/noty/jquery.noty.js"></script>
+<script src="assets/noty/layouts/bottomRight.js"></script>
+<script src="assets/noty/layouts/bottomLeft.js"></script>
+<script src="assets/noty/themes/default.js"></script>
+</head>
+<body>
+	<br>
+	<br>
+	<textarea id="test" style="width: 400px; height: 300px;">
 PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
 PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
 PREFIX geo: &lt;http://www.w3.org/2003/01/geo/wgs84_pos#&gt;
@@ -44,30 +70,41 @@ SELECT * WHERE {
 </textarea>
 
 	<script type="text/javascript">
-	function checkAdjustParent() {
-		
-	}
-	function getCurrentEndpoint() {
-		return "bla";
-	}
-	var properties = {};
-	var propertiesArray = [];
-	var T = new Trie();
-    var i;
-    for(i = 0; i < propertiesArray.length; i++) {
-        T.insert(propertiesArray[i]);
-        properties['bla'] = T;
-    }
-	var prefixes = ["aers: <bwah>", "aacbs: <sdf>", "aacds: <sdf>", "aaebs: <sdf>", "blaaa1: <sdf>", "blaaa2: <sdf>", "blaaa3: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aacbs: <sdf>", "rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>", "http: <htpp://bla>", "rdfs: <bwah>", "whereeee: <sdf>", "whereeec: <sdf>"];
-				var modes;
+		function checkAdjustParent() {
+
+		}
+		function getCurrentEndpoint() {
+			return "bla";
+		}
+		var properties = {};
+		var propertiesArray = [];
+		var T = new Trie();
+		var i;
+		for (i = 0; i < propertiesArray.length; i++) {
+			T.insert(propertiesArray[i]);
+			properties['bla'] = T;
+		}
+		var prefixes = [ "aers: <bwah>", "aacbs: <sdf>", "aacds: <sdf>",
+				"aaebs: <sdf>", "blaaa1: <sdf>", "blaaa2: <sdf>",
+				"blaaa3: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>",
+				"aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>",
+				"aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>", "aaebs: <sdf>",
+				"aaebs: <sdf>", "aaebs: <sdf>", "aacbs: <sdf>",
+				"rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
+				"http: <htpp://bla>", "rdfs: <bwah>", "whereeee: <sdf>",
+				"whereeec: <sdf>" ];
+		var modes;
+
 		var myCodeMirror = CodeMirror.fromTextArea(document
 				.getElementById("test"), {
-			theme: "yasgui",
-			mode: "sparql11",
+			theme : "yasgui",
+			mode : "sparql11",
 			lineNumbers : true,
-			highlightSelectionMatches: {showToken: /\w/},
-			matchBrackets: true,
-			gutters: ["gutterErrorBar","CodeMirror-linenumbers" ],
+			highlightSelectionMatches : {
+				showToken : /\w/
+			},
+			matchBrackets : true,
+			gutters : [ "gutterErrorBar", "CodeMirror-linenumbers" ],
 			extraKeys : {
 				"Ctrl-Space" : "autoComplete",
 				"Ctrl-D" : "deleteLines",
@@ -77,17 +114,20 @@ SELECT * WHERE {
 				"Ctrl-S" : "doNothing",
 				"Shift-Ctrl-F": "doAutoFormat",
 				"Tab" : "indentTab",
-				"Shift-Tab": "unindentTab"
+				"Shift-Tab": "unindentTab",
+				"Shift-Ctrl-F" : "doAutoFormat"
 			}
 		});
-		myCodeMirror.on("change", function(cm, change){
-			CodeMirror.showHint(cm, CodeMirror.allAutoCompletions, {closeCharacters: /(?=a)b/, closeOnUnfocus: false});
+		myCodeMirror.on("change", function(cm, change) {
+			CodeMirror.showHint(cm, CodeMirror.allAutoCompletions, {
+				closeCharacters : /(?=a)b/,
+				closeOnUnfocus : false
+			});
 			appendPrefixIfNeeded(cm);
 			checkSyntax(cm);
 			setQueryType(cm.getStateAfter().queryType);
 			checkAdjustParent();
 		});
-			
 	</script>
 </body>
 </html>

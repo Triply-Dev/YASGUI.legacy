@@ -53,9 +53,15 @@ package com.data2semantics.yasgui.client.helpers;
 
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.shared.SettingKeys;
+import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -130,5 +136,53 @@ public class JsonHelper extends JSONObject {
 			value = (int)get(key).isNumber().doubleValue();
 		}
 		return value;
+	}
+	protected Set<String> getSet(String key, Set<String> defaultVal) {
+		Set<String> value = defaultVal;
+		if (containsKey(key) && get(key).isArray() != null){
+			value = new HashSet<String>();
+			JSONArray jsonArray = get(key).isArray();
+			for (int i = 0; i < jsonArray.size(); i++) {
+				if (jsonArray.get(i).isString() != null) {
+					value.add(jsonArray.get(i).isString().stringValue());
+				}
+			}
+		}
+		return value;
+	}
+	
+	protected Map<String, Boolean> getMap(String key, Map<String, Boolean> defaultVal) {
+		Map<String, Boolean> value = defaultVal;
+		if (containsKey(key) && get(key).isObject() != null){
+			value = new HashMap<String, Boolean>();
+			JSONObject jsonObject = get(key).isObject();
+			Set<String> keySet = jsonObject.keySet();
+			for (String objKey: keySet) {
+				if (jsonObject.get(objKey).isBoolean() != null) {
+					value.put(objKey, jsonObject.get(objKey).isBoolean().booleanValue());
+				}
+			}
+		}
+		return value;
+	}
+	
+	protected void setMapAsObject(String key, Map<String, Boolean> map) {
+		//first delete object
+		put(key, null);
+		
+		//now add it
+		if (map != null && map.size() > 0) {
+			put(key, getMapAsObject(map));
+		}
+	}
+	
+	protected JSONObject getMapAsObject(Map<String, Boolean> map) {
+		JSONObject jsonObject = new JSONObject();
+		if (map != null && map.size() > 0) {
+			for (Entry<String, Boolean> entry: map.entrySet()) {
+				jsonObject.put(entry.getKey(), JSONBoolean.getInstance(entry.getValue()));
+			}
+		}
+		return jsonObject;
 	}
 }

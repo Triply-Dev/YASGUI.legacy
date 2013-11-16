@@ -26,6 +26,7 @@ package com.data2semantics.yasgui.client.settings;
  * #L%
  */
 
+import java.util.Map;
 import java.util.Set;
 
 import com.data2semantics.yasgui.client.helpers.JsonHelper;
@@ -81,6 +82,9 @@ public class EnabledFeatures extends JsonHelper {
 	}
 	public boolean offlineCachingEnabled() {
 		return getBoolean(SettingKeys.ENABLED_OFFLINE_CACHING, true);
+	}
+	public Map<String, Boolean> getEnabledPropertyCompletionMethods() {
+		return getMap(SettingKeys.ENABLED_PROPERTY_COMPLETION_METHODS, null);
 	}
 	
 }

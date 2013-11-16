@@ -28,6 +28,9 @@ package com.data2semantics.yasgui.client.helpers;
 
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.configmenu.OfflineAvailabilityConfig;
+import com.data2semantics.yasgui.client.settings.ExternalLinks;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
 
 public class CallableJsMethods {
 	private View view;
@@ -146,8 +149,22 @@ public class CallableJsMethods {
 			GoogleAnalytics.trackEvent(queryEvent);
 		}
 	}
-	
-
+	public String getPropertyCompletionMethods() {
+		return view.getSettings().getPropertCompletionMethodsAsJson().toString();
+	}
+	public String getAutocompletionMoreInfoLink() {
+		return ExternalLinks.YASGUI_AUTOCOMPLETE_INFO;
+	}
+	public String getLovApiLink() {
+		return ExternalLinks.LOV_API;
+	}
+	public void storeCompletionMethodsInSettings(String methodsJsonString) {
+		JSONValue jsonVal = JSONParser.parseStrict(methodsJsonString);
+		if (jsonVal != null && jsonVal.isObject() != null) {
+			view.getSettings().setPropertyCompletionMethods(jsonVal.isObject());
+			LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+		}
+	}
 	
 	/**
 	 * Add view methods to JS, use this for situations where a non-static GWT method needs to be called
@@ -225,5 +242,19 @@ public class CallableJsMethods {
 		$wnd.sendQueryAnalyticsEvent = function(endpoint, queryString, label, timing) {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::sendQueryAnalyticsEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)(endpoint, queryString, label, timing);
 		}
+		$wnd.getPropertyCompletionMethods = function() {
+			var settingsString = viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::getPropertyCompletionMethods()();
+			return $wnd.jQuery.parseJSON(settingsString);
+		}
+		$wnd.getAutocompletionMoreInfoLink = function() {
+			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::getAutocompletionMoreInfoLink()();
+		}
+		$wnd.getLovApiLink = function() {
+			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::getLovApiLink()();
+		}
+		$wnd.storeCompletionMethodsInSettings = function(methods) {
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::storeCompletionMethodsInSettings(Ljava/lang/String;)(methods);
+		}
+		
 	}-*/;
 }

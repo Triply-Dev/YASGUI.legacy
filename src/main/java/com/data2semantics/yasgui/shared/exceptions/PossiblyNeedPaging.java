@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.client.settings;
+package com.data2semantics.yasgui.shared.exceptions;
 
 /*
  * #%L
@@ -26,12 +26,28 @@ package com.data2semantics.yasgui.client.settings;
  * #L%
  */
 
-public class ExternalLinks {
-	public static String GITHUB_PAGE = "http://github.com/LaurensRietveld/yasgui";
-	public static String DATA2SEMANTICS = "http://data2semantics.org";
-	public static String YASGUI_HTML = "http://laurensrietveld.nl/yasgui";
-	public static String YASGUI_CHANGELOG = "http://laurensrietveld.nl/yasgui/changelog.html";
-	public static String YASGUI_AUTOCOMPLETE_INFO = "http://laurensrietveld.nl/yasgui/help.html#autocomplete";
-	public static String LOV_API = "http://lov.okfn.org/dataset/lov/apidoc/";
+import java.io.Serializable;
+
+public class PossiblyNeedPaging extends RuntimeException implements Serializable { 
+	
+	private int count;
+
+	public PossiblyNeedPaging(){}
+	public PossiblyNeedPaging(String message) {
+		super(message);
+	}
+	
+	public void setQueryCount(int count) {
+		this.count = count;
+	}
+	public int getQueryCount() {
+		return this.count;
+	}
+
+	public PossiblyNeedPaging(String message, Throwable e) {
+		super(message, e);
+	}
+
+	private static final long serialVersionUID = 1L;
 	
 }

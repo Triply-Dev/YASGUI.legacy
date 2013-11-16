@@ -32,13 +32,20 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -66,13 +73,13 @@ public class ConnectionFactory  {
 		try {
 			connect = connect(config.getString(SettingKeys.MYSQL_HOST) + "/" + config.getString(SettingKeys.MYSQL_DB), config.getString(SettingKeys.MYSQL_USERNAME),
 					config.getString(SettingKeys.MYSQL_PASSWORD));
+			applyDeltas(connect, configDir);
 		} catch (SQLException e) {
 			//db probably doesnt exist.
 			//connect without db selector, create db, and create new connector
 			connect = connect(config.getString(SettingKeys.MYSQL_HOST), config.getString(SettingKeys.MYSQL_USERNAME),
 					config.getString(SettingKeys.MYSQL_PASSWORD));
 			connect = updateDatabase(connect, config, configDir);
-			
 		}
 		return connect;
 	}
@@ -94,7 +101,9 @@ public class ConnectionFactory  {
 	}
 	
 	/**
-	 * Update a database. Called on an empty database. This method executes an SQL script generating the needed db tables
+	 * Update a database. Called on an empty database. This method executes an SQL script generating the needed db tables.
+	 * Also checks our delta's, to see whether we need to change our database.
+	 * 
 	 * @param connect
 	 * @param config
 	 * @param configDir
@@ -119,8 +128,36 @@ public class ConnectionFactory  {
 			String filename = "create.sql";
 			FileInputStream fileStream = new FileInputStream(configDir.getAbsolutePath() + "/" + ConfigFetcher.CONFIG_DIR + filename);
 			runner.runScript(new BufferedReader(new InputStreamReader(fileStream, "UTF-8")));
+			fileStream.close();
 		}
+		applyDeltas(connect, configDir);
 		return connect;
+	}
+	
+	private static void applyDeltas(Connection connect, File configDir) throws UnsupportedEncodingException, IOException, SQLException {
+		@SuppressWarnings("unchecked")
+		ArrayList<File> listFiles = new ArrayList<File>(FileUtils.listFiles(new File(configDir.getAbsolutePath() + "/config"), FileFilterUtils.prefixFileFilter("delta_"), null));
+		
+		TreeMap<Integer, File> files = new TreeMap<Integer, File>();
+		for (File file: listFiles) {
+			String basename = file.getName();
+			basename = basename.substring("delta_".length());
+			basename = basename.substring(0,basename.length() - ".sql".length());
+			int index = Integer.parseInt(basename);
+			files.put(index, file);
+		}
+		ArrayList<Integer> currentDeltas = getDeltas(connect);
+		//treemap is naturally sorted, so just iterate through them
+		for (Entry<Integer, File> entry: files.entrySet()) {
+			if (!currentDeltas.contains(entry.getKey())) {
+				ScriptRunner runner = new ScriptRunner(connect, false, true);
+				FileInputStream fileStream = new FileInputStream(entry.getValue());
+				runner.runScript(new BufferedReader(new InputStreamReader(fileStream, "UTF-8")));
+				fileStream.close();
+				setDeltaApplied(connect, entry.getKey());
+			}
+			
+		}
 	}
 	
 	/**
@@ -150,6 +187,28 @@ public class ConnectionFactory  {
 		statement.close();
 		resultSet.close();
 		return exists;
+	}
+	
+	private static ArrayList<Integer> getDeltas(Connection connect) throws SQLException {
+		ArrayList<Integer> deltaIds = new ArrayList<Integer>();
+		String sql = "SELECT Id FROM Deltas WHERE 1 ORDER BY Id ASC";
+		Statement statement = connect.createStatement();
+		ResultSet result = statement.executeQuery(sql);
+		while (result.next()) {
+			deltaIds.add(result.getInt("Id"));
+		}
+		return deltaIds;
+	}
+	private static void setDeltaApplied(Connection connect, int deltaId) throws SQLException {
+		String sql = "INSERT INTO Deltas (Id) VALUES(?)";
+		PreparedStatement statement = connect.prepareStatement(sql);
+		statement.setInt(1, deltaId);
+		statement.executeUpdate();
+	}
+	public static void main(String[] args) {
+		String basename = "delta_10.sql";
+		basename = basename.substring("delta_".length());
+		basename = basename.substring(0,basename.length() - ".sql".length());
 	}
 
 }

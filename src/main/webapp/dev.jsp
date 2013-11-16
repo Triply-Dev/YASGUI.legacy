@@ -46,6 +46,8 @@
 <!-- Code for efficiently looping through all tokens (used for removing comments) -->
 <script src="assets/codemirror/addon/runmode/runmode.js?<% out.print(StaticConfig.VERSION); %>"></script>
 
+<script src="assets/json2.js?<% out.print(StaticConfig.VERSION); %>"></script>
+
 <!-- Flint code for sparql mode -->
 <script src="assets/flint/sparql.js?<% out.print(StaticConfig.VERSION); %>"></script>
 <link rel="stylesheet" href="assets/flint/sparql.css?<% out.print(StaticConfig.VERSION); %>">
@@ -55,6 +57,7 @@
 <!-- notification library -->
 <script src="assets/noty/jquery.noty.js?<% out.print(StaticConfig.VERSION); %>"></script>
 <script src="assets/noty/layouts/bottomRight.js?<% out.print(StaticConfig.VERSION); %>"></script>
+<script src="assets/noty/layouts/bottomLeft.js?<% out.print(StaticConfig.VERSION); %>"></script>
 <script src="assets/noty/themes/default.js?<% out.print(StaticConfig.VERSION); %>"></script>
 
 

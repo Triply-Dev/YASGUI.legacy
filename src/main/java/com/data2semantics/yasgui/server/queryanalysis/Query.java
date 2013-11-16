@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.client.settings;
+package com.data2semantics.yasgui.server.queryanalysis;
 
 /*
  * #%L
@@ -26,12 +26,44 @@ package com.data2semantics.yasgui.client.settings;
  * #L%
  */
 
-public class ExternalLinks {
-	public static String GITHUB_PAGE = "http://github.com/LaurensRietveld/yasgui";
-	public static String DATA2SEMANTICS = "http://data2semantics.org";
-	public static String YASGUI_HTML = "http://laurensrietveld.nl/yasgui";
-	public static String YASGUI_CHANGELOG = "http://laurensrietveld.nl/yasgui/changelog.html";
-	public static String YASGUI_AUTOCOMPLETE_INFO = "http://laurensrietveld.nl/yasgui/help.html#autocomplete";
-	public static String LOV_API = "http://lov.okfn.org/dataset/lov/apidoc/";
+import java.util.Set;
+
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.Syntax;
+import com.hp.hpl.jena.sparql.core.Prologue;
+import com.hp.hpl.jena.sparql.syntax.Element;
+
+public class Query extends com.hp.hpl.jena.query.Query {
+	
+	private SparqlElementVisitor visitor = null;
+	public Query() {};
+	public Query(Prologue prologue) {
+		super(prologue);
+	}
+	
+	public static Query create(String queryString) {
+		Query query = new Query();
+		query = (Query)(QueryFactory.parse(query, queryString, null, Syntax.defaultQuerySyntax));
+		query.generateQueryStats();
+		return query;
+	}
+	
+	private void generateQueryStats() {
+		Element queryElement = getQueryPattern();
+		visitor = new SparqlElementVisitor();
+		if (queryElement == null) return;
+		queryElement.visit(visitor);
+		visitor.cleanPossibleProperties();
+	}
+	
+	public Set<String> getProperties() {
+		if (visitor == null) generateQueryStats();
+		return visitor.getProperties();
+	}
+	public Set<String> getPossibleProperties() {
+		if (visitor == null) generateQueryStats();
+		return visitor.getPossibleProperties();
+	}
+	
 	
 }

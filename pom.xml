@@ -29,7 +29,7 @@
 		<dependency>
 			<groupId>net.sf.opencsv</groupId>
 			<artifactId>opencsv</artifactId>
-			<version>2.0</version>
+			<version>2.3</version>
 		</dependency>
 		<dependency>
 			<groupId>com.rosaloves</groupId>
@@ -102,9 +102,6 @@
 			<artifactId>smartgwt-skins</artifactId>
 			<version>${smartGwtVersion}</version>
 		</dependency>
-		<!-- <dependency> <groupId>com.d2s</groupId> <artifactId>smartgwt</artifactId> 
-			<version>3.1p</version> </dependency> <dependency> <groupId>com.d2s</groupId> 
-			<artifactId>smartgwt-skins</artifactId> <version>3.1p</version> </dependency> -->
 		<dependency>
 			<groupId>com.hp.hpl.jena</groupId>
 			<artifactId>arq</artifactId>
@@ -186,6 +183,11 @@
 			<groupId>org.eclipse.mylyn.github</groupId>
 			<artifactId>org.eclipse.egit.github.core</artifactId>
 			<version>2.1.5</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>2.0</version>
 		</dependency>
 	</dependencies>
 
@@ -316,8 +318,10 @@
 								<include>../assets/flint/sparql.js</include>
 								<include>../assets/codemirror/util/formatting.js</include>
 								<include>../assets/codemirrorHelper.js</include>
+								<include>../assets/json2.js</include>
 								<include>../assets/noty/jquery.noty.js</include>
 								<include>../assets/noty/layouts/bottomRight.js</include>
+								<include>../assets/noty/layouts/bottomLeft.js</include>
 								<include>../assets/noty/themes/default.js</include>
 								<include>../assets/yasgui.js</include>
 							</includes>

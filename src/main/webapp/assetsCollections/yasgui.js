@@ -254,7 +254,37 @@ function progressbarUpdate(percent, $element) {
 	}
 }
 
+function dynamicSort(property) {
+    var sortOrder = 1;
+    if(property[0] === "-") {
+        sortOrder = -1;
+        property = property.substr(1);
+    }
+    return function (a,b) {
+        var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+        return result * sortOrder;
+    }
+}
 
+function dynamicSortMultiple() {
+    /*
+     * save the arguments object as it will be overwritten
+     * note that arguments object is an array-like object
+     * consisting of the names of the properties to sort by
+     */
+    var props = arguments;
+    return function (obj1, obj2) {
+        var i = 0, result = 0, numberOfProperties = props.length;
+        /* try getting a different result from 0 (equal)
+         * as long as we have extra properties to compare
+         */
+        while(result === 0 && i < numberOfProperties) {
+            result = dynamicSort(props[i])(obj1, obj2);
+            i++;
+        }
+        return result;
+    }
+}
 
 Array.prototype.equals = function (array) {
     // if the other array is a falsy value, return
@@ -279,3 +309,144 @@ Array.prototype.equals = function (array) {
     }
     return true;
 };
+Array.prototype.unique = function() {
+    var a = this.concat();
+    for(var i=0; i<a.length; ++i) {
+        for(var j=i+1; j<a.length; ++j) {
+            if(a[i] === a[j])
+                a.splice(j--, 1);
+        }
+    }
+
+    return a;
+};
+if (typeof String.prototype.startsWith != 'function') {
+	String.prototype.startsWith = function(str) {
+		return this.slice(0, str.length) == str;
+	};
+}
+if (typeof String.prototype.endsWith != 'function') {
+	String.prototype.endsWith = function(str) {
+		return this.slice(-str.length) == str;
+	};
+};
+if (typeof String.prototype.contains != 'function') {
+	String.prototype.contains = function(str) {
+		return this.indexOf(":") >= 0;
+	};
+};
+
+function compareObjects () {
+  var leftChain, rightChain;
+
+  function compare2Objects (x, y) {
+    var p;
+
+    // remember that NaN === NaN returns false
+    // and isNaN(undefined) returns true
+    if (isNaN(x) && isNaN(y) && typeof x === 'number' && typeof y === 'number') {
+         return true;
+    }
+
+    // Compare primitives and functions.     
+    // Check if both arguments link to the same object.
+    // Especially useful on step when comparing prototypes
+    if (x === y) {
+        return true;
+    }
+
+    // Works in case when functions are created in constructor.
+    // Comparing dates is a common scenario. Another built-ins?
+    // We can even handle functions passed across iframes
+    if ((typeof x === 'function' && typeof y === 'function') ||
+       (x instanceof Date && y instanceof Date) ||
+       (x instanceof RegExp && y instanceof RegExp) ||
+       (x instanceof String && y instanceof String) ||
+       (x instanceof Number && y instanceof Number)) {
+        return x.toString() === y.toString();
+    }
+
+    // At last checking prototypes as good a we can
+    if (!(x instanceof Object && y instanceof Object)) {
+        return false;
+    }
+
+    if (x.isPrototypeOf(y) || y.isPrototypeOf(x)) {
+        return false;
+    }
+
+    if (x.constructor !== y.constructor) {
+        return false;
+    }
+
+    if (x.prototype !== y.prototype) {
+        return false;
+    }
+
+    // check for infinitive linking loops
+    if (leftChain.indexOf(x) > -1 || rightChain.indexOf(y) > -1) {
+         return false;
+    }
+
+    // Quick checking of one object beeing a subset of another.
+    // todo: cache the structure of arguments[0] for performance
+    for (p in y) {
+        if (y.hasOwnProperty(p) !== x.hasOwnProperty(p)) {
+            return false;
+        }
+        else if (typeof y[p] !== typeof x[p]) {
+            return false;
+        }
+    }
+
+    for (p in x) {
+        if (y.hasOwnProperty(p) !== x.hasOwnProperty(p)) {
+            return false;
+        }
+        else if (typeof y[p] !== typeof x[p]) {
+            return false;
+        }
+
+        switch (typeof (x[p])) {
+            case 'object':
+            case 'function':
+
+                leftChain.push(x);
+                rightChain.push(y);
+
+                if (!compare2Objects (x[p], y[p])) {
+                    return false;
+                }
+
+                leftChain.pop();
+                rightChain.pop();
+                break;
+
+            default:
+                if (x[p] !== y[p]) {
+                    return false;
+                }
+                break;
+        }
+    }
+
+    return true;
+  }
+
+  if (arguments.length < 1) {
+    return true; //Die silently? Don't know how to handle such case, please help...
+    // throw "Need two or more arguments to compare";
+  }
+
+  for (var i = 1, l = arguments.length; i < l; i++) {
+
+      leftChain = []; //todo: this can be cached
+      rightChain = [];
+
+      if (!compare2Objects(arguments[0], arguments[i])) {
+          return false;
+      }
+  }
+
+  return true;
+}

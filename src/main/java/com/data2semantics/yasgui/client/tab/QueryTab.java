@@ -41,7 +41,6 @@ import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
 import com.data2semantics.yasgui.client.tab.optionbar.bookmarks.AddToBookmarks;
 import com.data2semantics.yasgui.client.tab.optionbar.bookmarks.BookmarkedQueries;
 import com.data2semantics.yasgui.client.tab.optionbar.endpoints.EndpointInput;
-import com.data2semantics.yasgui.client.tab.optionbar.endpoints.EndpointInputIcon;
 import com.data2semantics.yasgui.client.tab.optionbar.endpoints.EndpointSearch;
 import com.data2semantics.yasgui.client.tab.results.ResultContainer;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
@@ -61,7 +60,6 @@ public class QueryTab extends Tab implements RpcElement {
 	private View view;
 	private QueryTextArea queryTextArea;
 	private EndpointInput endpointInput;
-	private EndpointInputIcon endpointInputIcon;
 	private VLayout vLayout = new VLayout();
 	private ResultContainer queryResultContainer;
 	private TabSettings tabSettings;
@@ -101,10 +99,6 @@ public class QueryTab extends Tab implements RpcElement {
 		HLayout queryOptions = new HLayout();
 		queryOptions.setDefaultLayoutAlign(VerticalAlignment.BOTTOM);
 		queryOptions.setHeight(25);
-		if (view.getEnabledFeatures().endpointSelectionEnabled() && view.getEnabledFeatures().propertyAutocompletionEnabled()) {
-			endpointInputIcon = new EndpointInputIcon(view);
-			queryOptions.addMember(endpointInputIcon);
-		}
 		if (view.getSettings().isDbSet()) {
 			bookmarkedQueries = new BookmarkedQueries(view);
 			queryOptions.addMember(bookmarkedQueries);
@@ -290,15 +284,11 @@ public class QueryTab extends Tab implements RpcElement {
 		return this.addToBookmarks;
 	}
 
-	public EndpointInputIcon getEndpointInputIcon() {
-		return endpointInputIcon;
-	}
 
 	public void disableRpcElements() {
 		if (bookmarkedQueries != null) bookmarkedQueries.disableRpcElements();
 		if (linkCreator != null) linkCreator.disableRpcElements();
 		if (addToBookmarks != null) addToBookmarks.disableRpcElements();
-		if (endpointInputIcon != null) endpointInputIcon.disableRpcElements();
 	}
 
 	@Override
@@ -306,7 +296,6 @@ public class QueryTab extends Tab implements RpcElement {
 		if (bookmarkedQueries != null) bookmarkedQueries.enableRpcElements();
 		if (linkCreator != null) linkCreator.enableRpcElements();
 		if (addToBookmarks != null) addToBookmarks.enableRpcElements();
-		if (endpointInputIcon != null) endpointInputIcon.enableRpcElements();
 	}
 	public QueryConfigMenu getQueryConfigMenu() {
 		return queryConfigMenu;

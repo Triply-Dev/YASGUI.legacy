@@ -30,6 +30,10 @@
 		<servlet-name>openIdService</servlet-name>
 		<servlet-class>com.data2semantics.yasgui.server.OpenIdServiceImpl</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>autocompleteServlet</servlet-name>
+		<servlet-class>com.data2semantics.yasgui.server.servlets.AutocompleteServlet</servlet-class>
+	</servlet>
 
 
 	<servlet-mapping>
@@ -49,11 +53,13 @@
 		<servlet-name>openIdServlet</servlet-name>
 		<url-pattern>/Yasgui/openId</url-pattern>
 	</servlet-mapping>
-
-
 	<servlet-mapping>
 		<servlet-name>openIdService</servlet-name>
 		<url-pattern>/Yasgui/OpenIdService</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>autocompleteServlet</servlet-name>
+		<url-pattern>/Yasgui/autocomplete</url-pattern>
 	</servlet-mapping>
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>

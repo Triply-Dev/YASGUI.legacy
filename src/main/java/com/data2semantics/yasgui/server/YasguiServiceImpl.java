@@ -34,6 +34,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -49,7 +50,6 @@ import com.data2semantics.yasgui.client.services.YasguiService;
 import com.data2semantics.yasgui.server.db.DbHelper;
 import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
 import com.data2semantics.yasgui.server.fetchers.PrefixesFetcher;
-import com.data2semantics.yasgui.server.fetchers.PropertiesFetcher;
 import com.data2semantics.yasgui.server.fetchers.endpoints.EndpointsFetcher;
 import com.data2semantics.yasgui.shared.Bookmark;
 import com.data2semantics.yasgui.shared.IssueReport;
@@ -232,17 +232,6 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 		}
 	}
 
-	@Override
-	public String fetchProperties(String endpoint, boolean forceUpdate) throws IllegalArgumentException, FetchException {
-		String properties = "";
-		try {
-			properties = PropertiesFetcher.fetch(endpoint, forceUpdate, new File(getServletContext().getRealPath(CACHE_DIR)));
-		} catch (Throwable e) {
-			e.printStackTrace();
-			throw new FetchException("unable to fetch properties for endpoint " + endpoint, e);
-		}
-		return properties;
-	}
 
 	@Override
 	public boolean isOnline() throws IllegalArgumentException {
@@ -274,6 +263,28 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, "Unable to report issue", e);
 			throw new IllegalArgumentException("Unsuccesfull in reporting this issue. Please report manually at http://github.com/LaurensRietveld/issues");
+		}
+	}
+
+	@Override
+	public void logLazyQuery(String query, String endpoint) throws IllegalArgumentException {
+		try {
+			
+			QueryPropertyExtractor.store(new DbHelper(new File(getServletContext().getRealPath("/"))), query, endpoint);
+		} catch (Exception e) {
+			//fail silently. doesnt matter when analysis of a single query fails..
+		}
+		
+	}
+
+	@Override
+	public String[] getDisabledEndpointsForPropertyAnalysis() throws IllegalArgumentException, FetchException {
+		try {
+			DbHelper db = new DbHelper(new File(getServletContext().getRealPath("/")), getThreadLocalRequest());
+			ArrayList<String> endpoints = db.getDisabledEndpointsForPropertyFetching();
+			return endpoints.toArray(new String[endpoints.size()]);
+		} catch (Exception e) {
+			throw new FetchException(e.getMessage());
 		}
 	}
 }
