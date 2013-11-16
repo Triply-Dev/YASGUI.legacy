@@ -28,7 +28,6 @@ package com.data2semantics.yasgui.client.helpers;
 
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.settings.ExternalLinks;
-import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
 import com.data2semantics.yasgui.shared.StaticConfig;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
@@ -42,13 +41,10 @@ public class ChangelogHelper {
 			+ "View the complete list of changes <a href=\"" + ExternalLinks.YASGUI_CHANGELOG +"\" target=\"_blank\">here</a>.<br>"
 			+ "A selection of the new features:"
 			+ "<ul>\n" + 
-				"<li>YASGUI now works offline as well (for browsers supporting HTML5)</li>\n" + 
-				"<li>Version change notifications</li>\n" + 
-				"<li>Local installation/integration of YASGUI is now more flexible/easy</li>\n" + 
+				"<li>Autocompletion for properties</li>\n" + 
+				"<li>Persistent query results between sessions</li>\n" + 
 			"</ul>";
-	private static String AUTO_FORMAT_SHORTCUT_NOTIFICATION = "Autoformat (part of) your query! Use ";
-	private static String BUG_REPORT_NOTIFICATION = "Submit any bugs you encounter or features you desire!";
-	private static String SPECIFY_NAMED_GRAPH_NOTIFICATION = "Specify named or default graphs for SPARQL http requests";
+	private static String AUTOCOMPLETE_PROPERTIES_NOTIFICATION = "Autocomplete your properties. Go to the predicate position and press ";
 	private View view;
 	
 	public ChangelogHelper(View view) {
@@ -66,39 +62,15 @@ public class ChangelogHelper {
 	
 	public void draw() {
 		showChangelogNotification();
-		showBugReportNotification();
-		showNamedGraphsNotification();
 		showAutoFormatShortcutNotification();
 	}
 
-	private void showNamedGraphsNotification() {
-		QueryConfigMenu queryConfigMenu = view.getSelectedTab().getQueryConfigMenu();
-		if (queryConfigMenu != null) {
-			TooltipProperties tProp = new TooltipProperties();
-			tProp.setId(queryConfigMenu.getDOM().getId());
-			tProp.setContent(SPECIFY_NAMED_GRAPH_NOTIFICATION);
-			tProp.setMy(TooltipProperties.POS_TOP_CENTER);
-			tProp.setAt(TooltipProperties.POS_BOTTOM_CENTER);
-			Helper.drawTooltip(tProp);
-		}
-		
-		
-	}
-
-	private void showBugReportNotification() {
-		TooltipProperties tProp = new TooltipProperties();
-		tProp.setId(view.getElements().getConfigMenu().getDOM().getId());
-		tProp.setContent(BUG_REPORT_NOTIFICATION);
-		tProp.setMy(TooltipProperties.POS_RIGHT_CENTER);
-		tProp.setAt(TooltipProperties.POS_LEFT_CENTER);
-		Helper.drawTooltip(tProp);
-	}
 	
 	private void showAutoFormatShortcutNotification() {
 		TooltipProperties tProp = new TooltipProperties();
 		tProp.setId(view.getSelectedTab().getQueryTextArea().getDOM().getId());
-		String shortcut = "'" + (JsMethods.isMac()?"Command":"Ctrl") + "-Shift-F'";
-		tProp.setContent(AUTO_FORMAT_SHORTCUT_NOTIFICATION + shortcut);
+		String shortcut = "'" + (JsMethods.isMac()?"Command":"Ctrl") + "-Space'";
+		tProp.setContent(AUTOCOMPLETE_PROPERTIES_NOTIFICATION + shortcut);
 		tProp.setMy(TooltipProperties.POS_CENTER);
 		tProp.setAt(TooltipProperties.POS_LEFT_CENTER);
 		tProp.setYOffset(50);
