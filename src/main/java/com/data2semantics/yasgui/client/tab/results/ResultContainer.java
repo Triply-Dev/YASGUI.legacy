@@ -131,9 +131,11 @@ public class ResultContainer extends VLayout {
 	public void drawIfPossible() {
 		TabSettings tabSettings = view.getSelectedTabSettings();
 		if (view.getSelectedTabSettings().getQueryResultsString() != null) {
+			endpoint = view.getSelectedTabSettings().getEndpoint();
 			doDraw(tabSettings.getQueryResultsString(), tabSettings.getQueryResultsContentType());
 		} else if (view.getHistory().getHistQueryResults(tabSettings.getEndpoint(), tabSettings.getQueryString()) != null) {
 			HistQueryResults queryResults = view.getHistory().getHistQueryResults(tabSettings.getEndpoint(), tabSettings.getQueryString());
+			endpoint = tabSettings.getEndpoint();
 			doDraw(queryResults.getString(), queryResults.getContentType());
 		} else {
 			reset();
@@ -262,7 +264,7 @@ public class ResultContainer extends VLayout {
 	
 	private void logQueryForAnalysis(SparqlResults results) {
 		//only log when we actually have results
-		if (results.getBindings().size() > 0 && !view.endpointsIsDisabledForPropertyAnalysis(endpoint) && !endpoint.contains("localhost")) {
+		if (results.getBindings().size() > 0 && endpoint != null && !view.endpointsIsDisabledForPropertyAnalysis(endpoint) && !endpoint.contains("localhost")) {
 			new GwtCallbackWrapper<Void>(view) {
 				public void onCall(AsyncCallback<Void> callback) {
 					view.getRemoteService().logLazyQuery(queryString, endpoint, callback);
