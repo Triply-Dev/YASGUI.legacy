@@ -526,14 +526,23 @@ public class DbHelper {
 		result.close();
 		return allFailed;
 	}
+	public boolean stillFetching(String endpoint, int timeFrameSearch) throws SQLException {
+		String sql = "SELECT * FROM LogPropertyFetcher WHERE Endpoint = ? AND TIMESTAMPDIFF(minute,Time,NOW()) <= ? LIMIT 1";
+		PreparedStatement ps = connect.prepareStatement(sql);
+		ps.setString(1, endpoint.trim());
+		ps.setInt(2, timeFrameSearch);
+		ResultSet result = ps.executeQuery();
+		
+		boolean stillFetching = result.next();
+		ps.close();
+		result.close();
+		return stillFetching;
+	}
 
 
 	public static void main(String[] args) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
 		DbHelper dbHelper = new DbHelper(new File("src/main/webapp/"));
-		HashMultimap<String, String> props = dbHelper.getProperties("http://dbpedia.org/sparql", "http://xmlns.com/foaf/0.1/p", 50, null);
-		for (String key: props.keySet()) {
-			System.out.println(key + ": " + props.get(key).size());
-		}
+		System.out.println((dbHelper.stillFetching("http://dbpedia.org/sparql", 5)? "still fetching":"done fetching"));
 	}
 
 

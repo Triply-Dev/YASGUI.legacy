@@ -128,6 +128,8 @@ public class AutocompleteServlet extends HttpServlet {
 				} else {
 					if (dbHelper.lastFetchesFailed(endpoint,5)) {
 						status = "Failed fetching properties";
+					} else if (dbHelper.stillFetching(endpoint, 5)) {
+						status = "Still fetching rdf:properties. Try again in 5 minutes";
 					} else {
 						PropertiesFetcher fetcher = new PropertiesFetcher(new File(getServletContext().getRealPath("/")), endpoint);
 						fetcher.fetch();
