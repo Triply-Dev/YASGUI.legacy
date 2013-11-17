@@ -122,7 +122,7 @@ public class PropertiesFetcher {
 	}
 	
 	public static void main(String[] args) throws IOException, ClassNotFoundException, JSONException, SQLException, ParseException  {
-		PropertiesFetcher fetcher = new PropertiesFetcher(new File("src/main/webapp/"), "http://dbpedia.org/sparql");
+		PropertiesFetcher fetcher = new PropertiesFetcher(new File("src/main/webapp/"), "http://services.data.gov/sparql");
 		fetcher.fetch();
 	}
 }

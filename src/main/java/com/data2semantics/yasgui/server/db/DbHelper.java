@@ -498,18 +498,29 @@ public class DbHelper {
 		return endpoints;
 	}
 	
+	/**
+	 * ALL last x should not have status succesful
+	 * @param endpoint
+	 * @param numberOfFetchesToCheck
+	 * @return
+	 * @throws SQLException
+	 */
 	public boolean lastFetchesFailed(String endpoint, int numberOfFetchesToCheck) throws SQLException {
 		String sql = "SELECT * FROM LogPropertyFetcher WHERE Endpoint = ? ORDER BY Time DESC LIMIT ?";
 		PreparedStatement ps = connect.prepareStatement(sql);
 		ps.setString(1, endpoint.trim());
 		ps.setInt(2, numberOfFetchesToCheck);
 		ResultSet result = ps.executeQuery();
+		int count = 0;
 		boolean allFailed = true;
 		while (result.next()) {
+			count ++;
 			if (result.getString("Status").equals("successful")) {
 				allFailed = false;
-				break;
 			}
+		}
+		if (count != numberOfFetchesToCheck) {
+			allFailed = false;
 		}
 		ps.close();
 		result.close();
