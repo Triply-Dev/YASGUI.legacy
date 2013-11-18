@@ -124,12 +124,12 @@ public class AutocompleteServlet extends HttpServlet {
 			String status = null;
 			if (propertyMethodResults.length() == 0) {
 				if (!dbHelper.propertyRetrievalEnabled(endpoint, "property")) {
-					status = "Disabled";
+					status = "disabled";
 				} else {
 					if (dbHelper.lastFetchesFailed(endpoint,5)) {
-						status = "Failed fetching properties";
+						status = "failed fetching properties";
 					} else if (dbHelper.stillFetching(endpoint, 5)) {
-						status = "Still fetching rdf:properties. Try again in 5 minutes";
+						status = "still fetching rdf:properties. Try again in 5 minutes";
 					} else {
 						PropertiesFetcher fetcher = new PropertiesFetcher(new File(getServletContext().getRealPath("/")), endpoint);
 						fetcher.fetch();
@@ -161,7 +161,15 @@ public class AutocompleteServlet extends HttpServlet {
 		}
 		
 		if (methodInRequest == null || methodInRequest.equals("lazy")) {
+			String status = null;
+			if (lazyMethodResults.length() == 0 && !dbHelper.propertyRetrievalEnabled(endpoint, "lazy")) {
+				status = "disabled";
+			}
+			
 			JSONObject lazyMethodObject = new JSONObject();
+			if (status != null) {
+				lazyMethodObject.put(AutocompleteKeys.RESPONSE_STATUS, status);
+			}
 			int totalSize = lazyMethodResults.length();
 			if (resultSize == maxResults) {
 				//there are probably more results than the maximum we have retrieved
