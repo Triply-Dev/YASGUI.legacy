@@ -82,7 +82,7 @@ public class LinkCreator extends ImgButton implements RpcElement {
 		setZIndex(ZIndexes.TAB_CONTROLS);
 		setShowDown(false);
 		setShowRollOver(false);
-
+		setTooltip("create url reference to current query and endpoint");
 		addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {

@@ -110,6 +110,7 @@ public class ViewElements implements RpcElement {
 				cancelQuery();
 			}
 		});
+		queryLoading.setTooltip("cancel query");
 		queryLoading.hide();
 		
 		if (queryLoading.isDrawn()) {
@@ -124,7 +125,7 @@ public class ViewElements implements RpcElement {
 				SparqlQuery.exec(view);
 			}
 		});
-		
+		queryButton.setTooltip("execute query");
 		if (queryButton.isDrawn()) {
 			queryButton.redraw();
 		} else {
@@ -193,8 +194,10 @@ public class ViewElements implements RpcElement {
 	public void showPlayButton(String queryValid) {
 		if (queryValid.equals("1")) {
 			queryButton.setSrc(Imgs.EXECUTE_QUERY.get());
+			queryButton.setTooltip("execute query");
 		} else {
 			queryButton.setSrc(Imgs.QUERY_ERROR.get());
+			queryButton.setTooltip("invalid query, click to execute anyway");
 		}
 	}
 	public void onLoadingStart() {

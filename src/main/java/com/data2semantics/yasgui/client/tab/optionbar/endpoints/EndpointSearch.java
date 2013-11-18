@@ -83,7 +83,7 @@ public class EndpointSearch extends VLayout {
 		imgButton.setHeight(ICON_HEIGHT);
 		imgButton.setShowDown(false);
 		imgButton.setShowRollOver(false);
-		
+		imgButton.setTooltip("Search for endpoints");
 		imgButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {

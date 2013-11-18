@@ -173,6 +173,7 @@ public class QueryTabs extends TabSet implements RpcElement {
 		addTabButton.setShowDown(false);
 		addTabButton.setShowRollOver(false);
 		addTabButton.setWidth(25);
+		addTabButton.setTooltip("add new tab");
 		
 		addTabButton.setHeight(25);
 		addTabButton.setZIndex(ZIndexes.TAB_CONTROLS);//Otherwise the onclick of the tab bar is used..
