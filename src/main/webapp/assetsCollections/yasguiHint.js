@@ -358,11 +358,6 @@
 			    	//the result before this has same uri (and higher priority, as array is sorted). 
 			    	//so remove current item
 			    	predReq.results.splice(len, 1);
-			    } else {
-			    	if (predReq.drawnResultSizes[predReq.results[len].type] == undefined) {
-			    		predReq.drawnResultSizes[predReq.results[len].type] = 0;
-			    	}
-			    	predReq.drawnResultSizes[predReq.results[len].type]++;
 			    }
 			}
 			
@@ -373,6 +368,16 @@
 			}
 			//now sort everything alphabetically again
 			predReq.results.sort(dynamicSortMultiple("uri"));
+			
+			//finally, get aggregated numbers
+			for (var i = 0; i < predReq.results.length; i++) {
+				var type = predReq.results[i].type;
+				if (predReq.drawnResultSizes[type] == undefined) {
+		    		predReq.drawnResultSizes[type] = 0;
+		    	}
+		    	predReq.drawnResultSizes[type]++;
+			}
+			
 		};
 		completionMethodChanged = function() {
 			var button = $("#completionMethodButton");
@@ -441,7 +446,7 @@
 							this.legendHtml += predReq.resultSizes[method];
 						} else {
 							this.legendHtml += 
-								"<span title='properties in autocompletion dialogue vs number of available properties for autocompletion'>" +
+								"<span title='displayed suggestions vs total number of available suggestions'>" +
 									predReq.drawnResultSizes[method] + "/" + predReq.resultSizes[method] +
 								"</span>";
 						}
@@ -473,8 +478,23 @@
 						closeWith: closeWith,
 					});
 				} else {
-					$.noty.setText(legendId, legendHtml);
+					$.noty.setText(this.legendId, legendHtml);
 				}
+				this.addClickListener();
+			},
+			addClickListener: function() {
+				$(document).on("click.menu-outside", function(event) {
+					if (document.getElementById("propertyLegend") != undefined && $(".CodeMirror-hints")[0]) {
+					    if(!$(event.target).parents().andSelf().is("#propertyLegend") && !$(event.target).parents().andSelf().is(".CodeMirror-hints")) {
+					    	$.noty.close("propertyLegend");//remove legend popup
+					    	$('.CodeMirror-hints').hide();//remove autocompletion
+					    }
+						//we have a hint item and property legend popup. proceed
+					} else {
+						//no property legend popup and hint item. We shouldnt check this listener anymore! Just remove this listener
+						$(document).off("click.menu-outside");
+					}
+				});
 			},
 			close: function() {
 				$.noty.close(this.legendId);
@@ -560,9 +580,14 @@
 							ch : token.end
 						}
 					};
-					predReq.legendDialogue.draw();
+					
 					drawCallback(autocompleteObj);
-					predReq.appendTypeIconsToAutocomplete();
+					if ($('.CodeMirror-hints')[0]) {
+						//hmm, user might have request autocompletion, and moved to a new line in the meantime.
+						//if this is the case, we won't get a suggestion popup. We don't want a legend dialogue then as well!
+						predReq.legendDialogue.draw();
+						predReq.appendTypeIconsToAutocomplete();
+					}
 				}
 			} else {
 				console.log("nothing to draw");
@@ -878,3 +903,17 @@ function getIndentFromLine(cm, line, charNumber) {
 	;
 }
 
+
+
+//$(function() {
+//    $("body").click(function(e) {
+//    	console.log(e.target.className);
+//    	console.log(e.target.id);
+//        if (e.target.id == "propertyLegend" || $(e.target).parents("#propertyLegend").size()) {
+//        if (e.target.id == "propertyLegend" || $(e.target).parents("#propertyLegend").size()) {
+//            alert("Inside div");
+//        } else { 
+//           alert("Outside div");
+//        }
+//    });
+//});
