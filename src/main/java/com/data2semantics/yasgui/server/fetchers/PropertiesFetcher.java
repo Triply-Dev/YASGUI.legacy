@@ -34,95 +34,59 @@ import java.text.ParseException;
 
 import org.json.JSONException;
 
-import com.data2semantics.yasgui.server.SparqlService;
-import com.data2semantics.yasgui.server.db.DbHelper;
 import com.data2semantics.yasgui.shared.exceptions.PossiblyNeedPaging;
 import com.hp.hpl.jena.query.ResultSet;
 
 
-public class PropertiesFetcher {
+public class PropertiesFetcher extends Fetcher {
 	private static String METHOD = "property";
-	private DbHelper dbHelper;
-	private String endpoint;
 	public PropertiesFetcher(File configDir, String endpoint) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
-		dbHelper = new DbHelper(configDir);
-		this.endpoint = endpoint;
+		super(configDir, endpoint);
 	}
-	public void fetch() throws IOException, SQLException {
-		
-		try {
-			System.out.println("fetching regular properties for endpoint " + endpoint);
-			doRegularFetch();
-		} catch (PossiblyNeedPaging ep) {
-			try {
-				System.out.println("fetching paged properties for endpoint " + endpoint);
-				doPagingFetch(ep.getQueryCount());
-			} catch (Exception e) {
-				dbHelper.setPropertyLogStatus(endpoint, "fetching", e.getMessage(), true);
-			}
-		} catch (SQLException e) {
-			dbHelper.setPropertyLogStatus(endpoint, "fetching", e.getMessage());
-			throw e;
-		}
-		
-	}
-	
-	private void doRegularFetch() throws PossiblyNeedPaging, SQLException {
-		dbHelper.setPropertyLogStatus(endpoint, "fetching");
+
+	protected String getPaginationQuery(int iterator, int count) {
 		String query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" + 
-				"SELECT DISTINCT ?property WHERE{\n" + 
-				"  ?property a rdf:Property\n" + 
-				"}";
-		System.out.println("exec query");
-		ResultSet resultSet = SparqlService.query(endpoint, query);
-		//ok. so we know this paging query returns results (otherwise would have thrown an exception). 
-		//first clear our properties table of previous results
-		dbHelper.clearProperties(endpoint, "property");
-		
-		
-		System.out.println("finished exec query");
-		dbHelper.storePropertiesFromQueryResult(endpoint, METHOD, resultSet);
-		dbHelper.setPropertyLogStatus(endpoint, "successful");
-	}
-	
-	private String getPaginationQuery(int iterator, int count) {
-		String query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" + 
-				"SELECT DISTINCT ?property WHERE{\n" + 
-				"  ?property a rdf:Property\n" + 
-				"} ORDER BY ?property ";
+				"SELECT DISTINCT ?" + getSparqlKeyword() + " WHERE{\n" + 
+				"  ?" + getSparqlKeyword() + " a rdf:Property\n" + 
+				"} ORDER BY ?" + getSparqlKeyword() + " ";
 		query += "LIMIT " + count;
 		query += " OFFSET " + (iterator * count);
 		return query;
 	}
-	
-	private void doPagingFetch(int count) throws SQLException {
-		dbHelper.setPropertyLogStatus(endpoint, "fetching", null, true);
-		int iterator = 0;
-		boolean needPaging = true;
-		while (needPaging) {
-			String query = getPaginationQuery(iterator, count);
-			ResultSet resultSet = SparqlService.query(endpoint, query);
-			if (iterator == 0) {
-				//ok. so we know this paging query returns results (otherwise would have thrown an exception). 
-				//first clear our properties table of previous results
-				dbHelper.clearProperties(endpoint, "property");
-			}
-			needPaging = false;
-			try {
-				dbHelper.storePropertiesFromQueryResult(endpoint, METHOD, resultSet);
-			} catch (PossiblyNeedPaging e) {
-				iterator++;
-				needPaging = true;
-			}
-		}
+	protected String getRegularQuery() {
+		return "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" + 
+				"SELECT DISTINCT ?" + getSparqlKeyword() + " WHERE{\n" + 
+				"  ?" + getSparqlKeyword() + " a rdf:Property\n" + 
+				"}";
 	}
 	
-	public static boolean doubtfullResultSet(int count) {
-		return (count > 0 && count % 100 == 0);
+	protected String getSparqlKeyword() {
+		return "property";
+	}
+	protected void setLogStatus(String status) throws SQLException {
+		System.out.println(status);
+		System.out.println(endpoint);
+		dbHelper.setPropertyLogStatus(endpoint, status);
+	}
+	protected void storeSparqlResultsInDb(ResultSet resultSet) throws PossiblyNeedPaging, SQLException {
+		dbHelper.storePropertiesFromQueryResult(endpoint, METHOD, resultSet);
+	}
+	protected void clearPreviousResultsFromDb() throws SQLException {
+		dbHelper.clearProperties(endpoint, "property");
+	}
+
+	protected void storeSparqlResultInDb(ResultSet resultSet) throws PossiblyNeedPaging, SQLException {
+		dbHelper.storePropertiesFromQueryResult(endpoint, METHOD, resultSet);
+	}
+	protected void setLogStatus(String status, String message) throws SQLException {
+		dbHelper.setPropertyLogStatus(endpoint, status, message);
+	}
+	protected void setLogStatus(String status, String message, boolean paging) throws SQLException {
+		dbHelper.setPropertyLogStatus(endpoint, status, message, true);
 	}
 	
 	public static void main(String[] args) throws IOException, ClassNotFoundException, JSONException, SQLException, ParseException  {
-		PropertiesFetcher fetcher = new PropertiesFetcher(new File("src/main/webapp/"), "http://services.data.gov/sparql");
+		PropertiesFetcher fetcher = new PropertiesFetcher(new File("src/main/webapp/"), "http://biocyc.bio2rdf.org/sparql");
 		fetcher.fetch();
 	}
 }
