@@ -46,10 +46,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.data2semantics.yasgui.server.Helper;
-import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
 import com.data2semantics.yasgui.server.fetchers.AutocompletionFetcher.FetchMethod;
 import com.data2semantics.yasgui.server.fetchers.AutocompletionFetcher.FetchStatus;
 import com.data2semantics.yasgui.server.fetchers.AutocompletionFetcher.FetchType;
+import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
 import com.data2semantics.yasgui.server.fetchers.PropertiesFetcher;
 import com.data2semantics.yasgui.server.openid.HttpCookies;
 import com.data2semantics.yasgui.server.openid.OpenIdServlet;

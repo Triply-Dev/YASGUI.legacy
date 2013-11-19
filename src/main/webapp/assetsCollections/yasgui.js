@@ -107,7 +107,7 @@ function initializeQueryCodemirror(elementId) {
 				} else {
 					sparqlHighlightHeight[elementId] = height;
 				}
-				CodeMirror.showHint(cm, CodeMirror.allAutoCompletions, {closeCharacters: /(?=a)b/});
+				CodeMirror.showHint(cm, CodeMirror.prefixHint, {closeCharacters: /(?=a)b/});
 				appendPrefixIfNeeded(cm);
 			});
 			sparqlHighlight[elementId].on("gutterClick", function(cm, change) {

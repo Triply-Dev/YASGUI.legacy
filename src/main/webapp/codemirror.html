@@ -119,7 +119,7 @@ SELECT * WHERE {
 			}
 		});
 		myCodeMirror.on("change", function(cm, change) {
-			CodeMirror.showHint(cm, CodeMirror.allAutoCompletions, {
+			CodeMirror.showHint(cm, CodeMirror.prefixHint, {
 				closeCharacters : /(?=a)b/,
 				closeOnUnfocus : false
 			});
