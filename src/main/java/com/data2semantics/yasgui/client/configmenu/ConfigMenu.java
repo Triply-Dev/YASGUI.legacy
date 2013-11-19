@@ -55,7 +55,7 @@ public class ConfigMenu extends Menu implements RpcElement {
 			addOfflineAvailabilityItem();
 		}
 		addResetSettings();
-		addCompatabilityItem();
+		addCompatibilityItem();
 		addRecentChangelogItem();
 		addTooltipsItem();
 		if (view.getSettings().bugReportsSupported()) {
@@ -154,20 +154,20 @@ public class ConfigMenu extends Menu implements RpcElement {
 		items.add(about);
 	}
 	
-	private void addCompatabilityItem() {
-		MenuItem compatability = new MenuItem("Show browser compatabilities");
-		final Compatabilities compatabilities = new Compatabilities(view);
+	private void addCompatibilityItem() {
+		MenuItem compatibility = new MenuItem("Show browser compatibilities");
+		final Compatibilities compatabilities = new Compatibilities(view);
 		if (!compatabilities.allSupported()) {
-			compatability.setIcon(Imgs.WARNING.get());
+			compatibility.setIcon(Imgs.WARNING.get());
 		} else {
-			compatability.setIcon(Imgs.COMPATIBLE.get());
+			compatibility.setIcon(Imgs.COMPATIBLE.get());
 		}
-		compatability.addClickHandler(new ClickHandler(){
+		compatibility.addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(MenuItemClickEvent event) {
 				compatabilities.drawContent();
 			}});
-		items.add(compatability);
+		items.add(compatibility);
 	}
 	
 	private void addRefreshSubMenu() {

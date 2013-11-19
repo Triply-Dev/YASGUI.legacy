@@ -45,7 +45,7 @@ public class LocalStorageHelper {
 	private static int SETTINGS_EXPIRE_DAYS = 1000;
 	private static int VERSION_EXPIRE_DAYS = 1000;
 	private static int TOOLTIPS_EXPIRE_DAYS = 1000;
-	private static int COMPATABILITIES_SHOWN_EXPIRE_DAYS = 1000;
+	private static int COMPATIBILITIES_SHOWN_EXPIRE_DAYS = 1000;
 	private static int PROPERTIES_EXPIRE_DAYS = 360;
 	private static int DEFAULT_EXPIRE_DAYS = 1000;
 	@SuppressWarnings("unused")
@@ -287,13 +287,13 @@ public class LocalStorageHelper {
 		return versionId;
 	}
 	
-	public static void setCompatabilitiesShown(int versionNumber) {
-		setAsCookie(CookieKeys.COMPATABILITIES_SHOWN, Integer.toString(versionNumber), COMPATABILITIES_SHOWN_EXPIRE_DAYS, true);
+	public static void setCompatibilitiesShown(int versionNumber) {
+		setAsCookie(CookieKeys.COMPATIBILITIES_SHOWN, Integer.toString(versionNumber), COMPATIBILITIES_SHOWN_EXPIRE_DAYS, true);
 	}
 	
-	public static int getCompatabilitiesShownVersionNumber() {
+	public static int getCompatibilitiesShownVersionNumber() {
 		int versionId = 0;
-		String versionIdString = getAsCookie(CookieKeys.COMPATABILITIES_SHOWN, true);
+		String versionIdString = getAsCookie(CookieKeys.COMPATIBILITIES_SHOWN, true);
 		if (versionIdString != null && versionIdString.length() > 0) {
 			versionId = Integer.parseInt(versionIdString);
 		}

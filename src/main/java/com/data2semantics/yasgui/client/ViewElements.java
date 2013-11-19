@@ -27,7 +27,7 @@ package com.data2semantics.yasgui.client;
  */
 
 import com.data2semantics.yasgui.client.ConnectivityHelper.ConnCallback;
-import com.data2semantics.yasgui.client.configmenu.Compatabilities;
+import com.data2semantics.yasgui.client.configmenu.Compatibilities;
 import com.data2semantics.yasgui.client.configmenu.ConfigMenu;
 import com.data2semantics.yasgui.client.helpers.GoogleAnalytics;
 import com.data2semantics.yasgui.client.helpers.GoogleAnalyticsEvent;
@@ -376,9 +376,9 @@ public class ViewElements implements RpcElement {
 	 * Draw main YASGUI configuration menu
 	 */
 	public void drawConfigMenu() {
-		Compatabilities compatabilities = new Compatabilities(view);
+		Compatibilities compatibilities = new Compatibilities(view);
 		String icon  = "";
-		if (!compatabilities.allSupported() && LocalStorageHelper.getCompatabilitiesShownVersionNumber() < Compatabilities.VERSION_NUMBER) {
+		if (!compatibilities.allSupported() && LocalStorageHelper.getCompatibilitiesShownVersionNumber() < Compatibilities.VERSION_NUMBER) {
 			icon = Imgs.WARNING.get();
 		} else {
 			icon = Imgs.TOOLS.get();

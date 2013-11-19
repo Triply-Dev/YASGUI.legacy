@@ -45,18 +45,18 @@ import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
-public class Compatabilities extends Window {
+public class Compatibilities extends Window {
 	
 	private static int HEIGHT = 290;
 	private static int WIDTH = 700;
 	private static int ROW_HEIGHT = 40;
 	private static int BUTTON_WIDTH = 150;
 	
-	private static String URL_COMPATABILTIES_LOCAL_STORAGE = "http://caniuse.com/#feat=namevalue-storage";
-	private static String URL_COMPATABILTIES_HISTORY = "http://caniuse.com/#search=history";
-	private static String URL_COMPATABILITIES_DOWNLOAD_ATTRIBUTE = "http://caniuse.com/#feat=download";
-	private static String URL_COMPATABILITIES_DOWNLOAD_FILE = "http://caniuse.com/#feat=bloburls";
-	private static String URL_COMPATABILITIES_APPCACHE = "http://caniuse.com/offline-apps";
+	private static String URL_COMPATIBILTIES_LOCAL_STORAGE = "http://caniuse.com/#feat=namevalue-storage";
+	private static String URL_COMPATIBILTIES_HISTORY = "http://caniuse.com/#search=history";
+	private static String URL_COMPATIBILITIES_DOWNLOAD_ATTRIBUTE = "http://caniuse.com/#feat=download";
+	private static String URL_COMPATIBILITIES_DOWNLOAD_FILE = "http://caniuse.com/#feat=bloburls";
+	private static String URL_COMPATIBILITIES_APPCACHE = "http://caniuse.com/offline-apps";
 	
 	public static int VERSION_NUMBER = 4; //used for determining whether we need warning icon (i.e. something not compatible, and not shown before)
 	private boolean html5StorageSupported = false;
@@ -67,7 +67,7 @@ public class Compatabilities extends Window {
 	private boolean allSupported = false;
 	private View view;
 	private VLayout layout = new VLayout();;
-	public Compatabilities(View view) {
+	public Compatibilities(View view) {
 		this.view = view;
 		setHeight(HEIGHT);
 		setWidth(WIDTH);
@@ -78,10 +78,10 @@ public class Compatabilities extends Window {
 		setAutoCenter(true);
 		layout.setMargin(10);
 		addItem(layout);
-		checkCompatabilities();
+		checkCompatibilities();
 	}
 	
-	private void checkCompatabilities() {
+	private void checkCompatibilities() {
 		html5StorageSupported = Storage.isLocalStorageSupported();
 		downloadFileSupported = JsMethods.stringToDownloadSupported();
 		downloadAttributeSupported = JsMethods.downloadAttributeSupported();
@@ -97,7 +97,7 @@ public class Compatabilities extends Window {
 	
 	
 	public void drawContent() {
-		LocalStorageHelper.setCompatabilitiesShown(StaticConfig.VERSION_ID);
+		LocalStorageHelper.setCompatibilitiesShown(StaticConfig.VERSION_ID);
 		
 		String html = "<div style='width:100%;text-align:center;'>You are using <strong>" + JsMethods.getBrowserName() + " " + JsMethods.getBrowserVersionNumber() + "</strong> on <strong>" + JsMethods.GetBrowserOs() + "</strong>. ";
 		if (allSupported) {
@@ -134,7 +134,7 @@ public class Compatabilities extends Window {
 		} else {
 			hlayout.addMember(getExplanation("Not supported by your browser. You won't be able to use YASGUI without internet connection (e.g. on localhost endpoints)"));
 		}
-		hlayout.addMember(getLink(URL_COMPATABILITIES_APPCACHE));
+		hlayout.addMember(getLink(URL_COMPATIBILITIES_APPCACHE));
 		
 		layout.addMember(hlayout);
 		
@@ -151,7 +151,7 @@ public class Compatabilities extends Window {
 		} else {
 			hlayout.addMember(getExplanation("Not supported by your browser. You won't be able to go back (using the browser 'back' button) to previous YASGUI states"));
 		}
-		hlayout.addMember(getLink(URL_COMPATABILTIES_HISTORY));
+		hlayout.addMember(getLink(URL_COMPATIBILTIES_HISTORY));
 		
 		layout.addMember(hlayout);
 	}
@@ -167,7 +167,7 @@ public class Compatabilities extends Window {
 		} else {
 			hlayout.addMember(getExplanation("Not supported by your browser. This results in slightly slower page loads, as client-side caching is not possible"));
 		}
-		hlayout.addMember(getLink(URL_COMPATABILTIES_LOCAL_STORAGE));
+		hlayout.addMember(getLink(URL_COMPATIBILTIES_LOCAL_STORAGE));
 		
 		layout.addMember(hlayout);
 	}
@@ -184,7 +184,7 @@ public class Compatabilities extends Window {
 			hlayout.addMember(getExplanation("Not supported by your browser. You are not able to download query results to file"));
 		}
 		
-		hlayout.addMember(getLink(URL_COMPATABILITIES_DOWNLOAD_FILE));
+		hlayout.addMember(getLink(URL_COMPATIBILITIES_DOWNLOAD_FILE));
 		
 		layout.addMember(hlayout);
 	}
@@ -201,7 +201,7 @@ public class Compatabilities extends Window {
 			hlayout.addMember(getExplanation("Not supported by your browser. Files you download will have a strange ID as filename, instead of a more sensible name"));
 		}
 		
-		hlayout.addMember(getLink(URL_COMPATABILITIES_DOWNLOAD_ATTRIBUTE));
+		hlayout.addMember(getLink(URL_COMPATIBILITIES_DOWNLOAD_ATTRIBUTE));
 		
 		layout.addMember(hlayout);
 	}

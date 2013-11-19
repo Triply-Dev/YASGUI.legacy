@@ -37,6 +37,8 @@ import au.com.bytecode.opencsv.CSVReader;
 import com.data2semantics.yasgui.server.Helper;
 import com.data2semantics.yasgui.server.QueryPropertyExtractor;
 import com.data2semantics.yasgui.server.db.DbHelper;
+import com.data2semantics.yasgui.server.fetchers.AutocompletionFetcher.FetchMethod;
+import com.data2semantics.yasgui.server.fetchers.AutocompletionFetcher.FetchType;
 import com.hp.hpl.jena.query.QueryParseException;
 import com.hp.hpl.jena.sparql.expr.ExprException;
 
@@ -78,7 +80,7 @@ public class BatchGoogleAnalyticsImport {
 				if (debug) {
 					System.out.println(endpoint);
 				}
-				if (endpoint.startsWith("http") && !endpoint.contains("localhost") && dbHelper.propertyRetrievalEnabled(endpoint, "lazy")) {
+				if (endpoint.startsWith("http") && !endpoint.contains("localhost") && dbHelper.autocompletionFetchingEnabled(endpoint, FetchType.PROPERTIES, FetchMethod.QUERY_ANALYSIS)) {
 					
 					String query = line[queryCol];
 					if (debug) {

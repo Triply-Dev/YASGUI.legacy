@@ -39,5 +39,5 @@ public class CookieKeys implements Serializable {
 	public static String VERSION = "version";
 	public static String VERSION_ID = "versionId";
 	public static String GWT_STRONG_NAME = "gwtStrongName";
-	public static String COMPATABILITIES_SHOWN = "compatabilitiesShown";
+	public static String COMPATIBILITIES_SHOWN = "compatabilitiesShown";
 }

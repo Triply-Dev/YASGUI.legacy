@@ -45,6 +45,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.data2semantics.yasgui.server.db.DbHelper;
+import com.data2semantics.yasgui.server.fetchers.AutocompletionFetcher.FetchMethod;
+import com.data2semantics.yasgui.server.fetchers.AutocompletionFetcher.FetchType;
 import com.data2semantics.yasgui.server.fetchers.PropertiesFetcher;
 import com.data2semantics.yasgui.shared.AutocompleteKeys;
 import com.google.common.collect.HashMultimap;
@@ -95,49 +97,62 @@ public class AutocompleteServlet extends HttpServlet {
 		return resultObject;
 	}
 	
+	public FetchMethod getMethodInRequest(HttpServletRequest request) {
+		String methodInRequest = request.getParameter(AutocompleteKeys.REQUEST_METHOD); //can be null, in that case retrieve both methods
+		if (methodInRequest == null) {
+			return null;
+		} else if (methodInRequest.equals(FetchMethod.QUERY_ANALYSIS.get())) {
+			return FetchMethod.QUERY_ANALYSIS;
+		} else if (methodInRequest.equals(FetchMethod.QUERY_RESULTS.get())) {
+			return FetchMethod.QUERY_RESULTS;
+		} else {
+			return null;
+		}
+	}
+	
 	private JSONObject getPropertyJson(HttpServletRequest request, HttpServletResponse response) throws JSONException, ClassNotFoundException, FileNotFoundException, SQLException, IOException, ParseException {
 		JSONObject resultObject = new JSONObject();
 		
-		String methodInRequest = request.getParameter(AutocompleteKeys.REQUEST_METHOD); //can be null, in that case retrieve both methods
+		FetchMethod methodInRequest = getMethodInRequest(request);
 		String endpoint = request.getParameter(AutocompleteKeys.REQUEST_ENDPOINT); //can be null, in that case retrieve both methods
 		String partialProperty = request.getParameter(AutocompleteKeys.REQUEST_QUERY); //can be null, in that case retrieve both methods
 		int maxResults = Integer.parseInt(request.getParameter(AutocompleteKeys.REQUEST_MAX_RESULTS));
 		
 		DbHelper dbHelper = new DbHelper(new File(getServletContext().getRealPath("/")));
-		HashMultimap<String, String> map = dbHelper.getProperties(endpoint, partialProperty, maxResults, methodInRequest);
+		HashMultimap<String, String> map = dbHelper.getAutocompletions(endpoint, partialProperty, maxResults, FetchType.PROPERTIES, methodInRequest);
 		
-		JSONArray propertyMethodResults = new JSONArray();
-		JSONArray lazyMethodResults = new JSONArray();
+		JSONArray queryResultsResults = new JSONArray();
+		JSONArray queryAnalysisResults = new JSONArray();
 		for (String uri: map.keySet()) {
 			for (String method: map.get(uri)) {
-				if (method.equals("lazy")) {
-					lazyMethodResults.put(uri);
+				if (method.equals(FetchMethod.QUERY_ANALYSIS)) {
+					queryAnalysisResults.put(uri);
 				} else {
-					propertyMethodResults.put(uri);
+					queryResultsResults.put(uri);
 				}
 			}
 			
 		}
-		int resultSize = propertyMethodResults.length() + lazyMethodResults.length();
+		int resultSize = queryResultsResults.length() + queryAnalysisResults.length();
 		
-		if (methodInRequest == null || methodInRequest.equals("property")) {
+		if (methodInRequest == null || methodInRequest == FetchMethod.QUERY_RESULTS) {
 			String status = null;
-			if (propertyMethodResults.length() == 0) {
-				if (!dbHelper.propertyRetrievalEnabled(endpoint, "property")) {
+			if (queryResultsResults.length() == 0) {
+				if (!dbHelper.autocompletionFetchingEnabled(endpoint, FetchType.PROPERTIES, FetchMethod.QUERY_RESULTS)) {
 					status = "disabled";
 				} else {
-					if (dbHelper.lastFetchesFailed(endpoint,5)) {
+					if (dbHelper.lastFetchesFailed(endpoint, FetchType.PROPERTIES, 5)) {
 						status = "failed fetching properties";
-					} else if (dbHelper.stillFetching(endpoint, 5)) {
+					} else if (dbHelper.stillFetching(endpoint, FetchType.PROPERTIES, 5)) {
 						status = "still fetching rdf:properties. Try again in 5 minutes";
 					} else {
 						PropertiesFetcher fetcher = new PropertiesFetcher(new File(getServletContext().getRealPath("/")), endpoint);
 						fetcher.fetch();
-						map = dbHelper.getProperties(endpoint, partialProperty, maxResults, "property");
+						map = dbHelper.getAutocompletions(endpoint, partialProperty, maxResults, FetchType.PROPERTIES, FetchMethod.QUERY_RESULTS);
 						for (String uri: map.keySet()) {
 							for (String method: map.get(uri)) {
-								if (method.equals("property")) {
-									propertyMethodResults.put(uri);
+								if (method.equals(FetchMethod.QUERY_RESULTS.get())) {
+									queryResultsResults.put(uri);
 								}
 							}
 							
@@ -150,19 +165,19 @@ public class AutocompleteServlet extends HttpServlet {
 			if (status != null) {
 				propertyMethodObject.put(AutocompleteKeys.RESPONSE_STATUS, status);
 			}
-			int totalSize = propertyMethodResults.length();
+			int totalSize = queryResultsResults.length();
 			if (resultSize == maxResults) {
 				//there are probably more results than the maximum we have retrieved
-				totalSize = dbHelper.getPropertiesCount(endpoint, partialProperty, "property");
+				totalSize = dbHelper.getAutcompletionCount(endpoint, partialProperty, FetchType.PROPERTIES, FetchMethod.QUERY_RESULTS);
 			}
-			propertyMethodObject.put(AutocompleteKeys.RESPONSE_RESULTS, propertyMethodResults);
+			propertyMethodObject.put(AutocompleteKeys.RESPONSE_RESULTS, queryResultsResults);
 			propertyMethodObject.put(AutocompleteKeys.RESPONSE_RESULT_SIZE, totalSize);
 			resultObject.put(AutocompleteKeys.RESPONSE_METHOD_PROPERTY, propertyMethodObject);
 		}
 		
-		if (methodInRequest == null || methodInRequest.equals("lazy")) {
+		if (methodInRequest == null || methodInRequest == FetchMethod.QUERY_ANALYSIS) {
 			String status = null;
-			if (lazyMethodResults.length() == 0 && !dbHelper.propertyRetrievalEnabled(endpoint, "lazy")) {
+			if (queryAnalysisResults.length() == 0 && !dbHelper.autocompletionFetchingEnabled(endpoint, FetchType.PROPERTIES, FetchMethod.QUERY_ANALYSIS)) {
 				status = "disabled";
 			}
 			
@@ -170,12 +185,12 @@ public class AutocompleteServlet extends HttpServlet {
 			if (status != null) {
 				lazyMethodObject.put(AutocompleteKeys.RESPONSE_STATUS, status);
 			}
-			int totalSize = lazyMethodResults.length();
+			int totalSize = queryAnalysisResults.length();
 			if (resultSize == maxResults) {
 				//there are probably more results than the maximum we have retrieved
-				totalSize = dbHelper.getPropertiesCount(endpoint, partialProperty, "lazy");
+				totalSize = dbHelper.getAutcompletionCount(endpoint, partialProperty, FetchType.PROPERTIES, FetchMethod.QUERY_ANALYSIS);
 			}
-			lazyMethodObject.put(AutocompleteKeys.RESPONSE_RESULTS, lazyMethodResults);
+			lazyMethodObject.put(AutocompleteKeys.RESPONSE_RESULTS, queryAnalysisResults);
 			lazyMethodObject.put(AutocompleteKeys.RESPONSE_RESULT_SIZE, totalSize);
 			resultObject.put(AutocompleteKeys.RESPONSE_METHOD_LAZY, lazyMethodObject);
 		}

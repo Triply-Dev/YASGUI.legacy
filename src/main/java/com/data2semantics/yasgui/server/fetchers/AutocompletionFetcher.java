@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 
+import org.apache.commons.lang.WordUtils;
 import org.json.JSONException;
 
 import com.data2semantics.yasgui.server.SparqlService;
@@ -40,8 +41,8 @@ import com.data2semantics.yasgui.shared.exceptions.PossiblyNeedPaging;
 import com.hp.hpl.jena.query.ResultSet;
 
 
-public abstract class Fetcher  {
-	protected enum FetchStatus {
+public abstract class AutocompletionFetcher  {
+	public enum FetchStatus {
 		SUCCESSFUL("successful"),
 		FETCHING("fetching"),
 		FAILED("failed");
@@ -54,9 +55,44 @@ public abstract class Fetcher  {
 			return this.statusString;
 		}
 	}
+	public enum FetchType {
+		CLASSES("class", "classes"),
+		PROPERTIES("property", "properties");
+		private String singular;
+		private String plural;
+
+		private FetchType(String singular, String plural) {
+			this.singular = singular;
+			this.plural = plural;
+		}
+		public String getSingular() {
+			return this.singular;
+		}
+		public String getSingularCamelCase() {
+			return WordUtils.capitalize(this.singular);
+		}
+		public String getPlural() {
+			return this.plural;
+		}
+		public String getPluralCamelCase() {
+			return WordUtils.capitalize(this.plural);
+		}
+	}
+	public enum FetchMethod {
+		QUERY_ANALYSIS("query"),
+		QUERY_RESULTS("queryResults");
+		private String method;
+		
+		private FetchMethod(String method) {
+			this.method = method;
+		}
+		public String get() {
+			return this.method;
+		}
+	}
 	protected DbHelper dbHelper;
 	protected String endpoint;
-	public Fetcher(File configDir, String endpoint) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
+	public AutocompletionFetcher(File configDir, String endpoint) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
 		dbHelper = new DbHelper(configDir);
 		this.endpoint = endpoint;
 	}
@@ -69,10 +105,10 @@ public abstract class Fetcher  {
 				System.out.println("fetching paged " + getSparqlKeyword() + " for endpoint " + endpoint);
 				doPagingFetch(ep.getQueryCount());
 			} catch (Exception e) {
-				setLogStatus(FetchStatus.FAILED.get(), e.getMessage(), true);
+				setLogStatus(FetchStatus.FAILED, e.getMessage(), true);
 			}
 		} catch (SQLException e) {
-			setLogStatus(FetchStatus.FAILED.get(), e.getMessage());
+			setLogStatus(FetchStatus.FAILED, e.getMessage());
 			throw e;
 		}
 		
@@ -80,20 +116,20 @@ public abstract class Fetcher  {
 	
 	private void doRegularFetch() throws PossiblyNeedPaging, SQLException {
 		System.out.println("regular fetch");
-		setLogStatus(FetchStatus.FETCHING.get());
+		setLogStatus(FetchStatus.FETCHING);
 		ResultSet resultSet = SparqlService.query(endpoint, getRegularQuery());
 		//ok. so we know this paging query returns results (otherwise would have thrown an exception). 
 		//first clear our properties table of previous results
 		clearPreviousResultsFromDb();
 		storeSparqlResultInDb(resultSet);
-		setLogStatus(FetchStatus.SUCCESSFUL.get());
+		setLogStatus(FetchStatus.SUCCESSFUL);
 		
 	}
 	
 
 	private void doPagingFetch(int count) throws SQLException {
 		System.out.println("paging fetch (count: " + count + ")");
-		setLogStatus(FetchStatus.FETCHING.get(), null, true);
+		setLogStatus(FetchStatus.FETCHING, null, true);
 		int iterator = 0;
 		boolean needPaging = true;
 		while (needPaging) {
@@ -117,14 +153,27 @@ public abstract class Fetcher  {
 		return (count > 0 && count % 100 == 0);
 	}
 	
+	protected void setLogStatus(FetchStatus status) throws SQLException {
+		dbHelper.setAutocompletionLog(endpoint, status, getFetchType());
+	}
+	protected void setLogStatus(FetchStatus status, String message) throws SQLException {
+		dbHelper.setAutocompletionLog(endpoint, status, getFetchType(), message);
+	}
+	protected void setLogStatus(FetchStatus status, String message, boolean paging) throws SQLException {
+		dbHelper.setAutocompletionLog(endpoint, status, getFetchType(), message, true);
+	}
 	
-	protected abstract void clearPreviousResultsFromDb() throws SQLException;
+	protected void storeSparqlResultInDb(ResultSet resultSet) throws PossiblyNeedPaging, SQLException {
+		dbHelper.storeCompletionFetchesFromQueryResult(endpoint, getFetchType(), getFetchMethod(), resultSet, getSparqlKeyword());
+	}
+	protected void clearPreviousResultsFromDb() throws SQLException {
+		dbHelper.clearPreviousAutocompletionFetches(endpoint, getFetchMethod(), getFetchType());
+	}
+	
+	protected abstract FetchMethod getFetchMethod();
+	protected abstract FetchType getFetchType();
 	protected abstract String getSparqlKeyword();
 	protected abstract String getPaginationQuery(int iterator, int count);
 	protected abstract String getRegularQuery();
-	protected abstract void storeSparqlResultInDb(ResultSet resultSet) throws PossiblyNeedPaging, SQLException;
-	protected abstract void setLogStatus(String status) throws SQLException;
-	protected abstract void setLogStatus(String status, String message) throws SQLException;
-	protected abstract void setLogStatus(String status, String message, boolean paging) throws SQLException;
 
 }

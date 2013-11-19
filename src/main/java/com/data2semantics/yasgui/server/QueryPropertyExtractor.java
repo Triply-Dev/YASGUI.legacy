@@ -39,6 +39,8 @@ import java.util.Set;
 import org.json.JSONException;
 
 import com.data2semantics.yasgui.server.db.DbHelper;
+import com.data2semantics.yasgui.server.fetchers.AutocompletionFetcher.FetchMethod;
+import com.data2semantics.yasgui.server.fetchers.AutocompletionFetcher.FetchType;
 import com.data2semantics.yasgui.server.queryanalysis.Query;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
@@ -97,7 +99,7 @@ public class QueryPropertyExtractor {
 		Set<String> checkStringSet = new HashSet<String>();
 		checkStringSet.addAll(properties);
 		checkStringSet.addAll(possibleProperties);
-		Map<String, Boolean> arePropertiesAdded = dbHelper.arePropertiesAdded(endpoint, checkStringSet, "lazy");
+		Map<String, Boolean> arePropertiesAdded = dbHelper.areAutocompletionsAdded(endpoint, checkStringSet, FetchType.PROPERTIES, FetchMethod.QUERY_ANALYSIS);
 		for (Entry<String, Boolean> entry: arePropertiesAdded.entrySet()) {
 			if (entry.getValue()) {
 				//property is already added. delete it!
@@ -117,7 +119,7 @@ public class QueryPropertyExtractor {
 	private void storeProperties() throws SQLException {
 		if (debug) System.out.println("storing properties");
 		if (properties.size() > 0) {
-			dbHelper.storePropertiesFromQueryAnalysis(endpoint, "lazy", properties);
+			dbHelper.storeAutocompletionsFromQueryAnalysis(endpoint, FetchType.PROPERTIES, FetchMethod.QUERY_ANALYSIS, properties);
 		}
 	}
 	

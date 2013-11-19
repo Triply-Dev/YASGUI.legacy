@@ -50,6 +50,7 @@ import com.data2semantics.yasgui.client.services.YasguiService;
 import com.data2semantics.yasgui.server.db.DbHelper;
 import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
 import com.data2semantics.yasgui.server.fetchers.PrefixesFetcher;
+import com.data2semantics.yasgui.server.fetchers.AutocompletionFetcher.FetchType;
 import com.data2semantics.yasgui.server.fetchers.endpoints.EndpointsFetcher;
 import com.data2semantics.yasgui.shared.Bookmark;
 import com.data2semantics.yasgui.shared.IssueReport;
@@ -281,7 +282,7 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 	public String[] getDisabledEndpointsForPropertyAnalysis() throws IllegalArgumentException, FetchException {
 		try {
 			DbHelper db = new DbHelper(new File(getServletContext().getRealPath("/")), getThreadLocalRequest());
-			ArrayList<String> endpoints = db.getDisabledEndpointsForPropertyFetching();
+			ArrayList<String> endpoints = db.getDisabledEndpointsForCompletionsFetching(FetchType.PROPERTIES);
 			return endpoints.toArray(new String[endpoints.size()]);
 		} catch (Exception e) {
 			throw new FetchException(e.getMessage());

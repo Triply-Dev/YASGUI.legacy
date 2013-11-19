@@ -34,12 +34,8 @@ import java.text.ParseException;
 
 import org.json.JSONException;
 
-import com.data2semantics.yasgui.shared.exceptions.PossiblyNeedPaging;
-import com.hp.hpl.jena.query.ResultSet;
 
-
-public class PropertiesFetcher extends Fetcher {
-	private static String METHOD = "property";
+public class PropertiesFetcher extends AutocompletionFetcher {
 	public PropertiesFetcher(File configDir, String endpoint) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
 		super(configDir, endpoint);
 	}
@@ -63,26 +59,12 @@ public class PropertiesFetcher extends Fetcher {
 	protected String getSparqlKeyword() {
 		return "property";
 	}
-	protected void setLogStatus(String status) throws SQLException {
-		System.out.println(status);
-		System.out.println(endpoint);
-		dbHelper.setPropertyLogStatus(endpoint, status);
-	}
-	protected void storeSparqlResultsInDb(ResultSet resultSet) throws PossiblyNeedPaging, SQLException {
-		dbHelper.storePropertiesFromQueryResult(endpoint, METHOD, resultSet);
-	}
-	protected void clearPreviousResultsFromDb() throws SQLException {
-		dbHelper.clearProperties(endpoint, "property");
-	}
 
-	protected void storeSparqlResultInDb(ResultSet resultSet) throws PossiblyNeedPaging, SQLException {
-		dbHelper.storePropertiesFromQueryResult(endpoint, METHOD, resultSet);
+	protected FetchType getFetchType() {
+		return FetchType.PROPERTIES;
 	}
-	protected void setLogStatus(String status, String message) throws SQLException {
-		dbHelper.setPropertyLogStatus(endpoint, status, message);
-	}
-	protected void setLogStatus(String status, String message, boolean paging) throws SQLException {
-		dbHelper.setPropertyLogStatus(endpoint, status, message, true);
+	protected FetchMethod getFetchMethod() {
+		return FetchMethod.QUERY_RESULTS;
 	}
 	
 	public static void main(String[] args) throws IOException, ClassNotFoundException, JSONException, SQLException, ParseException  {
