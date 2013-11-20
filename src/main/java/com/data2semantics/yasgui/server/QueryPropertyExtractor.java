@@ -132,28 +132,14 @@ public class QueryPropertyExtractor {
 	}
 	public static void main (String[] args) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
 		DbHelper dbHelper = new DbHelper(new File("src/main/webapp/"));
-		String query = "PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" + 
-				"PREFIX  db:   <http://dbpedia.org/>\n" + 
-				"PREFIX  dbo:  <http://dbpedia.org/ontology/>\n" + 
-				"PREFIX  dbp:  <http://dbpedia.org/property/>\n" + 
-				"PREFIX  dbpedia: <http://dbpedia.org/resource/>\n" + 
-				"PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" + 
+		String query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" + 
+				"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" + 
+				"PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n" + 
+				"PREFIX owl: <http://www.w3.org/2002/07/owl#>\n" + 
 				"\n" + 
-				"SELECT DISTINCT  ?University_Name ?Type\n" + 
-				"WHERE\n" + 
-				"  {   { ?University_Name dbo:type dbpedia:Private_university .\n" + 
-				"        ?University_Name dbo:city|dbo:campus dbpedia:Los_Angeles .\n" + 
-				"        dbpedia:Private_university rdfs:label ?Type\n" + 
-				"        FILTER langMatches(lang(?Type), \"EN\")\n" + 
-				"      }\n" + 
-				"    UNION\n" + 
-				"      { ?University_Name dbo:type dbpedia:Public_university .\n" + 
-				"        ?University_Name dbo:city|dbo:campus dbpedia:Los_Angeles .\n" + 
-				"        dbpedia:Public_university rdfs:label ?Type\n" + 
-				"        FILTER langMatches(lang(?Type), \"EN\")\n" + 
-				"      }\n" + 
-				"  }\n" + 
-				"LIMIT   10";
-		QueryPropertyExtractor.store(dbHelper, query, "http://dbpedia.org/sparql");
+				"SELECT * WHERE {\n" + 
+				"  ?sub owl:imports ?obj\n" + 
+				"} LIMIT 10";
+		QueryPropertyExtractor.store(dbHelper, query, "http://services.data.gov/sparql", true);
 	}
 }

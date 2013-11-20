@@ -113,7 +113,7 @@ function changeUpdateFlag($con, $endpoint, $method, $methodFlagged) {
 		exit;
 	}
 	if ($methodFlagged == "both") {
-		$sqlQuery = "INSERT INTO DisabledPropertyEndpoints (Endpoint, Method) VALUES ('".mysqli_real_escape_string($con, $endpoint)."', 'property'), ('".mysqli_real_escape_string($con, $endpoint)."', 'lazy')";
+		$sqlQuery = "INSERT INTO DisabledPropertyEndpoints (Endpoint, Method) VALUES ('".mysqli_real_escape_string($con, $endpoint)."', 'query'), ('".mysqli_real_escape_string($con, $endpoint)."', 'queryResults')";
 	} else if ($methodFlagged != "none") {
 		$sqlQuery = "INSERT INTO DisabledPropertyEndpoints (Endpoint, Method) VALUES ('".mysqli_real_escape_string($con, $endpoint)."', '".mysqli_real_escape_string($con, $methodFlagged)."')";
 	} 
@@ -147,8 +147,8 @@ function getCurrentUpdateFlag($con, $endpoint) {
 }
 function askSetFlag($currentMethodFlagged) {
 	$optionsArray = [
-		1 => "lazy",
-		2 => "property",
+		1 => "query",
+		2 => "queryResults",
 		3 => "both",
 		4 => "none"
 	];
@@ -245,8 +245,8 @@ function doStore($con, $endpoint, $method, $predicatesFile) {
 
 function askMethod() {
 	$optionsArray = [
-		1 => "lazy",
-		2 => "property"
+		1 => "query",
+		2 => "queryResults"
 	];
 	echo "\nFor which method do you want to import these predicates? \n".
 		"[1] cached from queries (in practice more reliable than [2])\n".
