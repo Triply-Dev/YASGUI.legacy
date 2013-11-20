@@ -75,6 +75,7 @@ public class ConnectionFactory  {
 					config.getString(SettingKeys.MYSQL_PASSWORD));
 			applyDeltas(connect, configDir);
 		} catch (SQLException e) {
+			e.printStackTrace();
 			System.out.println("either db doesnt exist, or there is an error in our deltas");
 			//connect without db selector, create db, and create new connector
 			connect = connect(config.getString(SettingKeys.MYSQL_HOST), config.getString(SettingKeys.MYSQL_USERNAME),

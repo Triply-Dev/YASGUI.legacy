@@ -361,13 +361,13 @@
 					"description": "Properties fetched from <a href='" + getLovApiLink() + "' target='_blank'>LOV</a>",
 					"priority": 3,
 				},
-				"property": {
+				"queryResults": {
 					"color":"#502982;",
 					"abbreviation": "P",
 					"description": "Properties fetched from dataset (i.e. as rdf:Property)",
 					"priority": 2,
 				},
-				"lazy": {
+				"query": {
 					"color":"#BF9C30;",
 					"abbreviation": "C",
 					"description": "Cached properties based on endpoint query logs",
@@ -454,7 +454,7 @@
 		};
 		this.requestLovAutocompletions = function() {
 			completion.fetched['lov'] = false;
-		    var args = {q:completion.uriStart, page: 1, type: "property"};
+		    var args = {q:completion.uriStart, page: 1, type: "queryResults"};
 		    var url = "";
 		    var updateUrl = function() {
 		    	url = "http://lov.okfn.org/dataset/lov/api/v2/autocomplete/terms?" + $.param(args);
@@ -492,31 +492,31 @@
 		};
 		this.requestServletAutocompletions = function(methods) {
 			if (location.href.indexOf("codemirror.html") !== -1) {
-				var data = jQuery.parseJSON( '{"property":{"results":["http://xmlns.com/foaf/0.1/prop","http://xmlns.com/foaf/0.1/prop3","http://xmlns.com/foaf/0.1/same", "http://xmlns.com/foaf/0.1/prop2"],"resultSize":4},"lazy":{"results":["http://xmlns.com/foaf/0.1/lazy2","http://xmlns.com/foaf/0.1/lazy1","http://xmlns.com/foaf/0.1/lazy3","http://xmlns.com/foaf/0.1/same","http://xmlns.com/foaf/0.1/lazy4"],"resultSize":5}}' );
-				if (data.property != undefined) {
-					if (data.property.status != undefined) {
-						completion.statusMsgs['property'] = data.property.status;
+				var data = jQuery.parseJSON( '{"queryResults":{"results":["http://xmlns.com/foaf/0.1/prop","http://xmlns.com/foaf/0.1/prop3","http://xmlns.com/foaf/0.1/same", "http://xmlns.com/foaf/0.1/prop2"],"resultSize":4},"query":{"results":["http://xmlns.com/foaf/0.1/lazy2","http://xmlns.com/foaf/0.1/lazy1","http://xmlns.com/foaf/0.1/lazy3","http://xmlns.com/foaf/0.1/same","http://xmlns.com/foaf/0.1/lazy4"],"resultSize":5}}' );
+				if (data.queryResults != undefined) {
+					if (data.queryResults.status != undefined) {
+						completion.statusMsgs['queryResults'] = data.queryResults.status;
 					}
-					completion.resultSizes['property'] = data.property.resultSize;
-					for (var i = 0; i < data.property.results.length; i++) {
+					completion.resultSizes['queryResults'] = data.queryResults.resultSize;
+					for (var i = 0; i < data.queryResults.results.length; i++) {
 						completion.results.push({
-							type: "property", 
-							uri: data.property.results[i],
-							priority: completion.methodProperties.property.priority
+							type: "queryResults", 
+							uri: data.queryResults.results[i],
+							priority: completion.methodProperties.queryResults.priority
 						});
 					}
 				}
 				
-				if (data.lazy != undefined) {
-					if (data.lazy.status != undefined) {
-						completion.statusMsgs['lazy'] = data.lazy.status;
+				if (data.query != undefined) {
+					if (data.query.status != undefined) {
+						completion.statusMsgs['query'] = data.query.status;
 					}
-					completion.resultSizes['lazy'] = data.lazy.resultSize;
-					for (var i = 0; i < data.lazy.results.length; i++) {
+					completion.resultSizes['query'] = data.query.resultSize;
+					for (var i = 0; i < data.query.results.length; i++) {
 						completion.results.push({
-							type: "lazy", 
-							uri: data.lazy.results[i],
-							priority: completion.methodProperties.lazy.priority
+							type: "query", 
+							uri: data.query.results[i],
+							priority: completion.methodProperties.query.priority
 						});
 					}
 				}
@@ -529,7 +529,7 @@
 			var args = {
 				q:completion.uriStart, 
 				max: completion.maxResults, 
-				type: "property",
+				type: "queryResults",
 				endpoint: getCurrentEndpoint()
 			};
 			if (methods.length == 1) {
@@ -539,30 +539,30 @@
 			}
 		    var url = "Yasgui/autocomplete?" + $.param(args);
 			$.get(url, function(data) {
-				if (data.property != undefined) {
-					if (data.property.status != undefined) {
-						completion.statusMsgs['property'] = data.property.status;
+				if (data.queryResults != undefined) {
+					if (data.queryResults.status != undefined) {
+						completion.statusMsgs['queryResults'] = data.queryResults.status;
 					}
-					completion.resultSizes['property'] = data.property.resultSize;
-					for (var i = 0; i < data.property.results.length; i++) {
+					completion.resultSizes['queryResults'] = data.queryResults.resultSize;
+					for (var i = 0; i < data.queryResults.results.length; i++) {
 						completion.results.push({
-							type: "property", 
-							uri: data.property.results[i],
-							priority: completion.methodProperties.property.priority
+							type: "queryResults", 
+							uri: data.queryResults.results[i],
+							priority: completion.methodProperties.queryResults.priority
 						});
 					}
 				}
 				
-				if (data.lazy != undefined) {
-					if (data.lazy.status != undefined) {
-						completion.statusMsgs['lazy'] = data.lazy.status;
+				if (data.query != undefined) {
+					if (data.query.status != undefined) {
+						completion.statusMsgs['query'] = data.query.status;
 					}
-					completion.resultSizes['lazy'] = data.lazy.resultSize;
-					for (var i = 0; i < data.lazy.results.length; i++) {
+					completion.resultSizes['query'] = data.query.resultSize;
+					for (var i = 0; i < data.query.results.length; i++) {
 						completion.results.push({
-							type: "lazy", 
-							uri: data.lazy.results[i],
-							priority: completion.methodProperties.lazy.priority
+							type: "query", 
+							uri: data.query.results[i],
+							priority: completion.methodProperties.query.priority
 						});
 					}
 				}
