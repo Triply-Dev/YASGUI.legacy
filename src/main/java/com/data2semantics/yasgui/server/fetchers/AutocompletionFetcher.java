@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 
-import org.apache.commons.lang.WordUtils;
 import org.json.JSONException;
 
 import com.data2semantics.yasgui.server.SparqlService;
@@ -69,13 +68,13 @@ public abstract class AutocompletionFetcher  {
 			return this.singular;
 		}
 		public String getSingularCamelCase() {
-			return WordUtils.capitalize(this.singular);
+			return this.singular.substring(0, 1).toUpperCase() + this.singular.substring(1);
 		}
 		public String getPlural() {
 			return this.plural;
 		}
 		public String getPluralCamelCase() {
-			return WordUtils.capitalize(this.plural);
+			return this.plural.substring(0, 1).toUpperCase() + this.plural.substring(1);
 		}
 	}
 	public enum FetchMethod {

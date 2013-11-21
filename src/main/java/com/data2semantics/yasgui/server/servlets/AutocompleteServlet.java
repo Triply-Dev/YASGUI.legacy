@@ -89,7 +89,7 @@ public class AutocompleteServlet extends HttpServlet {
 	private JSONObject getJson(HttpServletRequest request, HttpServletResponse response) throws JSONException, ClassNotFoundException, FileNotFoundException, SQLException, IOException, ParseException {
 		JSONObject resultObject = new JSONObject();
 		if (request.getParameter(AutocompleteKeys.REQUEST_TYPE).equals(AutocompleteKeys.TYPE_CLASS)) {
-			
+			resultObject = getPropertyJson(request, response);
 		} else {
 			resultObject = getPropertyJson(request, response);
 		}

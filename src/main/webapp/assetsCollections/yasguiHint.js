@@ -601,6 +601,257 @@
 	};
 	extend(PropertyAutocompletion, AutocompletionBase);
 	
+	var ClassAutocompletion = function(cm, drawCallback) {
+		var completion = this;
+		this.cm = cm;
+		this.drawCallback = drawCallback;
+		this.methodProperties = {
+				"lov" : {
+					"color":"#25547B;",
+					"abbreviation": "L",
+					"description": "Properties fetched from <a href='" + getLovApiLink() + "' target='_blank'>LOV</a>",
+					"priority": 3,
+				},
+				"queryResults": {
+					"color":"#502982;",
+					"abbreviation": "P",
+					"description": "Properties fetched from dataset (i.e. as rdf:Property)",
+					"priority": 2,
+				},
+				"query": {
+					"color":"#BF9C30;",
+					"abbreviation": "C",
+					"description": "Cached properties based on endpoint query logs",
+					"priority": 1,
+				}
+		};
+		this.completionType = "property";
+		this.preprocessToken = function() {
+			var cur = completion.cm.getCursor();
+			var token = getCompleteToken(completion.cm);
+			if ($.inArray("a", token.state.possibleCurrent) >= 0) {
+				// ok, so we are in a position where we can add properties
+				if (
+						// we are either writing a uri, or we've already typed the prefix
+						// part, and want to specify the stuff after the colon
+						(token.string.contains(":") || token.string.startsWith("<"))
+						// the cursor is at the end of the string
+						&& token.end == cur.ch
+						// we already have something filled in
+						&& token.className != "sp-ws") {
+					token = getCompleteToken(completion.cm);
+					if (!token.string.startsWith("<")) {
+						completion.tokenPrefix = token.string.substring(0,
+								token.string.indexOf(":") + 1);
+						var queryPrefixes = getPrefixesFromQuery(completion.cm);
+						if (queryPrefixes[completion.tokenPrefix] != null) {
+							completion.tokenPrefixUri = queryPrefixes[completion.tokenPrefix];
+						}
+					}
+					// preprocess string for which to find the autocompletion
+					completion.uriStart = getUriFromPrefix(completion.cm, token);
+					if (completion.uriStart.startsWith("<"))
+						completion.uriStart = completion.uriStart.substring(1);
+					if (completion.uriStart.endsWith(">"))
+						completion.uriStart = completion.uriStart.substring(0, completion.uriStart.length - 1);
+				}
+			}
+		};
+		this.legendDialogue.generateHtml = function(completion, dismissOnOutsideClick) {
+			var methods = getPropertyCompletionMethods();
+			var sortedMethods = completion.legendDialogue.sortMethods(completion, methods);
+			this.legendHtml = 
+				"Methods used for fetching autocompletions: (<a href='" + getAutocompletionMoreInfoLink() + " ' target='_blank'>more info</a>):" +
+				"<ul id='propertyCompletionsLegend' class='propertyCompletionsLegend'>";
+			for (var i = 0; i < sortedMethods.length; i++) {
+				var method = sortedMethods[i];
+				var methodProps = completion.methodProperties[method];
+				this.legendHtml += 
+					"<li id='" + method + "Hint' class='" + method + "Hint propertyCompletionLegend'>" +
+					"<table style='min-height:25px;border-collapse:collapse'><tr>" + 
+					"<td>" +
+					"<span style='vertical-align: middle;display: inline;background-color:" + methodProps.color + "' class='propertyTypeIconLegend propertyTypeIcon'>" + methodProps.abbreviation + "</span>" +
+					"</td>" +
+					"<td>" + 
+					"<input onclick=\"completionMethodChanged('" + completion.completionType + "');\" class='propertyCompletionMethodCheckbox' type='checkbox' name='propertyCompletions' value='" + method + "' " + (methods[method]? "checked":"") + ">" +
+					"</td>" +
+					"<td>" +
+					methodProps.description + 
+					" (";
+				if (completion.resultSizes[method] != undefined) {
+					if (completion.drawnResultSizes[method] == undefined || completion.drawnResultSizes[method] == completion.resultSizes[method]) {
+						this.legendHtml += completion.resultSizes[method];
+					} else {
+						this.legendHtml += 
+							"<span title='displayed suggestions vs total number of available suggestions'>" +
+							completion.drawnResultSizes[method] + "/" + completion.resultSizes[method] +
+							"</span>";
+					}
+				} else {
+					if (completion.statusMsgs[method] != undefined) {
+						this.legendHtml += completion.statusMsgs[method];
+					} else {
+						this.legendHtml += "unknown";
+					}
+				}
+				this.legendHtml += ")" +
+				"</td>" +
+				"</tr></table>" +
+				"</li>";
+			}
+			this.legendHtml += 
+				"</ul>" +
+				"<button id='completionMethodButton' style='display:none;float: right;' onclick=\"storeCompletionMethods('" + completion.completionType + "');$.noty.close('" + this.legendId + "');return false;\">Apply</button>";
+		};
+		this.requestLovAutocompletions = function() {
+			completion.fetched['lov'] = false;
+			var args = {q:completion.uriStart, page: 1, type: "queryResults"};
+			var url = "";
+			var updateUrl = function() {
+				url = "http://lov.okfn.org/dataset/lov/api/v2/autocomplete/terms?" + $.param(args);
+			};
+			updateUrl();
+			var increasePage = function(){
+				args.page++;
+				updateUrl();
+			};
+			var requestObj = this;
+			this.doLovRequest = function() {
+				$.get(url, function(data) {
+					completion.resultSizes['lov'] = data.total_results;
+					for (var i = 0; i < data.results.length; i++) {
+						completion.results.push({
+							type: "lov", 
+							uri: data.results[i].uri, 
+							priority: completion.methodProperties.lov.priority
+						});
+					}
+					var resultsSoFar = data.page_size * data.page;
+					if (resultsSoFar < data.total_results && resultsSoFar < completion.maxResults) {
+						increasePage();
+						requestObj.doLovRequest();
+					} else {
+						//request done, draw!
+						completion.fetched['lov'] = true;
+						completion.drawIfNeeded(completion);
+					}
+				}).fail(function(jqXHR, textStatus, errorThrown) {
+					console.log(errorThrown);
+				});
+			};
+			this.doLovRequest();
+		};
+		this.requestServletAutocompletions = function(methods) {
+			if (location.href.indexOf("codemirror.html") !== -1) {
+				var data = jQuery.parseJSON( '{"queryResults":{"results":["http://xmlns.com/foaf/0.1/prop","http://xmlns.com/foaf/0.1/prop3","http://xmlns.com/foaf/0.1/same", "http://xmlns.com/foaf/0.1/prop2"],"resultSize":4},"query":{"results":["http://xmlns.com/foaf/0.1/lazy2","http://xmlns.com/foaf/0.1/lazy1","http://xmlns.com/foaf/0.1/lazy3","http://xmlns.com/foaf/0.1/same","http://xmlns.com/foaf/0.1/lazy4"],"resultSize":5}}' );
+				if (data.queryResults != undefined) {
+					if (data.queryResults.status != undefined) {
+						completion.statusMsgs['queryResults'] = data.queryResults.status;
+					}
+					completion.resultSizes['queryResults'] = data.queryResults.resultSize;
+					for (var i = 0; i < data.queryResults.results.length; i++) {
+						completion.results.push({
+							type: "queryResults", 
+							uri: data.queryResults.results[i],
+							priority: completion.methodProperties.queryResults.priority
+						});
+					}
+				}
+				
+				if (data.query != undefined) {
+					if (data.query.status != undefined) {
+						completion.statusMsgs['query'] = data.query.status;
+					}
+					completion.resultSizes['query'] = data.query.resultSize;
+					for (var i = 0; i < data.query.results.length; i++) {
+						completion.results.push({
+							type: "query", 
+							uri: data.query.results[i],
+							priority: completion.methodProperties.query.priority
+						});
+					}
+				}
+				completion.fetched['servlet'] = true;
+				completion.drawIfNeeded(completion);
+				return;
+			}
+			
+			completion.fetched['servlet'] = false;
+			var args = {
+					q:completion.uriStart, 
+					max: completion.maxResults, 
+					type: "queryResults",
+					endpoint: getCurrentEndpoint()
+			};
+			if (methods.length == 1) {
+				args["method"] = methods[0];
+			} else {
+				//no need to add methods to args. We want all!
+			}
+			var url = "Yasgui/autocomplete?" + $.param(args);
+			$.get(url, function(data) {
+				if (data.queryResults != undefined) {
+					if (data.queryResults.status != undefined) {
+						completion.statusMsgs['queryResults'] = data.queryResults.status;
+					}
+					completion.resultSizes['queryResults'] = data.queryResults.resultSize;
+					for (var i = 0; i < data.queryResults.results.length; i++) {
+						completion.results.push({
+							type: "queryResults", 
+							uri: data.queryResults.results[i],
+							priority: completion.methodProperties.queryResults.priority
+						});
+					}
+				}
+				
+				if (data.query != undefined) {
+					if (data.query.status != undefined) {
+						completion.statusMsgs['query'] = data.query.status;
+					}
+					completion.resultSizes['query'] = data.query.resultSize;
+					for (var i = 0; i < data.query.results.length; i++) {
+						completion.results.push({
+							type: "query", 
+							uri: data.query.results[i],
+							priority: completion.methodProperties.query.priority
+						});
+					}
+				}
+				completion.fetched['servlet'] = true;
+				completion.drawIfNeeded(completion);
+			}).fail(function(jqXHR, textStatus, errorThrown) {
+				console.log(errorThrown);
+			});
+		};
+		
+		
+		this.doRequests = function() {
+			this.preprocessToken();
+			var allDisabled = true;
+			var methods = getPropertyCompletionMethods();
+			var servletMethods = [];
+			for (var method in methods) {
+				if (methods[method]) {
+					allDisabled = false;
+					if (method == "lov") {
+						completion.requestLovAutocompletions();
+					} else {
+						//both other methods are executed as 1 single request
+						servletMethods.push(method);
+					}
+				}
+			}
+			if (servletMethods.length > 0) {
+				completion.requestServletAutocompletions(servletMethods);
+			}
+			if (allDisabled) {
+				completion.legendDialogue.draw(completion, true);
+			}
+		};
+		this.doRequests();
+	};
+	extend(ClassAutocompletion, AutocompletionBase);
+	
 	CodeMirror.AutocompletionBase = function(cm, drawCallback) {
 		if (usePropertyAutocompletion(cm)) {
 			new PropertyAutocompletion(cm, drawCallback);
