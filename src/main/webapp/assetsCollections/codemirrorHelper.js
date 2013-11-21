@@ -267,3 +267,13 @@ CodeMirror.extendMode("sparql11", {
 		return $.trim(formattedQuery.replace(/\n\s*\n/g, '\n'));
 	}
   });
+function getPreviousNonWsToken(cm, line, token) {
+	var previousToken = cm.getTokenAt({
+		line : line,
+		ch : token.start
+	});
+	if (previousToken != null && previousToken.type == "sp-ws") {
+		previousToken = getPreviousNonWsToken(cm, line, previousToken);
+	}
+	return previousToken;
+}

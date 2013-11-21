@@ -162,30 +162,30 @@ div#appcacheProgressBar {
 	cursor: pointer;	
 }
 
-.propertyCompletionsLegend {
+.completionsLegend {
 	list-style: none;
 	padding-left:10px;
 	padding-top:20px;
 }
-.propertyCompletionLegend {
+.completionLegend {
 	padding-left: 0px;
 	padding-right:5px;
 }
-.propertyCompletionLegendSelected{
+.completionLegendSelected{
 	background-color:#08f;
 	color:white;
 }
-.propertyTypeIcon {
+.completionTypeIcon {
 	color: white;
 	padding: 5px;
 	font-weight: bold;
 	margin-right:5px;
 }
-.propertyTypeIconLegend {
+.completionTypeIconLegend {
 	display: inline-block;
 	width:10px;
 }
-.propertyCompletionMethodCheckbox {
+.completionMethodCheckbox {
 	vertical-align:middle;
 	display:inline;
 	margin-right:6px;

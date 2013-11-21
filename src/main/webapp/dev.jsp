@@ -40,7 +40,6 @@
 <script src="assets/yasguiHint.js?<% out.print(StaticConfig.VERSION); %>"></script>
 <!-- Highlight words onclick code -->
 <script src="assets/codemirror/addon/search/searchcursor.js?<% out.print(StaticConfig.VERSION); %>"></script>
-<script src="assets/codemirror/addon/search/match-highlighter.js?<% out.print(StaticConfig.VERSION); %>"></script>
 <script src="assets/codemirror/addon/edit/matchbrackets.js?<% out.print(StaticConfig.VERSION); %>"></script>
 
 <!-- Code for efficiently looping through all tokens (used for removing comments) -->

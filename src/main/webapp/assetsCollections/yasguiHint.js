@@ -190,6 +190,26 @@
 		    	completion.drawnResultSizes[type]++;
 			}
 		},
+		preprocessToken: function(completion) {
+			var token = getCompleteToken(completion.cm);
+			if (token.string.contains(":") || token.string.startsWith("<")) {
+				token = getCompleteToken(completion.cm);
+				if (!token.string.startsWith("<")) {
+					completion.tokenPrefix = token.string.substring(0,
+							token.string.indexOf(":") + 1);
+					var queryPrefixes = getPrefixesFromQuery(completion.cm);
+					if (queryPrefixes[completion.tokenPrefix] != null) {
+						completion.tokenPrefixUri = queryPrefixes[completion.tokenPrefix];
+					}
+				}
+				// preprocess string for which to find the autocompletion
+				completion.uriStart = getUriFromPrefix(completion.cm, token);
+				if (completion.uriStart.startsWith("<"))
+					completion.uriStart = completion.uriStart.substring(1);
+				if (completion.uriStart.endsWith(">"))
+					completion.uriStart = completion.uriStart.substring(0, completion.uriStart.length - 1);
+			}
+		},
 		storeCompletionMethods: function(type) {
 			var checkboxElements=document.getElementsByName(type + "Completions");
 			var methods = {};
@@ -202,6 +222,52 @@
 		legendDialogue: {
 			legendId: "propertyLegend",
 			legendHtml: "placeholder",
+			generateHtml : function(completion, methods, dismissOnOutsideClick) {
+				var methods = completion.methods;
+				var sortedMethods = completion.legendDialogue.sortMethods(completion, methods);
+				this.legendHtml = 
+					"Methods used for fetching autocompletions: (<a href='" + getAutocompletionMoreInfoLink() + " ' target='_blank'>more info</a>):" +
+					"<ul id='completionsLegend' class='completionsLegend'>";
+				for (var i = 0; i < sortedMethods.length; i++) {
+					var method = sortedMethods[i];
+					var methodProps = completion.methodProperties[method];
+					this.legendHtml += 
+						"<li id='" + method + "Hint' class='" + method + "Hint completionLegend'>" +
+						"<table style='min-height:25px;border-collapse:collapse'><tr>" + 
+						"<td>" +
+						"<span style='vertical-align: middle;display: inline;background-color:" + methodProps.color + "' class='completionTypeIcon completionTypeIconLegend'>" + methodProps.abbreviation + "</span>" +
+						"</td>" +
+						"<td>" + 
+						"<input onclick=\"completionMethodChanged('" + completion.completionType + "');\" class='propertyCompletionMethodCheckbox' type='checkbox' name='propertyCompletions' value='" + method + "' " + (methods[method]? "checked":"") + ">" +
+						"</td>" +
+						"<td>" +
+						methodProps.description + 
+						" (";
+					if (completion.resultSizes[method] != undefined) {
+						if (completion.drawnResultSizes[method] == undefined || completion.drawnResultSizes[method] == completion.resultSizes[method]) {
+							this.legendHtml += completion.resultSizes[method];
+						} else {
+							this.legendHtml += 
+								"<span title='displayed suggestions vs total number of available suggestions'>" +
+								completion.drawnResultSizes[method] + "/" + completion.resultSizes[method] +
+								"</span>";
+						}
+					} else {
+						if (completion.statusMsgs[method] != undefined) {
+							this.legendHtml += completion.statusMsgs[method];
+						} else {
+							this.legendHtml += "unknown";
+						}
+					}
+					this.legendHtml += ")" +
+					"</td>" +
+					"</tr></table>" +
+					"</li>";
+				}
+				this.legendHtml += 
+					"</ul>" +
+					"<button id='completionMethodButton' style='display:none;float: right;' onclick=\"storeCompletionMethods('" + completion.completionType + "');$.noty.close('" + this.legendId + "');return false;\">Apply</button>";
+			},
 			sortMethods: function(completion, methods) {
 				var sortedMethods = [];
 				for (var method in methods) {
@@ -231,7 +297,7 @@
 						closeWith: closeWith,
 					});
 				} else {
-					$.noty.setText(this.legendId, legendHtml);
+					$.noty.setText(this.legendId, this.legendHtml);
 				}
 				this.addClickListener(completion);
 			},
@@ -254,11 +320,11 @@
 			},
 			update: function(completion) {
 				//clear 'selected' class name from 
-				$("#propertyCompletionsLegend").find(".propertyCompletionLegendSelected").each (function() {
-				    $(this).removeClass("propertyCompletionLegendSelected");
+				$("#completionsLegend").find(".completionLegendSelected").each (function() {
+				    $(this).removeClass("completionLegendSelected");
 				});
 				if (document.getElementById(completion.className) != undefined) {
-					document.getElementById(completion.className).className += " " + "propertyCompletionLegendSelected";
+					document.getElementById(completion.className).className += " " + "completionLegendSelected";
 				}
 				
 			}
@@ -267,7 +333,7 @@
 			for (var method in completion.methodProperties) {
 				var props = completion.methodProperties[method];
 				$("." + method + "Hint.CodeMirror-hint").each(function(){
-					$(this).prepend("<span style='background-color:" + props.color + "' class='propertyTypeIcon'>" + props.abbreviation + "</span>");
+					$(this).prepend("<span style='background-color:" + props.color + "' class='completionTypeIcon'>" + props.abbreviation + "</span>");
 				});
 			}
 		},
@@ -344,404 +410,7 @@
 				console.log("nothing to draw");
 			}
 		},
-	};
-	var usePropertyAutocompletion = function(cm) {
-		var token = getCompleteToken(cm);
-		return $.inArray("a", token.state.possibleCurrent);
-	};
-	
-	var PropertyAutocompletion = function(cm, drawCallback) {
-		var completion = this;
-		this.cm = cm;
-		this.drawCallback = drawCallback;
-		this.methodProperties = {
-				"lov" : {
-					"color":"#25547B;",
-					"abbreviation": "L",
-					"description": "Properties fetched from <a href='" + getLovApiLink() + "' target='_blank'>LOV</a>",
-					"priority": 3,
-				},
-				"queryResults": {
-					"color":"#502982;",
-					"abbreviation": "P",
-					"description": "Properties fetched from dataset (i.e. as rdf:Property)",
-					"priority": 2,
-				},
-				"query": {
-					"color":"#BF9C30;",
-					"abbreviation": "C",
-					"description": "Cached properties based on endpoint query logs",
-					"priority": 1,
-				}
-			};
-		this.completionType = "property";
-		this.preprocessToken = function() {
-			var cur = completion.cm.getCursor();
-			var token = getCompleteToken(completion.cm);
-			if ($.inArray("a", token.state.possibleCurrent) >= 0) {
-				// ok, so we are in a position where we can add properties
-				if (
-				// we are either writing a uri, or we've already typed the prefix
-				// part, and want to specify the stuff after the colon
-				(token.string.contains(":") || token.string.startsWith("<"))
-				// the cursor is at the end of the string
-				&& token.end == cur.ch
-				// we already have something filled in
-				&& token.className != "sp-ws") {
-					token = getCompleteToken(completion.cm);
-					if (!token.string.startsWith("<")) {
-						completion.tokenPrefix = token.string.substring(0,
-								token.string.indexOf(":") + 1);
-						var queryPrefixes = getPrefixesFromQuery(completion.cm);
-						if (queryPrefixes[completion.tokenPrefix] != null) {
-							completion.tokenPrefixUri = queryPrefixes[completion.tokenPrefix];
-						}
-					}
-					// preprocess string for which to find the autocompletion
-					completion.uriStart = getUriFromPrefix(completion.cm, token);
-					if (completion.uriStart.startsWith("<"))
-						completion.uriStart = completion.uriStart.substring(1);
-					if (completion.uriStart.endsWith(">"))
-						completion.uriStart = completion.uriStart.substring(0, completion.uriStart.length - 1);
-				}
-			}
-		};
-		this.legendDialogue.generateHtml = function(completion, dismissOnOutsideClick) {
-			var methods = getPropertyCompletionMethods();
-			var sortedMethods = completion.legendDialogue.sortMethods(completion, methods);
-			this.legendHtml = 
-				"Methods used for fetching autocompletions: (<a href='" + getAutocompletionMoreInfoLink() + " ' target='_blank'>more info</a>):" +
-				"<ul id='propertyCompletionsLegend' class='propertyCompletionsLegend'>";
-			for (var i = 0; i < sortedMethods.length; i++) {
-				var method = sortedMethods[i];
-				var methodProps = completion.methodProperties[method];
-				this.legendHtml += 
-					"<li id='" + method + "Hint' class='" + method + "Hint propertyCompletionLegend'>" +
-						"<table style='min-height:25px;border-collapse:collapse'><tr>" + 
-						"<td>" +
-							"<span style='vertical-align: middle;display: inline;background-color:" + methodProps.color + "' class='propertyTypeIconLegend propertyTypeIcon'>" + methodProps.abbreviation + "</span>" +
-						"</td>" +
-						"<td>" + 
-						"<input onclick=\"completionMethodChanged('" + completion.completionType + "');\" class='propertyCompletionMethodCheckbox' type='checkbox' name='propertyCompletions' value='" + method + "' " + (methods[method]? "checked":"") + ">" +
-						"</td>" +
-						"<td>" +
-						methodProps.description + 
-						" (";
-				if (completion.resultSizes[method] != undefined) {
-					if (completion.drawnResultSizes[method] == undefined || completion.drawnResultSizes[method] == completion.resultSizes[method]) {
-						this.legendHtml += completion.resultSizes[method];
-					} else {
-						this.legendHtml += 
-							"<span title='displayed suggestions vs total number of available suggestions'>" +
-								completion.drawnResultSizes[method] + "/" + completion.resultSizes[method] +
-							"</span>";
-					}
-				} else {
-					if (completion.statusMsgs[method] != undefined) {
-						this.legendHtml += completion.statusMsgs[method];
-					} else {
-						this.legendHtml += "unknown";
-					}
-				}
-				this.legendHtml += ")" +
-					"</td>" +
-					"</tr></table>" +
-					"</li>";
-			}
-			this.legendHtml += 
-				"</ul>" +
-				"<button id='completionMethodButton' style='display:none;float: right;' onclick=\"storeCompletionMethods('" + completion.completionType + "');$.noty.close('" + this.legendId + "');return false;\">Apply</button>";
-		};
-		this.requestLovAutocompletions = function() {
-			completion.fetched['lov'] = false;
-		    var args = {q:completion.uriStart, page: 1, type: "queryResults"};
-		    var url = "";
-		    var updateUrl = function() {
-		    	url = "http://lov.okfn.org/dataset/lov/api/v2/autocomplete/terms?" + $.param(args);
-		    };
-		    updateUrl();
-		    var increasePage = function(){
-		    	args.page++;
-		    	updateUrl();
-		    };
-		    var requestObj = this;
-		    this.doLovRequest = function() {
-		    	$.get(url, function(data) {
-		    		completion.resultSizes['lov'] = data.total_results;
-					for (var i = 0; i < data.results.length; i++) {
-						completion.results.push({
-							type: "lov", 
-							uri: data.results[i].uri, 
-							priority: completion.methodProperties.lov.priority
-						});
-				 	}
-					var resultsSoFar = data.page_size * data.page;
-					if (resultsSoFar < data.total_results && resultsSoFar < completion.maxResults) {
-						increasePage();
-						requestObj.doLovRequest();
-					} else {
-						//request done, draw!
-						completion.fetched['lov'] = true;
-						completion.drawIfNeeded(completion);
-					}
-				}).fail(function(jqXHR, textStatus, errorThrown) {
-					console.log(errorThrown);
-				  });
-		    };
-		    this.doLovRequest();
-		};
-		this.requestServletAutocompletions = function(methods) {
-			if (location.href.indexOf("codemirror.html") !== -1) {
-				var data = jQuery.parseJSON( '{"queryResults":{"results":["http://xmlns.com/foaf/0.1/prop","http://xmlns.com/foaf/0.1/prop3","http://xmlns.com/foaf/0.1/same", "http://xmlns.com/foaf/0.1/prop2"],"resultSize":4},"query":{"results":["http://xmlns.com/foaf/0.1/lazy2","http://xmlns.com/foaf/0.1/lazy1","http://xmlns.com/foaf/0.1/lazy3","http://xmlns.com/foaf/0.1/same","http://xmlns.com/foaf/0.1/lazy4"],"resultSize":5}}' );
-				if (data.queryResults != undefined) {
-					if (data.queryResults.status != undefined) {
-						completion.statusMsgs['queryResults'] = data.queryResults.status;
-					}
-					completion.resultSizes['queryResults'] = data.queryResults.resultSize;
-					for (var i = 0; i < data.queryResults.results.length; i++) {
-						completion.results.push({
-							type: "queryResults", 
-							uri: data.queryResults.results[i],
-							priority: completion.methodProperties.queryResults.priority
-						});
-					}
-				}
-				
-				if (data.query != undefined) {
-					if (data.query.status != undefined) {
-						completion.statusMsgs['query'] = data.query.status;
-					}
-					completion.resultSizes['query'] = data.query.resultSize;
-					for (var i = 0; i < data.query.results.length; i++) {
-						completion.results.push({
-							type: "query", 
-							uri: data.query.results[i],
-							priority: completion.methodProperties.query.priority
-						});
-					}
-				}
-				completion.fetched['servlet'] = true;
-				completion.drawIfNeeded(completion);
-				return;
-			}
-			
-			completion.fetched['servlet'] = false;
-			var args = {
-				q:completion.uriStart, 
-				max: completion.maxResults, 
-				type: "queryResults",
-				endpoint: getCurrentEndpoint()
-			};
-			if (methods.length == 1) {
-				args["method"] = methods[0];
-			} else {
-				//no need to add methods to args. We want all!
-			}
-		    var url = "Yasgui/autocomplete?" + $.param(args);
-			$.get(url, function(data) {
-				if (data.queryResults != undefined) {
-					if (data.queryResults.status != undefined) {
-						completion.statusMsgs['queryResults'] = data.queryResults.status;
-					}
-					completion.resultSizes['queryResults'] = data.queryResults.resultSize;
-					for (var i = 0; i < data.queryResults.results.length; i++) {
-						completion.results.push({
-							type: "queryResults", 
-							uri: data.queryResults.results[i],
-							priority: completion.methodProperties.queryResults.priority
-						});
-					}
-				}
-				
-				if (data.query != undefined) {
-					if (data.query.status != undefined) {
-						completion.statusMsgs['query'] = data.query.status;
-					}
-					completion.resultSizes['query'] = data.query.resultSize;
-					for (var i = 0; i < data.query.results.length; i++) {
-						completion.results.push({
-							type: "query", 
-							uri: data.query.results[i],
-							priority: completion.methodProperties.query.priority
-						});
-					}
-				}
-				completion.fetched['servlet'] = true;
-				completion.drawIfNeeded(completion);
-			}).fail(function(jqXHR, textStatus, errorThrown) {
-				console.log(errorThrown);
-			});
-		};
-		
-		
-		this.doRequests = function() {
-			this.preprocessToken();
-			var allDisabled = true;
-			var methods = getPropertyCompletionMethods();
-			var servletMethods = [];
-			for (var method in methods) {
-				if (methods[method]) {
-					allDisabled = false;
-					if (method == "lov") {
-						completion.requestLovAutocompletions();
-					} else {
-						//both other methods are executed as 1 single request
-						servletMethods.push(method);
-					}
-				}
-			}
-			if (servletMethods.length > 0) {
-				completion.requestServletAutocompletions(servletMethods);
-			}
-			if (allDisabled) {
-				completion.legendDialogue.draw(completion, true);
-			}
-		};
-		this.doRequests();
-	};
-	extend(PropertyAutocompletion, AutocompletionBase);
-	
-	var ClassAutocompletion = function(cm, drawCallback) {
-		var completion = this;
-		this.cm = cm;
-		this.drawCallback = drawCallback;
-		this.methodProperties = {
-				"lov" : {
-					"color":"#25547B;",
-					"abbreviation": "L",
-					"description": "Properties fetched from <a href='" + getLovApiLink() + "' target='_blank'>LOV</a>",
-					"priority": 3,
-				},
-				"queryResults": {
-					"color":"#502982;",
-					"abbreviation": "P",
-					"description": "Properties fetched from dataset (i.e. as rdf:Property)",
-					"priority": 2,
-				},
-				"query": {
-					"color":"#BF9C30;",
-					"abbreviation": "C",
-					"description": "Cached properties based on endpoint query logs",
-					"priority": 1,
-				}
-		};
-		this.completionType = "property";
-		this.preprocessToken = function() {
-			var cur = completion.cm.getCursor();
-			var token = getCompleteToken(completion.cm);
-			if ($.inArray("a", token.state.possibleCurrent) >= 0) {
-				// ok, so we are in a position where we can add properties
-				if (
-						// we are either writing a uri, or we've already typed the prefix
-						// part, and want to specify the stuff after the colon
-						(token.string.contains(":") || token.string.startsWith("<"))
-						// the cursor is at the end of the string
-						&& token.end == cur.ch
-						// we already have something filled in
-						&& token.className != "sp-ws") {
-					token = getCompleteToken(completion.cm);
-					if (!token.string.startsWith("<")) {
-						completion.tokenPrefix = token.string.substring(0,
-								token.string.indexOf(":") + 1);
-						var queryPrefixes = getPrefixesFromQuery(completion.cm);
-						if (queryPrefixes[completion.tokenPrefix] != null) {
-							completion.tokenPrefixUri = queryPrefixes[completion.tokenPrefix];
-						}
-					}
-					// preprocess string for which to find the autocompletion
-					completion.uriStart = getUriFromPrefix(completion.cm, token);
-					if (completion.uriStart.startsWith("<"))
-						completion.uriStart = completion.uriStart.substring(1);
-					if (completion.uriStart.endsWith(">"))
-						completion.uriStart = completion.uriStart.substring(0, completion.uriStart.length - 1);
-				}
-			}
-		};
-		this.legendDialogue.generateHtml = function(completion, dismissOnOutsideClick) {
-			var methods = getPropertyCompletionMethods();
-			var sortedMethods = completion.legendDialogue.sortMethods(completion, methods);
-			this.legendHtml = 
-				"Methods used for fetching autocompletions: (<a href='" + getAutocompletionMoreInfoLink() + " ' target='_blank'>more info</a>):" +
-				"<ul id='propertyCompletionsLegend' class='propertyCompletionsLegend'>";
-			for (var i = 0; i < sortedMethods.length; i++) {
-				var method = sortedMethods[i];
-				var methodProps = completion.methodProperties[method];
-				this.legendHtml += 
-					"<li id='" + method + "Hint' class='" + method + "Hint propertyCompletionLegend'>" +
-					"<table style='min-height:25px;border-collapse:collapse'><tr>" + 
-					"<td>" +
-					"<span style='vertical-align: middle;display: inline;background-color:" + methodProps.color + "' class='propertyTypeIconLegend propertyTypeIcon'>" + methodProps.abbreviation + "</span>" +
-					"</td>" +
-					"<td>" + 
-					"<input onclick=\"completionMethodChanged('" + completion.completionType + "');\" class='propertyCompletionMethodCheckbox' type='checkbox' name='propertyCompletions' value='" + method + "' " + (methods[method]? "checked":"") + ">" +
-					"</td>" +
-					"<td>" +
-					methodProps.description + 
-					" (";
-				if (completion.resultSizes[method] != undefined) {
-					if (completion.drawnResultSizes[method] == undefined || completion.drawnResultSizes[method] == completion.resultSizes[method]) {
-						this.legendHtml += completion.resultSizes[method];
-					} else {
-						this.legendHtml += 
-							"<span title='displayed suggestions vs total number of available suggestions'>" +
-							completion.drawnResultSizes[method] + "/" + completion.resultSizes[method] +
-							"</span>";
-					}
-				} else {
-					if (completion.statusMsgs[method] != undefined) {
-						this.legendHtml += completion.statusMsgs[method];
-					} else {
-						this.legendHtml += "unknown";
-					}
-				}
-				this.legendHtml += ")" +
-				"</td>" +
-				"</tr></table>" +
-				"</li>";
-			}
-			this.legendHtml += 
-				"</ul>" +
-				"<button id='completionMethodButton' style='display:none;float: right;' onclick=\"storeCompletionMethods('" + completion.completionType + "');$.noty.close('" + this.legendId + "');return false;\">Apply</button>";
-		};
-		this.requestLovAutocompletions = function() {
-			completion.fetched['lov'] = false;
-			var args = {q:completion.uriStart, page: 1, type: "queryResults"};
-			var url = "";
-			var updateUrl = function() {
-				url = "http://lov.okfn.org/dataset/lov/api/v2/autocomplete/terms?" + $.param(args);
-			};
-			updateUrl();
-			var increasePage = function(){
-				args.page++;
-				updateUrl();
-			};
-			var requestObj = this;
-			this.doLovRequest = function() {
-				$.get(url, function(data) {
-					completion.resultSizes['lov'] = data.total_results;
-					for (var i = 0; i < data.results.length; i++) {
-						completion.results.push({
-							type: "lov", 
-							uri: data.results[i].uri, 
-							priority: completion.methodProperties.lov.priority
-						});
-					}
-					var resultsSoFar = data.page_size * data.page;
-					if (resultsSoFar < data.total_results && resultsSoFar < completion.maxResults) {
-						increasePage();
-						requestObj.doLovRequest();
-					} else {
-						//request done, draw!
-						completion.fetched['lov'] = true;
-						completion.drawIfNeeded(completion);
-					}
-				}).fail(function(jqXHR, textStatus, errorThrown) {
-					console.log(errorThrown);
-				});
-			};
-			this.doLovRequest();
-		};
-		this.requestServletAutocompletions = function(methods) {
+		requestServletAutocompletions: function(completion, methods) {
 			if (location.href.indexOf("codemirror.html") !== -1) {
 				var data = jQuery.parseJSON( '{"queryResults":{"results":["http://xmlns.com/foaf/0.1/prop","http://xmlns.com/foaf/0.1/prop3","http://xmlns.com/foaf/0.1/same", "http://xmlns.com/foaf/0.1/prop2"],"resultSize":4},"query":{"results":["http://xmlns.com/foaf/0.1/lazy2","http://xmlns.com/foaf/0.1/lazy1","http://xmlns.com/foaf/0.1/lazy3","http://xmlns.com/foaf/0.1/same","http://xmlns.com/foaf/0.1/lazy4"],"resultSize":5}}' );
 				if (data.queryResults != undefined) {
@@ -780,7 +449,7 @@
 			var args = {
 					q:completion.uriStart, 
 					max: completion.maxResults, 
-					type: "queryResults",
+					type: completion.type,
 					endpoint: getCurrentEndpoint()
 			};
 			if (methods.length == 1) {
@@ -822,13 +491,86 @@
 			}).fail(function(jqXHR, textStatus, errorThrown) {
 				console.log(errorThrown);
 			});
+		},
+	};
+	var usePropertyAutocompletion = function(cm) {
+		var token = getCompleteToken(cm);
+		return ($.inArray("a", token.state.possibleCurrent) != -1 && token.type != "sp-var");
+	};
+	
+	var PropertyAutocompletion = function(cm, drawCallback) {
+		var completion = this;
+		this.cm = cm;
+		this.drawCallback = drawCallback;
+		this.methodProperties = {
+				"lov" : {
+					"color":"#25547B;",
+					"abbreviation": "L",
+					"description": "Properties fetched from <a href='" + getLovApiLink() + "' target='_blank'>LOV</a>",
+					"priority": 3,
+				},
+				"queryResults": {
+					"color":"#502982;",
+					"abbreviation": "P",
+					"description": "Properties fetched from dataset (i.e. as rdf:Property)",
+					"priority": 2,
+				},
+				"query": {
+					"color":"#BF9C30;",
+					"abbreviation": "C",
+					"description": "Cached properties based on endpoint query logs",
+					"priority": 1,
+				}
+			};
+		this.completionType = "property";
+		this.methods = getPropertyCompletionMethods();
+		this.requestLovAutocompletions = function() {
+			completion.fetched['lov'] = false;
+		    var args = {q:completion.uriStart, page: 1, type: "queryResults"};
+		    var url = "";
+		    var updateUrl = function() {
+		    	url = "http://lov.okfn.org/dataset/lov/api/v2/autocomplete/terms?" + $.param(args);
+		    };
+		    updateUrl();
+		    var increasePage = function(){
+		    	args.page++;
+		    	updateUrl();
+		    };
+		    var requestObj = this;
+		    this.doLovRequest = function() {
+		    	$.get(url, function(data) {
+		    		completion.resultSizes['lov'] = data.total_results;
+					for (var i = 0; i < data.results.length; i++) {
+						completion.results.push({
+							type: "lov", 
+							uri: data.results[i].uri, 
+							priority: completion.methodProperties.lov.priority
+						});
+				 	}
+					var resultsSoFar = data.page_size * data.page;
+					if (resultsSoFar < data.total_results && resultsSoFar < completion.maxResults) {
+						increasePage();
+						requestObj.doLovRequest();
+					} else {
+						//request done, draw!
+						completion.fetched['lov'] = true;
+						completion.drawIfNeeded(completion);
+					}
+				}).fail(function(jqXHR, textStatus, errorThrown) {
+					console.log(errorThrown);
+				  });
+		    };
+		    this.doLovRequest();
 		};
 		
-		
 		this.doRequests = function() {
-			this.preprocessToken();
+			this.preprocessToken(completion);
+			if (completion.uriStart == null || completion.uriStart.length == 0) {
+				console.log("no uri to autocomplete");
+				return;
+			}
 			var allDisabled = true;
-			var methods = getPropertyCompletionMethods();
+			var methods = completion.methods;
 			var servletMethods = [];
 			for (var method in methods) {
 				if (methods[method]) {
@@ -842,9 +584,63 @@
 				}
 			}
 			if (servletMethods.length > 0) {
-				completion.requestServletAutocompletions(servletMethods);
+				completion.requestServletAutocompletions(completion, servletMethods);
 			}
 			if (allDisabled) {
+				completion.legendDialogue.draw(completion, true);
+			}
+		};
+		this.doRequests();
+	};
+	extend(PropertyAutocompletion, AutocompletionBase);
+	
+	
+	var useClassAutocompletion = function(cm) {
+		var token = getCompleteToken(cm);
+		var cur = cm.getCursor();
+		var previousToken = getPreviousNonWsToken(cm, cur.line, token);
+		return ($.inArray("a", previousToken.state.possibleCurrent) != -1 && token.type != "sp-var");
+	};
+	var ClassAutocompletion = function(cm, drawCallback) {
+		var completion = this;
+		this.cm = cm;
+		this.drawCallback = drawCallback;
+		this.methodProperties = {
+				"queryResults": {
+					"color":"#502982;",
+					"abbreviation": "Cl",
+					"description": "Classes fetched from dataset",
+					"priority": 2,
+				},
+				"query": {
+					"color":"#BF9C30;",
+					"abbreviation": "Ca",
+					"description": "Cached classes based on endpoint query logs",
+					"priority": 1,
+				}
+		};
+		this.completionType = "class";
+		this.methods = getClassCompletionMethods();
+		
+		
+		
+		this.doRequests = function() {
+			this.preprocessToken(completion);
+			if (completion.uriStart == null || completion.uriStart.length == 0) {
+				console.log("no uri to autocomplete");
+				return;
+			}
+			var methods = completion.methods;
+			var servletMethods = [];
+			for (var method in methods) {
+				if (methods[method]) {
+					servletMethods.push(method);
+				}
+			}
+			if (servletMethods.length > 0) {
+				completion.requestServletAutocompletions(completion, servletMethods);
+			} else {
+				//no method is enabled. still draw dialogue (user might want to enable some methods again)
 				completion.legendDialogue.draw(completion, true);
 			}
 		};
@@ -855,59 +651,55 @@
 	CodeMirror.AutocompletionBase = function(cm, drawCallback) {
 		if (usePropertyAutocompletion(cm)) {
 			new PropertyAutocompletion(cm, drawCallback);
-		} else if (true) {
-			
+		} else if (useClassAutocompletion(cm)) {
+			new ClassAutocompletion(cm, drawCallback);
 		}
 	};
-		
-		
-		
-		CodeMirror.prefixHint = function(editor) {
-			return getPrefixAutocompletions(editor);
-		};
-	
-		function getPrefixSuggestions(token) {
-			// the keywords should contain the prefixes
-			// Start: end of string being typed
-			var found = [], start = token.string;
-			function maybeAdd(str) {
-				if (str.indexOf(start) == 0 && !arrayContains(found, str))
-					found.push(str + "\n"); // append linebreak! Otherwise we stay
-				// on the same line, and after adding
-				// the popup with autocompletions is
-				// still firing..
-			}
-			forEach(prefixes, maybeAdd);
-			return found;
+	CodeMirror.prefixHint = function(editor) {
+		return getPrefixAutocompletions(editor);
+	};
+
+	function getPrefixSuggestions(token) {
+		// the keywords should contain the prefixes
+		// Start: end of string being typed
+		var found = [], start = token.string;
+		function maybeAdd(str) {
+			if (str.indexOf(start) == 0 && !arrayContains(found, str))
+				found.push(str + "\n"); // append linebreak! Otherwise we stay
+			// on the same line, and after adding
+			// the popup with autocompletions is
+			// still firing..
 		}
-	
-		function getCompleteToken(editor, token, cur) {
-			if (cur == null) {
-				cur = editor.getCursor();
-			}
-			if (token == null) {
-				token = editor.getTokenAt(cur);
-			}
-			// we cannot use token.string alone (e.g. http://bla results in 2
-			// tokens: http: and //bla)
-	
-			var prevToken = editor.getTokenAt({
+		forEach(prefixes, maybeAdd);
+		return found;
+	}
+
+	function getCompleteToken(editor, token, cur) {
+		if (cur == null) {
+			cur = editor.getCursor();
+		}
+		if (token == null) {
+			token = editor.getTokenAt(cur);
+		}
+		// we cannot use token.string alone (e.g. http://bla results in 2
+		// tokens: http: and //bla)
+
+		var prevToken = editor.getTokenAt({
+			line : cur.line,
+			ch : token.start
+		});
+		if (prevToken.className != null && prevToken.className != "sp-ws") {
+			token.start = prevToken.start;
+			token.string = prevToken.string + token.string;
+			return getCompleteToken(editor, token, {
 				line : cur.line,
-				ch : token.start
-			});
-			if (prevToken.className != null && prevToken.className != "sp-ws") {
-				token.start = prevToken.start;
-				token.string = prevToken.string + token.string;
-				return getCompleteToken(editor, token, {
-					line : cur.line,
-					ch : prevToken.start
-				});// recursively, might have multiple tokens which it should
-				// include
-			} else {
-				return token;
-			}
+				ch : prevToken.start
+			});// recursively, might have multiple tokens which it should
+			// include
+		} else {
+			return token;
 		}
-	;
+	};
 })();
 
 /**
@@ -1077,17 +869,3 @@ function getIndentFromLine(cm, line, charNumber) {
 	;
 }
 
-
-
-//$(function() {
-//    $("body").click(function(e) {
-//    	console.log(e.target.className);
-//    	console.log(e.target.id);
-//        if (e.target.id == "propertyLegend" || $(e.target).parents("#propertyLegend").size()) {
-//        if (e.target.id == "propertyLegend" || $(e.target).parents("#propertyLegend").size()) {
-//            alert("Inside div");
-//        } else { 
-//           alert("Outside div");
-//        }
-//    });
-//});
