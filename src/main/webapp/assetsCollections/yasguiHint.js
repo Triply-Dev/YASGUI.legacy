@@ -449,7 +449,7 @@
 			var args = {
 					q:completion.uriStart, 
 					max: completion.maxResults, 
-					type: completion.type,
+					type: completion.completionType,
 					endpoint: getCurrentEndpoint()
 			};
 			if (methods.length == 1) {
