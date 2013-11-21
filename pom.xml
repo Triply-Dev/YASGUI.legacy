@@ -312,7 +312,6 @@
 								<include>../assets/codemirror/addon/hint/show-hint.js</include>
 								<include>../assets/yasguiHint.js</include>
 								<include>../assets/codemirror/addon/search/searchcursor.js</include>
-								<include>../assets/codemirror/addon/search/match-highlighter.js</include>
 								<include>../assets/codemirror/addon/edit/matchbrackets.js</include>
 								<include>../assets/codemirror/addon/runmode/runmode.js</include>
 								<include>../assets/flint/sparql.js</include>

@@ -1,1 +1,0 @@
-../../../../assetsCollections/codemirror/addon/search/match-highlighter.js

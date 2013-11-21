@@ -17,6 +17,12 @@
 			"query" : true
 		};
 	};
+	function getClassCompletionMethods() {
+		return {
+			"queryResults": true,
+			"query": true
+		}
+	}
 	function cancelQuery() {
 	};
 	function showPlayButton() {
@@ -42,7 +48,6 @@
 <script src="assets/yasguiHint.js"></script>
 <!-- Highlight words onclick code -->
 <script src="assets/codemirror/addon/search/searchcursor.js"></script>
-<script src="assets/codemirror/addon/search/match-highlighter.js"></script>
 <script src="assets/codemirror/addon/edit/matchbrackets.js"></script>
 <script src="assets/codemirror/addon/runmode/runmode.js"></script>
 <script src="assets/codemirror/util/formatting.js"></script>
@@ -68,7 +73,7 @@ PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
 PREFIX geo: &lt;http://www.w3.org/2003/01/geo/wgs84_pos#&gt;
 PREFIX foaf: &lt;http://xmlns.com/foaf/0.1/&gt;
 SELECT * WHERE {
-	?sub foaf:p ?obj
+	?sub foaf:p foaf:p
 } LIMIT 100
 </textarea>
 
