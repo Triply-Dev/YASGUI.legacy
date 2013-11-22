@@ -86,5 +86,8 @@ public class EnabledFeatures extends JsonHelper {
 	public Map<String, Boolean> getEnabledPropertyCompletionMethods() {
 		return getMap(SettingKeys.ENABLED_PROPERTY_COMPLETION_METHODS, null);
 	}
+	public Map<String, Boolean> getEnabledClassCompletionMethods() {
+		return getMap(SettingKeys.ENABLED_CLASS_COMPLETION_METHODS, null);
+	}
 	
 }

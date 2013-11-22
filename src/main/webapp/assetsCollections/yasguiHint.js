@@ -150,7 +150,10 @@
 					break;
 				}
 			}
-			if (done) completion.draw(completion);
+			if (done) {
+				onLoadingFinish();
+				completion.draw(completion);
+			}
 		},
 		prepareResultsForDrawing: function(completion) {
 			//we want to:
@@ -182,6 +185,7 @@
 			completion.results.sort(dynamicSortMultiple("uri"));
 			
 			//finally, get aggregated numbers
+			completion.drawnResultSizes = {};
 			for (var i = 0; i < completion.results.length; i++) {
 				var type = completion.results[i].type;
 				if (completion.drawnResultSizes[type] == undefined) {
@@ -372,9 +376,6 @@
 					});
 				}
 			
-				if (found.length == 1 && found[0].text == token.string)
-					return;// we already have our match
-				
 				if (found.length > 0) {
 					var cur = completion.cm.getCursor();
 					var token = getCompleteToken(completion.cm);
@@ -572,10 +573,15 @@
 			var allDisabled = true;
 			var methods = completion.methods;
 			var servletMethods = [];
+			var requestsStarted = false;
 			for (var method in methods) {
 				if (methods[method]) {
 					allDisabled = false;
 					if (method == "lov") {
+						if (!requestsStarted) {
+							onLoadingStart("Fetching properties");
+							requestsStarted = false;
+						}
 						completion.requestLovAutocompletions();
 					} else {
 						//both other methods are executed as 1 single request
@@ -584,6 +590,10 @@
 				}
 			}
 			if (servletMethods.length > 0) {
+				if (!requestsStarted) {
+					onLoadingStart("Fetching properties");
+					requestsStarted = false;
+				}
 				completion.requestServletAutocompletions(completion, servletMethods);
 			}
 			if (allDisabled) {
@@ -638,6 +648,7 @@
 				}
 			}
 			if (servletMethods.length > 0) {
+				onLoadingStart("Fetching classes");
 				completion.requestServletAutocompletions(completion, servletMethods);
 			} else {
 				//no method is enabled. still draw dialogue (user might want to enable some methods again)

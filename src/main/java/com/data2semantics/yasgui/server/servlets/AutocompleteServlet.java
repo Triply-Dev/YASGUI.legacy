@@ -45,8 +45,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.data2semantics.yasgui.server.db.DbHelper;
+import com.data2semantics.yasgui.server.fetchers.AutocompletionFetcher;
 import com.data2semantics.yasgui.server.fetchers.AutocompletionFetcher.FetchMethod;
 import com.data2semantics.yasgui.server.fetchers.AutocompletionFetcher.FetchType;
+import com.data2semantics.yasgui.server.fetchers.ClassesFetcher;
 import com.data2semantics.yasgui.server.fetchers.PropertiesFetcher;
 import com.data2semantics.yasgui.shared.AutocompleteKeys;
 import com.google.common.collect.HashMultimap;
@@ -86,17 +88,6 @@ public class AutocompleteServlet extends HttpServlet {
 		}
 	}
 
-	private JSONObject getJson(HttpServletRequest request, HttpServletResponse response) throws JSONException, ClassNotFoundException, FileNotFoundException, SQLException, IOException, ParseException {
-		JSONObject resultObject = new JSONObject();
-		if (request.getParameter(AutocompleteKeys.REQUEST_TYPE).equals(AutocompleteKeys.TYPE_CLASS)) {
-			resultObject = getPropertyJson(request, response);
-		} else {
-			resultObject = getPropertyJson(request, response);
-		}
-		
-		return resultObject;
-	}
-	
 	public FetchMethod getMethodInRequest(HttpServletRequest request) {
 		String methodInRequest = request.getParameter(AutocompleteKeys.REQUEST_METHOD); //can be null, in that case retrieve both methods
 		if (methodInRequest == null) {
@@ -110,45 +101,63 @@ public class AutocompleteServlet extends HttpServlet {
 		}
 	}
 	
-	private JSONObject getPropertyJson(HttpServletRequest request, HttpServletResponse response) throws JSONException, ClassNotFoundException, FileNotFoundException, SQLException, IOException, ParseException {
+	public FetchType getTypeInRequest(HttpServletRequest request) throws IllegalArgumentException {
+		String type = request.getParameter(AutocompleteKeys.REQUEST_TYPE);
+		if (type == null) {
+			throw new IllegalArgumentException("Required arg missing: " + AutocompleteKeys.REQUEST_TYPE);
+		} else if (type.equals(FetchType.CLASSES.getSingular())) {
+			return FetchType.CLASSES;
+		} else if (type.equals(FetchType.PROPERTIES.getSingular())) {
+			return FetchType.PROPERTIES;
+		} else {
+			throw new IllegalArgumentException("Unrecognized value given. " + AutocompleteKeys.REQUEST_ENDPOINT + ": " + type);
+		}
+	}
+	
+	private JSONObject getJson(HttpServletRequest request, HttpServletResponse response) throws JSONException, ClassNotFoundException, FileNotFoundException, SQLException, IOException, ParseException {
+		FetchType type = getTypeInRequest(request);
 		JSONObject resultObject = new JSONObject();
-		
 		FetchMethod methodInRequest = getMethodInRequest(request);
 		String endpoint = request.getParameter(AutocompleteKeys.REQUEST_ENDPOINT); //can be null, in that case retrieve both methods
 		String partialProperty = request.getParameter(AutocompleteKeys.REQUEST_QUERY); //can be null, in that case retrieve both methods
 		int maxResults = Integer.parseInt(request.getParameter(AutocompleteKeys.REQUEST_MAX_RESULTS));
 		
 		DbHelper dbHelper = new DbHelper(new File(getServletContext().getRealPath("/")));
-		HashMultimap<String, String> map = dbHelper.getAutocompletions(endpoint, partialProperty, maxResults, FetchType.PROPERTIES, methodInRequest);
+		HashMultimap<String, String> map = dbHelper.getAutocompletions(endpoint, partialProperty, maxResults, type, methodInRequest);
 		
 		JSONArray queryResultsResults = new JSONArray();
 		JSONArray queryAnalysisResults = new JSONArray();
 		for (String uri: map.keySet()) {
 			for (String method: map.get(uri)) {
-				if (method.equals(FetchMethod.QUERY_ANALYSIS)) {
+				if (method.equals(FetchMethod.QUERY_ANALYSIS.get())) {
 					queryAnalysisResults.put(uri);
 				} else {
 					queryResultsResults.put(uri);
 				}
 			}
-			
 		}
-		int resultSize = queryResultsResults.length() + queryAnalysisResults.length();
 		
+		int resultSize = queryResultsResults.length() + queryAnalysisResults.length();
 		if (methodInRequest == null || methodInRequest == FetchMethod.QUERY_RESULTS) {
 			String status = null;
 			if (queryResultsResults.length() == 0) {
-				if (!dbHelper.autocompletionFetchingEnabled(endpoint, FetchType.PROPERTIES, FetchMethod.QUERY_RESULTS)) {
+				if (!dbHelper.autocompletionFetchingEnabled(endpoint, type, FetchMethod.QUERY_RESULTS)) {
 					status = "disabled";
 				} else {
-					if (dbHelper.lastFetchesFailed(endpoint, FetchType.PROPERTIES, 5)) {
-						status = "failed fetching properties";
-					} else if (dbHelper.stillFetching(endpoint, FetchType.PROPERTIES, 5)) {
-						status = "still fetching rdf:properties. Try again in 5 minutes";
+					int timeout = 5;
+					if (dbHelper.lastFetchesFailed(endpoint, type, timeout)) {
+						status = "failed fetching " + type.getPlural();
+					} else if (dbHelper.stillFetching(endpoint, type, timeout)) {
+						status = "still fetching " + type.getPlural() + ". Try again in " + timeout + " minutes";
 					} else {
-						PropertiesFetcher fetcher = new PropertiesFetcher(new File(getServletContext().getRealPath("/")), endpoint);
+						AutocompletionFetcher fetcher = null;
+						if (type == FetchType.PROPERTIES) {
+							fetcher = new PropertiesFetcher(new File(getServletContext().getRealPath("/")), endpoint);
+						} else {
+							fetcher = new ClassesFetcher(new File(getServletContext().getRealPath("/")), endpoint);
+						}
 						fetcher.fetch();
-						map = dbHelper.getAutocompletions(endpoint, partialProperty, maxResults, FetchType.PROPERTIES, FetchMethod.QUERY_RESULTS);
+						map = dbHelper.getAutocompletions(endpoint, partialProperty, maxResults, type, FetchMethod.QUERY_RESULTS);
 						for (String uri: map.keySet()) {
 							for (String method: map.get(uri)) {
 								if (method.equals(FetchMethod.QUERY_RESULTS.get())) {
@@ -160,19 +169,19 @@ public class AutocompleteServlet extends HttpServlet {
 					}
 				}
 			}
-		
-			JSONObject propertyMethodObject = new JSONObject();
+			
+			JSONObject queryResultsMethodObject = new JSONObject();
 			if (status != null) {
-				propertyMethodObject.put(AutocompleteKeys.RESPONSE_STATUS, status);
+				queryResultsMethodObject.put(AutocompleteKeys.RESPONSE_STATUS, status);
 			}
 			int totalSize = queryResultsResults.length();
 			if (resultSize == maxResults) {
 				//there are probably more results than the maximum we have retrieved
 				totalSize = dbHelper.getAutcompletionCount(endpoint, partialProperty, FetchType.PROPERTIES, FetchMethod.QUERY_RESULTS);
 			}
-			propertyMethodObject.put(AutocompleteKeys.RESPONSE_RESULTS, queryResultsResults);
-			propertyMethodObject.put(AutocompleteKeys.RESPONSE_RESULT_SIZE, totalSize);
-			resultObject.put(AutocompleteKeys.RESPONSE_METHOD_PROPERTY, propertyMethodObject);
+			queryResultsMethodObject.put(AutocompleteKeys.RESPONSE_RESULTS, queryResultsResults);
+			queryResultsMethodObject.put(AutocompleteKeys.RESPONSE_RESULT_SIZE, totalSize);
+			resultObject.put(AutocompleteKeys.RESPONSE_METHOD_QUERY_RESULTS, queryResultsMethodObject);
 		}
 		
 		if (methodInRequest == null || methodInRequest == FetchMethod.QUERY_ANALYSIS) {
@@ -181,18 +190,18 @@ public class AutocompleteServlet extends HttpServlet {
 				status = "disabled";
 			}
 			
-			JSONObject lazyMethodObject = new JSONObject();
+			JSONObject queryAnalysisMethodObject = new JSONObject();
 			if (status != null) {
-				lazyMethodObject.put(AutocompleteKeys.RESPONSE_STATUS, status);
+				queryAnalysisMethodObject.put(AutocompleteKeys.RESPONSE_STATUS, status);
 			}
 			int totalSize = queryAnalysisResults.length();
 			if (resultSize == maxResults) {
 				//there are probably more results than the maximum we have retrieved
 				totalSize = dbHelper.getAutcompletionCount(endpoint, partialProperty, FetchType.PROPERTIES, FetchMethod.QUERY_ANALYSIS);
 			}
-			lazyMethodObject.put(AutocompleteKeys.RESPONSE_RESULTS, queryAnalysisResults);
-			lazyMethodObject.put(AutocompleteKeys.RESPONSE_RESULT_SIZE, totalSize);
-			resultObject.put(AutocompleteKeys.RESPONSE_METHOD_LAZY, lazyMethodObject);
+			queryAnalysisMethodObject.put(AutocompleteKeys.RESPONSE_RESULTS, queryAnalysisResults);
+			queryAnalysisMethodObject.put(AutocompleteKeys.RESPONSE_RESULT_SIZE, totalSize);
+			resultObject.put(AutocompleteKeys.RESPONSE_METHOD_QUERY_ANALYSIS, queryAnalysisMethodObject);
 		}
 		return resultObject;
 	}

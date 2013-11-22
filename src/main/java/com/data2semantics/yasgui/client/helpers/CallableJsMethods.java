@@ -152,6 +152,9 @@ public class CallableJsMethods {
 	public String getPropertyCompletionMethods() {
 		return view.getSettings().getPropertCompletionMethodsAsJson().toString();
 	}
+	public String getClassCompletionMethods() {
+		return view.getSettings().getClassCompletionMethodsAsJson().toString();
+	}
 	public String getAutocompletionMoreInfoLink() {
 		return ExternalLinks.YASGUI_AUTOCOMPLETE_INFO;
 	}
@@ -244,6 +247,10 @@ public class CallableJsMethods {
 		}
 		$wnd.getPropertyCompletionMethods = function() {
 			var settingsString = viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::getPropertyCompletionMethods()();
+			return $wnd.jQuery.parseJSON(settingsString);
+		}
+		$wnd.getClassCompletionMethods = function() {
+			var settingsString = viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::getClassCompletionMethods()();
 			return $wnd.jQuery.parseJSON(settingsString);
 		}
 		$wnd.getAutocompletionMoreInfoLink = function() {

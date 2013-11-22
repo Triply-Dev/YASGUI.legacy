@@ -30,6 +30,7 @@ import java.io.Serializable;
 
 public class SettingKeys implements Serializable {
 	private static final long serialVersionUID = 1L;
+
 	
 	//these are keys for our settings json object. Implemented as json object, because of easy (de)serializing
 	
@@ -48,6 +49,7 @@ public class SettingKeys implements Serializable {
 	public static String DOWNLOAD_APPCACHE = "downloadOfflineCache";
 	public static String SHOW_APPCACHE_DOWNLOAD_NOTIFICATION = "showDownloadProgressBar";
 	public static String ENABLED_PROPERTY_COMPLETION_METHODS = "propertyCompletionMethods";
+	public static String ENABLED_CLASS_COMPLETION_METHODS = "classCompletionMethods";
 	
 	//tabsettings object
 	public static String ENDPOINT = "endpoint";

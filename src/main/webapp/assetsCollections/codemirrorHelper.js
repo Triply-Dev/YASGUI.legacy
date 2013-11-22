@@ -80,7 +80,7 @@ CodeMirror.commands.autoComplete = function(cm) {
 	if (cm.somethingSelected()) {
 		//do nothing
 	} else {
-		CodeMirror.showHint(cm, CodeMirror.AutocompletionBase, {closeOnUnfocus: false,async: true,closeCharacters: /(?=a)b/});
+		CodeMirror.showHint(cm, CodeMirror.AutocompletionBase, {completeSingle: false, closeOnUnfocus: false,async: true,closeCharacters: /(?=a)b/});
 	}
 	
 };
