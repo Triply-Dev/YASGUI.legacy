@@ -53,7 +53,7 @@ public class Query extends com.hp.hpl.jena.query.Query {
 		visitor = new SparqlElementVisitor();
 		if (queryElement == null) return;
 		queryElement.visit(visitor);
-		visitor.cleanPossibleProperties();
+		visitor.cleanPossibles();
 	}
 	
 	public Set<String> getProperties() {
@@ -64,6 +64,20 @@ public class Query extends com.hp.hpl.jena.query.Query {
 		if (visitor == null) generateQueryStats();
 		return visitor.getPossibleProperties();
 	}
-	
+	public Set<String> getClasses() {
+		if (visitor == null) generateQueryStats();
+		return visitor.getClasses();
+	}
+	public Set<String> getPossibleClasses() {
+		if (visitor == null) generateQueryStats();
+		return visitor.getPossibleClasses();
+	}
+	public static void main(String[] args) {
+		Query query = Query.create("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT * WHERE {<http://bfsdfdfdfdfdf> rdfs:subClassOf <http://bfsd>}");
+		for (String classString:query.getClasses()) {
+			System.out.println("asd" + classString);
+		}
+		
+	}
 	
 }

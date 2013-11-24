@@ -29,6 +29,7 @@ package com.data2semantics.yasgui.client.helpers;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.configmenu.OfflineAvailabilityConfig;
 import com.data2semantics.yasgui.client.settings.ExternalLinks;
+import com.data2semantics.yasgui.client.tab.optionbar.endpoints.EndpointInput;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 
@@ -127,6 +128,10 @@ public class CallableJsMethods {
 	}
 	
 	public String getCurrentEndpoint() {
+		EndpointInput endpointInput = view.getSelectedTab().getEndpointInput();
+		if (endpointInput != null) {
+			endpointInput.storeEndpointInSettings();
+		}
 		return view.getSelectedTabSettings().getEndpoint();
 	}
 	
@@ -152,6 +157,9 @@ public class CallableJsMethods {
 	public String getPropertyCompletionMethods() {
 		return view.getSettings().getPropertCompletionMethodsAsJson().toString();
 	}
+	public String getClassCompletionMethods() {
+		return view.getSettings().getClassCompletionMethodsAsJson().toString();
+	}
 	public String getAutocompletionMoreInfoLink() {
 		return ExternalLinks.YASGUI_AUTOCOMPLETE_INFO;
 	}
@@ -163,6 +171,20 @@ public class CallableJsMethods {
 		if (jsonVal != null && jsonVal.isObject() != null) {
 			view.getSettings().setPropertyCompletionMethods(jsonVal.isObject());
 			LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+		}
+	}
+	public boolean isColdAutocompletionFetch(String endpoint, String type) {
+		boolean cold = false;
+		if (view.getAutocompletionsInfo() != null) {
+			cold = view.getAutocompletionsInfo().coldAutocompletionFetch(endpoint, type);
+		}
+		return cold;
+	}
+	public void logAutocompletionsInfo() {
+		if (view.getAutocompletionsInfo() == null) {
+			JsMethods.logConsole("null");
+		} else {
+			JsMethods.logConsole(view.getAutocompletionsInfo().toString());
 		}
 	}
 	
@@ -246,6 +268,10 @@ public class CallableJsMethods {
 			var settingsString = viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::getPropertyCompletionMethods()();
 			return $wnd.jQuery.parseJSON(settingsString);
 		}
+		$wnd.getClassCompletionMethods = function() {
+			var settingsString = viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::getClassCompletionMethods()();
+			return $wnd.jQuery.parseJSON(settingsString);
+		}
 		$wnd.getAutocompletionMoreInfoLink = function() {
 			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::getAutocompletionMoreInfoLink()();
 		}
@@ -254,6 +280,12 @@ public class CallableJsMethods {
 		}
 		$wnd.storeCompletionMethodsInSettings = function(methods) {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::storeCompletionMethodsInSettings(Ljava/lang/String;)(methods);
+		}
+		$wnd.coldAutocompletionFetch = function(endpoint, type) {
+			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::isColdAutocompletionFetch(Ljava/lang/String;Ljava/lang/String;)(endpoint, type);
+		}
+		$wnd.logAutocompletionsInfo = function() {
+			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::logAutocompletionsInfo()();
 		}
 		
 	}-*/;

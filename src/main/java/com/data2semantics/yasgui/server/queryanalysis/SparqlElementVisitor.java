@@ -54,16 +54,31 @@ import com.hp.hpl.jena.sparql.syntax.ElementVisitor;
 
 
 public class SparqlElementVisitor implements ElementVisitor {
+	private static String TYPE_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
+	private static String RANGE_URI = "http://www.w3.org/2000/01/rdf-schema#range";
+	private static String DOMAIN_URI = "http://www.w3.org/2000/01/rdf-schema#domain";
+	private static String SUBCLASS_URI = "http://www.w3.org/2000/01/rdf-schema#subClassOf";
+	
+	
 	private int optionalDepth = 0;
 	private int unionDepth = 0;
 	private Set<String> properties = new HashSet<String>();
 	private Set<String> possibleProperties = new HashSet<String>();
+	private Set<String> classes = new HashSet<String>();
+	private Set<String> possibleClasses = new HashSet<String>();
+	
 		
 	public Set<String> getProperties() {
 		return properties;
 	}
 	public Set<String> getPossibleProperties() {
 		return possibleProperties;
+	}
+	public Set<String> getClasses() {
+		return classes;
+	}
+	public Set<String> getPossibleClasses() {
+		return possibleClasses;
 	}
 	public void visit(ElementTriplesBlock el) {
 //		System.out.println("TRIPLESBLOCK");
@@ -76,13 +91,9 @@ public class SparqlElementVisitor implements ElementVisitor {
 		Iterator<TriplePath> it = el.patternElts();
 		while(it.hasNext()) {
 			TriplePath t = it.next();
-			if (!isVariable(t.getPredicate())) {
-				if (optionalDepth > 0 || unionDepth > 0) {
-					possibleProperties.add(t.getPredicate().getURI());
-				} else {
-					properties.add(t.getPredicate().getURI());
-				}
-			}
+			getProperties(t);
+			getClasses(t);
+			
 		}
 	}
 	
@@ -172,14 +183,60 @@ public class SparqlElementVisitor implements ElementVisitor {
 
 
 
-	public void cleanPossibleProperties() {
+	public void cleanPossibles() {
 		for (String property: properties) {
 			if (possibleProperties.contains(property)) {
 				possibleProperties.remove(property);
 			}
 		}
-
-		
+		for (String classString: classes) {
+			if (possibleClasses.contains(classString)) {
+				possibleClasses.remove(classString);
+			}
+		}
+	}
+	
+	private void getProperties(TriplePath t) {
+		if (!isVariable(t.getPredicate())) {
+			if (isAPossible()) {
+				possibleProperties.add(t.getPredicate().getURI());
+			} else {
+				properties.add(t.getPredicate().getURI());
+			}
+		}
+	}
+	
+	private boolean isAPossible() {
+		return (optionalDepth > 0 || unionDepth > 0);
+	}
+	
+	private boolean classInObjectPosition(TriplePath t) {
+		return t.getPredicate().getURI().equals(TYPE_URI) || 
+				t.getPredicate().getURI().equals(SUBCLASS_URI) ||
+				t.getPredicate().getURI().equals(DOMAIN_URI) ||
+				t.getPredicate().getURI().equals(RANGE_URI);
+	}
+	private boolean classInSubjectPosition(TriplePath t) {
+		return t.getPredicate().getURI().equals(SUBCLASS_URI);
+	}
+	
+	private void getClasses(TriplePath t) {
+		System.out.println(t.toString());
+		Set<String> classes = new HashSet<String>();
+		if (!isVariable(t.getPredicate())) {
+			//check if predicate indicates a class at object position
+			if (!isVariable(t.getObject()) && classInObjectPosition(t)) {
+				classes.add(t.getObject().getURI());
+			}
+			if (!isVariable(t.getSubject()) && classInSubjectPosition(t)) {
+				classes.add(t.getSubject().getURI());
+			}
+		}
+		if (isAPossible()) {
+			possibleClasses.addAll(classes);
+		} else {
+			this.classes.addAll(classes);
+		}
 	}
 	public void visit(ElementFetch el) {
 	}

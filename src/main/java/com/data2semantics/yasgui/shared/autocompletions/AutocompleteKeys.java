@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.shared;
+package com.data2semantics.yasgui.shared.autocompletions;
 
 /*
  * #%L
@@ -41,10 +41,12 @@ public class AutocompleteKeys implements Serializable {
 	public static String TYPE_PROPERTY = "property";
 	public static String TYPE_CLASS = "class";
 	
-	public static String RESPONSE_METHOD_PROPERTY = "property";
-	public static String RESPONSE_METHOD_LAZY = "lazy";
+	public static String RESPONSE_METHOD_QUERY_RESULTS = "queryResults";
+	public static String RESPONSE_METHOD_QUERY_ANALYSIS = "query";
 	
 	public static String RESPONSE_RESULT_SIZE = "resultSize";
 	public static String RESPONSE_RESULTS = "results";
 	public static String RESPONSE_STATUS = "status";
+	public static String RESPONSE_STATUS_TEXT = "text";
+	public static String RESPONSE_STATUS_SUBJECT = "subject";
 }

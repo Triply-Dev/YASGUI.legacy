@@ -150,7 +150,10 @@
 					break;
 				}
 			}
-			if (done) completion.draw(completion);
+			if (done) {
+//				onLoadingFinish();
+				completion.draw(completion);
+			}
 		},
 		prepareResultsForDrawing: function(completion) {
 			//we want to:
@@ -182,6 +185,7 @@
 			completion.results.sort(dynamicSortMultiple("uri"));
 			
 			//finally, get aggregated numbers
+			completion.drawnResultSizes = {};
 			for (var i = 0; i < completion.results.length; i++) {
 				var type = completion.results[i].type;
 				if (completion.drawnResultSizes[type] == undefined) {
@@ -220,9 +224,8 @@
 		},
 		
 		legendDialogue: {
-			legendId: "propertyLegend",
 			legendHtml: "placeholder",
-			generateHtml : function(completion, methods, dismissOnOutsideClick) {
+			generateHtml : function(completion, methods) {
 				var methods = completion.methods;
 				var sortedMethods = completion.legendDialogue.sortMethods(completion, methods);
 				this.legendHtml = 
@@ -243,7 +246,12 @@
 						"<td>" +
 						methodProps.description + 
 						" (";
-					if (completion.resultSizes[method] != undefined) {
+					if (completion.statusMsgs[method] != undefined && completion.statusMsgs[method].subject != undefined) {
+						this.legendHtml += completion.statusMsgs[method].subject; 
+						if (completion.statusMsgs[method].text != undefined) {
+							this.legendHtml += "&nbsp;<img src='images/nounproject/info.png' title='" + completion.statusMsgs[method].text + "' style='vertical-align:middle;width:16px;height:16px;'>";
+						}
+					} else if (completion.resultSizes[method] != undefined) {
 						if (completion.drawnResultSizes[method] == undefined || completion.drawnResultSizes[method] == completion.resultSizes[method]) {
 							this.legendHtml += completion.resultSizes[method];
 						} else {
@@ -253,11 +261,7 @@
 								"</span>";
 						}
 					} else {
-						if (completion.statusMsgs[method] != undefined) {
-							this.legendHtml += completion.statusMsgs[method];
-						} else {
-							this.legendHtml += "unknown";
-						}
+						this.legendHtml += "unknown";
 					}
 					this.legendHtml += ")" +
 					"</td>" +
@@ -281,54 +285,155 @@
 				}
 				return sortedMethods;
 			},
-			generateIds: function(completion) {
-				this.legendId = completion.completionType + "Legend";
+			getId: function(completion) {
+				return completion.completionType + "Legend";
 			},
-			draw: function(completion, dismissOnOutsideClick) {
-				this.generateIds(completion);
-				this.generateHtml(completion, dismissOnOutsideClick);
-				closeWith = (dismissOnOutsideClick? ['button']:[] );
-				if ($.noty.get(this.legendId) == false) {
+			draw: function(completion, noCodemirror) {
+				this.generateHtml(completion);
+				if ($.noty.get(this.getId(completion)) == false) {
 					noty({
 						text: this.legendHtml,
 						layout: 'bottomLeft',
 						type: 'alert',
-						id: this.legendId,
-						closeWith: closeWith,
+						id: this.getId(completion),
+						closeWith: [],
 					});
 				} else {
-					$.noty.setText(this.legendId, this.legendHtml);
+					$.noty.setText(this.getId(completion), this.legendHtml);
 				}
-				this.addClickListener(completion);
+				this.addClickListener(completion, noCodemirror);
 			},
-			addClickListener: function(completion) {
-				$(document).on("click." + completion.completionType + "menu-outside", function(event) {
-					if (document.getElementById(completion.completionType + "Legend") != undefined && $(".CodeMirror-hints")[0]) {
-					    if(!$(event.target).parents().andSelf().is("#" + completion.completionType + "Legend") && !$(event.target).parents().andSelf().is(".CodeMirror-hints")) {
-					    	$.noty.close(completion.completionType + "Legend");//remove legend popup
+			addClickListener: function(completion, noCodemirror) {
+				if (noCodemirror == undefined) noCodemirror = false;
+				$(document).on("click." + completion.legendDialogue.getId(completion), function(event) {
+					if (document.getElementById(completion.legendDialogue.getId(completion)) != undefined && (noCodemirror || $(".CodeMirror-hints")[0])) {
+					    if(!$(event.target).parents().andSelf().is("#" + completion.legendDialogue.getId(completion)) 
+					    		&& !$(event.target).parents().andSelf().is(".CodeMirror-hints")
+					    		&& !$(event.target).parents().andSelf().is("#" + completion.earlyNotificationDialogue.getId(completion))) {
+					    	$.noty.close(completion.legendDialogue.getId(completion));//remove legend popup
 					    	$('.CodeMirror-hints').hide();//remove autocompletion
 					    }
 						//we have a hint item and property legend popup. proceed
 					} else {
 						//no property legend popup and hint item. We shouldnt check this listener anymore! Just remove this listener
-						$(document).off("click." + completion.completionType + "menu-outside");
+						$(document).off("click." + completion.legendDialogue.getId(completion));
 					}
 				});
 			},
-			close: function() {
-				$.noty.close(this.legendId);
+			close: function(completion) {
+				$.noty.close(completion.legendDialogue.getId(completion));
 			},
-			update: function(completion) {
+			update: function(className) {
 				//clear 'selected' class name from 
 				$("#completionsLegend").find(".completionLegendSelected").each (function() {
 				    $(this).removeClass("completionLegendSelected");
 				});
-				if (document.getElementById(completion.className) != undefined) {
-					document.getElementById(completion.className).className += " " + "completionLegendSelected";
+				if (document.getElementById(className) != undefined) {
+					document.getElementById(className).className += " " + "completionLegendSelected";
 				}
 				
 			}
 		},
+		earlyNotificationDialogue: {
+			legendHtml: "placeholder",
+			getId: function(completion) {
+				return completion.completionType + "EarlyNotificationDialogue";
+			},
+			generateHtml : function(completion) {
+				this.legendHtml = "YASGUI is currently trying to the " + completion.completionTypePlural + " from your endpoint for the first time.<Br>" +
+						"This may take a while.<br>" +
+						"However, after a successful fetch, the " + completion.completionTypePlural + " are stored on the YASGUI server (meaning future autocompletion will perform significantly faster)";
+			},
+			drawn: function(completion) {
+				return $.noty.get(this.getId(completion)) != false;
+			},
+			greyOut: function(completion) {
+				var el = $("#" + this.getId(completion));
+				if (el != false) {
+					el.css({ opacity: 0.5 });
+				}
+			},
+			draw: function(completion) {
+				this.generateHtml(completion);
+				if ($.noty.get(this.getId(completion)) == false) {
+					noty({
+						text: this.legendHtml,
+						layout: 'bottomLeft',
+						type: 'alert',
+						id: this.getId(completion),
+						closeWith: [],
+					});
+				} else {
+					$.noty.setText(this.getId(completion), this.legendHtml);
+				}
+				this.addClickListener(completion);
+			},
+			addClickListener: function(completion) {
+				$(document).on("click." + completion.earlyNotificationDialogue.getId(completion), function(event) {
+					if (document.getElementById(completion.earlyNotificationDialogue.getId(completion)) != undefined) {
+						if(!$(event.target).parents().andSelf().is("#" + completion.earlyNotificationDialogue.getId(completion))) {
+							$.noty.close(completion.earlyNotificationDialogue.getId(completion));
+						}
+					} else {
+						//no property legend popup and hint item. We shouldnt check this listener anymore! Just remove this listener
+						$(document).off("click." + completion.earlyNotificationDialogue.getId(completion));
+					}
+				});
+			},
+			close: function(completion) {
+				if (this.drawn(completion)) {
+					$.noty.close(this.getId(completion));
+				}
+			},
+		},
+//		errorDialogue: {
+//			legendHtml: "placeholder",
+//			getId: function(completion) {
+//				return completion.completionType + "ErrorDialogue";
+//			},
+//			generateHtml : function(completion, errorMessage) {
+//				this.legendHtml = "YASGUI failed fetching " + completion.completionTypePlural + " for the current endpoint.<Br>" +
+//						"Possible reasons are: <br>(1) the endpoint is in a private network inaccessible from the YASGUI server, " +
+//						"<br>or (2) the endpoint is down.<br>" +
+//						"The error message returned by YASGUI: <Br>" + errorMessage;
+//			},
+//			drawn: function(completion) {
+//				return $.noty.get(this.getId(completion)) != false;
+//			},
+//			draw: function(completion, errorMessage) {
+//				completion.earlyNotificationDialogue.greyOut(completion);
+//				this.generateHtml(completion, errorMessage);
+//				if ($.noty.get(this.getId(completion)) == false) {
+//					noty({
+//						text: this.legendHtml,
+//						layout: 'bottomLeft',
+//						type: 'warning',
+//						id: this.getId(completion),
+//						closeWith: [],
+//					});
+//				} else {
+//					$.noty.setText(this.getId(completion), this.legendHtml);
+//				}
+//				this.addClickListener(completion);
+//			},
+//			addClickListener: function(completion) {
+//				$(document).on("click." + completion.errorDialogue.getId(completion), function(event) {
+//					if (document.getElementById(completion.errorDialogue.getId(completion)) != undefined) {
+//						if(!$(event.target).parents().andSelf().is("#" + completion.errorDialogue.getId(completion))) {
+//							$.noty.close(completion.errorDialogue.getId(completion));
+//						}
+//					} else {
+//						//no property legend popup and hint item. We shouldnt check this listener anymore! Just remove this listener
+//						$(document).off("click." + completion.errorDialogue.getId(completion));
+//					}
+//				});
+//			},
+//			close: function(completion) {
+//				if (this.drawn(completion)) {
+//					$.noty.close(this.getId(completion));
+//				}
+//			},
+//		},
 		appendTypeIconsToAutocomplete: function(completion) {
 			for (var method in completion.methodProperties) {
 				var props = completion.methodProperties[method];
@@ -372,20 +477,19 @@
 					});
 				}
 			
-				if (found.length == 1 && found[0].text == token.string)
-					return;// we already have our match
-				
 				if (found.length > 0) {
 					var cur = completion.cm.getCursor();
 					var token = getCompleteToken(completion.cm);
 					var autocompleteObj =  {
 						_handlers: {
 							"close": [function(){
-								completion.legendDialogue.close();
+								completion.legendDialogue.close(completion);
+								completion.earlyNotificationDialogue.close(completion);
 							}],
 							"select": [function(completionSelect, element) {
-								completion.legendDialogue.update(completionSelect);
-							}] 
+								completion.legendDialogue.update(completionSelect.className);
+								completion.earlyNotificationDialogue.close(completion);
+							}]
 						},
 						list : found,
 						from : {
@@ -404,129 +508,35 @@
 						//if this is the case, we won't get a suggestion popup. We don't want a legend dialogue then as well!
 						completion.legendDialogue.draw(completion);
 						completion.appendTypeIconsToAutocomplete(completion);
+						
+						//take the current selected suggestion, and highlight this one in legend dialogue
+						var selectedSuggestion = $('.CodeMirror-hint-active');
+						if (selectedSuggestion != null) {
+							var classList =selectedSuggestion.attr('class').split(/\s+/);
+							for (var i = 0; i < classList.length; i++) {
+								var className = classList[i];
+								//it is not the regular codemirror classname (i.e. a dash occurs in it), and it ends with "Hint"
+								//e.g. "queryResultsHint"
+								if (className.indexOf("-") == -1 && className.endsWith("Hint")) {
+									completion.legendDialogue.update(className);
+									break;
+								}
+							}
+							
+							
+						}
+						
 					}
 				}
 			} else {
-				console.log("nothing to draw");
+				//still draw legend. This shows that 'something' happenned at least, and might show status msgs as well
+				completion.legendDialogue.draw(completion, true);
+//				console.log("nothing to draw");
 			}
 		},
-		requestServletAutocompletions: function(completion, methods) {
-			if (location.href.indexOf("codemirror.html") !== -1) {
-				var data = jQuery.parseJSON( '{"queryResults":{"results":["http://xmlns.com/foaf/0.1/prop","http://xmlns.com/foaf/0.1/prop3","http://xmlns.com/foaf/0.1/same", "http://xmlns.com/foaf/0.1/prop2"],"resultSize":4},"query":{"results":["http://xmlns.com/foaf/0.1/lazy2","http://xmlns.com/foaf/0.1/lazy1","http://xmlns.com/foaf/0.1/lazy3","http://xmlns.com/foaf/0.1/same","http://xmlns.com/foaf/0.1/lazy4"],"resultSize":5}}' );
-				if (data.queryResults != undefined) {
-					if (data.queryResults.status != undefined) {
-						completion.statusMsgs['queryResults'] = data.queryResults.status;
-					}
-					completion.resultSizes['queryResults'] = data.queryResults.resultSize;
-					for (var i = 0; i < data.queryResults.results.length; i++) {
-						completion.results.push({
-							type: "queryResults", 
-							uri: data.queryResults.results[i],
-							priority: completion.methodProperties.queryResults.priority
-						});
-					}
-				}
-				
-				if (data.query != undefined) {
-					if (data.query.status != undefined) {
-						completion.statusMsgs['query'] = data.query.status;
-					}
-					completion.resultSizes['query'] = data.query.resultSize;
-					for (var i = 0; i < data.query.results.length; i++) {
-						completion.results.push({
-							type: "query", 
-							uri: data.query.results[i],
-							priority: completion.methodProperties.query.priority
-						});
-					}
-				}
-				completion.fetched['servlet'] = true;
-				completion.drawIfNeeded(completion);
-				return;
-			}
-			
-			completion.fetched['servlet'] = false;
-			var args = {
-					q:completion.uriStart, 
-					max: completion.maxResults, 
-					type: completion.completionType,
-					endpoint: getCurrentEndpoint()
-			};
-			if (methods.length == 1) {
-				args["method"] = methods[0];
-			} else {
-				//no need to add methods to args. We want all!
-			}
-			var url = "Yasgui/autocomplete?" + $.param(args);
-			$.get(url, function(data) {
-				if (data.queryResults != undefined) {
-					if (data.queryResults.status != undefined) {
-						completion.statusMsgs['queryResults'] = data.queryResults.status;
-					}
-					completion.resultSizes['queryResults'] = data.queryResults.resultSize;
-					for (var i = 0; i < data.queryResults.results.length; i++) {
-						completion.results.push({
-							type: "queryResults", 
-							uri: data.queryResults.results[i],
-							priority: completion.methodProperties.queryResults.priority
-						});
-					}
-				}
-				
-				if (data.query != undefined) {
-					if (data.query.status != undefined) {
-						completion.statusMsgs['query'] = data.query.status;
-					}
-					completion.resultSizes['query'] = data.query.resultSize;
-					for (var i = 0; i < data.query.results.length; i++) {
-						completion.results.push({
-							type: "query", 
-							uri: data.query.results[i],
-							priority: completion.methodProperties.query.priority
-						});
-					}
-				}
-				completion.fetched['servlet'] = true;
-				completion.drawIfNeeded(completion);
-			}).fail(function(jqXHR, textStatus, errorThrown) {
-				console.log(errorThrown);
-			});
-		},
-	};
-	var usePropertyAutocompletion = function(cm) {
-		var token = getCompleteToken(cm);
-		return ($.inArray("a", token.state.possibleCurrent) != -1 && token.type != "sp-var");
-	};
-	
-	var PropertyAutocompletion = function(cm, drawCallback) {
-		var completion = this;
-		this.cm = cm;
-		this.drawCallback = drawCallback;
-		this.methodProperties = {
-				"lov" : {
-					"color":"#25547B;",
-					"abbreviation": "L",
-					"description": "Properties fetched from <a href='" + getLovApiLink() + "' target='_blank'>LOV</a>",
-					"priority": 3,
-				},
-				"queryResults": {
-					"color":"#502982;",
-					"abbreviation": "P",
-					"description": "Properties fetched from dataset (i.e. as rdf:Property)",
-					"priority": 2,
-				},
-				"query": {
-					"color":"#BF9C30;",
-					"abbreviation": "C",
-					"description": "Cached properties based on endpoint query logs",
-					"priority": 1,
-				}
-			};
-		this.completionType = "property";
-		this.methods = getPropertyCompletionMethods();
-		this.requestLovAutocompletions = function() {
+		requestLovAutocompletions: function(completion) {
 			completion.fetched['lov'] = false;
-		    var args = {q:completion.uriStart, page: 1, type: "queryResults"};
+		    var args = {q:completion.uriStart, page: 1, type: completion.completionType};
 		    var url = "";
 		    var updateUrl = function() {
 		    	url = "http://lov.okfn.org/dataset/lov/api/v2/autocomplete/terms?" + $.param(args);
@@ -561,9 +571,103 @@
 				  });
 		    };
 		    this.doLovRequest();
-		};
-		
-		this.doRequests = function() {
+		},
+		requestServletAutocompletions: function(completion, methods) {
+			if (location.href.indexOf("codemirror.html") !== -1) {
+				if (coldAutocompletionFetch(getCurrentEndpoint(), completion.completionType)) {
+					completion.earlyNotificationDialogue.draw(completion);
+//					completion.errorDialogue.draw(completion, "blaat");
+				}
+				var data = jQuery.parseJSON( '{"queryResults":{"results":["http://xmlns.com/foaf/0.1/prop","http://xmlns.com/foaf/0.1/prop3","http://xmlns.com/foaf/0.1/same", "http://xmlns.com/foaf/0.1/prop2"],"resultSize":4},"query":{"results":["http://xmlns.com/foaf/0.1/lazy2","http://xmlns.com/foaf/0.1/lazy1","http://xmlns.com/foaf/0.1/lazy3","http://xmlns.com/foaf/0.1/same","http://xmlns.com/foaf/0.1/lazy4"],"resultSize":5}}' );
+				var data = jQuery.parseJSON( '{"query":{"results":[],"resultSize":0},"queryResults":{"results":[],"status":{"text":"Exception message: HttpException: 404 Not Found","subject":"failed fetching properties"},"resultSize":0}}' );
+				if (data.queryResults != undefined) {
+					if (data.queryResults.status != undefined) {
+						completion.statusMsgs['queryResults'] = data.queryResults.status;
+					}
+					completion.resultSizes['queryResults'] = data.queryResults.resultSize;
+					for (var i = 0; i < data.queryResults.results.length; i++) {
+						completion.results.push({
+							type: "queryResults", 
+							uri: data.queryResults.results[i],
+							priority: completion.methodProperties.queryResults.priority
+						});
+					}
+				}
+				
+				if (data.query != undefined) {
+					if (data.query.status != undefined) {
+						completion.statusMsgs['query'] = data.query.status;
+					}
+					completion.resultSizes['query'] = data.query.resultSize;
+					for (var i = 0; i < data.query.results.length; i++) {
+						completion.results.push({
+							type: "query", 
+							uri: data.query.results[i],
+							priority: completion.methodProperties.query.priority
+						});
+					}
+				}
+				completion.fetched['servlet'] = true;
+				completion.drawIfNeeded(completion);
+				completion.earlyNotificationDialogue.greyOut(completion);
+				return;
+			}
+			
+			completion.fetched['servlet'] = false;
+			var args = {
+					q:completion.uriStart, 
+					max: completion.maxResults, 
+					type: completion.completionType,
+					endpoint: getCurrentEndpoint()
+			};
+			if (methods.length == 1) {
+				args["method"] = methods[0];
+			} else {
+				//no need to add methods to args. We want all!
+			}
+			
+			if ((args["method"] == null || args["method"] == "queryResults") && coldAutocompletionFetch(getCurrentEndpoint(), completion.completionType)) {
+				//only show when we are actually going to use the queryResults method (which may take a long time)
+				completion.earlyNotificationDialogue.draw(completion);
+			}
+			var url = "Yasgui/autocomplete?" + $.param(args);
+			$.get(url, function(data) {
+				completion.earlyNotificationDialogue.greyOut(completion);
+				if (data.queryResults != undefined) {
+					if (data.queryResults.status != undefined) {
+						completion.statusMsgs['queryResults'] = data.queryResults.status;
+					}
+					completion.resultSizes['queryResults'] = data.queryResults.resultSize;
+					for (var i = 0; i < data.queryResults.results.length; i++) {
+						completion.results.push({
+							type: "queryResults", 
+							uri: data.queryResults.results[i],
+							priority: completion.methodProperties.queryResults.priority
+						});
+					}
+				}
+				
+				if (data.query != undefined) {
+					if (data.query.status != undefined) {
+						completion.statusMsgs['query'] = data.query.status;
+					}
+					completion.resultSizes['query'] = data.query.resultSize;
+					for (var i = 0; i < data.query.results.length; i++) {
+						completion.results.push({
+							type: "query", 
+							uri: data.query.results[i],
+							priority: completion.methodProperties.query.priority
+						});
+					}
+				}
+				completion.fetched['servlet'] = true;
+				completion.drawIfNeeded(completion);
+			}).fail(function(jqXHR, textStatus, errorThrown) {
+				console.log(errorThrown);
+//				completion.errorDialogue.draw(completion, errorThrown);
+			});
+		},
+		doRequests: function(completion) {
 			this.preprocessToken(completion);
 			if (completion.uriStart == null || completion.uriStart.length == 0) {
 				console.log("no uri to autocomplete");
@@ -572,11 +676,16 @@
 			var allDisabled = true;
 			var methods = completion.methods;
 			var servletMethods = [];
+			var requestsStarted = false;
 			for (var method in methods) {
 				if (methods[method]) {
 					allDisabled = false;
 					if (method == "lov") {
-						completion.requestLovAutocompletions();
+						if (!requestsStarted) {
+//							onLoadingStart("Fetching " + completion.completionTypePlural);
+							requestsStarted = false;
+						}
+						completion.requestLovAutocompletions(completion);
 					} else {
 						//both other methods are executed as 1 single request
 						servletMethods.push(method);
@@ -584,13 +693,51 @@
 				}
 			}
 			if (servletMethods.length > 0) {
+				if (!requestsStarted) {
+//					onLoadingStart("Fetching " + completion.completionTypePlural);
+					requestsStarted = false;
+				}
 				completion.requestServletAutocompletions(completion, servletMethods);
 			}
 			if (allDisabled) {
 				completion.legendDialogue.draw(completion, true);
 			}
-		};
-		this.doRequests();
+		}
+	};
+	var usePropertyAutocompletion = function(cm) {
+		var token = getCompleteToken(cm);
+		return ($.inArray("a", token.state.possibleCurrent) != -1 && token.type != "sp-var");
+	};
+	
+	var PropertyAutocompletion = function(cm, drawCallback) {
+		var completion = this;
+		this.cm = cm;
+		this.drawCallback = drawCallback;
+		this.methodProperties = {
+				"lov" : {
+					"color":"#25547B;",
+					"abbreviation": "L",
+					"description": "Properties fetched from <a href='" + getLovApiLink() + "' target='_blank'>LOV</a>",
+					"priority": 3,
+				},
+				"queryResults": {
+					"color":"#502982;",
+					"abbreviation": "D",
+					"description": "Properties fetched from dataset (i.e. as rdf:Property)",
+					"priority": 2,
+				},
+				"query": {
+					"color":"#BF9C30;",
+					"abbreviation": "Q",
+					"description": "Cached properties based on endpoint query logs",
+					"priority": 1,
+				}
+			};
+		this.completionType = "property";
+		this.completionTypePlural = "properties";
+		this.methods = getPropertyCompletionMethods();
+		
+		this.doRequests(completion);
 	};
 	extend(PropertyAutocompletion, AutocompletionBase);
 	
@@ -608,43 +755,28 @@
 		this.methodProperties = {
 				"queryResults": {
 					"color":"#502982;",
-					"abbreviation": "Cl",
+					"abbreviation": "D",
 					"description": "Classes fetched from dataset",
 					"priority": 2,
 				},
 				"query": {
 					"color":"#BF9C30;",
-					"abbreviation": "Ca",
+					"abbreviation": "Q",
 					"description": "Cached classes based on endpoint query logs",
 					"priority": 1,
-				}
+				},
+				"lov" : {
+					"color":"#25547B;",
+					"abbreviation": "L",
+					"description": "Classes fetched from <a href='" + getLovApiLink() + "' target='_blank'>LOV</a>",
+					"priority": 3,
+				},
 		};
 		this.completionType = "class";
+		this.completionTypePlural = "classes";
 		this.methods = getClassCompletionMethods();
 		
-		
-		
-		this.doRequests = function() {
-			this.preprocessToken(completion);
-			if (completion.uriStart == null || completion.uriStart.length == 0) {
-				console.log("no uri to autocomplete");
-				return;
-			}
-			var methods = completion.methods;
-			var servletMethods = [];
-			for (var method in methods) {
-				if (methods[method]) {
-					servletMethods.push(method);
-				}
-			}
-			if (servletMethods.length > 0) {
-				completion.requestServletAutocompletions(completion, servletMethods);
-			} else {
-				//no method is enabled. still draw dialogue (user might want to enable some methods again)
-				completion.legendDialogue.draw(completion, true);
-			}
-		};
-		this.doRequests();
+		this.doRequests(completion);
 	};
 	extend(ClassAutocompletion, AutocompletionBase);
 	

@@ -38,15 +38,15 @@ import com.data2semantics.yasgui.shared.autocompletions.FetchMethod;
 import com.data2semantics.yasgui.shared.autocompletions.FetchType;
 
 
-public class PropertiesFetcher extends AutocompletionFetcher {
-	public PropertiesFetcher(File configDir, String endpoint) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
+public class ClassesFetcher extends AutocompletionFetcher {
+	public ClassesFetcher(File configDir, String endpoint) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
 		super(configDir, endpoint);
 	}
 
 	protected String getPaginationQuery(int iterator, int count) {
 		String query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" + 
 				"SELECT DISTINCT ?" + getSparqlKeyword() + " WHERE{\n" + 
-				"  ?" + getSparqlKeyword() + " a rdf:Property\n" + 
+				" [] a ?" + getSparqlKeyword() + " .\n" + 
 				"} ORDER BY ?" + getSparqlKeyword() + " ";
 		query += "LIMIT " + count;
 		query += " OFFSET " + (iterator * count);
@@ -55,23 +55,23 @@ public class PropertiesFetcher extends AutocompletionFetcher {
 	protected String getRegularQuery() {
 		return "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" + 
 				"SELECT DISTINCT ?" + getSparqlKeyword() + " WHERE{\n" + 
-				"  ?" + getSparqlKeyword() + " a rdf:Property\n" + 
+				" [] a ?" + getSparqlKeyword() + " .\n" + 
 				"}";
 	}
 	
 	protected String getSparqlKeyword() {
-		return "property";
+		return "class";
 	}
 
 	protected FetchType getFetchType() {
-		return FetchType.PROPERTIES;
+		return FetchType.CLASSES;
 	}
 	protected FetchMethod getFetchMethod() {
 		return FetchMethod.QUERY_RESULTS;
 	}
 	
 	public static void main(String[] args) throws Exception  {
-		PropertiesFetcher fetcher = new PropertiesFetcher(new File("src/main/webapp/"), "http://biocyc.bio2rdf.org/sparql");
+		ClassesFetcher fetcher = new ClassesFetcher(new File("src/main/webapp/"), "http://services.data.gov/sparql");
 		fetcher.fetch();
 	}
 }

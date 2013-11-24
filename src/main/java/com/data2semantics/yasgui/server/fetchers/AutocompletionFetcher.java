@@ -36,66 +36,24 @@ import org.json.JSONException;
 
 import com.data2semantics.yasgui.server.SparqlService;
 import com.data2semantics.yasgui.server.db.DbHelper;
+import com.data2semantics.yasgui.shared.autocompletions.FetchMethod;
+import com.data2semantics.yasgui.shared.autocompletions.FetchStatus;
+import com.data2semantics.yasgui.shared.autocompletions.FetchType;
 import com.data2semantics.yasgui.shared.exceptions.PossiblyNeedPaging;
 import com.hp.hpl.jena.query.ResultSet;
 
 
 public abstract class AutocompletionFetcher  {
-	public enum FetchStatus {
-		SUCCESSFUL("successful"),
-		FETCHING("fetching"),
-		FAILED("failed");
-		private String statusString;
-
-		private FetchStatus(String statusString) {
-			this.statusString = statusString;
-		}
-		public String get() {
-			return this.statusString;
-		}
-	}
-	public enum FetchType {
-		CLASSES("class", "classes"),
-		PROPERTIES("property", "properties");
-		private String singular;
-		private String plural;
-
-		private FetchType(String singular, String plural) {
-			this.singular = singular;
-			this.plural = plural;
-		}
-		public String getSingular() {
-			return this.singular;
-		}
-		public String getSingularCamelCase() {
-			return this.singular.substring(0, 1).toUpperCase() + this.singular.substring(1);
-		}
-		public String getPlural() {
-			return this.plural;
-		}
-		public String getPluralCamelCase() {
-			return this.plural.substring(0, 1).toUpperCase() + this.plural.substring(1);
-		}
-	}
-	public enum FetchMethod {
-		QUERY_ANALYSIS("query"),
-		QUERY_RESULTS("queryResults");
-		private String method;
-		
-		private FetchMethod(String method) {
-			this.method = method;
-		}
-		public String get() {
-			return this.method;
-		}
-	}
+	
+	
+	
 	protected DbHelper dbHelper;
 	protected String endpoint;
 	public AutocompletionFetcher(File configDir, String endpoint) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
 		dbHelper = new DbHelper(configDir);
 		this.endpoint = endpoint;
 	}
-	public void fetch() throws IOException, SQLException {
+	public void fetch() throws Exception {
 		try {
 			System.out.println("fetching " + getSparqlKeyword() + " for endpoint " + endpoint);
 			doRegularFetch();
@@ -106,7 +64,7 @@ public abstract class AutocompletionFetcher  {
 			} catch (Exception e) {
 				setLogStatus(FetchStatus.FAILED, e.getMessage(), true);
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			setLogStatus(FetchStatus.FAILED, e.getMessage());
 			throw e;
 		}

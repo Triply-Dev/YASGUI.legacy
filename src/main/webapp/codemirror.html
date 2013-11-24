@@ -4,12 +4,17 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Codemirror Test</title>
 <script type="text/javascript">
+	function coldAutocompletionFetch(endpoint) {
+		return true;
+	}
 	function getLovApiLink() {
 	};
 	function getAutocompletionMoreInfoLink() {
 	};
 	function storeCompletionMethods() {
 	};
+	function onLoadingStart(){};
+	function onLoadingFinish(){}
 	function getPropertyCompletionMethods() {
 		return {
 			"lov" : true,
@@ -19,6 +24,7 @@
 	};
 	function getClassCompletionMethods() {
 		return {
+			"lov" : true,
 			"queryResults": true,
 			"query": true
 		}

@@ -287,9 +287,44 @@ public class Settings extends JsonHelper {
 	public JSONObject getPropertCompletionMethodsAsJson() {
 		return getMapAsObject(getPropertyCompletionMethods());
 	}
+	
 
 	public void setPropertyCompletionMethods(JSONObject methods) {
 		put(SettingKeys.ENABLED_PROPERTY_COMPLETION_METHODS, methods);
+	}
+	public Map<String, Boolean> getClassCompletionMethods() {
+		Map<String, Boolean> classCompletionMethods = getMap(SettingKeys.ENABLED_CLASS_COMPLETION_METHODS, null);
+		if (classCompletionMethods == null) {
+			Map<String, Boolean> enabledPropertyCompletionMethods = enabledFeatures.getEnabledClassCompletionMethods();
+			classCompletionMethods = new HashMap<String, Boolean>();
+			//if something is set to 'false' in enabled features, they should not be added to our final hashmap,
+			//as null means we won't show this method, false means it is disabled (but selectable), and true means it is enabled
+			for (Entry<String, Boolean> entry: enabledPropertyCompletionMethods.entrySet()) {
+				if (entry.getValue()) {
+					classCompletionMethods.put(entry.getKey(), true);
+				}
+			}
+		} else {
+			Map<String, Boolean> enabledClassCompletionMethods = enabledFeatures.getEnabledClassCompletionMethods();
+			if (enabledClassCompletionMethods != null) {
+				//check whether our user setting has methods enabled, where our enabled properties have them disabled
+				//occurs in changes where user settings are cached, and site administrator changes the enabled features.
+				for (Entry<String, Boolean> entry: enabledClassCompletionMethods.entrySet()) {
+					if (entry.getValue() == false && classCompletionMethods.containsKey(entry.getKey())) {
+						classCompletionMethods.remove(entry.getKey());
+					}
+				}
+			}
+		}
+		return classCompletionMethods;
+	}
+	public JSONObject getClassCompletionMethodsAsJson() {
+		return getMapAsObject(getClassCompletionMethods());
+	}
+	
+	
+	public void setClassCompletionMethods(JSONObject methods) {
+		put(SettingKeys.ENABLED_CLASS_COMPLETION_METHODS, methods);
 	}
 	
 	public static Settings retrieveSettings() throws IOException {

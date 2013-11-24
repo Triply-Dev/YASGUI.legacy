@@ -34,7 +34,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -50,11 +49,11 @@ import com.data2semantics.yasgui.client.services.YasguiService;
 import com.data2semantics.yasgui.server.db.DbHelper;
 import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
 import com.data2semantics.yasgui.server.fetchers.PrefixesFetcher;
-import com.data2semantics.yasgui.server.fetchers.AutocompletionFetcher.FetchType;
 import com.data2semantics.yasgui.server.fetchers.endpoints.EndpointsFetcher;
 import com.data2semantics.yasgui.shared.Bookmark;
 import com.data2semantics.yasgui.shared.IssueReport;
 import com.data2semantics.yasgui.shared.SettingKeys;
+import com.data2semantics.yasgui.shared.autocompletions.AutocompletionsInfo;
 import com.data2semantics.yasgui.shared.exceptions.FetchException;
 import com.data2semantics.yasgui.shared.exceptions.OpenIdException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -279,13 +278,17 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 	}
 
 	@Override
-	public String[] getDisabledEndpointsForPropertyAnalysis() throws IllegalArgumentException, FetchException {
+	public AutocompletionsInfo getAutocompletionsInfo() throws IllegalArgumentException, FetchException {
 		try {
 			DbHelper db = new DbHelper(new File(getServletContext().getRealPath("/")), getThreadLocalRequest());
-			ArrayList<String> endpoints = db.getDisabledEndpointsForCompletionsFetching(FetchType.PROPERTIES);
-			return endpoints.toArray(new String[endpoints.size()]);
+			AutocompletionsInfo info = db.getAutocompletionInfo();
+			System.out.println("fetched autocompletions");
+			System.out.println(info.toString());
+			return info;
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new FetchException(e.getMessage());
 		}
 	}
+
 }

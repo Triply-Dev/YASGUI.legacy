@@ -39,9 +39,9 @@ import java.util.Set;
 import org.json.JSONException;
 
 import com.data2semantics.yasgui.server.db.DbHelper;
-import com.data2semantics.yasgui.server.fetchers.AutocompletionFetcher.FetchMethod;
-import com.data2semantics.yasgui.server.fetchers.AutocompletionFetcher.FetchType;
 import com.data2semantics.yasgui.server.queryanalysis.Query;
+import com.data2semantics.yasgui.shared.autocompletions.FetchMethod;
+import com.data2semantics.yasgui.shared.autocompletions.FetchType;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
 
