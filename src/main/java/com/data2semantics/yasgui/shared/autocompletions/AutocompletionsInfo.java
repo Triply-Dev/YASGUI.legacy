@@ -75,6 +75,22 @@ public class AutocompletionsInfo implements Serializable{
 		}
 		return cold;
 	}
+	
+	public boolean retryFetchAllowed(String endpoint, String type) {
+		boolean retryAllowed = true;
+		if (endpoints.containsKey(endpoint)) {
+			AutocompletionTypeInfo info = null;
+			if (type.equals("property")) {
+				info = endpoints.get(endpoint).getPropertyInfo();
+			} else if (type.equals("class")){
+				info = endpoints.get(endpoint).getClassInfo();
+			}
+			if (info != null) {
+				retryAllowed = info.retryAllowed();
+			}
+		}
+		return retryAllowed;
+	}
 	public boolean queryAnalysisEnabled(String endpoint) {
 		boolean enabled = !endpoint.contains("localhost");
 		if (enabled && endpoints.containsKey(endpoint)) {

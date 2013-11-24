@@ -112,12 +112,13 @@
 		this.statusMsgs = {};
 		this.resultSizes = {};
 		this.drawnResultSizes = {};
+		this.results = [];
 		this.fetched = {};
 		this.cur = null;
 		this.token = null;
 		this.tokenPrefix = null;
 		this.tokenPrefixUri = null;
-		this.results = [];
+		
 		completionMethodChanged = function(type) {
 			var button = $("#completionMethodButton");
 			var checkboxElements=document.getElementsByName(type + "Completions");
@@ -533,6 +534,7 @@
 				completion.legendDialogue.draw(completion, true);
 //				console.log("nothing to draw");
 			}
+			completion.postProcess(completion);
 		},
 		requestLovAutocompletions: function(completion) {
 			completion.fetched['lov'] = false;
@@ -626,7 +628,7 @@
 				//no need to add methods to args. We want all!
 			}
 			
-			if ((args["method"] == null || args["method"] == "queryResults") && coldAutocompletionFetch(getCurrentEndpoint(), completion.completionType)) {
+			if ((args["method"] == null || args["method"] == "queryResults") && coldAutocompletionFetch(getCurrentEndpoint(), completion.completionType) && retryAllowed(getCurrentEndpoint(), completion.completionType)) {
 				//only show when we are actually going to use the queryResults method (which may take a long time)
 				completion.earlyNotificationDialogue.draw(completion);
 			}
@@ -664,10 +666,16 @@
 				completion.drawIfNeeded(completion);
 			}).fail(function(jqXHR, textStatus, errorThrown) {
 				console.log(errorThrown);
-//				completion.errorDialogue.draw(completion, errorThrown);
 			});
 		},
 		doRequests: function(completion) {
+			//reset settings which might have been previously set
+			completion.statusMsgs = {};
+			completion.resultSizes = {};
+			completion.drawnResultSizes = {};
+			completion.results = [];
+			completion.fetched = {};
+			
 			this.preprocessToken(completion);
 			if (completion.uriStart == null || completion.uriStart.length == 0) {
 				console.log("no uri to autocomplete");
@@ -702,7 +710,15 @@
 			if (allDisabled) {
 				completion.legendDialogue.draw(completion, true);
 			}
-		}
+		},
+		postProcess: function(completion) {
+			for (var status in completion.statusMsgs) {
+				if (status.subject.contains("failed")) {
+					fetchAutocompletionsInfo();//refresh our in-memory info object
+					break;
+				}
+			}
+		},
 	};
 	var usePropertyAutocompletion = function(cm) {
 		var token = getCompleteToken(cm);

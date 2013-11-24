@@ -139,7 +139,7 @@ public class View extends VLayout implements RpcElement {
 		connHelper.checkOnlineStatus();
 	}
 
-	private void retrieveAutocompletionsInfo() {
+	public void retrieveAutocompletionsInfo() {
 		new GwtCallbackWrapper<AutocompletionsInfo>(this) {
 			public void onCall(AsyncCallback<AutocompletionsInfo> callback) {
 				getRemoteService().getAutocompletionsInfo(callback);

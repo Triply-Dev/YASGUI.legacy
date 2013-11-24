@@ -150,7 +150,7 @@ public class AutocompleteServlet extends HttpServlet {
 					int timeout = 5;
 					if (dbHelper.lastFetchesFailed(endpoint, type, AutocompletionsInfo.MAX_RETRIES)) {
 						status = "<span style='color:red;font-weight:bold;'>failed</span>";
-						statusMoreInfo = "the last " + AutocompletionsInfo.MAX_RETRIES + " attempts to query for " + type.getPlural() + " failed. YASGUI won't attempt to fetch any more " + type.getPlural() + " from the dataset in the future (to avoid unnecessary on this endpoint)";
+						statusMoreInfo = "the last " + AutocompletionsInfo.MAX_RETRIES + " attempts to query for " + type.getPlural() + " failed. YASGUI will not attempt to fetch any more " + type.getPlural() + " from the dataset in the future (to avoid unnecessary load on this endpoint)";
 					} else if (dbHelper.stillFetching(endpoint, type, timeout)) {
 						status = "still fetching " + type.getPlural() + ". Try again in " + timeout + " minutes";
 					} else {

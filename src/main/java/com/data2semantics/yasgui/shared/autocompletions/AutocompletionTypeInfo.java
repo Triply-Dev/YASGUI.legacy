@@ -39,6 +39,9 @@ public class AutocompletionTypeInfo implements Serializable {
 	public void setQueryResultsFetchingEnabled(boolean queryResultsFetching) {
 		this.queryResultsFetching = queryResultsFetching;
 	}
+	public boolean retryAllowed() {
+		return fetchFailCount < AutocompletionsInfo.MAX_RETRIES;
+	}
 	
 	public String toString() {
 		String result = "";
