@@ -46,11 +46,12 @@ import org.json.JSONObject;
 
 import com.data2semantics.yasgui.server.db.DbHelper;
 import com.data2semantics.yasgui.server.fetchers.AutocompletionFetcher;
-import com.data2semantics.yasgui.server.fetchers.AutocompletionFetcher.FetchMethod;
-import com.data2semantics.yasgui.server.fetchers.AutocompletionFetcher.FetchType;
 import com.data2semantics.yasgui.server.fetchers.ClassesFetcher;
 import com.data2semantics.yasgui.server.fetchers.PropertiesFetcher;
-import com.data2semantics.yasgui.shared.AutocompleteKeys;
+import com.data2semantics.yasgui.shared.autocompletions.AutocompleteKeys;
+import com.data2semantics.yasgui.shared.autocompletions.AutocompletionsInfo;
+import com.data2semantics.yasgui.shared.autocompletions.FetchMethod;
+import com.data2semantics.yasgui.shared.autocompletions.FetchType;
 import com.google.common.collect.HashMultimap;
 
 public class AutocompleteServlet extends HttpServlet {
@@ -140,13 +141,16 @@ public class AutocompleteServlet extends HttpServlet {
 		int resultSize = queryResultsResults.length() + queryAnalysisResults.length();
 		if (methodInRequest == null || methodInRequest == FetchMethod.QUERY_RESULTS) {
 			String status = null;
+			String statusMoreInfo = null;
 			if (queryResultsResults.length() == 0) {
 				if (!dbHelper.autocompletionFetchingEnabled(endpoint, type, FetchMethod.QUERY_RESULTS)) {
 					status = "disabled";
+					statusMoreInfo = "YASGUI won't try to query for " + type.getPlural() + " for this endpoint. This setting is stored by the YASGUI manager.";
 				} else {
 					int timeout = 5;
-					if (dbHelper.lastFetchesFailed(endpoint, type, timeout)) {
-						status = "failed fetching " + type.getPlural();
+					if (dbHelper.lastFetchesFailed(endpoint, type, AutocompletionsInfo.MAX_RETRIES)) {
+						status = "<span style='color:red;font-weight:bold;'>failed</span>";
+						statusMoreInfo = "the last " + AutocompletionsInfo.MAX_RETRIES + " attempts to query for " + type.getPlural() + " failed. YASGUI won't attempt to fetch any more " + type.getPlural() + " from the dataset in the future (to avoid unnecessary on this endpoint)";
 					} else if (dbHelper.stillFetching(endpoint, type, timeout)) {
 						status = "still fetching " + type.getPlural() + ". Try again in " + timeout + " minutes";
 					} else {
@@ -156,7 +160,12 @@ public class AutocompleteServlet extends HttpServlet {
 						} else {
 							fetcher = new ClassesFetcher(new File(getServletContext().getRealPath("/")), endpoint);
 						}
-						fetcher.fetch();
+						try {
+							fetcher.fetch();
+						} catch (Exception e) {
+							status = "<span style='color:red;font-weight:bold;'>failed</span>";
+							statusMoreInfo = "Exception message: " + e.getMessage();
+						}
 						map = dbHelper.getAutocompletions(endpoint, partialProperty, maxResults, type, FetchMethod.QUERY_RESULTS);
 						for (String uri: map.keySet()) {
 							for (String method: map.get(uri)) {
@@ -169,10 +178,12 @@ public class AutocompleteServlet extends HttpServlet {
 					}
 				}
 			}
-			
 			JSONObject queryResultsMethodObject = new JSONObject();
 			if (status != null) {
-				queryResultsMethodObject.put(AutocompleteKeys.RESPONSE_STATUS, status);
+				JSONObject statusObj = new JSONObject();
+				statusObj.put(AutocompleteKeys.RESPONSE_STATUS_SUBJECT, status);
+				statusObj.put(AutocompleteKeys.RESPONSE_STATUS_TEXT, statusMoreInfo);
+				queryResultsMethodObject.put(AutocompleteKeys.RESPONSE_STATUS, statusObj);
 			}
 			int totalSize = queryResultsResults.length();
 			if (resultSize == maxResults) {

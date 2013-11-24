@@ -264,7 +264,7 @@ public class ResultContainer extends VLayout {
 	
 	private void logQueryForAnalysis(SparqlResults results) {
 		//only log when we actually have results
-		if (results.getBindings().size() > 0 && endpoint != null && !view.endpointsIsDisabledForPropertyAnalysis(endpoint) && !endpoint.contains("localhost")) {
+		if (results.getBindings().size() > 0 && endpoint != null && (view.getAutocompletionsInfo() == null || view.getAutocompletionsInfo().queryAnalysisEnabled(endpoint))) {
 			new GwtCallbackWrapper<Void>(view) {
 				public void onCall(AsyncCallback<Void> callback) {
 					view.getRemoteService().logLazyQuery(queryString, endpoint, callback);

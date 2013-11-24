@@ -37,7 +37,9 @@ import java.sql.Statement;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,15 +48,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.data2semantics.yasgui.server.Helper;
-import com.data2semantics.yasgui.server.fetchers.AutocompletionFetcher.FetchMethod;
-import com.data2semantics.yasgui.server.fetchers.AutocompletionFetcher.FetchStatus;
-import com.data2semantics.yasgui.server.fetchers.AutocompletionFetcher.FetchType;
 import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
 import com.data2semantics.yasgui.server.fetchers.PropertiesFetcher;
 import com.data2semantics.yasgui.server.openid.HttpCookies;
 import com.data2semantics.yasgui.server.openid.OpenIdServlet;
 import com.data2semantics.yasgui.shared.Bookmark;
 import com.data2semantics.yasgui.shared.UserDetails;
+import com.data2semantics.yasgui.shared.autocompletions.AutocompletionsInfo;
+import com.data2semantics.yasgui.shared.autocompletions.FetchMethod;
+import com.data2semantics.yasgui.shared.autocompletions.FetchStatus;
+import com.data2semantics.yasgui.shared.autocompletions.FetchType;
 import com.data2semantics.yasgui.shared.exceptions.OpenIdException;
 import com.data2semantics.yasgui.shared.exceptions.PossiblyNeedPaging;
 import com.google.common.collect.HashMultimap;
@@ -487,15 +490,15 @@ public class DbHelper {
 		return !disabled;
 	}
 	
-	public ArrayList<String> getDisabledEndpointsForCompletionsFetching(FetchType type) throws SQLException {
-		String sql = "SELECT Endpoint FROM Disabled" + type.getSingularCamelCase() + "Endpoints WHERE 1";
-		Statement statement = connect.createStatement();
-		ResultSet result = statement.executeQuery(sql);
-		ArrayList<String> endpoints = new ArrayList<String>();
+	public HashMultimap<String, FetchMethod> getDisabledEndpointsForCompletionsFetching(FetchType type) throws SQLException {
+		String sql = "SELECT DISTINCT Endpoint, Method FROM Disabled" + type.getSingularCamelCase() + "Endpoints WHERE 1";
+		PreparedStatement ps = connect.prepareStatement(sql);
+		ResultSet result = ps.executeQuery();
+		HashMultimap<String, FetchMethod> endpoints = HashMultimap.create();
 		while (result.next()) {
-			endpoints.add(result.getString("Endpoint"));
+			endpoints.put(result.getString("Endpoint"), Helper.stringToFetchMethod(result.getString("Method")));
 		}
-		statement.close();
+		ps.close();
 		result.close();
 		return endpoints;
 	}
@@ -508,16 +511,17 @@ public class DbHelper {
 	 * @throws SQLException
 	 */
 	public boolean lastFetchesFailed(String endpoint, FetchType type, int numberOfFetchesToCheck) throws SQLException {
-		String sql = "SELECT * FROM Log" + type.getSingularCamelCase() + "Fetcher WHERE Endpoint = ? ORDER BY Time DESC LIMIT ?";
+		String sql = "SELECT * FROM Log" + type.getSingularCamelCase() + "Fetcher WHERE Endpoint = ? AND Status != ? ORDER BY Time DESC LIMIT ?";
 		PreparedStatement ps = connect.prepareStatement(sql);
 		ps.setString(1, endpoint.trim());
-		ps.setInt(2, numberOfFetchesToCheck);
+		ps.setString(2, FetchStatus.FETCHING.get());//we don't want the fetching status in there. Only the failed and succeeded ones
+		ps.setInt(3, numberOfFetchesToCheck);
 		ResultSet result = ps.executeQuery();
 		int count = 0;
 		boolean allFailed = true;
 		while (result.next()) {
 			count ++;
-			if (result.getString("Status").equals("successful")) {
+			if (result.getString("Status").equals(FetchStatus.SUCCESSFUL)) {
 				allFailed = false;
 			}
 		}
@@ -529,21 +533,97 @@ public class DbHelper {
 		return allFailed;
 	}
 	public boolean stillFetching(String endpoint, FetchType fetchType, int timeFrameSearch) throws SQLException {
-		String sql = "SELECT * FROM Log" + fetchType.getSingularCamelCase() + "Fetcher WHERE Endpoint = ? AND TIMESTAMPDIFF(minute,Time,NOW()) <= ? LIMIT 1";
+		String sql = "SELECT Status FROM Log" + fetchType.getSingularCamelCase() + "Fetcher WHERE Endpoint = ? AND TIMESTAMPDIFF(minute,Time,NOW()) <= ? ORDER BY Time DESC LIMIT 1";
 		PreparedStatement ps = connect.prepareStatement(sql);
 		ps.setString(1, endpoint.trim());
 		ps.setInt(2, timeFrameSearch);
 		ResultSet result = ps.executeQuery();
-		
-		boolean stillFetching = result.next();
+		boolean stillFetching = false;
+		while (result.next()) {
+			if (result.getString("Status").equals(FetchStatus.FETCHING)) {
+				stillFetching = true;
+			}
+		}
 		ps.close();
 		result.close();
 		return stillFetching;
+	}
+	public Map<String, Integer> getFailCountForEndpoints(FetchType type) throws SQLException {
+		String sql = "SELECT Endpoint, COUNT( Endpoint ) AS NumberFails\n" + 
+				"FROM Log" + type.getSingularCamelCase() + "Fetcher \n" + 
+				"WHERE STATUS =  ?\n" + 
+				"GROUP BY Endpoint\n";
+		PreparedStatement ps = connect.prepareStatement(sql);
+		ps.setString(1, "failed");
+		ResultSet result = ps.executeQuery();
+		Map<String, Integer> endpoints = new HashMap<String, Integer>();
+		while (result.next()) {
+			endpoints.put(result.getString("Endpoint"), result.getInt("NumberFails"));
+		}
+		return endpoints;
+	}
+	
+	public Set<String> getEndpointsWithAutocompletions(FetchType fetchType) throws SQLException {
+		Set<String> endpoints = new HashSet<String>();
+		
+		String sql = "SELECT DISTINCT Endpoint FROM " + fetchType.getPluralCamelCase() + " WHERE 1";
+		System.out.println(sql);
+		PreparedStatement ps = connect.prepareStatement(sql);
+		ResultSet result = ps.executeQuery();
+		while (result.next()) {
+			endpoints.add(result.getString("Endpoint"));
+		}
+		return endpoints;
+	}
+	
+	
+	
+	public AutocompletionsInfo getAutocompletionInfo() throws SQLException {
+		AutocompletionsInfo completionsInfo = new AutocompletionsInfo();
+		
+		for (String endpoint: getEndpointsWithAutocompletions(FetchType.PROPERTIES)) {
+			completionsInfo.getOrCreateEndpointInfo(endpoint).getPropertyInfo().setHasAutocompletions(true);
+		}
+		for (String endpoint: getEndpointsWithAutocompletions(FetchType.CLASSES)) {
+			completionsInfo.getOrCreateEndpointInfo(endpoint).getClassInfo().setHasAutocompletions(true);
+		}
+		for (Entry<String, Integer> entry: getFailCountForEndpoints(FetchType.PROPERTIES).entrySet()) {
+			completionsInfo.getOrCreateEndpointInfo(entry.getKey()).getPropertyInfo().setFetchFailCount(entry.getValue());
+		}
+		for (Entry<String, Integer> entry: getFailCountForEndpoints(FetchType.CLASSES).entrySet()) {
+			completionsInfo.getOrCreateEndpointInfo(entry.getKey()).getClassInfo().setFetchFailCount(entry.getValue());
+		}
+		HashMultimap<String, FetchMethod> disabledPropEndpoints = getDisabledEndpointsForCompletionsFetching(FetchType.PROPERTIES);
+		for (String endpoint: disabledPropEndpoints.keySet()) {
+			for (FetchMethod method: disabledPropEndpoints.get(endpoint)) {
+				if (method == FetchMethod.QUERY_ANALYSIS) {
+					completionsInfo.getOrCreateEndpointInfo(endpoint).getPropertyInfo().setQueryAnalysisEnabled(false);
+				} else if (method == FetchMethod.QUERY_RESULTS) {
+					completionsInfo.getOrCreateEndpointInfo(endpoint).getPropertyInfo().setQueryResultsFetchingEnabled(false);
+				}
+			}
+		}
+		HashMultimap<String, FetchMethod> disabledClassEndpoints = getDisabledEndpointsForCompletionsFetching(FetchType.CLASSES);
+		for (String endpoint: disabledClassEndpoints.keySet()) {
+			for (FetchMethod method: disabledClassEndpoints.get(endpoint)) {
+				if (method == FetchMethod.QUERY_ANALYSIS) {
+					completionsInfo.getOrCreateEndpointInfo(endpoint).getClassInfo().setQueryAnalysisEnabled(false);
+				} else if (method == FetchMethod.QUERY_RESULTS) {
+					completionsInfo.getOrCreateEndpointInfo(endpoint).getClassInfo().setQueryResultsFetchingEnabled(false);
+				}
+			}
+		}
+		return completionsInfo;
 	}
 
 
 	public static void main(String[] args) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
 		DbHelper dbHelper = new DbHelper(new File("src/main/webapp/"));
+		AutocompletionsInfo info = dbHelper.getAutocompletionInfo();
+		System.out.println(info.toString());
+//		for (String endpoint: dbHelper.getDisabledEndpointsForCompletionsFetching(FetchType.CLASSES, FetchMethod.QUERY_ANALYSIS)) {
+//			System.out.println(endpoint);
+//		}
 //		System.out.println((dbHelper.stillFetching("http://dbpedia.org/sparql", 5)? "still fetching":"done fetching"));
 	}
 

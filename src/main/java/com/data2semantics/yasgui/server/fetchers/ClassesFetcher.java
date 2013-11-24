@@ -34,6 +34,9 @@ import java.text.ParseException;
 
 import org.json.JSONException;
 
+import com.data2semantics.yasgui.shared.autocompletions.FetchMethod;
+import com.data2semantics.yasgui.shared.autocompletions.FetchType;
+
 
 public class ClassesFetcher extends AutocompletionFetcher {
 	public ClassesFetcher(File configDir, String endpoint) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
@@ -67,7 +70,7 @@ public class ClassesFetcher extends AutocompletionFetcher {
 		return FetchMethod.QUERY_RESULTS;
 	}
 	
-	public static void main(String[] args) throws IOException, ClassNotFoundException, JSONException, SQLException, ParseException  {
+	public static void main(String[] args) throws Exception  {
 		ClassesFetcher fetcher = new ClassesFetcher(new File("src/main/webapp/"), "http://services.data.gov/sparql");
 		fetcher.fetch();
 	}

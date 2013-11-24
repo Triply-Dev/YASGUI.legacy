@@ -27,7 +27,6 @@ package com.data2semantics.yasgui.client;
  */
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import com.data2semantics.yasgui.client.helpers.AppcacheHelper;
@@ -51,6 +50,7 @@ import com.data2semantics.yasgui.client.tab.optionbar.endpoints.EndpointDataSour
 import com.data2semantics.yasgui.shared.Endpoints;
 import com.data2semantics.yasgui.shared.SettingKeys;
 import com.data2semantics.yasgui.shared.StaticConfig;
+import com.data2semantics.yasgui.shared.autocompletions.AutocompletionsInfo;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.data2semantics.yasgui.shared.exceptions.SettingsException;
 import com.google.gwt.core.client.Scheduler;
@@ -85,7 +85,7 @@ public class View extends VLayout implements RpcElement {
 	private ChangelogHelper changelogHelper;
 	private ErrorHelper errorHelper;
 	private AppcacheHelper appcacheHelper;
-	private ArrayList<String> disabledEndpointsForPropertyAnalysis = new ArrayList<String>();
+	private AutocompletionsInfo autocompletionsInfo = null;
 	
 	public View() {
 		boolean newUser = false;
@@ -129,35 +129,40 @@ public class View extends VLayout implements RpcElement {
 		processUrlParameters(newUser);
 
 		getHistory().replaceHistoryState();
-
-		getDisabledEndpointsForPropertyAnalysis();
+		
+		if (getEnabledFeatures().getEnabledClassCompletionMethods().size() > 0 || getEnabledFeatures().getEnabledPropertyCompletionMethods().size() > 0) {
+			retrieveAutocompletionsInfo();
+		}
+		
 		
 		
 		connHelper.checkOnlineStatus();
 	}
 
-	private void getDisabledEndpointsForPropertyAnalysis() {
-		new GwtCallbackWrapper<String[]>(this) {
-			public void onCall(AsyncCallback<String[]> callback) {
-				getRemoteService().getDisabledEndpointsForPropertyAnalysis(callback);
+	private void retrieveAutocompletionsInfo() {
+		new GwtCallbackWrapper<AutocompletionsInfo>(this) {
+			public void onCall(AsyncCallback<AutocompletionsInfo> callback) {
+				getRemoteService().getAutocompletionsInfo(callback);
 			}
 
 			protected void onFailure(Throwable throwable) {
 				getErrorHelper().onError(throwable);
 			}
 
-			protected void onSuccess(String[] endpoints) {
-				for (int i = 0; i < endpoints.length; i++) {
-					disabledEndpointsForPropertyAnalysis.add((String)endpoints[i]);
-				}
+			protected void onSuccess(AutocompletionsInfo autocompletionsInfo) {
+				view.setAutocompletionsInfo(autocompletionsInfo);
 			}
 
 		}.call();
 	}
 	
-	public boolean endpointsIsDisabledForPropertyAnalysis(String endpoint) {
-		return disabledEndpointsForPropertyAnalysis.contains(endpoint);
+	protected void setAutocompletionsInfo(AutocompletionsInfo autocompletionsInfo) {
+		this.autocompletionsInfo = autocompletionsInfo;
 	}
+	public AutocompletionsInfo getAutocompletionsInfo() {
+		return this.autocompletionsInfo;
+	}
+	
 
 	private void setViewLayout() {
 		setWidth100();
@@ -474,6 +479,8 @@ public class View extends VLayout implements RpcElement {
 	}
 
 	public void enableRpcElements() {
+		// this might not have loaded correctly when yasgui was offline on first load
+		if (autocompletionsInfo == null) retrieveAutocompletionsInfo();
 		getTabs().enableRpcElements();
 		viewElements.enableRpcElements();
 
