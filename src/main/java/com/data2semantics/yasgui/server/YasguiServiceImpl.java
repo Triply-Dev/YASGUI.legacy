@@ -281,10 +281,7 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 	public AutocompletionsInfo getAutocompletionsInfo() throws IllegalArgumentException, FetchException {
 		try {
 			DbHelper db = new DbHelper(new File(getServletContext().getRealPath("/")), getThreadLocalRequest());
-			AutocompletionsInfo info = db.getAutocompletionInfo();
-			System.out.println("fetched autocompletions");
-			System.out.println(info.toString());
-			return info;
+			return db.getAutocompletionInfo();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new FetchException(e.getMessage());

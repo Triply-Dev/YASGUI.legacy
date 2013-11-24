@@ -166,10 +166,14 @@ public class CallableJsMethods {
 	public String getLovApiLink() {
 		return ExternalLinks.LOV_API;
 	}
-	public void storeCompletionMethodsInSettings(String methodsJsonString) {
+	public void storeCompletionMethodsInSettings(String methodsJsonString, String type) {
 		JSONValue jsonVal = JSONParser.parseStrict(methodsJsonString);
 		if (jsonVal != null && jsonVal.isObject() != null) {
-			view.getSettings().setPropertyCompletionMethods(jsonVal.isObject());
+			if (type.equals("property")) {
+				view.getSettings().setPropertyCompletionMethods(jsonVal.isObject());
+			} else if (type.equals("class")) {
+				view.getSettings().setClassCompletionMethods(jsonVal.isObject());
+			}
 			LocalStorageHelper.storeSettingsInCookie(view.getSettings());
 		}
 	}
@@ -196,6 +200,9 @@ public class CallableJsMethods {
 	}
 	public void fetchAutocompletionsInfo() {
 		view.retrieveAutocompletionsInfo();
+	}
+	public boolean isDbSet() {
+		return view.getSettings().isDbSet();
 	}
 	
 	/**
@@ -288,8 +295,8 @@ public class CallableJsMethods {
 		$wnd.getLovApiLink = function() {
 			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::getLovApiLink()();
 		}
-		$wnd.storeCompletionMethodsInSettings = function(methods) {
-			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::storeCompletionMethodsInSettings(Ljava/lang/String;)(methods);
+		$wnd.storeCompletionMethodsInSettings = function(methods, type) {
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::storeCompletionMethodsInSettings(Ljava/lang/String;Ljava/lang/String;)(methods, type);
 		}
 		$wnd.coldAutocompletionFetch = function(endpoint, type) {
 			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::isColdAutocompletionFetch(Ljava/lang/String;Ljava/lang/String;)(endpoint, type);
@@ -301,7 +308,10 @@ public class CallableJsMethods {
 			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::logAutocompletionsInfo()();
 		}
 		$wnd.fetchAutocompletionsInfo = function() {
-			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::fetchAutocompletionsInfo()();
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::fetchAutocompletionsInfo()();
+		}
+		$wnd.isDbSet = function() {
+			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::isDbSet()();
 		}
 		
 	}-*/;

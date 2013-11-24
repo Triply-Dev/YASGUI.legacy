@@ -118,7 +118,14 @@
 		this.token = null;
 		this.tokenPrefix = null;
 		this.tokenPrefixUri = null;
-		
+		storeCompletionMethods = function(type) {
+			var checkboxElements=document.getElementsByName(type + "Completions");
+			var methods = {};
+			for (var i = 0;i < checkboxElements.length; i++) {
+				methods[checkboxElements[i].value] = checkboxElements[i].checked;
+			}
+			storeCompletionMethodsInSettings(JSON.stringify(methods), type);
+		};
 		completionMethodChanged = function(type) {
 			var button = $("#completionMethodButton");
 			var checkboxElements=document.getElementsByName(type + "Completions");
@@ -215,14 +222,6 @@
 					completion.uriStart = completion.uriStart.substring(0, completion.uriStart.length - 1);
 			}
 		},
-		storeCompletionMethods: function(type) {
-			var checkboxElements=document.getElementsByName(type + "Completions");
-			var methods = {};
-			for (var i = 0;i < checkboxElements.length; i++) {
-				methods[checkboxElements[i].value] = checkboxElements[i].checked;
-			}
-			storeCompletionMethodsInSettings(JSON.stringify(methods));
-		},
 		
 		legendDialogue: {
 			legendHtml: "placeholder",
@@ -249,8 +248,15 @@
 						" (";
 					if (completion.statusMsgs[method] != undefined && completion.statusMsgs[method].subject != undefined) {
 						this.legendHtml += completion.statusMsgs[method].subject; 
+						 
 						if (completion.statusMsgs[method].text != undefined) {
-							this.legendHtml += "&nbsp;<img src='images/nounproject/info.png' title='" + completion.statusMsgs[method].text + "' style='vertical-align:middle;width:16px;height:16px;'>";
+							var imgUrl;
+							if (completion.statusMsgs[method].subject.contains("disabled")) {
+								imgUrl = "images/nounproject/questionMark.png";
+							} else {
+								imgUrl = "images/nounproject/info.png";
+							}
+							this.legendHtml += "&nbsp;<img src='" + imgUrl + "' title='" + completion.statusMsgs[method].text + "' style='vertical-align:middle;width:16px;height:16px;'>";
 						}
 					} else if (completion.resultSizes[method] != undefined) {
 						if (completion.drawnResultSizes[method] == undefined || completion.drawnResultSizes[method] == completion.resultSizes[method]) {
@@ -695,8 +701,8 @@
 						}
 						completion.requestLovAutocompletions(completion);
 					} else {
+						if (isDbSet()) servletMethods.push(method);
 						//both other methods are executed as 1 single request
-						servletMethods.push(method);
 					}
 				}
 			}
@@ -712,8 +718,8 @@
 			}
 		},
 		postProcess: function(completion) {
-			for (var status in completion.statusMsgs) {
-				if (status.subject.contains("failed")) {
+			for (var method in completion.statusMsgs) {
+				if (completion.statusMsgs[method].subject.contains("failed")) {
 					fetchAutocompletionsInfo();//refresh our in-memory info object
 					break;
 				}
