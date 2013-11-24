@@ -180,12 +180,22 @@ public class CallableJsMethods {
 		}
 		return cold;
 	}
+	public boolean retryAllowed(String endpoint, String type) {
+		boolean retryAllowed = true;
+		if (view.getAutocompletionsInfo() != null) {
+			retryAllowed = view.getAutocompletionsInfo().retryFetchAllowed(endpoint, type);
+		}
+		return retryAllowed;
+	}
 	public void logAutocompletionsInfo() {
 		if (view.getAutocompletionsInfo() == null) {
 			JsMethods.logConsole("null");
 		} else {
 			JsMethods.logConsole(view.getAutocompletionsInfo().toString());
 		}
+	}
+	public void fetchAutocompletionsInfo() {
+		view.retrieveAutocompletionsInfo();
 	}
 	
 	/**
@@ -284,8 +294,14 @@ public class CallableJsMethods {
 		$wnd.coldAutocompletionFetch = function(endpoint, type) {
 			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::isColdAutocompletionFetch(Ljava/lang/String;Ljava/lang/String;)(endpoint, type);
 		}
+		$wnd.retryAllowed = function(endpoint, type) {
+			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::retryAllowed(Ljava/lang/String;Ljava/lang/String;)(endpoint, type);
+		}
 		$wnd.logAutocompletionsInfo = function() {
 			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::logAutocompletionsInfo()();
+		}
+		$wnd.fetchAutocompletionsInfo = function() {
+			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::fetchAutocompletionsInfo()();
 		}
 		
 	}-*/;
