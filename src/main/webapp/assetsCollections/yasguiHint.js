@@ -224,14 +224,24 @@
 		},
 		
 		legendDialogue: {
+			qtipDrawStack: {},
 			legendHtml: "placeholder",
+			addQtip: function(id, text) {
+				$('#' + id).qtip({
+					   content: text,
+					   show: 'mouseover',
+					   hide: 'mouseout',
+					});
+			},
 			generateHtml : function(completion, methods) {
+				var hasMethods = false;
 				var methods = completion.methods;
 				var sortedMethods = completion.legendDialogue.sortMethods(completion, methods);
 				this.legendHtml = 
 					"Methods used for fetching autocompletions: (<a href='" + getAutocompletionMoreInfoLink() + " ' target='_blank'>more info</a>):" +
 					"<ul id='completionsLegend' class='completionsLegend'>";
 				for (var i = 0; i < sortedMethods.length; i++) {
+					hasMethods = true;
 					var method = sortedMethods[i];
 					var methodProps = completion.methodProperties[method];
 					this.legendHtml += 
@@ -256,7 +266,9 @@
 							} else {
 								imgUrl = "images/nounproject/info.png";
 							}
-							this.legendHtml += "&nbsp;<img src='" + imgUrl + "' title='" + completion.statusMsgs[method].text + "' style='vertical-align:middle;width:16px;height:16px;'>";
+							var id = "warnIcon" + method;
+							this.qtipDrawStack[id] = completion.statusMsgs[method].text;
+							this.legendHtml += "&nbsp;<img id='" + id + "' src='" + imgUrl + "' style='cursor:default;vertical-align:middle;width:16px;height:16px;'>";
 						}
 					} else if (completion.resultSizes[method] != undefined) {
 						if (completion.drawnResultSizes[method] == undefined || completion.drawnResultSizes[method] == completion.resultSizes[method]) {
@@ -278,37 +290,52 @@
 				this.legendHtml += 
 					"</ul>" +
 					"<button id='completionMethodButton' style='display:none;float: right;' onclick=\"storeCompletionMethods('" + completion.completionType + "');$.noty.close('" + this.legendId + "');return false;\">Apply</button>";
+				return hasMethods;
 			},
 			sortMethods: function(completion, methods) {
+				//get methods in array, so we can sort it
 				var sortedMethods = [];
 				for (var method in methods) {
-					//this is a -very- naive quick way to sort. 
-					//it -only- makes sure our highest priority item is at the top of the array
-					if (sortedMethods.length == 0 || completion.methodProperties[method].priority < completion.methodProperties[sortedMethods[0]].priority) {
-						sortedMethods.unshift(method);
-					} else {
-						sortedMethods.push(method);
-					}
+					sortedMethods.push(completion.methodProperties[method]);
 				}
-				return sortedMethods;
+				
+				//now sort array of objects
+				sortedMethods.sort(dynamicSortMultiple("priority"));
+				var returnMethod = [];
+				for (var i = 0; i < sortedMethods.length; i++) {
+					returnMethod.push(sortedMethods[i].method);
+				}
+				return returnMethod;
 			},
 			getId: function(completion) {
 				return completion.completionType + "Legend";
 			},
-			draw: function(completion, noCodemirror) {
-				this.generateHtml(completion);
-				if ($.noty.get(this.getId(completion)) == false) {
-					noty({
-						text: this.legendHtml,
-						layout: 'bottomLeft',
-						type: 'alert',
-						id: this.getId(completion),
-						closeWith: [],
-					});
-				} else {
-					$.noty.setText(this.getId(completion), this.legendHtml);
+			drawQtipStack: function() {
+				for (id in this.qtipDrawStack) {
+					this.addQtip(id, this.qtipDrawStack[id]);
 				}
-				this.addClickListener(completion, noCodemirror);
+				this.qtipDrawStack = {};//reset
+			},
+			draw: function(completion, noCodemirror) {
+				this.qtipDrawStack = {};//reset
+				var hasMethods = this.generateHtml(completion);
+				if (hasMethods) {
+					if ($.noty.get(this.getId(completion)) == false) {
+						noty({
+							text: this.legendHtml,
+							layout: 'bottomLeft',
+							type: 'alert',
+							id: this.getId(completion),
+							closeWith: [],
+						});
+					} else {
+						$.noty.setText(this.getId(completion), this.legendHtml);
+					}
+					this.addClickListener(completion, noCodemirror);
+					this.drawQtipStack();
+				} else {
+					console.log("not drawing legend dialogue: no methods!");
+				}
 			},
 			addClickListener: function(completion, noCodemirror) {
 				if (noCodemirror == undefined) noCodemirror = false;
@@ -737,18 +764,21 @@
 		this.drawCallback = drawCallback;
 		this.methodProperties = {
 				"lov" : {
+					"method": "lov",
 					"color":"#25547B;",
 					"abbreviation": "L",
 					"description": "Properties fetched from <a href='" + getLovApiLink() + "' target='_blank'>LOV</a>",
 					"priority": 3,
 				},
 				"queryResults": {
+					"method": "queryResults",
 					"color":"#502982;",
 					"abbreviation": "D",
 					"description": "Properties fetched from dataset (i.e. as rdf:Property)",
 					"priority": 2,
 				},
 				"query": {
+					"method": "query",
 					"color":"#BF9C30;",
 					"abbreviation": "Q",
 					"description": "Cached properties based on endpoint query logs",
@@ -776,18 +806,21 @@
 		this.drawCallback = drawCallback;
 		this.methodProperties = {
 				"queryResults": {
+					"method": "queryResults",
 					"color":"#502982;",
 					"abbreviation": "D",
 					"description": "Classes fetched from dataset",
 					"priority": 2,
 				},
 				"query": {
+					"method": "query",
 					"color":"#BF9C30;",
 					"abbreviation": "Q",
 					"description": "Cached classes based on endpoint query logs",
 					"priority": 1,
 				},
 				"lov" : {
+					"method": "lov",
 					"color":"#25547B;",
 					"abbreviation": "L",
 					"description": "Classes fetched from <a href='" + getLovApiLink() + "' target='_blank'>LOV</a>",

@@ -44,12 +44,15 @@
 	src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
 
 <script src="assets/trie.js"></script>
-
+<!-- qtip lib -->
+<script src="assets/jquery.qtip.min.js?<% out.print(StaticConfig.VERSION); %>"></script>
+<link rel="stylesheet" href="assets/jquery.qtip.css?<% out.print(StaticConfig.VERSION); %>">
 <script src="assets/codemirror/lib/codemirror.js"></script>
 <script src="assets/codemirror/mode/xml/xml.js"></script>
 <link rel="stylesheet" href="assets/codemirror/lib/codemirror.css">
 <link rel="stylesheet" href="assets/codemirror/theme/yasgui.css">
 <!-- Autocompletion code -->
+
 <link rel="stylesheet" href="assets/codemirror/addon/hint/show-hint.css">
 <script src="assets/codemirror/addon/hint/show-hint.js"></script>
 <script src="assets/yasguiHint.js"></script>
@@ -70,6 +73,7 @@
 <script src="assets/noty/layouts/bottomRight.js"></script>
 <script src="assets/noty/layouts/bottomLeft.js"></script>
 <script src="assets/noty/themes/default.js"></script>
+
 </head>
 <body>
 	<br>
@@ -85,6 +89,7 @@ SELECT * WHERE {
 </textarea>
 
 	<script type="text/javascript">
+	jQuery.fn.qtip.zindex = 50000010;
 		function checkAdjustParent() {
 
 		}

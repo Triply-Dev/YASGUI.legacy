@@ -183,7 +183,10 @@ div#appcacheProgressBar {
 }
 .completionTypeIconLegend {
 	display: inline-block;
-	width:10px;
+    width: 20px;
+    line-height: 20px;
+    float: left;
+    text-align: center;
 }
 .completionMethodCheckbox {
 	vertical-align:middle;
