@@ -19,7 +19,17 @@
 		"acceptHeaders": true,
 		"requestMethod": true,
 		"propertyAutocompletion": false,
-		"offlineCaching": true	
+		"offlineCaching": true,
+		"propertyCompletionMethods": {
+			"lov": true,
+			"query": true,
+			"queryResults": true
+		},
+		"classCompletionMethods": {
+			"lov": true,
+			"query": true,
+			"queryResults": true
+		}
 	},
 	"downloadOfflineCache": true,
 	"showDownloadProgressBar": true,
@@ -35,5 +45,4 @@
 	"githubUsername": "",
 	"githubOathToken": "",
 	"githubRepo": ""
-	
 }
