@@ -369,6 +369,7 @@
 			}
 		},
 		earlyNotificationDialogue: {
+			justDrawn: false,
 			legendHtml: "placeholder",
 			getId: function(completion) {
 				return completion.completionType + "EarlyNotificationDialogue";
@@ -400,6 +401,7 @@
 				} else {
 					$.noty.setText(this.getId(completion), this.legendHtml);
 				}
+				this.justDrawn = true;
 				this.addClickListener(completion);
 			},
 			addClickListener: function(completion) {
@@ -418,6 +420,7 @@
 				if (this.drawn(completion)) {
 					$.noty.close(this.getId(completion));
 				}
+				this.justDrawn = false;
 			},
 		},
 //		errorDialogue: {
@@ -522,7 +525,14 @@
 							}],
 							"select": [function(completionSelect, element) {
 								completion.legendDialogue.update(completionSelect.className);
-								completion.earlyNotificationDialogue.close(completion);
+								if (completion.earlyNotificationDialogue.justDrawn == false) {
+									//very ugly workaround... Problem is, this event gets called immediately after drawing.
+									//we only want to change the early notification dialogue when the -user- selects something,
+									//and not on first draw
+									completion.earlyNotificationDialogue.close(completion);
+								} else {
+									completion.earlyNotificationDialogue.justDrawn = false;
+								}
 							}]
 						},
 						list : found,
@@ -611,7 +621,6 @@
 			if (location.href.indexOf("codemirror.html") !== -1) {
 				if (coldAutocompletionFetch(getCurrentEndpoint(), completion.completionType)) {
 					completion.earlyNotificationDialogue.draw(completion);
-//					completion.errorDialogue.draw(completion, "blaat");
 				}
 				var data = jQuery.parseJSON( '{"queryResults":{"results":["http://xmlns.com/foaf/0.1/prop","http://xmlns.com/foaf/0.1/prop3","http://xmlns.com/foaf/0.1/same", "http://xmlns.com/foaf/0.1/prop2"],"resultSize":4},"query":{"results":["http://xmlns.com/foaf/0.1/lazy2","http://xmlns.com/foaf/0.1/lazy1","http://xmlns.com/foaf/0.1/lazy3","http://xmlns.com/foaf/0.1/same","http://xmlns.com/foaf/0.1/lazy4"],"resultSize":5}}' );
 				var data = jQuery.parseJSON( '{"query":{"results":[],"resultSize":0},"queryResults":{"results":[],"status":{"text":"Exception message: HttpException: 404 Not Found","subject":"failed fetching properties"},"resultSize":0}}' );
