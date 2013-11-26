@@ -3,13 +3,14 @@
 // most important thing: is our config parsable, and are sensitive things such as api keys excluded?
 $succes = checkConfigFile ();
 if ($succes) {
-	checkSeleniumFile();
+	$succes = checkSeleniumFile();
 }
-
+$returnVal = 0;
 if (!$succes) {
 	echo "Invalid commit, stopping now\n";
+	$returnVal = 1;
 }
-exit ( ! $succes ); // 0: succes, 1, otherwise
+exit ( $returnVal ); // 0: succes, 1, otherwise
 
 
 
@@ -31,8 +32,7 @@ function checkSeleniumFile() {
 			}
 		}
 	} else {
-		echo "Config file not found\n";
-		return false;
+		//no problem. there is no config file, so we don't have to worry about sensitive info
 	}
 	
 	return $succes;
