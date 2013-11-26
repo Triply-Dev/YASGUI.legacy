@@ -26,7 +26,6 @@ package com.data2semantics.yasgui.client.settings;
  * #L%
  */
 
-import java.util.Map;
 import java.util.Set;
 
 import com.data2semantics.yasgui.client.helpers.JsonHelper;

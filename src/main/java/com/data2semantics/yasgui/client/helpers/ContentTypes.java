@@ -28,9 +28,6 @@ package com.data2semantics.yasgui.client.helpers;
 
 import java.util.EnumSet;
 
-import com.data2semantics.yasgui.client.tab.optionbar.QueryConfigMenu;
-import com.data2semantics.yasgui.client.tab.results.ResultContainer;
-
 public class ContentTypes {
 	public enum Type {
 		SELECT_JSON("application/sparql-results+json", "json", ".json"),
