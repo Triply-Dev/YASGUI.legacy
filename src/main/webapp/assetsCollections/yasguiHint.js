@@ -187,7 +187,7 @@
 			//Only select x results. So first sort by priority / alphabetically, and then select x
 			if (completion.maxResults < completion.results.length) {
 				completion.results.sort(dynamicSortMultiple("priority", "uri"));
-				completion.results.splice(completion.maxResults, completion.results.length - maxResults);
+				completion.results.splice(completion.maxResults, completion.results.length - completion.maxResults);
 			}
 			//now sort everything alphabetically again
 			completion.results.sort(dynamicSortMultiple("uri"));
