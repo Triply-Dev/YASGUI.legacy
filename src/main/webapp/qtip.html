@@ -4,28 +4,41 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
 <title>Codemirror Test</title>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+<script
+	src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+
+<script src="assets/trie.js"></script>
 <!-- qtip lib -->
-<script src="externals/qtip/jquery.qtip.min.js"></script>
-<link rel="stylesheet" href="externals/qtip/jquery.qtip.css">
-<script src="externals/yasgui.js"></script>
-  </head>
-<script src="externals/codemirror/codemirror.js"></script>
-<link rel="stylesheet" href="externals/codemirror/codemirror.css">
+<script src="assets/jquery.qtip.min.js?<% out.print(StaticConfig.VERSION); %>"></script>
+<link rel="stylesheet" href="assets/jquery.qtip.css?<% out.print(StaticConfig.VERSION); %>">
+<script src="assets/codemirror/lib/codemirror.js"></script>
+<script src="assets/codemirror/mode/xml/xml.js"></script>
+<link rel="stylesheet" href="assets/codemirror/lib/codemirror.css">
+<link rel="stylesheet" href="assets/codemirror/theme/yasgui.css">
 <!-- Autocompletion code -->
-<link rel="stylesheet" href="externals/codemirror/util/simple-hint.css">
-<script src="externals/codemirror/util/simple-hint.js"></script>
-<script src="externals/prefix-hint.js"></script>
+
+<link rel="stylesheet" href="assets/codemirror/addon/hint/show-hint.css">
+<script src="assets/codemirror/addon/hint/show-hint.js"></script>
+<script src="assets/yasguiHint.js"></script>
 <!-- Highlight words onclick code -->
-<script src="externals/codemirror/util/searchcursor.js"></script>
-<script src="externals/codemirror/util/match-highlighter.js"></script>
-<link rel="stylesheet" href="externals/yasgui.css">
+<script src="assets/codemirror/addon/search/searchcursor.js"></script>
+<script src="assets/codemirror/addon/edit/matchbrackets.js"></script>
+<script src="assets/codemirror/addon/runmode/runmode.js"></script>
+<script src="assets/codemirror/util/formatting.js"></script>
+<script src="assets/yasgui.js"></script>
+<link rel="stylesheet" href="assets/yasgui.css">
 <!-- Flint code for sparql mode -->
-<script src="externals/sparqlGrammar.js"></script>
-<script src="externals/flint/sparql.js"></script>
-<link rel="stylesheet" href="externals/flint/sparql.css">
+<script src="assets/flint/sparql.js"></script>
+<link rel="stylesheet" href="assets/flint/sparql.css">
 <!-- Code for adding custom keycombination/mouseclick commands to codemirror -->
-<script src="externals/addCommands.js"></script>
+<script src="assets/codemirrorHelper.js"></script>
+<!-- notification library -->
+<script src="assets/noty/jquery.noty.js"></script>
+<script src="assets/noty/layouts/bottomRight.js"></script>
+<script src="assets/noty/layouts/bottomLeft.js"></script>
+<script src="assets/noty/layouts/topCenter.js"></script>
+<script src="assets/noty/themes/default.js"></script>
+
   <body>
 	<div id="test2" style="background-color:red;width:30px; height: 30px;">&nbsp;</div>
 	<textarea id="test" style="width:400px;height:100px;">PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
@@ -65,7 +78,10 @@ SELECT DISTINCT *
 	
 	<script type="text/javascript">
 	$('#test2').qtip({
-		content:'blaaaaat', 
+		content:{
+			text: "blaat",
+			title: "title!"
+		}, 
 		show: {
 	        //when: false, // Don't specify a show event
 	        ready: true, // Show the tooltip when ready
@@ -92,7 +108,24 @@ SELECT DISTINCT *
 	});
 	//$('.qtip').qtip('show');
 	//$('.qtip').qtip('hide');
-	
+	function loadingStart(msg) {
+		if ($.noty.get("blaat") == false) {
+			noty({
+				text: msg,
+				layout: 'topCenter',
+				type: 'alert',
+				id: "blaat",
+				closeWith: ['click'],
+			});
+		} else {
+			$.noty.setText("blaat", msg);
+		}
+	}
+	function loadingFinish(msg) {
+		if ($.noty.get("blaat") != false) {
+			$.noty.get("blaat").close();
+		}
+	}
 	</script>
 </body>
 </html>

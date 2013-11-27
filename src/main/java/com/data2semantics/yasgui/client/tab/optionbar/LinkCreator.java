@@ -142,7 +142,7 @@ public class LinkCreator extends ImgButton implements RpcElement {
 		shortenUrlButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				view.getElements().onLoadingStart("Fetching short url");
+				Helper.onLoadingStart("Fetching short url");
 				
 				new GwtCallbackWrapper<String>(view) {
 					public void onCall(AsyncCallback<String> callback) {
@@ -156,7 +156,7 @@ public class LinkCreator extends ImgButton implements RpcElement {
 					protected void onSuccess(String shortUrl) {
 						updateLink(shortUrl);
 						shortenUrlButton.setDisabled(true);
-						view.getElements().onLoadingFinish();
+						Helper.onLoadingFinish();
 					}
 
 				}.call();
@@ -255,7 +255,7 @@ public class LinkCreator extends ImgButton implements RpcElement {
 		if (fromVersionId <= TOOLTIP_VERSION_LINK) {
 			TooltipProperties tProp = new TooltipProperties();
 			tProp.setId(getDOM().getId());
-			tProp.setContent(TooltipText.LINK_GENERATOR);
+			tProp.set(TooltipText.LINK_GENERATOR);
 			tProp.setMy(TooltipProperties.POS_RIGHT_CENTER);
 			tProp.setAt(TooltipProperties.POS_LEFT_CENTER);
 			Helper.drawTooltip(tProp);

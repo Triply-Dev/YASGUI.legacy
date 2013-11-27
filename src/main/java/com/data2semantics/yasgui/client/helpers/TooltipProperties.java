@@ -1,5 +1,7 @@
 package com.data2semantics.yasgui.client.helpers;
 
+import com.data2semantics.yasgui.client.settings.TooltipText;
+
 /*
  * #%L
  * YASGUI
@@ -48,7 +50,8 @@ public class TooltipProperties {
 	private int xOffset = 0;
 	private int yOffset = 0;
 	private String id;
-	private String content;
+	private String text;
+	private String title = null;
 	public String getMy() {
 		return my;
 	}
@@ -79,11 +82,21 @@ public class TooltipProperties {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public String getContent() {
-		return content;
+	public String getText() {
+		return text;
 	}
-	public void setContent(String content) {
-		this.content = content;
+	public void setText(String text) {
+		this.text = text;
+	}
+	public String getTitle() {
+		return this.title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	public void set(TooltipText tooltip) {
+		this.text = tooltip.getText();
+		this.title = tooltip.getSubject();
 	}
 	
 }

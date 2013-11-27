@@ -299,7 +299,7 @@ public class View extends VLayout implements RpcElement {
 		String prefixes = LocalStorageHelper.getPrefixesFromLocalStorage();
 		if (forceUpdate || prefixes == null) {
 			// get prefixes from server
-			viewElements.onLoadingStart("Fetching prefixes");
+			Helper.onLoadingStart("Fetching prefixes");
 
 			new GwtCallbackWrapper<String>(this) {
 				public void onCall(AsyncCallback<String> callback) {
@@ -313,7 +313,7 @@ public class View extends VLayout implements RpcElement {
 				protected void onSuccess(String prefixes) {
 					LocalStorageHelper.setPrefixes(prefixes);
 					JsMethods.setAutocompletePrefixes(prefixes);
-					viewElements.onLoadingFinish();
+					Helper.onLoadingFinish();
 				}
 
 			}.call();
@@ -339,7 +339,7 @@ public class View extends VLayout implements RpcElement {
 			}
 		} else {
 			// get endpoint data from server
-			viewElements.onLoadingStart("Fetching endpoint data");
+			Helper.onLoadingStart("Fetching endpoints information");
 			new GwtCallbackWrapper<String>(this) {
 				public void onCall(AsyncCallback<String> callback) {
 					getRemoteService().fetchEndpoints(forceUpdate, callback);
@@ -361,7 +361,7 @@ public class View extends VLayout implements RpcElement {
 					} else {
 						getErrorHelper().onError("Failed to retrieve list of endpoints from server");
 					}
-					viewElements.onLoadingFinish();
+					Helper.onLoadingFinish();
 				}
 
 			}.call();

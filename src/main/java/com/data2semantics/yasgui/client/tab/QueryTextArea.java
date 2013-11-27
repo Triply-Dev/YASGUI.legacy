@@ -83,7 +83,7 @@ public class QueryTextArea extends HTMLPane {
 		if (fromVersionId < TOOLTIP_VERSION_PREFIX) {
 			TooltipProperties tProp = new TooltipProperties();
 			tProp.setId(getDOM().getId());
-			tProp.setContent(TooltipText.QUERY_PREFIXES_AUTOCOMPLETE);
+			tProp.set(TooltipText.QUERY_PREFIXES_AUTOCOMPLETE);
 			tProp.setMy(TooltipProperties.POS_TOP_LEFT);
 			tProp.setAt(TooltipProperties.POS_TOP_LEFT);
 			tProp.setXOffset(240);
@@ -96,7 +96,8 @@ public class QueryTextArea extends HTMLPane {
 		if (fromVersionId < TOOLTIP_VERSION_KEYBOARD_SHORTCUTS) {
 			TooltipProperties tProp = new TooltipProperties();
 			tProp.setId(getDOM().getId());
-			tProp.setContent(TooltipText.getKeyboardShortcuts());
+			tProp.setText(getKeyboardShortcuts());
+			tProp.setTitle("Available keyboard shortcuts");
 			tProp.setMy(TooltipProperties.POS_CENTER);
 			tProp.setAt(TooltipProperties.POS_RIGHT_BOTTOM);
 			tProp.setXOffset(-150);
@@ -104,6 +105,22 @@ public class QueryTextArea extends HTMLPane {
 			Helper.drawTooltip(tProp);
 		}
 	}
+	private static String getKeyboardShortcuts() {
+	String osShortcut = (JsMethods.isMac()? "Command": "Ctrl");
+	return "" +
+		"<ul style='padding-left:20px;margin-top:0px;margin-bottom:0px;'>\n" + 
+			"<li><strong>" + osShortcut +"-D</strong>: Delete line</li>\n" + 
+			"<li><strong>" + osShortcut + "-Alt-Down</strong>: Copy line down</li>\n" + 
+			"<li><strong>" + osShortcut + "-Alt-Up</strong>: Copy line up</li>\n" + 
+			"<li><strong>" + osShortcut + "-/</strong>: Comment line(s)</li>\n" + 
+			"<li><strong>" + osShortcut + "-Shift-F</strong>: Autoformat (part of) your query</li>\n" + 
+			"<li><strong>&lt;tab&gt;</strong>: Indent line(s)</li>\n" + 
+			"<li><strong>Shift-&lt;tab&gt;</strong>: Un-indent line(s)</li>\n" + 
+			"<li><strong>" + osShortcut + "-&lt;enter&gt;</strong>: Execute query</li>\n" + 
+			"<li><strong>" + osShortcut + "-&lt;space&gt;</strong>: Autocomplete property or class</li>\n" + 
+			"<li><strong>Esc</strong>: Cancel query</li>\n" + 
+		"</ul>";
+}
 	
 	public void setTextArea() {
 		setContents("<textarea " + "id=\"" + getInputId() + "\"" + ">" + tab.getTabSettings().getQueryString() + "</textarea>");

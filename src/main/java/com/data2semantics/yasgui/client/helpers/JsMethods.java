@@ -34,7 +34,7 @@ public class JsMethods {
 	
 	public static void initJs() {
 		setTabBarProperties(QueryTabs.INDENT_TABBAR_START, QueryTabs.INDENT_TABBAR_END);
-		setQtipZIndex(ZIndexes.HELP_TOOLTIPS);
+		setQtipDefaults(ZIndexes.HELP_TOOLTIPS);
 		setAppcacheCallbacks();
 	}
 	
@@ -222,8 +222,8 @@ public class JsMethods {
 	 * 
 	 * @param z-index
 	 */
-	public static native void setQtipZIndex(int zIndex) /*-{
-		$wnd.jQuery.fn.qtip.zindex = zIndex;
+	public static native void setQtipDefaults(int zIndex) /*-{
+		$wnd.$.fn.qtip.zindex = zIndex;
 	}-*/;
 	
 	/**
@@ -259,14 +259,36 @@ public class JsMethods {
 		}
 	}-*/;
 	
+	public static native void showLoadingNoty(String id, String text) /*-{
+		if ($wnd.$.noty.get(id) == false) {
+			$wnd.noty({
+				text: text,
+				layout: 'topCenter',
+				type: 'alert',
+				id: id,
+				closeWith: ['click'],
+			});
+		} else {
+			$wnd.$.noty.setText(id, text);
+		}
+	}-*/;
+	public static native void closeLoadingNoty(String id) /*-{
+		if ($wnd.$.noty.get(id) != false) {
+			$wnd.$.noty.get(id).close();
+		}
+	}-*/;
 	
-	public static native String drawTooltip(String id, String content, String my, String at, int xOffset, int yOffset) /*-{
+	
+	public static native String drawTooltip(String id, String title, String text, String my, String at, int xOffset, int yOffset) /*-{
 		if ($wnd.$('#' + id).data("qtip")) {
 			//To support multiple tooltips on the same element, remove data, and add next qtip.
 			$wnd.$('#' + id).removeData("qtip")
 		}
 		$wnd.$('#' + id).qtip({
-			content: content, 
+			content: {
+				text: text,
+				title: title
+			},
 			show: {
 		        ready: true, // Show the tooltip when ready
 		        event: false,
@@ -285,9 +307,6 @@ public class JsMethods {
 		    hide: {
 				event: 'click unfocus', //hide when anything is clicked: elsewhere (unfocus) or on the element itself (click)
 				effect: function() { $wnd.$(this).fadeOut(250); }
-			},
-			style: { 
-		  		classes: 'ui-tooltip-tipped',
 			}
 		});
 	}-*/;

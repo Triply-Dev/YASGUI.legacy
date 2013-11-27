@@ -37,14 +37,6 @@ import com.google.gwt.user.client.Command;
  * This class is meant for notifications not belonging in the general 'first usage' help bubble
  */
 public class ChangelogHelper {
-	private static String CHANGELOG_NOTIFICATION = "YASGUI received an update!<br>"
-			+ "View the complete list of changes <a href=\"" + ExternalLinks.YASGUI_CHANGELOG +"\" target=\"_blank\">here</a>.<br>"
-			+ "A selection of the new features:"
-			+ "<ul>\n" + 
-				"<li>Autocompletion for properties</li>\n" + 
-				"<li>Persistent query results between sessions</li>\n" + 
-			"</ul>";
-	private static String AUTOCOMPLETE_PROPERTIES_NOTIFICATION = "Autocomplete your properties. Go to the predicate position and press ";
 	private View view;
 	
 	public ChangelogHelper(View view) {
@@ -70,7 +62,8 @@ public class ChangelogHelper {
 		TooltipProperties tProp = new TooltipProperties();
 		tProp.setId(view.getSelectedTab().getQueryTextArea().getDOM().getId());
 		String shortcut = "'" + (JsMethods.isMac()?"Command":"Ctrl") + "-Space'";
-		tProp.setContent(AUTOCOMPLETE_PROPERTIES_NOTIFICATION + shortcut);
+		tProp.setTitle("Autocomplete properties and classes!");
+		tProp.setText("Go to a possible property or class position in your query and press " + shortcut);
 		tProp.setMy(TooltipProperties.POS_CENTER);
 		tProp.setAt(TooltipProperties.POS_LEFT_CENTER);
 		tProp.setYOffset(50);
@@ -81,7 +74,14 @@ public class ChangelogHelper {
 	private void showChangelogNotification() {
 		TooltipProperties tProp = new TooltipProperties();
 		tProp.setId(view.getSelectedTab().getQueryTextArea().getDOM().getId());
-		tProp.setContent(CHANGELOG_NOTIFICATION);
+		tProp.setTitle("YASGUI received an update!");
+		tProp.setText(""
+				+ "View the complete list of changes <a href=\"" + ExternalLinks.YASGUI_CHANGELOG +"\" target=\"_blank\">here</a>.<br>"
+				+ "A selection of the new features:"
+				+ "<ul>\n" + 
+					"<li>Autocompletion for properties</li>\n" + 
+					"<li>Persistent query results between sessions</li>\n" + 
+				"</ul>");
 		tProp.setMy(TooltipProperties.POS_CENTER);
 		tProp.setAt(TooltipProperties.POS_CENTER);
 		Helper.drawTooltip(tProp);

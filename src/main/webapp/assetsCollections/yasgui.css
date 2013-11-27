@@ -183,7 +183,7 @@ div#appcacheProgressBar {
 }
 .completionTypeIconLegend {
 	display: inline-block;
-    width: 20px;
+    width: 15px;
     line-height: 20px;
     float: left;
     text-align: center;
@@ -192,4 +192,8 @@ div#appcacheProgressBar {
 	vertical-align:middle;
 	display:inline;
 	margin-right:6px;
+}
+.qtip-dark a {
+    font-weight: bold;
+    color: white;
 }

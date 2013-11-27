@@ -125,10 +125,10 @@ public class QueryTabs extends TabSet implements RpcElement {
 		if (fromVersionId < TOOLTIP_VERSION_TAB_SELECTION) {
 			TooltipProperties tProp = new TooltipProperties();
 			tProp.setId(getDOM().getId());
-			tProp.setContent(TooltipText.TAB_SELECTION);
+			tProp.set(TooltipText.TAB_SELECTION);
 			tProp.setMy(TooltipProperties.POS_LEFT_CENTER);
 			tProp.setAt(TooltipProperties.POS_LEFT_TOP);
-			tProp.setXOffset(132);
+			tProp.setXOffset(126);
 			tProp.setYOffset(12);
 			Helper.drawTooltip(tProp);
 		}

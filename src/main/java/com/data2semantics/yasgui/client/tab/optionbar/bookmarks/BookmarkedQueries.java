@@ -53,6 +53,7 @@ import com.smartgwt.client.widgets.layout.HLayout;
 import com.data2semantics.yasgui.client.GwtCallbackWrapper;
 import com.data2semantics.yasgui.client.RpcElement;
 import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.client.helpers.Helper;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.settings.Imgs;
@@ -117,7 +118,7 @@ public class BookmarkedQueries extends ImgButton implements RpcElement {
 			public void onClick(ClickEvent event) {
 				if (enabled) {
 					rollOverCanvas = null;
-					view.getElements().onLoadingStart("loading bookmarks");
+					Helper.onLoadingStart("loading bookmarks");
 					new GwtCallbackWrapper<Bookmark[]>(view) {
 						public void onCall(AsyncCallback<Bookmark[]> callback) {
 							view.getRemoteService().getBookmarks(callback);
@@ -136,7 +137,7 @@ public class BookmarkedQueries extends ImgButton implements RpcElement {
 						protected void onSuccess(Bookmark[] bookmarks) {
 							updatedRecords = new HashMap<Integer, BookmarkRecord>();
 							deletedRecords = new ArrayList<BookmarkRecord>();
-							view.getElements().onLoadingFinish();
+							Helper.onLoadingFinish();
 							window = new Window();
 							window.setZIndex(ZIndexes.MODAL_WINDOWS);
 							window.setTitle("Bookmarked queries");

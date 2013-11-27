@@ -321,6 +321,7 @@
 								<include>../assets/noty/jquery.noty.js</include>
 								<include>../assets/noty/layouts/bottomRight.js</include>
 								<include>../assets/noty/layouts/bottomLeft.js</include>
+								<include>../assets/noty/layouts/topCenter.js</include>
 								<include>../assets/noty/themes/default.js</include>
 								<include>../assets/yasgui.js</include>
 							</includes>

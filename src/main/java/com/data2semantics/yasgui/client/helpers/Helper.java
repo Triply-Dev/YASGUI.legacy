@@ -77,7 +77,7 @@ public class Helper {
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(Helper.class.getName());
 	private static String CRAWL_USER_AGENTS = "googlebot|msnbot|baidu|curl|wget|Mediapartners-Google|slurp|ia_archiver|Gigabot|libwww-perl|lwp-trivial|bingbot";
-
+	private static String DEFAULT_LOADING_ID = "loadingmsg";
 	/**
 	 * Implode arraylist into string
 	 * 
@@ -96,6 +96,15 @@ public class Helper {
 			result += stringItem;
 		}
 		return result;
+	}
+	
+	public static void onLoadingStart(String message) {
+		JsMethods.showLoadingNoty(DEFAULT_LOADING_ID, message);
+	}
+
+
+	public static void onLoadingFinish() {
+		JsMethods.closeLoadingNoty(DEFAULT_LOADING_ID);
 	}
 
 	/**
@@ -176,7 +185,7 @@ public class Helper {
 		if (!JsMethods.elementExists(tProp.getId())) {
 			throw new ElementIdException("id '" + tProp.getId() + "' not found on page. Unable to draw tooltip");
 		}
-		JsMethods.drawTooltip(tProp.getId(), tProp.getContent(), tProp.getMy(), tProp.getAt(), tProp.getXOffset(), tProp.getYOffset());
+		JsMethods.drawTooltip(tProp.getId(), tProp.getTitle(), tProp.getText(), tProp.getMy(), tProp.getAt(), tProp.getXOffset(), tProp.getYOffset());
 	}
 
 	/**

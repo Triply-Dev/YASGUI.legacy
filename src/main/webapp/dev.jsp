@@ -56,6 +56,7 @@
 <!-- notification library -->
 <script src="assets/noty/jquery.noty.js?<% out.print(StaticConfig.VERSION); %>"></script>
 <script src="assets/noty/layouts/bottomRight.js?<% out.print(StaticConfig.VERSION); %>"></script>
+<script src="assets/noty/layouts/topCenter.js?<% out.print(StaticConfig.VERSION); %>"></script>
 <script src="assets/noty/layouts/bottomLeft.js?<% out.print(StaticConfig.VERSION); %>"></script>
 <script src="assets/noty/themes/default.js?<% out.print(StaticConfig.VERSION); %>"></script>
 

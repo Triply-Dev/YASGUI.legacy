@@ -70,13 +70,8 @@ public class ErrorHelper {
 	}
 	
 	private void onError(final Throwable t, boolean allowBugReport) {
-		if (view.getElements() != null) {
-			view.getElements().onLoadingFinish();
-		}
+		Helper.onLoadingFinish();
 		if (allowBugReport) {
-			if (view.getElements() != null) {
-				view.getElements().onLoadingFinish();
-			}
 			final Window window = getErrorWindow();
 			VLayout content = new VLayout();
 			content.setWidth100();
@@ -118,9 +113,7 @@ public class ErrorHelper {
 	 * @param error
 	 */
 	public void onError(String error) {
-		if (view.getElements() != null) {
-			view.getElements().onLoadingFinish();
-		}
+		Helper.onLoadingFinish();
 		drawErrorWindow(getErrorLabel(error));
 	}
 	

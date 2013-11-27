@@ -361,7 +361,7 @@ public class QueryConfigMenu extends IconMenuButton {
 		if (view.getEnabledFeatures().endpointSelectionEnabled() && fromVersionId < TOOLTIP_VERSION_QUERY_CONFIG) {
 			TooltipProperties tProp = new TooltipProperties();
 			tProp.setId(getDOM().getId());
-			tProp.setContent(TooltipText.QUERY_CONFIG_MENU);
+			tProp.set(TooltipText.QUERY_CONFIG_MENU);
 			tProp.setMy(TooltipProperties.POS_TOP_CENTER);
 			tProp.setAt(TooltipProperties.POS_BOTTOM_CENTER);
 			tProp.setYOffset(0);

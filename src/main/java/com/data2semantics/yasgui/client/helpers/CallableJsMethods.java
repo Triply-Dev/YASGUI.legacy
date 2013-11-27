@@ -95,11 +95,11 @@ public class CallableJsMethods {
 	}
 	
 	public void onLoadingStart(String message) {
-		view.getElements().onLoadingStart(message);
+		Helper.onLoadingStart(message);
 	}
 	
 	public void onLoadingFinish() {
-		view.getElements().onLoadingFinish();
+		Helper.onLoadingFinish();
 	}
 	
 	public void executeQuery() {

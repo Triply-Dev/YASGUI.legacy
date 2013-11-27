@@ -6,7 +6,7 @@ var sparqlHighlight = {};
 var sparqlResponseHighlight = {};
 var prefixes = [];
 var properties = {};
-
+$.fn.qtip.defaults.style.classes = "qtip-dark qtip-rounded qtip-shadow";
 //These two variables are ugly workaround with which we can distinguish in our callback between a history state changed issued
 //by the browser, and issued by our code
 var historyCallbackEnabled = false;

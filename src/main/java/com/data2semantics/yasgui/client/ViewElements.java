@@ -50,7 +50,6 @@ import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Command;
 import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.HTMLFlow;
@@ -73,7 +72,6 @@ public class ViewElements implements RpcElement {
 	private ImgButton queryLoading;
 	private LinkCreator linkCreator;
 	public IconMenuButton configButton;
-	public static String DEFAULT_LOADING_MESSAGE = "Loading...";
 	public static String CONFIG_MENU_LABEL = "Configure YASGUI";
 	private static int QUERY_BUTTON_POS_TOP = 5;
 	private static int QUERY_BUTTON_POS_RIGHT = 2;
@@ -85,14 +83,12 @@ public class ViewElements implements RpcElement {
 	private static int CONSENT_BUTTON_WIDTH = 175;
 	private Window consentWindow;
 	private HLayout offlineNotification;
-	private Label loading;
 	private ConfigMenu configMenu;
 	
 	public ViewElements(View view) {
 		this.view = view;
 		addQueryButton();
 		addLogo();
-		initLoadingWidget();
 		drawConfigMenu();
 		checkOpera();
 		initOfflineNotification();
@@ -167,30 +163,6 @@ public class ViewElements implements RpcElement {
 		onQueryFinish();
 	}
 	
-	
-	/**
-	 * initialize loading widget in top right corner
-	 */
-	public void initLoadingWidget() {
-		loading = new Label();
-		loading.setIcon(Imgs.LOADING.get());
-		loading.setBackgroundColor("#f0f0f0");
-		loading.setBorder("1px solid #C0C3C7");
-		loading.getElement().getStyle().setPosition(Position.FIXED);
-		loading.getElement().getStyle().setTop(0, Unit.PX);
-		loading.getElement().getStyle().setLeft(50, Unit.PCT);
-		loading.getElement().getStyle().setMarginLeft(-25, Unit.PX);
-		loading.setHeight(24);
-		loading.setAutoWidth();
-		loading.setOverflow(Overflow.VISIBLE);
-		loading.setWrap(false);
-		loading.setAlign(Alignment.CENTER);
-		loading.adjustForContent(false);
-		loading.setZIndex(ZIndexes.LOADING_WIDGET);
-		loading.hide();
-		loading.redraw();
-	}
-
 	public void showPlayButton(String queryValid) {
 		if (queryValid.equals("1")) {
 			queryButton.setSrc(Imgs.EXECUTE_QUERY.get());
@@ -199,20 +171,6 @@ public class ViewElements implements RpcElement {
 			queryButton.setSrc(Imgs.QUERY_ERROR.get());
 			queryButton.setTooltip("invalid query, click to execute anyway");
 		}
-	}
-	public void onLoadingStart() {
-		onLoadingStart(DEFAULT_LOADING_MESSAGE);
-	}
-	
-	public void onLoadingStart(String message) {
-		//Add spaces to end of message, as we have autowidth enabled to this Label
-		loading.setContents(message + "&nbsp;&nbsp;");
-		loading.show();
-	}
-
-
-	public void onLoadingFinish() {
-		loading.hide();
 	}
 	
 	public void onQueryStart() {
@@ -432,7 +390,7 @@ public class ViewElements implements RpcElement {
 		if (fromVersionId < TOOLTIP_VERSION_MENU_CONFIG) {
 			TooltipProperties tProp = new TooltipProperties();
 			tProp.setId(configButton.getDOM().getId());
-			tProp.setContent(TooltipText.CONFIG_MENU);
+			tProp.set(TooltipText.CONFIG_MENU);
 			tProp.setMy(TooltipProperties.POS_RIGHT_TOP);
 			tProp.setAt(TooltipProperties.POS_LEFT_TOP);
 			Helper.drawTooltip(tProp);

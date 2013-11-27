@@ -26,6 +26,7 @@ package com.data2semantics.yasgui.client;
  * #L%
  */
 
+import com.data2semantics.yasgui.client.helpers.Helper;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ConnectivityHelper {
@@ -40,18 +41,16 @@ public class ConnectivityHelper {
 	}
 	
 	public void checkOnlineStatus(final ConnCallback connCallback) {
-		view.getElements().onLoadingStart();
 		//do NOT use our GwtCallbackWrapper for this request!
 		//otherwise we will get into infinite loops when disconnected
 		view.getRemoteService().isOnline(new AsyncCallback<Boolean>() {
 			public void onFailure(Throwable caught) {
 				setIsOnline(false);
-				view.getElements().onLoadingFinish();
+				Helper.onLoadingFinish();
 			}
 			public void onSuccess(Boolean isOnline) {
 				setIsOnline(true);
 				connCallback.connectedCallback();
-				view.getElements().onLoadingFinish();
 			}
 		});
 	}

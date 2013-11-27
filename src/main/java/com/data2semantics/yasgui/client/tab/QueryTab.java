@@ -228,10 +228,10 @@ public class QueryTab extends Tab implements RpcElement {
 		if (searchIcon != null && fromVersionId < TOOLTIP_VERSION_SEARCH_ICON) {
 			TooltipProperties tProp = new TooltipProperties();
 			tProp.setId(searchIcon.getDOM().getId());
-			tProp.setContent(TooltipText.ENDPOINT_SEARCH_ICON);
+			tProp.set(TooltipText.ENDPOINT_SEARCH_ICON);
 			tProp.setMy(TooltipProperties.POS_BOTTOM_LEFT);
 			tProp.setAt(TooltipProperties.POS_TOP_CENTER);
-			tProp.setYOffset(9);
+			tProp.setYOffset(11);
 //			tProp.setXOffset(-1);
 			Helper.drawTooltip(tProp);
 		}

@@ -226,11 +226,18 @@
 		legendDialogue: {
 			qtipDrawStack: {},
 			legendHtml: "placeholder",
-			addQtip: function(id, text) {
+			addQtip: function(id, text, title) {
+				
 				$('#' + id).qtip({
-					   content: text,
-					   show: 'mouseover',
-					   hide: 'mouseout',
+					   content: {
+						   title: title,
+						   text: text,
+					   },
+					   events: {
+						   show: 'mouseover',
+						   hide: 'mouseout',
+					   }
+					   
 					});
 			},
 			generateHtml : function(completion, methods) {
@@ -261,13 +268,19 @@
 						 
 						if (completion.statusMsgs[method].text != undefined) {
 							var imgUrl;
+							var qtipTitle;
 							if (completion.statusMsgs[method].subject.contains("disabled")) {
+								qtipTitle = "Autocompletion disabled";
 								imgUrl = "images/nounproject/questionMark.png";
 							} else {
+								qtipTitle = "Fetching suggestions failed";
 								imgUrl = "images/nounproject/info.png";
 							}
 							var id = "warnIcon" + method;
-							this.qtipDrawStack[id] = completion.statusMsgs[method].text;
+							this.qtipDrawStack[id] = {
+								text: completion.statusMsgs[method].text,
+								title: qtipTitle
+							}
 							this.legendHtml += "&nbsp;<img id='" + id + "' src='" + imgUrl + "' style='cursor:default;vertical-align:middle;width:16px;height:16px;'>";
 						}
 					} else if (completion.resultSizes[method] != undefined) {
@@ -312,7 +325,7 @@
 			},
 			drawQtipStack: function() {
 				for (id in this.qtipDrawStack) {
-					this.addQtip(id, this.qtipDrawStack[id]);
+					this.addQtip(id, this.qtipDrawStack[id].text, this.qtipDrawStack[id].title);
 				}
 				this.qtipDrawStack = {};//reset
 			},
