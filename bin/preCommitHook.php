@@ -1,9 +1,11 @@
 #!/usr/bin/php
 <?php
+
+$commitFiles = getCommitFiles();
 // most important thing: is our config parsable, and are sensitive things such as api keys excluded?
-$succes = checkConfigFile ();
+$succes = checkConfigFile($commitFiles);
 if ($succes) {
-	$succes = checkSeleniumFile();
+	$succes = checkSeleniumFile($commitFiles);
 }
 $returnVal = 0;
 if (!$succes) {
@@ -13,11 +15,22 @@ if (!$succes) {
 exit ( $returnVal ); // 0: succes, 1, otherwise
 
 
-
-function checkSeleniumFile() {
+function getCommitFiles() {
+	$commitFiles = [];
+	$lines = explode("\n", `git diff --cached --name-status`);
+	foreach ($lines AS $line) {
+		$cols = explode("\t", $line);
+		$file = end($cols);
+		if (strlen($file)) {
+			$commitFiles[] = $file;
+		}
+	}
+	return $commitFiles;
+}
+function checkSeleniumFile($commitFiles) {
 	$succes = true;
-	$configFile = "/home/lrd900/code/yasgui/bin/selenium/selenium.properties";
-	if (file_exists ($configFile)) {
+	$configFile = "bin/selenium/selenium.properties";
+	if (in_array($configFile, $commitFiles) && file_exists ($configFile)) {
 		$props = parse_properties(file_get_contents($configFile));
 		if (!$props) {
 			echo "Unable to prase selenium properties file\n";
@@ -31,16 +44,14 @@ function checkSeleniumFile() {
 				}
 			}
 		}
-	} else {
-		//no problem. there is no config file, so we don't have to worry about sensitive info
 	}
 	
 	return $succes;
 }
-function checkConfigFile() {
+function checkConfigFile($commitFiles) {
 	$succes = true;
-	$configFile = "/home/lrd900/code/yasgui/src/main/webapp/config/config.json";
-	if (file_exists ( $configFile )) {
+	$configFile = "src/main/webapp/config/config.json";
+	if (in_array($configFile, $commitFiles) && file_exists ( $configFile )) {
 		$json = json_decode ( file_get_contents ( $configFile ), true );
 		if (! $json) {
 			echo "Unable to decode json config file\n";
@@ -83,9 +94,6 @@ function checkConfigFile() {
 				return false;
 			}
 		}
-	} else {
-		echo "Config file not found\n";
-		return false;
 	}
 	
 	return $succes;

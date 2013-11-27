@@ -26,9 +26,9 @@
 			"queryResults": true
 		},
 		"classCompletionMethods": {
-			"lov": true,
 			"query": true,
-			"queryResults": true
+			"queryResults": true,
+			"lov": true
 		}
 	},
 	"downloadOfflineCache": true,
