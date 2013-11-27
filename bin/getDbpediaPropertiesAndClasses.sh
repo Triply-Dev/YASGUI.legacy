@@ -12,11 +12,11 @@ bunzip2 *.bz2
 rm -f predicates.txt
 #get the predicate from the dump (in a very naive way). 
 echo "retrieving predicates from files"
-ls *.ttl | xargs awk '{print $2}' | sed '/^[^<]/ d' | sed '/[^>]$/ d' | sed 's/^<\(.*\)>$/\1/' >> predicates.txt
+ls *.{nt,ttl} | xargs awk '{print $2}' | sed '/^[^<]/ d' | sed '/[^>]$/ d' | sed 's/^<\(.*\)>$/\1/' >> predicates.txt
 
 rm -f classes.txt
 echo "retrieving classes from files"
-ls *.ttl | xargs awk '{if ($2 == "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>") print $3}' | sed '/^[^<]/ d' | sed '/[^>]$/ d' | sed 's/^<\(.*\)>$/\1/' >> classes.txt
+ls *.{nt,ttl} | xargs awk '{if ($2 == "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>") print $3}' | sed '/^[^<]/ d' | sed '/[^>]$/ d' | sed 's/^<\(.*\)>$/\1/' >> classes.txt
 
 #remove ttl files
 echo "removing old downloaded files"
