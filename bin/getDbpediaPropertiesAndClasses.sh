@@ -24,5 +24,7 @@ rm *.ttl
 echo "making predicate list unique"
 sort -u predicates.txt -o predicates.txt
 
+echo "making classes list unique"
+sort -u classes.txt -o classes.txt
 
 echo "done"
