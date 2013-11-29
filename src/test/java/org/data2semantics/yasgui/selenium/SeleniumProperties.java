@@ -26,6 +26,7 @@ package org.data2semantics.yasgui.selenium;
  * #L%
  */
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -44,11 +45,20 @@ public class SeleniumProperties extends Properties {
 	
 	public SeleniumProperties() throws FileNotFoundException, IOException {
 		props = new Properties();
-		props.load(new FileReader("bin/selenium/selenium.properties"));
+		File propsFile = new File("bin/selenium/selenium.properties");
+		if (propsFile.exists()) {
+			props.load(new FileReader(propsFile));
+		} else {
+			System.out.println("running without a properties file!");
+		}
 	}
 	
 	public String getHostToTest() {
-		return props.getProperty(KEY_SELENIUM_HOST);
+		if (props.contains(KEY_SELENIUM_HOST)) {
+			return props.getProperty(KEY_SELENIUM_HOST);
+		} else {
+			return "http://dev.yasgui.laurensrietveld.nl";
+		}
 	}
 	public String getMailUserName() {
 		return props.getProperty(KEY_MAIL_USERNAME);
@@ -60,6 +70,10 @@ public class SeleniumProperties extends Properties {
 		return props.getProperty(KEY_MAIL_SEND_TO);
 	}
 	public boolean sendMail() {
-		return props.getProperty(KEY_SEND_MAIL).equals("true");
+		if (props.contains(KEY_SEND_MAIL)) {
+			return props.getProperty(KEY_SEND_MAIL).equals("true");
+		} else {
+			return false;
+		}
 	}
 }

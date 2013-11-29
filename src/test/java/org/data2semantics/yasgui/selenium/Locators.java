@@ -32,7 +32,7 @@ public enum Locators {
 	MENU_BUTTON_TEXT("//span[contains(text(), \"#$#$\")]"),
 	MENU_ITEM("//nobr[contains(text(), \"#$#$\")]"),
 	ICON("//img[contains(@src,'#$#$')]"),
-	TOOLTIPS_VISIBLE("//div[contains(@class,'ui-tooltip') and contains(@style, 'display: block')]");
+	TOOLTIPS_VISIBLE("//div[contains(@class,'qtip') and contains(@style, 'display: block')]");
 	
 	private String locator;
 	private static String REPLACE = "#$#$";
