@@ -280,7 +280,7 @@
 							this.qtipDrawStack[id] = {
 								text: completion.statusMsgs[method].text,
 								title: qtipTitle
-							}
+							};
 							this.legendHtml += "&nbsp;<img id='" + id + "' src='" + imgUrl + "' style='cursor:default;vertical-align:middle;width:16px;height:16px;'>";
 						}
 					} else if (completion.resultSizes[method] != undefined) {
@@ -292,8 +292,18 @@
 								completion.drawnResultSizes[method] + "/" + completion.resultSizes[method] +
 								"</span>";
 						}
+					} else if (completion.isLocalhostRequest() && completion.methods[method]) {
+						var id = "warnIcon" + method;
+						this.qtipDrawStack[id] = {
+							text: "The endpoint you use is unreachable by YASGUI. " +
+									"Therefore, YASGUI is not able to retrieve any " + completion.completionTypePlural + " for this endpoint. " +
+									"Autocompletion support for such endpoints is a planned future feature.",
+							title: "Autocompletion disabled"
+						};
+						this.legendHtml += "inaccessible&nbsp;<img id='" + id + "' src='images/nounproject/questionMark.png' style='cursor:default;vertical-align:middle;width:16px;height:16px;'>";
+
 					} else {
-						this.legendHtml += "unknown";
+						this.legendHtml += "N/A";
 					}
 					this.legendHtml += ")" +
 					"</td>" +
@@ -302,7 +312,7 @@
 				}
 				this.legendHtml += 
 					"</ul>" +
-					"<button id='completionMethodButton' style='display:none;float: right;' onclick=\"storeCompletionMethods('" + completion.completionType + "');$.noty.close('" + this.legendId + "');return false;\">Apply</button>";
+					"<button id='completionMethodButton' style='display:none;float: right;' onclick=\"storeCompletionMethods('" + completion.completionType + "');$.noty.close('" + this.getId(completion) + "');return false;\">Apply</button>";
 				return hasMethods;
 			},
 			sortMethods: function(completion, methods) {
@@ -723,7 +733,11 @@
 				console.log(errorThrown);
 			});
 		},
+		isLocalhostRequest: function(){
+			return getCurrentEndpoint().contains("http://localhost");
+		},
 		doRequests: function(completion) {
+			
 			//reset settings which might have been previously set
 			completion.statusMsgs = {};
 			completion.resultSizes = {};
@@ -742,14 +756,15 @@
 			var requestsStarted = false;
 			for (var method in methods) {
 				if (methods[method]) {
-					allDisabled = false;
+					
 					if (method == "lov") {
+						allDisabled = false;
 						if (!requestsStarted) {
-//							onLoadingStart("Fetching " + completion.completionTypePlural);
 							requestsStarted = false;
 						}
 						completion.requestLovAutocompletions(completion);
-					} else {
+					} else if (!completion.isLocalhostRequest()){
+						allDisabled = false;
 						if (isDbSet()) servletMethods.push(method);
 						//both other methods are executed as 1 single request
 					}
