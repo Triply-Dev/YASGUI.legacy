@@ -45,6 +45,7 @@ $(document).keydown(function(e) {
 			&& (e.ctrlKey || e.metaKey) //ctrl or apple cmd key
 		) {
 		executeQuery();
+		e.preventDefault();
 	}
 
 });
