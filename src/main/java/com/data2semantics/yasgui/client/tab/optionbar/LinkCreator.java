@@ -133,7 +133,6 @@ public class LinkCreator extends ImgButton implements RpcElement {
 
 	private Button getShortenUrlButton() {
 		shortenUrlButton = new Button("Shorten url");
-		shortenUrlButton.setID("shortenUrlButton");
 		shortenUrlButton.setWidth(75);
 		if (!view.getConnHelper().isOnline()) {
 			shortenUrlButton.setDisabled(true);
@@ -169,7 +168,6 @@ public class LinkCreator extends ImgButton implements RpcElement {
 		urlTextBoxAnim = new Canvas(); 
 		urlTextBoxAnim.setWidth100();
 		DynamicForm form = new DynamicForm();
-		form.setID("linkCreatorForm");
 		form.setWidth100();
 
 		urlTextBox = new TextItem();
