@@ -259,10 +259,10 @@ public class JsMethods {
 		}
 	}-*/;
 	
-	public static native void showLoadingNoty(String id, String text) /*-{
+	public static native void showLoadingNoty(String id, String text, String version) /*-{
 		if ($wnd.$.noty.get(id) == false) {
 			$wnd.noty({
-				text: text,
+				text: "<img style='vertical-align:middle;' src='images/other/ajax_loader.gif?1310d' width='20' height='20'>&nbsp;" + text,
 				layout: 'topCenter',
 				type: 'alert',
 				id: id,
