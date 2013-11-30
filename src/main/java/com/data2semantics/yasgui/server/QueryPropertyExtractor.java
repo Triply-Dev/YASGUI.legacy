@@ -31,6 +31,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -50,8 +51,9 @@ public class QueryPropertyExtractor {
 	private Query query;
 	private String endpoint;
 	private DbHelper dbHelper;
-	private Set<String> properties = new HashSet<String>();
-	private Set<String> possibleProperties = new HashSet<String>();
+	private HashMap<FetchType, Set<String>> possibles = new HashMap<FetchType, Set<String>>();
+	private HashMap<FetchType, Set<String>> certains = new HashMap<FetchType, Set<String>>();
+	
 	private boolean debug = false;
 	public QueryPropertyExtractor(DbHelper dbHelper, String query, String endpoint, boolean debug) {
 		this.query = Query.create(query);
@@ -65,46 +67,55 @@ public class QueryPropertyExtractor {
 	
 	public void analyzeAndStore() throws SQLException {
 		analyzeQuery();
-		if (properties.size() > 0 || possibleProperties.size() > 0) {
-			removeExistingProperties();
-			
-			checkPossibleProperties();
-			if (Helper.checkEndpointAccessibility(endpoint)) {
-				storeProperties();
-			} else {
-				System.out.println("not accessible: " + endpoint);
-			}
+		removeExistingUris(FetchType.CLASSES);
+		removeExistingUris(FetchType.PROPERTIES);
+		checkPossibles();
+		if (Helper.checkEndpointAccessibility(endpoint)) {
+			store();
+		} else {
+			System.out.println("not accessible: " + endpoint);
 		}
 		
 	}
 	
-	private void checkPossibleProperties() {
-		if (debug) System.out.println("checking possible properties via query");
-		for (String possibleProperty: possibleProperties) {
-			try {
-				String sparqlString = "ASK {?sub <" + possibleProperty + "> ?obj}";
-				Query query = Query.create(sparqlString);
-				
-				QueryEngineHTTP qExecution = QueryExecutionFactory.createServiceRequest(endpoint, query);
-				if (qExecution.execAsk()) {
-					properties.add(possibleProperty);
+	private void checkPossibles() {
+		if (debug) System.out.println("checking possibles via query");
+		for (FetchType type: possibles.keySet()) {
+			
+			for (String possible: possibles.get(type)) {
+				String sparqlString = null;
+				if (type == FetchType.PROPERTIES) {
+					sparqlString = "ASK {?sub <" + possible + "> ?obj}";
+				} else {
+					//class
+					sparqlString = ""
+							+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"
+							+ "ASK {[] rdf:type <" + possible + "> }";
 				}
-			} catch (Exception e) {
-				//just fail silently. doesnt matter if this one query doesnt get added
+				try {
+					Query query = Query.create(sparqlString);
+					QueryEngineHTTP qExecution = QueryExecutionFactory.createServiceRequest(endpoint, query);
+					if (qExecution.execAsk()) {
+						certains.get(type).add(possible);
+					}
+				} catch (Exception e) {
+					//fail silently, don't care!
+				}
+				
 			}
 		}
 	}
-	private void removeExistingProperties() throws SQLException {
-		if (debug) System.out.println("remove already existing properties");
+	private void removeExistingUris(FetchType type) throws SQLException {
 		Set<String> checkStringSet = new HashSet<String>();
-		checkStringSet.addAll(properties);
-		checkStringSet.addAll(possibleProperties);
-		Map<String, Boolean> arePropertiesAdded = dbHelper.areAutocompletionsAdded(endpoint, checkStringSet, FetchType.PROPERTIES, FetchMethod.QUERY_ANALYSIS);
-		for (Entry<String, Boolean> entry: arePropertiesAdded.entrySet()) {
-			if (entry.getValue()) {
-				//property is already added. delete it!
-				if (properties.contains(entry.getKey())) properties.remove(entry.getKey());
-				if (possibleProperties.contains(entry.getKey())) possibleProperties.remove(entry.getKey());
+		checkStringSet.addAll(certains.get(type));
+		checkStringSet.addAll(possibles.get(type));
+		if (checkStringSet.size() > 0) {
+			Map<String, Boolean> areCompletionsAdded = dbHelper.areAutocompletionsAdded(endpoint, checkStringSet, type, FetchMethod.QUERY_ANALYSIS);
+			for (Entry<String, Boolean> entry: areCompletionsAdded.entrySet()) {
+				if (entry.getValue()) {
+					if (certains.get(type).contains(entry.getKey())) certains.get(type).remove(entry.getKey());
+					if (possibles.get(type).contains(entry.getKey())) possibles.get(type).remove(entry.getKey());
+				}
 			}
 		}
 	}
@@ -112,15 +123,24 @@ public class QueryPropertyExtractor {
 	
 	private void analyzeQuery() {
 		if (debug) System.out.println("analyzing query");
-		properties = query.getProperties();
-		possibleProperties = query.getPossibleProperties();
+		certains.put(FetchType.PROPERTIES, query.getProperties());
+		possibles.put(FetchType.PROPERTIES, query.getPossibleProperties());
+		certains.put(FetchType.CLASSES, query.getClasses());
+		possibles.put(FetchType.CLASSES, query.getPossibleClasses());
 	}
 	
-	private void storeProperties() throws SQLException {
-		if (debug) System.out.println("storing properties");
-		if (properties.size() > 0) {
-			dbHelper.storeAutocompletionsFromQueryAnalysis(endpoint, FetchType.PROPERTIES, FetchMethod.QUERY_ANALYSIS, properties);
+	private void store() throws SQLException {
+		if (debug) System.out.println("storing URIs");
+		for (FetchType type: certains.keySet()) {
+			if (certains.get(type).size() > 0) {
+				if (debug) {
+					System.out.println("storing " + certains.get(type).size() + " " + type.getPlural());
+				} else {
+					dbHelper.storeAutocompletionsFromQueryAnalysis(endpoint, type, FetchMethod.QUERY_ANALYSIS, certains.get(type));
+				}
+			}
 		}
+		
 	}
 	
 	public static void store(DbHelper dbHelper, String query, String endpoint) throws SQLException {
@@ -138,7 +158,7 @@ public class QueryPropertyExtractor {
 				"PREFIX owl: <http://www.w3.org/2002/07/owl#>\n" + 
 				"\n" + 
 				"SELECT * WHERE {\n" + 
-				"  ?sub owl:imports ?obj\n" + 
+				"  <http://blaat> rdfs:subClassOf ?obj\n" + 
 				"} LIMIT 10";
 		QueryPropertyExtractor.store(dbHelper, query, "http://services.data.gov/sparql", true);
 	}
