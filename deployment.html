@@ -160,7 +160,16 @@ After making your changes, make sure the json configuration is valid, by validat
         "defaultGraphs": true,
         "acceptHeaders": true,
         "requestMethod": true,
-        "propertyAutocompletion": true	
+        "propertyCompletionMethods": {
+            "lov": true,
+            "query": true,
+            "queryResults": true
+        },
+        "classCompletionMethods": {
+            "lov": true,
+            "query": true,
+            "queryResults": true
+        }
     },
     "downloadOfflineCache": true,
     "showDownloadProgressBar": true,
@@ -239,19 +248,16 @@ After making your changes, make sure the json configuration is valid, by validat
 				<dd>Set to false to hide option to specify the accept headers for a given query</dd>
 				<dt>requestMethod</dt>
 				<dd>Set to false to hide option to specify the request method (e.g. GET or POST) for a given query</dd>
-				<dt>properyAutocompletion</dt>
-				<dd>Set to false to hide the property autocompletion feature. Users won't be presented with the option to fetch the property information, and won't be presented with the suggestionbox when typing the query</dd>
 				<dt>offlineCaching</dt>
 				<dd>Set to false to disable offline caching (this feature is disabled anyway for browsers not supporting it). Disabling this also hides the 'Offline Availability' item in the 'Configure YASGUI' menu</dd>
+				<dt>propertyCompletionMethods</dt>
+				<dd>To disable property autocompletion, remove this option from the json file, or set to null. For more info about the three completion methods, see the <a href="help.html#autocompletionmethods">help page</a>.
+				Setting a method to true or false will enable/disable that method. However, a user is still allowed to turn this method on or off. To completely disable a method, without the option for a user to change it, remove the method from this json object.</dd>
+				<dt>classCompletionMethods</dt>
+				<dd>idem, but for class autocompletion</dd>
 			</dl>
 			<h4>Other options</h4>
 			<dl>
-				<dt>singleEndpointMode</dt>
-				<dd>
-				<p class="text-error">deprecated: instead, use the <i>enabledFeatures</i> settings ('endpointSelection' key)</p>
-				<del>A boolean value. If set the true, the user won't be able
-					to change the endpoint. Instead, the default endpoint is always
-					used. An example of YASGUI working in single endpoint mode is available <a href="http://single.yasgui.laurensrietveld.nl" target="_blank">here</a>.</del></dd>
 				<dt>downloadOfflineCache</dt>
 				<dd>Automatically download YASGUI to the offline cache, so clients will be able to use YASGUI offline as well</dd>
 				<dt>showDownloadProgressBar</dt>

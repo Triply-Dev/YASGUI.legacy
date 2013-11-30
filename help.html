@@ -53,7 +53,7 @@ body { padding-top: 70px; }
 						</ul>
 					</li>
 					<li class="dropdown">
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#">Property<br>Autocompletion<b class="caret"></b></a>
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#">Property/Class<br>Autocompletion<b class="caret"></b></a>
 						<ul class="dropdown-menu">
 						  <li><a href="#autocomplete" data-toggle="tab">How</a></li>
 						  <li><a href="#autocompletionmethods" data-toggle="tab">Methods</a></li>
@@ -138,33 +138,38 @@ body { padding-top: 70px; }
 </div>
 			<h1 id="autocomplete">Property Autocompletion</h1>
 			<h3>How?</h3>
-			Start typing a predicate (either prefixed or as a complete URI). Then, press <code>CTRL-&lt;space&gt;</code>(or <code>COMMAND-&lt;space&gt;</code> for apple).
+			Start typing a predicate/class (either prefixed or as a complete URI). Then, press <code>CTRL-&lt;space&gt;</code>(or <code>COMMAND-&lt;space&gt;</code> for apple).
 			This results in a autocompletion dialogue with up to three different kind of colour-coded suggestions. Below, we explain each type of suggestion in detail. 
 			
 			
 			<h3 id="autocompletionmethods">Methods</h3>
-			YASGUI uses three different methods for autocompleting properties. Each of these methods have their own advantages and disadvantages:
+			YASGUI uses three different methods for autocompleting properties and classes. Each of these methods have their own advantages and disadvantages:
 			
-			<h4>1. Properties cached from previous SPARQL queries</h4>
-			The properties are fetched from previous SPARQL queries. A property is stored whenever it occurs in the predicate position 
-			(<a href="javascript:void(0);" data-toggle="popover" title="" 
-				data-original-title="How YASGUI retrieves properties from queries"
+			<h4>1. Cached from previous SPARQL queries</h4>
+			The properties/classes are fetched from previous SPARQL queries. A property is stored whenever it occurs in the predicate position, and a class is stored whenever a triple pattern shows either the object or object + subject are classes (<a href="javascript:void(0);" data-toggle="popover" title="" 
+				data-original-title="How YASGUI retrieves properties/classes from queries"
 				data-content="Whenever a query returns valid results for a query, we send the query to the server for analysis.
-				Here, we dissect the query and loop through the triple patterns. When a triple pattern contains a URI in predicate position (and not a variable), we store this property.
-				<br>Exceptions are properties occuring in SERVICE calls (these are ignored). When a property occurs in an OPTIONAL or UNION clause, the server checks the occurance (via an ASK query) of this property in the endpoint" 
+				Here, we dissect the query and loop through the triple patterns. When a triple pattern contains a URI in predicate position (and not a variable), we store this property. When the query contains <code>rdf:type</code>, <code>rdfs:subClassOf</code>, <code>rdfs:domain</code> or <code>rdfs:range</code>, we store the object or object + subject as class (depending on the type of predicate).
+				<br>Exceptions are properties/classes occuring in SERVICE calls (these are ignored). When a property or class occurs in an OPTIONAL or UNION clause, the server checks the occurance (via an ASK query) of this URI in the endpoint" 
 				>how?</a>). This results in reliable autocompletion suggestions. 
 			Suggestions fetched are 
 			(<a href="javascript:void(0);" data-toggle="popover" title="" 
-				data-original-title="Occurance of fetched properties"
-				data-content="The cached properties on the YASGUI server might become stale when properties occuring in a dataset during the moment a query was analyzed, are changed or removed. Currently, there is no way of purging these properties, though this will be <a href='https://github.com/LaurensRietveld/yasgui/issues/205' target='_blank'>added</a> in the future" 
+				data-original-title="Occurance of fetched properties and classes"
+				data-content="The cached properties and classes on the YASGUI server might become stale when properties/classes occuring in a dataset during the moment a query was analyzed, are changed or removed. Currently, there is no way of purging these properties, though this will be <a href='https://github.com/LaurensRietveld/yasgui/issues/205' target='_blank'>possible</a> in the future" 
 				>almost</a>) guaranteerd to be available in the endpoint you are using. A downside of this method is that the queries (most probably) do not cover all possible properties in this endpoint.
-			<br><small>This cached list of properties is the lazy and incomplete equivalent of <a href="http://bit.ly/HREj03" target="_blank">querying for predicates</a>. However, this way of retrieving properties is not feasible for most endpoints, as such queries are very expensive.</small>
-			<h4>2. Properties fetched from querying the dataset for rdf:Property</h4>
-			This type of autocompletion suggestion is fetched by issueing a <a href="http://bit.ly/HW2E5g" target="_blank">rdf:property query</a>, and storing the results on the YASGUI server.
+			<br><small>For properties, this cached list is the lazy and incomplete equivalent of <a href="http://bit.ly/HREj03" target="_blank">querying for predicates</a>. However, this way of retrieving properties is not feasible for most endpoints, as such queries are very expensive.</small>
+			<h4>2. Fetched from querying the dataset</h4>
+			This type of autocompletion suggestion is fetched by issueing a <a href="http://bit.ly/HW2E5g" target="_blank">rdf:property query</a> or <a href="http://bit.ly/18dKBy1" target="_blank">rdf:type query</a>, and storing the results on the YASGUI server.
 			The major advantage of this type of query is that it is fast, and might result in a relatively complete set of properties. The downsides are:
 			<ul>
-				<li>Not all endpoints define their properties as being of type rdf:property</li>
-				<li>The list of fetched properties might not correspond with the list of properties occuring in the predicate position. (e.g. a rdf:property in DBPedia has a trailing <code>_</code>, where the predicate equivalent does not have this trailing <code>_</code>)</li>
+				<li>for properties:
+				<ul>
+					<li>Not all endpoints define their properties as being of type rdf:property</li>
+					<li>The list of fetched properties might not correspond with the list of properties occuring in the predicate position. (e.g. a rdf:property in DBPedia has a trailing <code>_</code>, where the predicate equivalent does not have this trailing <code>_</code>)</li>
+				</ul>
+				</li>
+				<li>in general:
+				<ul>
 				<li>The resultset of this query can be too large to fetch via SPARQL. Something which is the case for DBPedia. 
 				(<a href="javascript:void(0);" data-toggle="popover" title="" 
 				data-original-title="Resultset size issues"
@@ -177,14 +182,17 @@ body { padding-top: 70px; }
 				<li>In other words: retrieving more than 50.000 properties via SPARQL from DBPedia is not possible</li>
 				</ul>" 
 				>Why?</a>)
+				</ul>
+				</li>
+				
 			</ul> 
-			<h4>3. Properties fetched from <a href="http://lov.okfn.org/dataset/lov/" target="_blank">Linked Open Vocubulary (LOV)</a></h4>
-			LOV hosts a large set of Linked Data vocabularies. The LOV <a href="http://lov.okfn.org/dataset/lov/apidoc/" target="_blank">API</a> provides an autocompletion service for all the properties defined in these vocabularies.
+			<h4>3. Properties and classes fetched from <a href="http://lov.okfn.org/dataset/lov/" target="_blank">Linked Open Vocubulary (LOV)</a></h4>
+			LOV hosts a large set of Linked Data vocabularies. The LOV <a href="http://lov.okfn.org/dataset/lov/apidoc/" target="_blank">API</a> provides an autocompletion service for all the properties and classes defined in these vocabularies.
 			The advantage of this approach is the availability of vocabularies, regardless of the used endpoint. This is particularly useful when using localhost endpoints (i.e. not accessible from the YASGUI server), as the two methods described above do not work on these <small>(this <a href="https://github.com/LaurensRietveld/yasgui/issues/204" target="_blank">issue</a> will be resolved in a future version)</small>.
 			However, the suggestions provided from LOV are not necessarily in the endpoint being queried, making the precision of this approach low.
 			
 			<h3 id="autocompletionranking">How these methods relate to each other</h3>
-			When one property is suggested by more than 1 autocompletion method, the suggestion is shown as coming from the method with the highest 'reliability' (with reliability we mean the chance of this property actually occuring in the dataset).
+			When a URI is suggested by more than 1 autocompletion method, the suggestion is shown as coming from the method with the highest 'reliability' (with reliability we mean the chance of this property actually occuring in the dataset).
 			In other words, when method 1 and method 2 provide the same property as a suggestion, we show this property as coming from method 1.
 		</div>
 	</div>
