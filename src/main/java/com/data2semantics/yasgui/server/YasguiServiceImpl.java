@@ -53,6 +53,7 @@ import com.data2semantics.yasgui.server.fetchers.endpoints.EndpointsFetcher;
 import com.data2semantics.yasgui.shared.Bookmark;
 import com.data2semantics.yasgui.shared.IssueReport;
 import com.data2semantics.yasgui.shared.SettingKeys;
+import com.data2semantics.yasgui.shared.autocompletions.AccessibilityStatus;
 import com.data2semantics.yasgui.shared.autocompletions.AutocompletionsInfo;
 import com.data2semantics.yasgui.shared.exceptions.FetchException;
 import com.data2semantics.yasgui.shared.exceptions.OpenIdException;
@@ -267,14 +268,13 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 	}
 
 	@Override
-	public void logLazyQuery(String query, String endpoint) throws IllegalArgumentException {
+	public AccessibilityStatus logLazyQuery(String query, String endpoint) throws IllegalArgumentException {
 		try {
 			
-			QueryPropertyExtractor.store(new DbHelper(new File(getServletContext().getRealPath("/"))), query, endpoint);
+			return QueryPropertyExtractor.store(new DbHelper(new File(getServletContext().getRealPath("/"))), query, endpoint);
 		} catch (Exception e) {
-			//fail silently. doesnt matter when analysis of a single query fails..
+			throw new IllegalArgumentException(e.getMessage());
 		}
-		
 	}
 
 	@Override

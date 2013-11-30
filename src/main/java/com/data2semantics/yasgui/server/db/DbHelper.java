@@ -54,6 +54,7 @@ import com.data2semantics.yasgui.server.openid.HttpCookies;
 import com.data2semantics.yasgui.server.openid.OpenIdServlet;
 import com.data2semantics.yasgui.shared.Bookmark;
 import com.data2semantics.yasgui.shared.UserDetails;
+import com.data2semantics.yasgui.shared.autocompletions.AccessibilityStatus;
 import com.data2semantics.yasgui.shared.autocompletions.AutocompletionsInfo;
 import com.data2semantics.yasgui.shared.autocompletions.FetchMethod;
 import com.data2semantics.yasgui.shared.autocompletions.FetchStatus;
@@ -554,7 +555,7 @@ public class DbHelper {
 				"WHERE STATUS =  ?\n" + 
 				"GROUP BY Endpoint\n";
 		PreparedStatement ps = connect.prepareStatement(sql);
-		ps.setString(1, "failed");
+		ps.setString(1, FetchStatus.FAILED.get());
 		ResultSet result = ps.executeQuery();
 		Map<String, Integer> endpoints = new HashMap<String, Integer>();
 		while (result.next()) {
@@ -567,7 +568,6 @@ public class DbHelper {
 		Set<String> endpoints = new HashSet<String>();
 		
 		String sql = "SELECT DISTINCT Endpoint FROM " + fetchType.getPluralCamelCase() + " WHERE 1";
-		System.out.println(sql);
 		PreparedStatement ps = connect.prepareStatement(sql);
 		ResultSet result = ps.executeQuery();
 		while (result.next()) {
@@ -615,12 +615,43 @@ public class DbHelper {
 		}
 		return completionsInfo;
 	}
+	
+	public void setEndpointAccessible(String endpoint, boolean accessible) throws SQLException {
+		String sql = "INSERT INTO AccessibleEndpoints (`Endpoint`, `Accessible`) VALUES (?, ?)";
+		PreparedStatement ps = connect.prepareStatement(sql);
+		ps.setString(1, endpoint);
+		ps.setBoolean(2, accessible);
+		ps.executeUpdate();
+	}
+	public void setEndpointAccessible(String endpoint, AccessibilityStatus accessible) throws SQLException {
+		setEndpointAccessible(endpoint, accessible == AccessibilityStatus.ACCESSIBLE);
+	}
+	
+	public AccessibilityStatus isEndpointAccessible(String endpoint, boolean allowActiveCheck) throws SQLException {
+		String sql = "SELECT `Accessible` FROM AccessibleEndpoints WHERE Endpoint = ? ORDER BY Time LIMIT 1 ";
+		PreparedStatement ps = connect.prepareStatement(sql);
+		ps.setString(1, endpoint);
+		ResultSet result = ps.executeQuery();
+		AccessibilityStatus accessibleStatus = AccessibilityStatus.UNCHECKED;
+		if (result.next()) {
+			if (result.getBoolean("Accessible")) {
+				accessibleStatus = AccessibilityStatus.ACCESSIBLE;
+			} else {
+				accessibleStatus = AccessibilityStatus.INACCESSIBLE;
+			}
+		} else if (allowActiveCheck) {
+			accessibleStatus = Helper.checkEndpointAccessibility(endpoint);
+			setEndpointAccessible(endpoint, accessibleStatus);
+		}
+		return accessibleStatus;
+	}
 
 
 	public static void main(String[] args) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
 		DbHelper dbHelper = new DbHelper(new File("src/main/webapp/"));
-		AutocompletionsInfo info = dbHelper.getAutocompletionInfo();
-		System.out.println(info.toString());
+		dbHelper.setEndpointAccessible("httpsdf", true);
+//		AutocompletionsInfo info = dbHelper.getAutocompletionInfo();
+//		System.out.println(info.toString());
 //		for (String endpoint: dbHelper.getDisabledEndpointsForCompletionsFetching(FetchType.CLASSES, FetchMethod.QUERY_ANALYSIS)) {
 //			System.out.println(endpoint);
 //		}

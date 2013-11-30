@@ -155,7 +155,7 @@ public class SparqlQuery {
 		QueryTab tab = (QueryTab)view.getTabs().getTab(tabId);
 		view.getTabs().selectTab(tabId);
 		if (tab != null) {
-			view.getSelectedTab().getResultContainer().reset();
+			view.getSelectedTab().getResultContainer().resetResultArea();
 		}
 		
 		String errorMsg;
@@ -186,7 +186,7 @@ public class SparqlQuery {
 		QueryTab tab = (QueryTab)view.getTabs().getTab(tabId);
 		view.getTabs().selectTab(tabId);
 		if (tab != null) {
-			view.getSelectedTab().getResultContainer().reset();
+			view.getSelectedTab().getResultContainer().resetResultArea();
 		}
 		
 		view.getErrorHelper().onQueryError(throwable.getMessage(), endpoint, queryString, customQueryArgs);
@@ -198,7 +198,7 @@ public class SparqlQuery {
 		view.getHistory().setHistoryCheckpoint();
 		
 		//clear current result container -before- query, not after
-		view.getSelectedTab().getResultContainer().reset();
+		view.getSelectedTab().getResultContainer().resetResultArea();
 		
 		//disable string to download icon
 		if (JsMethods.stringToDownloadSupported()) {

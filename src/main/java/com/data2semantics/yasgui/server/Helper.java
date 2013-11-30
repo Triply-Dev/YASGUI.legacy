@@ -48,6 +48,7 @@ import org.json.JSONObject;
 
 import com.data2semantics.yasgui.shared.Bookmark;
 import com.data2semantics.yasgui.shared.SettingKeys;
+import com.data2semantics.yasgui.shared.autocompletions.AccessibilityStatus;
 import com.data2semantics.yasgui.shared.autocompletions.FetchMethod;
 import com.data2semantics.yasgui.shared.autocompletions.FetchType;
 
@@ -132,25 +133,24 @@ public class Helper {
 		}
 	}
 	
-	public static boolean checkEndpointAccessibility(String endpoint) {
+	public static AccessibilityStatus checkEndpointAccessibility(String endpoint) {
 		//for now, only store properties for endpoints we can access
-		boolean accessible = true;
+		AccessibilityStatus status = AccessibilityStatus.ACCESSIBLE;
 		try {
 		    URL myurl;
 			myurl = new URL(endpoint);
 		    HttpURLConnection connection = (HttpURLConnection) myurl.openConnection(); 
 		    connection.setConnectTimeout(5000);
-		    //Set request to header to reduce load as Subirkumarsao said.       
+		    
 			connection.setRequestMethod("HEAD");
 		    int code = connection.getResponseCode();
 		    if (code == 404) {
-		    	accessible = false;
+		    	status = AccessibilityStatus.INACCESSIBLE;
 		    }
 		} catch (Exception e) {
-			accessible = false;
+			status = AccessibilityStatus.INACCESSIBLE;
 		}
-		if (!accessible) System.out.println("Endpoint " + endpoint + " not accessible");
-		return accessible;
+		return status;
 	}
 	
 	public static FetchType stringToFetchType(String typeString) throws IllegalArgumentException {

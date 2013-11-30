@@ -156,9 +156,10 @@ public class View extends VLayout implements RpcElement {
 		}.call();
 	}
 	
-	protected void setAutocompletionsInfo(AutocompletionsInfo autocompletionsInfo) {
+	private void setAutocompletionsInfo(AutocompletionsInfo autocompletionsInfo) {
 		this.autocompletionsInfo = autocompletionsInfo;
 	}
+	
 	public AutocompletionsInfo getAutocompletionsInfo() {
 		return this.autocompletionsInfo;
 	}

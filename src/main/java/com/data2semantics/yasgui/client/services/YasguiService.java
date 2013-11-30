@@ -28,6 +28,7 @@ package com.data2semantics.yasgui.client.services;
 
 import com.data2semantics.yasgui.shared.Bookmark;
 import com.data2semantics.yasgui.shared.IssueReport;
+import com.data2semantics.yasgui.shared.autocompletions.AccessibilityStatus;
 import com.data2semantics.yasgui.shared.autocompletions.AutocompletionsInfo;
 import com.data2semantics.yasgui.shared.exceptions.FetchException;
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -38,7 +39,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("YasguiService")
 public interface YasguiService extends RemoteService {
-	void logLazyQuery(String query, String endpoint) throws IllegalArgumentException;
+	AccessibilityStatus logLazyQuery(String query, String endpoint) throws IllegalArgumentException;
 	AutocompletionsInfo getAutocompletionsInfo() throws IllegalArgumentException, FetchException;
 	String fetchPrefixes(boolean forceUpdate) throws IllegalArgumentException, FetchException;
 	String fetchEndpoints(boolean forceUpdate) throws IllegalArgumentException, FetchException;

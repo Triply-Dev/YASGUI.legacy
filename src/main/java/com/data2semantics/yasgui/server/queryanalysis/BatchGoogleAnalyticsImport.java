@@ -37,6 +37,7 @@ import au.com.bytecode.opencsv.CSVReader;
 import com.data2semantics.yasgui.server.Helper;
 import com.data2semantics.yasgui.server.QueryPropertyExtractor;
 import com.data2semantics.yasgui.server.db.DbHelper;
+import com.data2semantics.yasgui.shared.autocompletions.AccessibilityStatus;
 import com.data2semantics.yasgui.shared.autocompletions.FetchMethod;
 import com.data2semantics.yasgui.shared.autocompletions.FetchType;
 import com.hp.hpl.jena.query.QueryParseException;
@@ -91,8 +92,8 @@ public class BatchGoogleAnalyticsImport {
 						if (debug) {
 							System.out.println("not in accessible hashmap");
 						}
-						accessibleEndpoints.put(endpoint, Helper.checkEndpointAccessibility(endpoint));
-						if (!Helper.checkEndpointAccessibility("http://google.com")) {
+						accessibleEndpoints.put(endpoint, Helper.checkEndpointAccessibility(endpoint) == AccessibilityStatus.ACCESSIBLE);
+						if (Helper.checkEndpointAccessibility("http://google.com") != AccessibilityStatus.ACCESSIBLE) {
 							System.out.println("connection lost...");
 							System.exit(1);
 						}

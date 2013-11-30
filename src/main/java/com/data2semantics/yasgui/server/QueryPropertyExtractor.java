@@ -41,6 +41,7 @@ import org.json.JSONException;
 
 import com.data2semantics.yasgui.server.db.DbHelper;
 import com.data2semantics.yasgui.server.queryanalysis.Query;
+import com.data2semantics.yasgui.shared.autocompletions.AccessibilityStatus;
 import com.data2semantics.yasgui.shared.autocompletions.FetchMethod;
 import com.data2semantics.yasgui.shared.autocompletions.FetchType;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -65,17 +66,18 @@ public class QueryPropertyExtractor {
 		this(dbHelper, query, endpoint, false);
 	}
 	
-	public void analyzeAndStore() throws SQLException {
+	public AccessibilityStatus analyzeAndStore() throws SQLException {
 		analyzeQuery();
 		removeExistingUris(FetchType.CLASSES);
 		removeExistingUris(FetchType.PROPERTIES);
 		checkPossibles();
-		if (Helper.checkEndpointAccessibility(endpoint)) {
+		AccessibilityStatus status = dbHelper.isEndpointAccessible(endpoint, true);
+		if (status == AccessibilityStatus.ACCESSIBLE) {
 			store();
 		} else {
 			System.out.println("not accessible: " + endpoint);
 		}
-		
+		return status;
 	}
 	
 	private void checkPossibles() {
@@ -143,23 +145,21 @@ public class QueryPropertyExtractor {
 		
 	}
 	
-	public static void store(DbHelper dbHelper, String query, String endpoint) throws SQLException {
-		store(dbHelper, query, endpoint, false);
+	public static AccessibilityStatus store(DbHelper dbHelper, String query, String endpoint) throws SQLException {
+		return store(dbHelper, query, endpoint, false);
 	}
-	public static void store(DbHelper dbHelper, String query, String endpoint, boolean debug) throws SQLException {
+	public static AccessibilityStatus store(DbHelper dbHelper, String query, String endpoint, boolean debug) throws SQLException {
 		QueryPropertyExtractor extractor = new QueryPropertyExtractor(dbHelper, query, endpoint, debug);
-		extractor.analyzeAndStore();
+		return extractor.analyzeAndStore();
 	}
 	public static void main (String[] args) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
 		DbHelper dbHelper = new DbHelper(new File("src/main/webapp/"));
 		String query = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" + 
 				"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" + 
-				"PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n" + 
-				"PREFIX owl: <http://www.w3.org/2002/07/owl#>\n" + 
 				"\n" + 
-				"SELECT * WHERE {\n" + 
-				"  <http://blaat> rdfs:subClassOf ?obj\n" + 
-				"} LIMIT 10";
+				"SELECT DISTINCT * WHERE {\n" + 
+				"  ?bla rdf:type rdfs:Class\n" + 
+				"} LIMIT 100";
 		QueryPropertyExtractor.store(dbHelper, query, "http://services.data.gov/sparql", true);
 	}
 }

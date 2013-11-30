@@ -49,6 +49,7 @@ import com.data2semantics.yasgui.client.tab.results.output.RawResponse;
 import com.data2semantics.yasgui.client.tab.results.output.ResultGrid;
 import com.data2semantics.yasgui.client.tab.results.output.SimpleGrid;
 import com.data2semantics.yasgui.shared.Output;
+import com.data2semantics.yasgui.shared.autocompletions.AccessibilityStatus;
 import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
 import com.data2semantics.yasgui.shared.exceptions.SparqlParseException;
 import com.google.gwt.core.client.Scheduler;
@@ -114,9 +115,7 @@ public class ResultContainer extends VLayout {
 	/**
 	 * Empty query result area
 	 */
-	public void reset() {
-		queryString = null;
-		endpoint = null;
+	public void resetResultArea() {
 		if (rawResponseOutput != null) {
 			//We have an old codemirror object used for showing json results. Clean this up
 			JsMethods.destroyCodeMirrorQueryResponse(rawResponseOutput.getInputId());
@@ -126,6 +125,11 @@ public class ResultContainer extends VLayout {
 		for (Canvas member : members) {
 			removeMember(member);
 		}
+	}
+	
+	public void resetVariables() {
+		queryString = null;
+		endpoint = null;
 	}
 	
 	public void drawIfPossible() {
@@ -138,7 +142,8 @@ public class ResultContainer extends VLayout {
 			endpoint = tabSettings.getEndpoint();
 			doDraw(queryResults.getString(), queryResults.getContentType());
 		} else {
-			reset();
+			resetResultArea();
+			resetVariables();
 		}
 	}
 	
@@ -159,10 +164,9 @@ public class ResultContainer extends VLayout {
 	
 	private void doDraw(String resultString, String contentTypeString) {
 		if (resultString != null && resultString.length() > 0) {
-			reset();
-			Type contentType;
+			resetResultArea();
+			Type contentType = ContentTypes.detectContentType(contentTypeString);
 			
-			contentType = ContentTypes.detectContentType(contentTypeString);
 			if (contentType == null) {
 				//assuming select query here (no construct)
 				contentType = detectContentTypeFromResultstring(resultString);
@@ -178,6 +182,7 @@ public class ResultContainer extends VLayout {
 			} else {
 				addQueryResult(resultString, contentType);
 			}
+			resetVariables();
 		}
 	}
 	
@@ -210,8 +215,7 @@ public class ResultContainer extends VLayout {
 		drawRawResponse(responseString, contentType);
 	}
 	
-	public void addQueryResult(String responseString, Type contentType) {
-		reset();
+	private void addQueryResult(String responseString, Type contentType) {
 		try {
 			String queryType = JsMethods.getQueryType(view.getSelectedTab().getQueryTextArea().getInputId());
 			if (!queryTypes.containsKey(queryType)) {
@@ -265,15 +269,18 @@ public class ResultContainer extends VLayout {
 	private void logQueryForAnalysis(SparqlResults results) {
 		//only log when we actually have results
 		if (results.getBindings().size() > 0 && endpoint != null && (view.getAutocompletionsInfo() == null || view.getAutocompletionsInfo().queryAnalysisEnabled(endpoint))) {
-			new GwtCallbackWrapper<Void>(view) {
-				public void onCall(AsyncCallback<Void> callback) {
+			new GwtCallbackWrapper<AccessibilityStatus>(view) {
+				public void onCall(AsyncCallback<AccessibilityStatus> callback) {
 					view.getRemoteService().logLazyQuery(queryString, endpoint, callback);
 				}
 
-				protected void onFailure(Throwable throwable) {}
+				protected void onFailure(Throwable throwable) {
+					JsMethods.logConsole("exception: " + throwable.getMessage());
+				}
 
-				protected void onSuccess(Void prefixes) {}
-
+				protected void onSuccess(AccessibilityStatus status) {
+					//JsMethods.logConsole("endpoint status: " + status);
+				}
 
 			}.call();
 		}
