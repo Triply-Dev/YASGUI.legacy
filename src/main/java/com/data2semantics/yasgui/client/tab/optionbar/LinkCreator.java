@@ -87,7 +87,6 @@ public class LinkCreator extends ImgButton implements RpcElement {
 			@Override
 			public void onClick(ClickEvent event) {
 				window = new Window();
-				window.setID("linkCreatorWindow");
 				window.setShowHeader(false);
 				window.setZIndex(ZIndexes.MODAL_WINDOWS);
 				window.setTitle("Get link");

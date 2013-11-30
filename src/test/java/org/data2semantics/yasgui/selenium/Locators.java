@@ -30,6 +30,7 @@ public enum Locators {
 	ERROR_WINDOW_MESSAGE("scLocator=//Window[ID=\"errorWindow\"]/item[0][Class=\"Label\"]/"),
 	ERROR_WINDOW("scLocator=//Window[ID=\"errorWindow\"]"),
 	MENU_BUTTON_TEXT("//span[contains(text(), \"#$#$\")]"),
+	DIV_TEXT("//div[contains(text(), \"#$#$\")]"),
 	MENU_ITEM("//nobr[contains(text(), \"#$#$\")]"),
 	ICON("//img[contains(@src,'#$#$')]"),
 	TOOLTIPS_VISIBLE("//div[contains(@class,'qtip') and contains(@style, 'display: block')]");

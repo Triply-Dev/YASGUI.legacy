@@ -46,7 +46,7 @@ public class YasguiTest extends SeleniumBase {
 	public void testLinkCreatorButton() {
 		if (stopTesting) return;
 		helper.clickIcon(Imgs.LINK.get());
-		helper.waitForElementClickable("scLocator=//DynamicForm[ID=\"linkCreatorForm\"]");
+		helper.waitForElementClickable(Locators.DIV_TEXT.get("Shorten url"));
 	}
 	
 	@Test
