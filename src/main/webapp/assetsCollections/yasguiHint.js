@@ -349,7 +349,7 @@
 							layout: 'bottomLeft',
 							type: 'alert',
 							id: this.getId(completion),
-							closeWith: [],
+							closeWith: ["button"],
 						});
 					} else {
 						$.noty.setText(this.getId(completion), this.legendHtml);
@@ -419,7 +419,7 @@
 						layout: 'bottomLeft',
 						type: 'alert',
 						id: this.getId(completion),
-						closeWith: [],
+						closeWith: ["button"],
 					});
 				} else {
 					$.noty.setText(this.getId(completion), this.legendHtml);
@@ -446,54 +446,6 @@
 				this.justDrawn = false;
 			},
 		},
-//		errorDialogue: {
-//			legendHtml: "placeholder",
-//			getId: function(completion) {
-//				return completion.completionType + "ErrorDialogue";
-//			},
-//			generateHtml : function(completion, errorMessage) {
-//				this.legendHtml = "YASGUI failed fetching " + completion.completionTypePlural + " for the current endpoint.<Br>" +
-//						"Possible reasons are: <br>(1) the endpoint is in a private network inaccessible from the YASGUI server, " +
-//						"<br>or (2) the endpoint is down.<br>" +
-//						"The error message returned by YASGUI: <Br>" + errorMessage;
-//			},
-//			drawn: function(completion) {
-//				return $.noty.get(this.getId(completion)) != false;
-//			},
-//			draw: function(completion, errorMessage) {
-//				completion.earlyNotificationDialogue.greyOut(completion);
-//				this.generateHtml(completion, errorMessage);
-//				if ($.noty.get(this.getId(completion)) == false) {
-//					noty({
-//						text: this.legendHtml,
-//						layout: 'bottomLeft',
-//						type: 'warning',
-//						id: this.getId(completion),
-//						closeWith: [],
-//					});
-//				} else {
-//					$.noty.setText(this.getId(completion), this.legendHtml);
-//				}
-//				this.addClickListener(completion);
-//			},
-//			addClickListener: function(completion) {
-//				$(document).on("click." + completion.errorDialogue.getId(completion), function(event) {
-//					if (document.getElementById(completion.errorDialogue.getId(completion)) != undefined) {
-//						if(!$(event.target).parents().andSelf().is("#" + completion.errorDialogue.getId(completion))) {
-//							$.noty.close(completion.errorDialogue.getId(completion));
-//						}
-//					} else {
-//						//no property legend popup and hint item. We shouldnt check this listener anymore! Just remove this listener
-//						$(document).off("click." + completion.errorDialogue.getId(completion));
-//					}
-//				});
-//			},
-//			close: function(completion) {
-//				if (this.drawn(completion)) {
-//					$.noty.close(this.getId(completion));
-//				}
-//			},
-//		},
 		appendTypeIconsToAutocomplete: function(completion) {
 			for (var method in completion.methodProperties) {
 				var props = completion.methodProperties[method];
