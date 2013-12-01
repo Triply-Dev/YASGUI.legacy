@@ -37,20 +37,22 @@ public abstract class GwtCallbackWrapper<T> {
 		}
 
 		public void onFailure(final Throwable t) {
-			String message = t.getMessage().trim();
-			if (message.equals("0")) {
-				//we cannot reach the server..
-				//Check whether we are online
-				view.getConnHelper().checkOnlineStatus(new ConnCallback() {
-					@Override
-					public void connectedCallback() {
-						//we are online, and still our other request failed. Show error!
-						view.getLogger().severe("error thrown before connectivity check returned 'connected'");
-						GwtCallbackWrapper.this.onFailure(t);
-					}
-				});
-			} else {
-				GwtCallbackWrapper.this.onFailure(t);
+			if (t.getMessage() != null) {
+				String message = t.getMessage().trim();
+				if (message.equals("0")) {
+					//we cannot reach the server..
+					//Check whether we are online
+					view.getConnHelper().checkOnlineStatus(new ConnCallback() {
+						@Override
+						public void connectedCallback() {
+							//we are online, and still our other request failed. Show error!
+							view.getLogger().severe("error thrown before connectivity check returned 'connected'");
+							GwtCallbackWrapper.this.onFailure(t);
+						}
+					});
+				} else {
+					GwtCallbackWrapper.this.onFailure(t);
+				}
 			}
 		}
 	};

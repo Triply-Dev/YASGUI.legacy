@@ -185,7 +185,7 @@ public class EndpointInput extends DynamicForm {
 	public void setEndpointCallback(String endpointString) {
 		JsMethods.checkCorsEnabled(endpointString);
 		view.getSelectedTabSettings().setEndpoint(endpointString);
-		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+		LocalStorageHelper.storeSettings(view.getSettings());
 	}
 	
 	public void storeEndpointInSettings() {

@@ -245,7 +245,7 @@ public class ViewElements implements RpcElement {
 				consentWindow.destroy();
 				view.getSettings().setTrackingConsent(true);
 				view.getSettings().setTrackingQueryConsent(true);
-				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+				LocalStorageHelper.storeSettings(view.getSettings());
 			}});
         yesButton.setShowDownIcon(false);
 		
@@ -267,7 +267,7 @@ public class ViewElements implements RpcElement {
 				consentWindow.destroy();
 				view.getSettings().setTrackingConsent(true);
 				view.getSettings().setTrackingQueryConsent(false);
-				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+				LocalStorageHelper.storeSettings(view.getSettings());
 			}});
 		noQueriesButton.setShowDownIcon(false);
         
@@ -288,7 +288,7 @@ public class ViewElements implements RpcElement {
 				consentWindow.destroy();
 				view.getSettings().setTrackingConsent(false);
 				view.getSettings().setTrackingQueryConsent(false);
-				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+				LocalStorageHelper.storeSettings(view.getSettings());
 			}});
 		noButton.setShowDownIcon(false); 
 		

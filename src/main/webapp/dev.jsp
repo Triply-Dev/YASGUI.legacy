@@ -38,6 +38,7 @@
 <script src="assets/codemirror/addon/hint/show-hint.js?<% out.print(StaticConfig.VERSION); %>"></script>
 
 <script src="assets/yasguiHint.js?<% out.print(StaticConfig.VERSION); %>"></script>
+<script src="assets/uriFetcher.js?<% out.print(StaticConfig.VERSION); %>"></script>
 <!-- Highlight words onclick code -->
 <script src="assets/codemirror/addon/search/searchcursor.js?<% out.print(StaticConfig.VERSION); %>"></script>
 <script src="assets/codemirror/addon/edit/matchbrackets.js?<% out.print(StaticConfig.VERSION); %>"></script>

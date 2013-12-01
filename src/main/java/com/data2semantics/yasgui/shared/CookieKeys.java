@@ -32,6 +32,7 @@ public class CookieKeys implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	public static String SETTINGS = "settings";
+	public static String LOGIN_STACK = "loginStack";
 	public static String TOOLTIPS_SHOWN = "tooltipsShown";
 	public static String PREFIXES = "prefixes";
 	public static String PROPERTIES = "properties";
@@ -40,4 +41,5 @@ public class CookieKeys implements Serializable {
 	public static String VERSION_ID = "versionId";
 	public static String GWT_STRONG_NAME = "gwtStrongName";
 	public static String COMPATIBILITIES_SHOWN = "compatabilitiesShown";
+	public static String URI_FETCHER_NOTIFICATION_SHOWN = "uriFetcherNotificationShown";
 }

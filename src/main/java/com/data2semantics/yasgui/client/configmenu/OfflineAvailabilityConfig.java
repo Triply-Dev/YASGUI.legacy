@@ -66,7 +66,7 @@ public class OfflineAvailabilityConfig extends Window {
 	private void storeContentInSettings() {
 		view.getSettings().setUseOfflineCaching(useOfflineFunctionality.getValueAsBoolean());
 		view.getSettings().setShowAppcacheDownloadNotification(downloadNotification.getValueAsBoolean());
-		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+		LocalStorageHelper.storeSettings(view.getSettings());
 	}
 	
 	private void addContent() {

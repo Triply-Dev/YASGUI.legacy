@@ -510,4 +510,18 @@ public class JsMethods {
 	public static native boolean corsEnabled(String endpoint) /*-{
 		return ($wnd.corsEnabled[endpoint] == true);
 	}-*/;
+	public static native void executeLoginCallback(String jsonArray) /*-{
+		var jsonArrayObj = eval(jsonArray);
+		for (var i = 0; i < jsonArrayObj.length; i++) {
+			eval("$wnd." + jsonArrayObj[i] + ";");
+		}
+	}-*/;
+	public static native void showPropAutocompletionMethods() /*-{
+		var compl = new $wnd.PropertyAutocompletion();
+		compl.draw(compl, true, false);
+	}-*/;
+	public static native void showClassAutocompletionMethods() /*-{
+		var compl = new $wnd.ClassAutocompletion();
+		compl.draw(compl, true, false);
+	}-*/;
 }

@@ -338,7 +338,7 @@ public class Settings extends JsonHelper {
 		//need default values when creating settings objects, as not all values might be filled in our cache and stuff
 		settings.addToSettings(defaultSettings);
 		settings = addUrlArgToSettings(settings);
-		String settingsString = LocalStorageHelper.getSettingsStringFromCookie();
+		String settingsString = LocalStorageHelper.getSettings();
 		
 		if (settingsString != null && settingsString.length() > 0) {
 			settings.addToSettings(settingsString);

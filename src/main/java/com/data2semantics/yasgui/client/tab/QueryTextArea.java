@@ -153,7 +153,7 @@ public class QueryTextArea extends HTMLPane {
 				"}";
 		setQuery(query);
 		view.getSelectedTabSettings().setQueryString(query);
-		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+		LocalStorageHelper.storeSettings(view.getSettings());
 		SparqlQuery.exec(view);
 	}
 	

@@ -182,7 +182,7 @@ public class QueryTabs extends TabSet implements RpcElement {
 				TabSettings tabSettings = new TabSettings(view.getSettings());
 				view.getSettings().addTabSettings(tabSettings);
 				view.getTabs().addTab(tabSettings, true);
-				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+				LocalStorageHelper.storeSettings(view.getSettings());
 				view.getHistory().setHistoryCheckpoint();
 			}
 		});
@@ -199,7 +199,7 @@ public class QueryTabs extends TabSet implements RpcElement {
 			@Override
 			public void onTabSelected(TabSelectedEvent event) {
 				view.getSettings().setSelectedTabNumber(event.getTabNum());
-				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+				LocalStorageHelper.storeSettings(view.getSettings());
 				Scheduler.get().scheduleDeferred(new Command() {
 					public void execute() {
 						JsMethods.initializeQueryCodemirror(((QueryTab) getSelectedTab()).getQueryTextArea().getInputId());
@@ -217,7 +217,7 @@ public class QueryTabs extends TabSet implements RpcElement {
 				int tabIndex = getTabNumber(event.getTab().getID());
 				//Don't use selected one. Title may change by context menu, when other tab is selected
 				settings.getTabArray().get(tabIndex).setTabTitle(event.getNewTitle());
-				LocalStorageHelper.storeSettingsInCookie(settings);
+				LocalStorageHelper.storeSettings(settings);
 			}
 		});
 		addCloseClickHandler(new CloseClickHandler() {
@@ -241,7 +241,7 @@ public class QueryTabs extends TabSet implements RpcElement {
 				removeTab((QueryTab)tab, false, true);
 			}
 		}
-		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+		LocalStorageHelper.storeSettings(view.getSettings());
 	}
 	
 	/**
@@ -257,7 +257,7 @@ public class QueryTabs extends TabSet implements RpcElement {
 			removeTab((QueryTab)tab, false, updateSettings);
 		}
 		if (storeSettings) {
-			LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+			LocalStorageHelper.storeSettings(view.getSettings());
 		}
 	}
 	
@@ -311,7 +311,7 @@ public class QueryTabs extends TabSet implements RpcElement {
 		Settings settings = view.getSettings();
 		settings.setSelectedTabNumber(getSelectedTabNumber());
 		if (storeSettings) {
-			LocalStorageHelper.storeSettingsInCookie(settings);
+			LocalStorageHelper.storeSettings(settings);
 		}
 	}
 	

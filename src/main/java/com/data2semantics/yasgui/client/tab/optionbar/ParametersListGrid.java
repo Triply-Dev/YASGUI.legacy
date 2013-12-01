@@ -69,7 +69,7 @@ public class ParametersListGrid extends ListGrid {
 			}
 		}
 		view.getSelectedTabSettings().resetAndaddCustomQueryArgs(args);
-		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+		LocalStorageHelper.storeSettings(view.getSettings());
 	}
 	
 	private void setParamFields() {
