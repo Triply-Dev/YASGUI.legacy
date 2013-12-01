@@ -56,6 +56,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.data2semantics.yasgui.client.services.YasguiServiceAsync;
+import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.shared.StaticConfig;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.google.common.collect.HashMultimap;
@@ -100,7 +101,7 @@ public class Helper {
 	}
 	
 	public static void onLoadingStart(String message) {
-		JsMethods.showLoadingNoty(DEFAULT_LOADING_ID, message, StaticConfig.VERSION);
+		JsMethods.showLoadingNoty(DEFAULT_LOADING_ID, message, Imgs.LOADING.get());
 	}
 
 
