@@ -14,7 +14,7 @@ var shouldWeFetchNotification = {
 			          {text: 'Login and configure autocompletions', onClick: function($noty) {
 			              $noty.close();
 			              setUriFetcherNotificationShown();
-			              addToLoginStack("showAutocompletionConfig();");
+			              addToLoginStack("drawAutocompletionConfig();");
 			              login();
 			            },
 			          },

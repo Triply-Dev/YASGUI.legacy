@@ -26,6 +26,7 @@ package com.data2semantics.yasgui.client.configmenu;
  * #L%
  */
 
+import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.JsMethods;
 import com.smartgwt.client.widgets.menu.Menu;
 import com.smartgwt.client.widgets.menu.MenuItem;
@@ -34,8 +35,12 @@ import com.smartgwt.client.widgets.menu.events.MenuItemClickEvent;
 
 public class AutocompletionsMenu extends MenuItem {
 
-	public AutocompletionsMenu(String title, String icon) {
+	private View view;
+
+
+	public AutocompletionsMenu(View view, String title, String icon) {
 		super(title, icon);
+		this.view = view;
 		addSubmenuItems();
 	}
 	
@@ -57,7 +62,23 @@ public class AutocompletionsMenu extends MenuItem {
 				JsMethods.showClassAutocompletionMethods();
 			}});
 		autocompletionsSubMenu.setItems(propMethods, classMethods);
+		
+		MenuItem localhostAutocompletion;
+		if (view.getOpenId() != null && view.getOpenId().isLoggedIn()) {
+			localhostAutocompletion = new MenuItem("Manage personal autocompletions");
+			localhostAutocompletion.addClickHandler(new ClickHandler(){
+				@Override
+				public void onClick(MenuItemClickEvent event) {
+					new AutocompletionsConfigWindow(view);
+				}});
+		} else {
+			localhostAutocompletion = new MenuItem("Manage personal autocompletions (log in to change)");
+			localhostAutocompletion.setEnabled(false);
+		}
+		autocompletionsSubMenu.setItems(propMethods, classMethods, localhostAutocompletion);
 		setSubmenu(autocompletionsSubMenu);
 		
 	}
+	
+	
 }

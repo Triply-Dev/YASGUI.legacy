@@ -146,8 +146,7 @@ public class ConfigMenu extends Menu implements RpcElement {
 		}
 	}
 	private void addAutocompletionsSubMenu() {
-		
-		autocompletionsItem = new AutocompletionsMenu("Configure Autocompletions", Imgs.REFRESH.get()); 
+		autocompletionsItem = new AutocompletionsMenu(view, "Configure Autocompletions", Imgs.TEXT.get()); 
 		items.add(autocompletionsItem);
 	}
 	

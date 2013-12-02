@@ -27,6 +27,7 @@ package com.data2semantics.yasgui.client.helpers;
  */
 
 import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.client.configmenu.AutocompletionsConfigWindow;
 import com.data2semantics.yasgui.client.configmenu.OfflineAvailabilityConfig;
 import com.data2semantics.yasgui.client.settings.ExternalLinks;
 import com.data2semantics.yasgui.client.tab.optionbar.endpoints.EndpointInput;
@@ -221,8 +222,8 @@ public class CallableJsMethods {
 			view.getOpenId().showOpenIdProviders();
 		}
 	}
-	public void showAutocompletionConfig() {
-		
+	public void drawAutocompletionConfig() {
+		new AutocompletionsConfigWindow(view);
 	}
 	
 	/**
@@ -348,8 +349,8 @@ public class CallableJsMethods {
 		$wnd.login = function() {
 			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::login()();
 		}
-		$wnd.showAutocompletionConfig = function() {
-			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::showAutocompletionConfig()();
+		$wnd.drawAutocompletionConfig = function() {
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::drawAutocompletionConfig()();
 		}
 	}-*/;
 }

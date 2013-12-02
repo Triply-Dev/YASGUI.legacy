@@ -280,8 +280,7 @@ public class ResultContainer extends VLayout {
 
 				protected void onSuccess(AccessibilityStatus status) {
 					if (status == AccessibilityStatus.INACCESSIBLE && JsMethods.corsEnabled(endpoint)) {
-						//inaccessible from YASGUI, but accessible from client side!
-						
+						JsMethods.drawShouldWeFetchNotification();
 					}
 				}
 
