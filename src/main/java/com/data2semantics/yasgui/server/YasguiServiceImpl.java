@@ -50,6 +50,7 @@ import com.data2semantics.yasgui.server.db.DbHelper;
 import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
 import com.data2semantics.yasgui.server.fetchers.PrefixesFetcher;
 import com.data2semantics.yasgui.server.fetchers.endpoints.EndpointsFetcher;
+import com.data2semantics.yasgui.server.queryanalysis.QueryPropertyExtractor;
 import com.data2semantics.yasgui.shared.Bookmark;
 import com.data2semantics.yasgui.shared.IssueReport;
 import com.data2semantics.yasgui.shared.SettingKeys;

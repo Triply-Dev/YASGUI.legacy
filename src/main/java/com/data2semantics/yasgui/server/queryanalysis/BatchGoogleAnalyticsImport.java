@@ -35,7 +35,6 @@ import java.util.Map;
 import au.com.bytecode.opencsv.CSVReader;
 
 import com.data2semantics.yasgui.server.Helper;
-import com.data2semantics.yasgui.server.QueryPropertyExtractor;
 import com.data2semantics.yasgui.server.db.DbHelper;
 import com.data2semantics.yasgui.shared.autocompletions.AccessibilityStatus;
 import com.data2semantics.yasgui.shared.autocompletions.FetchMethod;

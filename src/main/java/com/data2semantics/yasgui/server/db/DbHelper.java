@@ -95,7 +95,6 @@ public class DbHelper {
 		ResultSet result = preparedStatement.executeQuery();
 		boolean exists = result.next();
 		result.close();
-		preparedStatement.close();
 		if (exists) {
 			PreparedStatement update = connect.prepareStatement("UPDATE Users SET " + "FirstName = ?, " + "LastName = ?, " + "UniqueId = ? ,"
 					+ "FullName = ? ," + "NickName = ? ," + "Email = ? ," + "LastLogin = default " + "WHERE OpenId = ?");
@@ -107,7 +106,6 @@ public class DbHelper {
 			update.setString(6, userDetails.getEmail());
 			update.setString(7, userDetails.getOpenId());
 			update.executeUpdate();
-			update.close();
 		} else {
 			// new user, so insert
 			PreparedStatement insert = connect.prepareStatement("INSERT into Users  "
@@ -126,12 +124,10 @@ public class DbHelper {
 			if (rs.next()) {
 				userId = rs.getInt(1);
 			}
-			insert.close();
 
 			// so we have a new user, store default bookmarks as well
 			storeDefaultBookmarks(userId);
 		}
-		preparedStatement.close();
 	}
 
 	/**
@@ -160,7 +156,6 @@ public class DbHelper {
 				}
 			}
 			insert.executeBatch();
-			insert.close();
 		}
 	}
 
@@ -187,7 +182,6 @@ public class DbHelper {
 		} else {
 			throw new OpenIdException("User not found in database");
 		}
-		preparedStatement.close();
 		result.close();
 		return userDetails;
 	}
@@ -213,7 +207,6 @@ public class DbHelper {
 			bookmarks.add(bookmark);
 		}
 		result.close();
-		preparedStatement.close();
 		return bookmarks.toArray(new Bookmark[bookmarks.size()]);
 	}
 
@@ -244,10 +237,8 @@ public class DbHelper {
 		if (result.next()) {
 			userId = result.getInt("Id");
 			result.close();
-			preparedStatement.close();
 		} else {
 			result.close();
-			preparedStatement.close();
 			throw new OpenIdException("User does not exist in database");
 		}
 		return userId;
@@ -303,7 +294,6 @@ public class DbHelper {
 			}
 		}
 		insert.executeBatch();
-		insert.close();
 
 	}
 
@@ -333,7 +323,6 @@ public class DbHelper {
 			}
 		}
 		insert.executeBatch();
-		insert.close();
 	}
 
 	public HashMultimap<String, String> getAutocompletions(String endpoint, String partialProperty, int maxResults, FetchType type) throws SQLException {
@@ -344,10 +333,14 @@ public class DbHelper {
 		HashMultimap<String, String> autocompletions = HashMultimap.create();
 		PreparedStatement preparedStatement;
 		if (method == null) {
-			preparedStatement = connect.prepareStatement("SELECT Uri, Method FROM " + type.getPluralCamelCase() + " WHERE Endpoint = ? AND Uri LIKE ? LIMIT ?");
+			preparedStatement = connect.prepareStatement("SELECT Uri, Method "
+					+ "FROM " + type.getPluralCamelCase() + " AS completions, CompletionEndpoints AS endpoints "
+					+ " WHERE endpoints.Endpoint = ? AND endpoints.Id = completions.EndpointId AND completions.Uri LIKE ? LIMIT ?");
 			preparedStatement.setInt(3, maxResults);
 		} else {
-			preparedStatement = connect.prepareStatement("SELECT Uri, Method FROM " + type.getPluralCamelCase() + " WHERE Endpoint = ? AND Uri LIKE ? AND Method = ? LIMIT ?");
+			preparedStatement = connect.prepareStatement("SELECT Uri, Method "
+					+ "FROM " + type.getPluralCamelCase() + " AS completions, CompletionEndpoints AS endpoints "
+					+ " WHERE endpoints.Endpoint = ? AND endpoints.Id = completions.EndpointId AND completions.Uri LIKE ? AND completions.Method = ? LIMIT ?");
 			preparedStatement.setString(3, method.get());
 			preparedStatement.setInt(4, maxResults);
 		}
@@ -357,7 +350,6 @@ public class DbHelper {
 		while (result.next()) {
 			autocompletions.put(result.getString("Uri"), result.getString("Method"));
 		}
-		preparedStatement.close();
 		result.close();
 		return autocompletions;
 	}
@@ -366,9 +358,13 @@ public class DbHelper {
 		int count = 0;
 		PreparedStatement preparedStatement;
 		if (method == null) {
-			preparedStatement = connect.prepareStatement("SELECT COUNT(Uri) AS count FROM " + type.getPluralCamelCase() + " WHERE Endpoint = ? AND Uri LIKE ?");
+			preparedStatement = connect.prepareStatement("SELECT COUNT(Uri) AS count "
+					+ " FROM " + type.getPluralCamelCase() + " AS completions, CompletionEndpoints AS endpoints"
+					+ " WHERE endpoints.Endpoint = ? AND endpoints.Id = completions.EndpointId AND completions.Uri LIKE ?");
 		} else {
-			preparedStatement = connect.prepareStatement("SELECT COUNT(Uri) AS count FROM " + type.getPluralCamelCase() + " WHERE Endpoint = ? AND Uri LIKE ? AND Method = ?");
+			preparedStatement = connect.prepareStatement("SELECT COUNT(Uri) AS count "
+					+ "FROM " + type.getPluralCamelCase() + " AS completions, CompletionEndpoints AS endpoints"
+					+ " WHERE endpoints.Endpoint = ? AND endpoints.Id = completions.EndpointId AND completions.Uri LIKE ? AND completions.Method = ?");
 			preparedStatement.setString(3, method.get());
 		}
 		preparedStatement.setString(1, endpoint);
@@ -376,14 +372,15 @@ public class DbHelper {
 		ResultSet result = preparedStatement.executeQuery();
 		result.next();// only 1 result;
 		count = result.getInt("count");
-		preparedStatement.close();
 		result.close();
 		return count;
 	}
 	
 	public Map<String, Boolean> areAutocompletionsAdded(String endpoint, Set<String> checkUris, FetchType type, FetchMethod method) throws SQLException {
 		HashMap<String, Boolean> addedProperties = new HashMap<String, Boolean>();
-		PreparedStatement preparedStatement = connect.prepareStatement("SELECT Uri FROM " + type.getPluralCamelCase() + " WHERE Endpoint = ? AND Uri LIKE ? AND Method = ?");
+		PreparedStatement preparedStatement = connect.prepareStatement("SELECT Uri FROM "
+					+ type.getPluralCamelCase() + " AS completions, CompletionEndpoints AS endpoints "
+			 		+ "WHERE endpoints.Endpoint = ? AND endpoints.Id = completions.EndpointId AND completions.Uri LIKE ? AND completions.Method = ?");
 		for (String uri: checkUris) {
 			preparedStatement.setString(1, endpoint.trim());
 			preparedStatement.setString(2, uri.trim());
@@ -397,19 +394,19 @@ public class DbHelper {
 	public void setAutocompletionLog(String endpoint, FetchStatus status, FetchType fetchType, String message, boolean pagination) throws SQLException {
 		PreparedStatement ps;
 		if (message != null) {
-			String sql = "insert into Log" + fetchType.getSingularCamelCase() + "Fetcher (Endpoint, Status, Pagination, Message) values (?, ?, ?, ?)";
+			String sql = "insert into CompletionsLog (EndpointId, Type, Status, Pagination, Message) values (?, ?, ?, ?, ?)";
 			ps = connect.prepareStatement(sql);
-			ps.setString(4, message);
+			ps.setString(5, message);
 		} else {
-			String sql = "insert into Log" + fetchType.getSingularCamelCase() + "Fetcher (Endpoint, Status, Pagination) values (?, ?, ?)";
+			String sql = "insert into CompletionsLog (EndpointId, Type, Status, Pagination) values (?, ?, ?, ?)";
 			ps = connect.prepareStatement(sql);
 		}
-		ps.setString(1, endpoint.trim());
-		ps.setString(2, status.get());
-		ps.setBoolean(3, pagination);
+		ps.setInt(1, getIdForEndpoint(endpoint));
+		ps.setString(2, fetchType.getSingular());
+		ps.setString(3, status.get());
+		ps.setBoolean(4, pagination);
 		
 		ps.execute();
-		ps.close();
 	}
 	
 	public void setAutocompletionLog(String endpoint, FetchStatus status, FetchType fetchType, String message) throws SQLException {
@@ -420,19 +417,18 @@ public class DbHelper {
 	}
 	
 	public void clearPreviousAutocompletionFetches(String endpoint, FetchMethod method, FetchType fetchType) throws SQLException {
-		String sql = "DELETE FROM " + fetchType.getPluralCamelCase() + " WHERE Method = ? AND Endpoint = ?";
+		String sql = "DELETE FROM " + fetchType.getPluralCamelCase() + " AS completions, CompletionEndpoints AS endpoints WHERE completions.Method = ? AND endpoints.Endpoint = ? AND endpoints.Id = completions.EndpointId";
 		PreparedStatement ps = connect.prepareStatement(sql);
 		ps.setString(1, method.get());
 		ps.setString(2, endpoint);
 		ps.execute();
-		ps.close();
 	}
 	
 	public void storeCompletionFetchesFromQueryResult(String endpoint, FetchType type, FetchMethod method, com.hp.hpl.jena.query.ResultSet resultSet, String sparqlKeyword) throws SQLException, PossiblyNeedPaging {
 		storeCompletionFetchesFromQueryResult(endpoint, type, method, resultSet, sparqlKeyword, false);
 	}
 	public void storeCompletionFetchesFromQueryResult(String endpoint, FetchType type, FetchMethod method, com.hp.hpl.jena.query.ResultSet resultSet, String sparqlKeyword, boolean bypassPaginationCheck) throws SQLException, PossiblyNeedPaging {
-		String sql = "insert into " + type.getPluralCamelCase() + " (Uri, Endpoint, Method) values (?, ?, ?)";
+		String sql = "insert into " + type.getPluralCamelCase() + " (Uri, EndpointId, Method) values (?, ?, ?)";
 		PreparedStatement ps = connect.prepareStatement(sql);
 
 		final int batchSize = 1000;
@@ -442,7 +438,7 @@ public class DbHelper {
 			RDFNode rdfNode = querySolution.get(sparqlKeyword);
 			
 			ps.setString(1, rdfNode.asResource().getURI().trim());
-			ps.setString(2, endpoint.trim());
+			ps.setInt(2, getIdForEndpoint(endpoint));
 			ps.setString(3, method.get());
 			ps.addBatch();
 			if (++count % batchSize == 0) {
@@ -452,7 +448,6 @@ public class DbHelper {
 		}
 		System.out.println("looping done");
 		ps.executeBatch(); // insert remaining records
-		ps.close();
 		if (!bypassPaginationCheck && PropertiesFetcher.doubtfullResultSet(count)) {
 			PossiblyNeedPaging pagingException = new PossiblyNeedPaging();
 			pagingException.setQueryCount(count);
@@ -461,14 +456,14 @@ public class DbHelper {
 	}
 	
 	public void storeAutocompletionsFromQueryAnalysis(String endpoint, FetchType type, FetchMethod method, Set<String> properties) throws SQLException {
-		String sql = "insert into " + type.getPluralCamelCase() + " (Uri, Endpoint, Method) values (?, ?, ?)";
+		String sql = "insert into " + type.getPluralCamelCase() + " (Uri, EndpointId, Method) values (?, ?, ?)";
 		PreparedStatement ps = connect.prepareStatement(sql);
 
 		final int batchSize = 1000;
 		int count = 0;
 		for (String property: properties) {
 			ps.setString(1, property.trim());
-			ps.setString(2, endpoint.trim());
+			ps.setInt(2, getIdForEndpoint(endpoint));
 			ps.setString(3, method.get());
 			ps.addBatch();
 			if (++count % batchSize == 0) {
@@ -476,30 +471,33 @@ public class DbHelper {
 			}
 		}
 		ps.executeBatch(); // insert remaining records
-		ps.close();
 	}
 	
 	public boolean autocompletionFetchingEnabled(String endpoint, FetchType type, FetchMethod method) throws SQLException {
-		String sql = "SELECT * FROM Disabled" + type.getSingularCamelCase() + "Endpoints WHERE Endpoint = ? AND Method = ?";
+		String sql = "SELECT * "
+				+ "FROM DisabledCompletionEndpoints AS disabledEndpoints, CompletionEndpoints AS endpoints "
+				+ "WHERE endpoints.Endpoint = ? AND disabledEndpoints.EndpointId = endpoints.Id AND disabledEndpoints.Method = ? AND disabledEndpoints.Type = ?";
 		PreparedStatement ps = connect.prepareStatement(sql);
 		ps.setString(1, endpoint.trim());
 		ps.setString(2, method.get());
+		ps.setString(3, type.getSingular());
 		ResultSet result = ps.executeQuery();
 		boolean disabled = result.next();// only 1 result;
-		ps.close();
 		result.close();
 		return !disabled;
 	}
 	
 	public HashMultimap<String, FetchMethod> getDisabledEndpointsForCompletionsFetching(FetchType type) throws SQLException {
-		String sql = "SELECT DISTINCT Endpoint, Method FROM Disabled" + type.getSingularCamelCase() + "Endpoints WHERE 1";
+		String sql = "SELECT DISTINCT endpoints.Endpoint, disabledEndpoints.Method "
+				+ "FROM DisabledCompletionEndpoints AS disabledEndpoints, CompletionEndpoints AS endpoints "
+				+ "WHERE disabledEndpoints.EndpointId = endpoints.Id AND disabledEndpoints.Type = ?";
 		PreparedStatement ps = connect.prepareStatement(sql);
+		ps.setString(1, type.getSingular());
 		ResultSet result = ps.executeQuery();
 		HashMultimap<String, FetchMethod> endpoints = HashMultimap.create();
 		while (result.next()) {
 			endpoints.put(result.getString("Endpoint"), Helper.stringToFetchMethod(result.getString("Method")));
 		}
-		ps.close();
 		result.close();
 		return endpoints;
 	}
@@ -512,11 +510,14 @@ public class DbHelper {
 	 * @throws SQLException
 	 */
 	public boolean lastFetchesFailed(String endpoint, FetchType type, int numberOfFetchesToCheck) throws SQLException {
-		String sql = "SELECT * FROM Log" + type.getSingularCamelCase() + "Fetcher WHERE Endpoint = ? AND Status != ? ORDER BY Time DESC LIMIT ?";
+		String sql = "SELECT * "
+				+ "FROM CompletionsLog AS log, CompletionEndpoints AS endpoints "
+				+ "WHERE endpoints.Endpoint = ? AND endpoints.Id = log.EndpointId AND log.Status != ? AND log.Type = ? ORDER BY Time DESC LIMIT ?";
 		PreparedStatement ps = connect.prepareStatement(sql);
 		ps.setString(1, endpoint.trim());
 		ps.setString(2, FetchStatus.FETCHING.get());//we don't want the fetching status in there. Only the failed and succeeded ones
-		ps.setInt(3, numberOfFetchesToCheck);
+		ps.setString(3, type.getSingular());
+		ps.setInt(4, numberOfFetchesToCheck);
 		ResultSet result = ps.executeQuery();
 		int count = 0;
 		boolean allFailed = true;
@@ -529,15 +530,17 @@ public class DbHelper {
 		if (count != numberOfFetchesToCheck) {
 			allFailed = false;
 		}
-		ps.close();
 		result.close();
 		return allFailed;
 	}
 	public boolean stillFetching(String endpoint, FetchType fetchType, int timeFrameSearch) throws SQLException {
-		String sql = "SELECT Status FROM Log" + fetchType.getSingularCamelCase() + "Fetcher WHERE Endpoint = ? AND TIMESTAMPDIFF(minute,Time,NOW()) <= ? ORDER BY Time DESC LIMIT 1";
+		String sql = "SELECT Status "
+				+ "FROM CompletionsLog AS log, CompletionEndpoints AS endpoints "
+				+ "WHERE endpoints.Endpoint = ? AND endpoints.Id = log.EndpointId AND TIMESTAMPDIFF(minute,log.Time,NOW()) <= ? AND log.Type = ? ORDER BY log.Time DESC LIMIT 1";
 		PreparedStatement ps = connect.prepareStatement(sql);
 		ps.setString(1, endpoint.trim());
 		ps.setInt(2, timeFrameSearch);
+		ps.setString(3, fetchType.getSingular());
 		ResultSet result = ps.executeQuery();
 		boolean stillFetching = false;
 		while (result.next()) {
@@ -545,17 +548,19 @@ public class DbHelper {
 				stillFetching = true;
 			}
 		}
-		ps.close();
 		result.close();
 		return stillFetching;
 	}
 	public Map<String, Integer> getFailCountForEndpoints(FetchType type) throws SQLException {
-		String sql = "SELECT Endpoint, COUNT( Endpoint ) AS NumberFails\n" + 
-				"FROM Log" + type.getSingularCamelCase() + "Fetcher \n" + 
-				"WHERE STATUS =  ?\n" + 
-				"GROUP BY Endpoint\n";
+		String sql = "SELECT endpoints.Endpoint, COUNT( endpoints.Endpoint ) AS NumberFails " + 
+				"FROM CompletionsLog AS log"
+				+ " JOIN CompletionEndpoints AS endpoints on endpoints.Id = log.EndpointId " + 
+				"WHERE log.STATUS =  ? "
+				+ "AND log.Type = ? " + 
+				"GROUP BY endpoints.Endpoint";
 		PreparedStatement ps = connect.prepareStatement(sql);
 		ps.setString(1, FetchStatus.FAILED.get());
+		ps.setString(2, type.getSingular());
 		ResultSet result = ps.executeQuery();
 		Map<String, Integer> endpoints = new HashMap<String, Integer>();
 		while (result.next()) {
@@ -567,7 +572,9 @@ public class DbHelper {
 	public Set<String> getEndpointsWithAutocompletions(FetchType fetchType) throws SQLException {
 		Set<String> endpoints = new HashSet<String>();
 		
-		String sql = "SELECT DISTINCT Endpoint FROM " + fetchType.getPluralCamelCase() + " WHERE 1";
+		String sql = "SELECT DISTINCT endpoints.Endpoint "
+				+ "FROM " + fetchType.getPluralCamelCase() + " AS completions, CompletionEndpoints AS endpoints  "
+				+ "WHERE completions.EndpointId = endpoints.Id";
 		PreparedStatement ps = connect.prepareStatement(sql);
 		ResultSet result = ps.executeQuery();
 		while (result.next()) {
@@ -617,18 +624,42 @@ public class DbHelper {
 	}
 	
 	public void setEndpointAccessible(String endpoint, boolean accessible) throws SQLException {
-		String sql = "INSERT INTO AccessibleEndpoints (`Endpoint`, `Accessible`) VALUES (?, ?)";
+		String sql = "INSERT INTO AccessibleEndpoints (`EndpointId`, `Accessible`) VALUES (?, ?)";
 		PreparedStatement ps = connect.prepareStatement(sql);
-		ps.setString(1, endpoint);
+		ps.setInt(1, getIdForEndpoint(endpoint));
 		ps.setBoolean(2, accessible);
 		ps.executeUpdate();
+	}
+	
+	public int getIdForEndpoint(String endpoint) throws SQLException {
+		endpoint = endpoint.trim();
+		int endpointId;
+		String selectSql = "SELECT Id FROM CompletionEndpoints WHERE Endpoint = ?";
+		PreparedStatement ps = connect.prepareStatement(selectSql);
+		ps.setString(1, endpoint);
+		ResultSet result = ps.executeQuery();
+		if (result.next()) {
+			endpointId = result.getInt("Id");
+		} else {
+			String insertSql = "INSERT INTO CompletionEndpoints (Endpoint) VALUES (?)";
+			PreparedStatement psUpdate = connect.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS);
+			psUpdate.setString(1, endpoint);
+			
+			psUpdate.executeUpdate();
+			ResultSet keys = psUpdate.getGeneratedKeys();
+			keys.next();
+			endpointId = keys.getInt(1);
+		}
+		return endpointId;
 	}
 	public void setEndpointAccessible(String endpoint, AccessibilityStatus accessible) throws SQLException {
 		setEndpointAccessible(endpoint, accessible == AccessibilityStatus.ACCESSIBLE);
 	}
 	
 	public AccessibilityStatus isEndpointAccessible(String endpoint, boolean allowActiveCheck) throws SQLException {
-		String sql = "SELECT `Accessible` FROM AccessibleEndpoints WHERE Endpoint = ? ORDER BY Time LIMIT 1 ";
+		String sql = "SELECT accessibleEndpoints.Accessible "
+				+ "FROM AccessibleEndpoints AS accessibleEndpoints, CompletionEndpoints AS endpoints "
+				+ "WHERE endpoints.Endpoint = ? AND endpoints.Id = accessibleEndpoints.EndpointId ORDER BY accessibleEndpoints.Time LIMIT 1 ";
 		PreparedStatement ps = connect.prepareStatement(sql);
 		ps.setString(1, endpoint);
 		ResultSet result = ps.executeQuery();
@@ -649,13 +680,14 @@ public class DbHelper {
 
 	public static void main(String[] args) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
 		DbHelper dbHelper = new DbHelper(new File("src/main/webapp/"));
-		dbHelper.setEndpointAccessible("httpsdf", true);
-//		AutocompletionsInfo info = dbHelper.getAutocompletionInfo();
-//		System.out.println(info.toString());
+//		dbHelper.setEndpointAccessible("httpsdf", true);
+//		System.out.println("" + dbHelper.getIdForEndpoint("httpdsdf"));
+		AutocompletionsInfo info = dbHelper.getAutocompletionInfo();
+		System.out.println(info.toString());
 //		for (String endpoint: dbHelper.getDisabledEndpointsForCompletionsFetching(FetchType.CLASSES, FetchMethod.QUERY_ANALYSIS)) {
 //			System.out.println(endpoint);
 //		}
-//		System.out.println((dbHelper.stillFetching("http://dbpedia.org/sparql", 5)? "still fetching":"done fetching"));
+//		System.out.println((dbHelper.lastFetchesFailed("http://dbpedia.org/sparql", FetchType.PROPERTIES, 5)? "still fetching":"done fetching"));
 	}
 
 

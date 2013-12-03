@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.server;
+package com.data2semantics.yasgui.server.queryanalysis;
 
 /*
  * #%L
@@ -40,7 +40,6 @@ import java.util.Set;
 import org.json.JSONException;
 
 import com.data2semantics.yasgui.server.db.DbHelper;
-import com.data2semantics.yasgui.server.queryanalysis.Query;
 import com.data2semantics.yasgui.shared.autocompletions.AccessibilityStatus;
 import com.data2semantics.yasgui.shared.autocompletions.FetchMethod;
 import com.data2semantics.yasgui.shared.autocompletions.FetchType;
@@ -160,6 +159,6 @@ public class QueryPropertyExtractor {
 				"SELECT DISTINCT * WHERE {\n" + 
 				"  ?bla rdf:type rdfs:Class\n" + 
 				"} LIMIT 100";
-		QueryPropertyExtractor.store(dbHelper, query, "http://services.data.gov/sparql", true);
+		QueryPropertyExtractor.store(dbHelper, query, "http://services.data.gov/sparql");
 	}
 }
