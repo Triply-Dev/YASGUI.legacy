@@ -48,6 +48,7 @@ import org.json.JSONObject;
 
 import com.data2semantics.yasgui.shared.Bookmark;
 import com.data2semantics.yasgui.shared.SettingKeys;
+import com.data2semantics.yasgui.shared.StaticConfig;
 import com.data2semantics.yasgui.shared.autocompletions.AccessibilityStatus;
 import com.data2semantics.yasgui.shared.autocompletions.FetchMethod;
 import com.data2semantics.yasgui.shared.autocompletions.FetchType;

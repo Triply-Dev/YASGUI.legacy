@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.server.queryanalysis;
+package com.data2semantics.yasgui.server.autocompletions;
 
 /*
  * #%L
@@ -40,43 +40,51 @@ import java.util.Set;
 import org.json.JSONException;
 
 import com.data2semantics.yasgui.server.db.DbHelper;
-import com.data2semantics.yasgui.shared.autocompletions.AccessibilityStatus;
+import com.data2semantics.yasgui.shared.autocompletions.EndpointPrivateFlag;
 import com.data2semantics.yasgui.shared.autocompletions.FetchMethod;
 import com.data2semantics.yasgui.shared.autocompletions.FetchType;
+import com.data2semantics.yasgui.shared.exceptions.EndpointIdException;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
 
-public class QueryPropertyExtractor {
+public class QueryCompletionExtractor {
 	
 	private Query query;
 	private String endpoint;
+	private int endpointId;
 	private DbHelper dbHelper;
 	private HashMap<FetchType, Set<String>> possibles = new HashMap<FetchType, Set<String>>();
 	private HashMap<FetchType, Set<String>> certains = new HashMap<FetchType, Set<String>>();
 	
 	private boolean debug = false;
-	public QueryPropertyExtractor(DbHelper dbHelper, String query, String endpoint, boolean debug) {
+	public QueryCompletionExtractor(DbHelper dbHelper, String query, String endpoint, boolean debug) throws EndpointIdException, SQLException {
 		this.query = Query.create(query);
 		this.endpoint = endpoint;
 		this.dbHelper = dbHelper;
 		this.debug = debug;
+		getEndpointId();
 	}
-	public QueryPropertyExtractor(DbHelper dbHelper, String query, String endpoint) {
+	
+	private void getEndpointId() throws EndpointIdException, SQLException {
+		try {
+			this.endpointId = dbHelper.getEndpointId(endpoint, EndpointPrivateFlag.OWN_AND_PUBLIC);
+		} catch (EndpointIdException e) {
+			//endpoint id does not exists probably
+			this.endpointId = dbHelper.generateIdForEndpoint(endpoint);
+			
+		}
+	}
+	
+	public QueryCompletionExtractor(DbHelper dbHelper, String query, String endpoint) throws EndpointIdException, SQLException {
 		this(dbHelper, query, endpoint, false);
 	}
 	
-	public AccessibilityStatus analyzeAndStore() throws SQLException {
+	public void analyzeAndStore() throws SQLException {
 		analyzeQuery();
 		removeExistingUris(FetchType.CLASSES);
 		removeExistingUris(FetchType.PROPERTIES);
 		checkPossibles();
-		AccessibilityStatus status = dbHelper.isEndpointAccessible(endpoint, true);
-		if (status == AccessibilityStatus.ACCESSIBLE) {
-			store();
-		} else {
-			System.out.println("not accessible: " + endpoint);
-		}
-		return status;
+		store();
 	}
 	
 	private void checkPossibles() {
@@ -111,7 +119,7 @@ public class QueryPropertyExtractor {
 		checkStringSet.addAll(certains.get(type));
 		checkStringSet.addAll(possibles.get(type));
 		if (checkStringSet.size() > 0) {
-			Map<String, Boolean> areCompletionsAdded = dbHelper.areAutocompletionsAdded(endpoint, checkStringSet, type, FetchMethod.QUERY_ANALYSIS);
+			Map<String, Boolean> areCompletionsAdded = dbHelper.areAutocompletionsAdded(endpointId, checkStringSet, type, FetchMethod.QUERY_ANALYSIS);
 			for (Entry<String, Boolean> entry: areCompletionsAdded.entrySet()) {
 				if (entry.getValue()) {
 					if (certains.get(type).contains(entry.getKey())) certains.get(type).remove(entry.getKey());
@@ -137,19 +145,19 @@ public class QueryPropertyExtractor {
 				if (debug) {
 					System.out.println("storing " + certains.get(type).size() + " " + type.getPlural());
 				} else {
-					dbHelper.storeAutocompletionsFromQueryAnalysis(endpoint, type, FetchMethod.QUERY_ANALYSIS, certains.get(type));
+					dbHelper.storeAutocompletionsFromQueryAnalysis(endpointId, type, FetchMethod.QUERY_ANALYSIS, certains.get(type));
 				}
 			}
 		}
 		
 	}
 	
-	public static AccessibilityStatus store(DbHelper dbHelper, String query, String endpoint) throws SQLException {
-		return store(dbHelper, query, endpoint, false);
+	public static void store(DbHelper dbHelper, String query, String endpoint) throws SQLException, EndpointIdException {
+		store(dbHelper, query, endpoint, false);
 	}
-	public static AccessibilityStatus store(DbHelper dbHelper, String query, String endpoint, boolean debug) throws SQLException {
-		QueryPropertyExtractor extractor = new QueryPropertyExtractor(dbHelper, query, endpoint, debug);
-		return extractor.analyzeAndStore();
+	public static void store(DbHelper dbHelper, String query, String endpoint, boolean debug) throws SQLException {
+		QueryCompletionExtractor extractor = new QueryCompletionExtractor(dbHelper, query, endpoint, debug);
+		extractor.analyzeAndStore();
 	}
 	public static void main (String[] args) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
 		DbHelper dbHelper = new DbHelper(new File("src/main/webapp/"));
@@ -159,6 +167,6 @@ public class QueryPropertyExtractor {
 				"SELECT DISTINCT * WHERE {\n" + 
 				"  ?bla rdf:type rdfs:Class\n" + 
 				"} LIMIT 100";
-		QueryPropertyExtractor.store(dbHelper, query, "http://services.data.gov/sparql");
+		QueryCompletionExtractor.store(dbHelper, query, "http://services.data.gov/sparql");
 	}
 }

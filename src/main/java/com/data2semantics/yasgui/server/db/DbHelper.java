@@ -34,6 +34,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,9 +57,11 @@ import com.data2semantics.yasgui.shared.Bookmark;
 import com.data2semantics.yasgui.shared.UserDetails;
 import com.data2semantics.yasgui.shared.autocompletions.AccessibilityStatus;
 import com.data2semantics.yasgui.shared.autocompletions.AutocompletionsInfo;
+import com.data2semantics.yasgui.shared.autocompletions.EndpointPrivateFlag;
 import com.data2semantics.yasgui.shared.autocompletions.FetchMethod;
 import com.data2semantics.yasgui.shared.autocompletions.FetchStatus;
 import com.data2semantics.yasgui.shared.autocompletions.FetchType;
+import com.data2semantics.yasgui.shared.exceptions.EndpointIdException;
 import com.data2semantics.yasgui.shared.exceptions.OpenIdException;
 import com.data2semantics.yasgui.shared.exceptions.PossiblyNeedPaging;
 import com.google.common.collect.HashMultimap;
@@ -243,6 +246,16 @@ public class DbHelper {
 		}
 		return userId;
 	}
+	
+	private int getUserId() throws SQLException {
+		int userId = -1;
+		try {
+			userId = getUserId(HttpCookies.getCookieValue(request, OpenIdServlet.uniqueIdCookieName));
+		} catch (OpenIdException e) {
+			//user is not in db (i.e. not logged in?)
+		}
+		return userId;
+	}
 
 	/**
 	 * Clear a number of bookmarks from the DB
@@ -325,26 +338,26 @@ public class DbHelper {
 		insert.executeBatch();
 	}
 
-	public HashMultimap<String, String> getAutocompletions(String endpoint, String partialProperty, int maxResults, FetchType type) throws SQLException {
-		return getAutocompletions(endpoint, partialProperty, maxResults, type, null);
+	public HashMultimap<String, String> getAutocompletions(int endpointId, String partialProperty, int maxResults, FetchType type) throws SQLException {
+		return getAutocompletions(endpointId, partialProperty, maxResults, type, null);
 	}
 
-	public HashMultimap<String, String> getAutocompletions(String endpoint, String partialProperty, int maxResults, FetchType type, FetchMethod method) throws SQLException {
+	public HashMultimap<String, String> getAutocompletions(int endpointId, String partialProperty, int maxResults, FetchType type, FetchMethod method) throws SQLException {
 		HashMultimap<String, String> autocompletions = HashMultimap.create();
 		PreparedStatement preparedStatement;
 		if (method == null) {
 			preparedStatement = connect.prepareStatement("SELECT Uri, Method "
-					+ "FROM " + type.getPluralCamelCase() + " AS completions, CompletionEndpoints AS endpoints "
-					+ " WHERE endpoints.Endpoint = ? AND endpoints.Id = completions.EndpointId AND completions.Uri LIKE ? LIMIT ?");
+					+ "FROM " + type.getPluralCamelCase() + " AS completions "
+					+ " WHERE completions.EndpointId = ? AND completions.Uri LIKE ? LIMIT ?");
 			preparedStatement.setInt(3, maxResults);
 		} else {
 			preparedStatement = connect.prepareStatement("SELECT Uri, Method "
-					+ "FROM " + type.getPluralCamelCase() + " AS completions, CompletionEndpoints AS endpoints "
-					+ " WHERE endpoints.Endpoint = ? AND endpoints.Id = completions.EndpointId AND completions.Uri LIKE ? AND completions.Method = ? LIMIT ?");
+					+ "FROM " + type.getPluralCamelCase() + " AS completions "
+					+ " WHERE completions.EndpointId = ? AND completions.Uri LIKE ? AND completions.Method = ? LIMIT ?");
 			preparedStatement.setString(3, method.get());
 			preparedStatement.setInt(4, maxResults);
 		}
-		preparedStatement.setString(1, endpoint);
+		preparedStatement.setInt(1, endpointId);
 		preparedStatement.setString(2, partialProperty + "%");
 		ResultSet result = preparedStatement.executeQuery();
 		while (result.next()) {
@@ -354,20 +367,20 @@ public class DbHelper {
 		return autocompletions;
 	}
 
-	public int getAutcompletionCount(String endpoint, String partialProperty, FetchType type, FetchMethod method) throws SQLException {
+	public int getAutcompletionCount(int endpointId, String partialProperty, FetchType type, FetchMethod method) throws SQLException {
 		int count = 0;
 		PreparedStatement preparedStatement;
 		if (method == null) {
 			preparedStatement = connect.prepareStatement("SELECT COUNT(Uri) AS count "
-					+ " FROM " + type.getPluralCamelCase() + " AS completions, CompletionEndpoints AS endpoints"
-					+ " WHERE endpoints.Endpoint = ? AND endpoints.Id = completions.EndpointId AND completions.Uri LIKE ?");
+					+ " FROM " + type.getPluralCamelCase() + " AS completions"
+					+ " WHERE completions.EndpointId = ? AND completions.Uri LIKE ?");
 		} else {
 			preparedStatement = connect.prepareStatement("SELECT COUNT(Uri) AS count "
-					+ "FROM " + type.getPluralCamelCase() + " AS completions, CompletionEndpoints AS endpoints"
-					+ " WHERE endpoints.Endpoint = ? AND endpoints.Id = completions.EndpointId AND completions.Uri LIKE ? AND completions.Method = ?");
+					+ "FROM " + type.getPluralCamelCase() + " AS completions"
+					+ " WHERE completions.EndpointId = ? AND completions.Uri LIKE ? AND completions.Method = ?");
 			preparedStatement.setString(3, method.get());
 		}
-		preparedStatement.setString(1, endpoint);
+		preparedStatement.setInt(1, endpointId);
 		preparedStatement.setString(2, partialProperty + "%");
 		ResultSet result = preparedStatement.executeQuery();
 		result.next();// only 1 result;
@@ -376,13 +389,13 @@ public class DbHelper {
 		return count;
 	}
 	
-	public Map<String, Boolean> areAutocompletionsAdded(String endpoint, Set<String> checkUris, FetchType type, FetchMethod method) throws SQLException {
+	public Map<String, Boolean> areAutocompletionsAdded(int endpointId, Set<String> checkUris, FetchType type, FetchMethod method) throws SQLException {
 		HashMap<String, Boolean> addedProperties = new HashMap<String, Boolean>();
 		PreparedStatement preparedStatement = connect.prepareStatement("SELECT Uri FROM "
-					+ type.getPluralCamelCase() + " AS completions, CompletionEndpoints AS endpoints "
-			 		+ "WHERE endpoints.Endpoint = ? AND endpoints.Id = completions.EndpointId AND completions.Uri LIKE ? AND completions.Method = ?");
+					+ type.getPluralCamelCase() + " AS completions "
+			 		+ "WHERE completions.EndpointId = ? AND completions.Uri LIKE ? AND completions.Method = ?");
 		for (String uri: checkUris) {
-			preparedStatement.setString(1, endpoint.trim());
+			preparedStatement.setInt(1, endpointId);
 			preparedStatement.setString(2, uri.trim());
 			preparedStatement.setString(3, method.get());
 			ResultSet result = preparedStatement.executeQuery();
@@ -391,7 +404,7 @@ public class DbHelper {
 		return addedProperties;
 	}
 
-	public void setAutocompletionLog(String endpoint, FetchStatus status, FetchType fetchType, String message, boolean pagination) throws SQLException {
+	public void setAutocompletionLog(int endpointId, FetchStatus status, FetchType fetchType, String message, boolean pagination) throws SQLException {
 		PreparedStatement ps;
 		if (message != null) {
 			String sql = "insert into CompletionsLog (EndpointId, Type, Status, Pagination, Message) values (?, ?, ?, ?, ?)";
@@ -401,33 +414,34 @@ public class DbHelper {
 			String sql = "insert into CompletionsLog (EndpointId, Type, Status, Pagination) values (?, ?, ?, ?)";
 			ps = connect.prepareStatement(sql);
 		}
-		ps.setInt(1, getIdForEndpoint(endpoint));
+		ps.setInt(1, endpointId);
 		ps.setString(2, fetchType.getSingular());
 		ps.setString(3, status.get());
 		ps.setBoolean(4, pagination);
-		
 		ps.execute();
 	}
 	
-	public void setAutocompletionLog(String endpoint, FetchStatus status, FetchType fetchType, String message) throws SQLException {
-		setAutocompletionLog(endpoint, status, fetchType, message, false);
+	public void setAutocompletionLog(int endpointId, FetchStatus status, FetchType fetchType, String message) throws SQLException {
+		setAutocompletionLog(endpointId, status, fetchType, message, false);
 	}
-	public void setAutocompletionLog(String endpoint, FetchStatus status, FetchType fetchType) throws SQLException {
-		setAutocompletionLog(endpoint, status, fetchType, null);
+	public void setAutocompletionLog(int endpointId, FetchStatus status, FetchType fetchType) throws SQLException {
+		setAutocompletionLog(endpointId, status, fetchType, null);
 	}
 	
-	public void clearPreviousAutocompletionFetches(String endpoint, FetchMethod method, FetchType fetchType) throws SQLException {
-		String sql = "DELETE FROM " + fetchType.getPluralCamelCase() + " AS completions, CompletionEndpoints AS endpoints WHERE completions.Method = ? AND endpoints.Endpoint = ? AND endpoints.Id = completions.EndpointId";
+	public void clearPreviousAutocompletionFetches(int endpointId, FetchMethod method, FetchType fetchType) throws SQLException {
+		String sql = "DELETE FROM " + fetchType.getPluralCamelCase() + ""
+				+ " WHERE Method = ? AND EndpointId = ?";
 		PreparedStatement ps = connect.prepareStatement(sql);
+		System.out.println(sql);
 		ps.setString(1, method.get());
-		ps.setString(2, endpoint);
+		ps.setInt(2, endpointId);
 		ps.execute();
 	}
 	
-	public void storeCompletionFetchesFromQueryResult(String endpoint, FetchType type, FetchMethod method, com.hp.hpl.jena.query.ResultSet resultSet, String sparqlKeyword) throws SQLException, PossiblyNeedPaging {
-		storeCompletionFetchesFromQueryResult(endpoint, type, method, resultSet, sparqlKeyword, false);
+	public void storeCompletionFetchesFromQueryResult(int endpointId, FetchType type, FetchMethod method, com.hp.hpl.jena.query.ResultSet resultSet, String sparqlKeyword) throws SQLException, PossiblyNeedPaging {
+		storeCompletionFetchesFromQueryResult(endpointId, type, method, resultSet, sparqlKeyword, false);
 	}
-	public void storeCompletionFetchesFromQueryResult(String endpoint, FetchType type, FetchMethod method, com.hp.hpl.jena.query.ResultSet resultSet, String sparqlKeyword, boolean bypassPaginationCheck) throws SQLException, PossiblyNeedPaging {
+	public void storeCompletionFetchesFromQueryResult(int endpointId, FetchType type, FetchMethod method, com.hp.hpl.jena.query.ResultSet resultSet, String sparqlKeyword, boolean bypassPaginationCheck) throws SQLException, PossiblyNeedPaging {
 		String sql = "insert into " + type.getPluralCamelCase() + " (Uri, EndpointId, Method) values (?, ?, ?)";
 		PreparedStatement ps = connect.prepareStatement(sql);
 
@@ -438,7 +452,7 @@ public class DbHelper {
 			RDFNode rdfNode = querySolution.get(sparqlKeyword);
 			
 			ps.setString(1, rdfNode.asResource().getURI().trim());
-			ps.setInt(2, getIdForEndpoint(endpoint));
+			ps.setInt(2, endpointId);
 			ps.setString(3, method.get());
 			ps.addBatch();
 			if (++count % batchSize == 0) {
@@ -455,7 +469,7 @@ public class DbHelper {
 		}
 	}
 	
-	public void storeAutocompletionsFromQueryAnalysis(String endpoint, FetchType type, FetchMethod method, Set<String> properties) throws SQLException {
+	public void storeAutocompletionsFromQueryAnalysis(int endpointId, FetchType type, FetchMethod method, Set<String> properties) throws SQLException {
 		String sql = "insert into " + type.getPluralCamelCase() + " (Uri, EndpointId, Method) values (?, ?, ?)";
 		PreparedStatement ps = connect.prepareStatement(sql);
 
@@ -463,7 +477,7 @@ public class DbHelper {
 		int count = 0;
 		for (String property: properties) {
 			ps.setString(1, property.trim());
-			ps.setInt(2, getIdForEndpoint(endpoint));
+			ps.setInt(2, endpointId);
 			ps.setString(3, method.get());
 			ps.addBatch();
 			if (++count % batchSize == 0) {
@@ -473,12 +487,12 @@ public class DbHelper {
 		ps.executeBatch(); // insert remaining records
 	}
 	
-	public boolean autocompletionFetchingEnabled(String endpoint, FetchType type, FetchMethod method) throws SQLException {
+	public boolean autocompletionFetchingEnabled(int endpointId, FetchType type, FetchMethod method) throws SQLException {
 		String sql = "SELECT * "
-				+ "FROM DisabledCompletionEndpoints AS disabledEndpoints, CompletionEndpoints AS endpoints "
-				+ "WHERE endpoints.Endpoint = ? AND disabledEndpoints.EndpointId = endpoints.Id AND disabledEndpoints.Method = ? AND disabledEndpoints.Type = ?";
+				+ "FROM DisabledCompletionEndpoints AS disabledEndpoints "
+				+ "WHERE disabledEndpoints.EndpointId = ? AND disabledEndpoints.Method = ? AND disabledEndpoints.Type = ?";
 		PreparedStatement ps = connect.prepareStatement(sql);
-		ps.setString(1, endpoint.trim());
+		ps.setInt(1, endpointId);
 		ps.setString(2, method.get());
 		ps.setString(3, type.getSingular());
 		ResultSet result = ps.executeQuery();
@@ -504,27 +518,28 @@ public class DbHelper {
 	
 	/**
 	 * ALL last x should not have status succesful
-	 * @param endpoint
+	 * @param endpointId
 	 * @param numberOfFetchesToCheck
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean lastFetchesFailed(String endpoint, FetchType type, int numberOfFetchesToCheck) throws SQLException {
+	public boolean lastFetchesFailed(int endpointId, FetchType type, int numberOfFetchesToCheck) throws SQLException {
 		String sql = "SELECT * "
-				+ "FROM CompletionsLog AS log, CompletionEndpoints AS endpoints "
-				+ "WHERE endpoints.Endpoint = ? AND endpoints.Id = log.EndpointId AND log.Status != ? AND log.Type = ? ORDER BY Time DESC LIMIT ?";
+				+ "FROM CompletionsLog AS log "
+				+ "WHERE log.EndpointId = ? AND log.Type = ? ORDER BY Time DESC LIMIT ?";
 		PreparedStatement ps = connect.prepareStatement(sql);
-		ps.setString(1, endpoint.trim());
-		ps.setString(2, FetchStatus.FETCHING.get());//we don't want the fetching status in there. Only the failed and succeeded ones
-		ps.setString(3, type.getSingular());
-		ps.setInt(4, numberOfFetchesToCheck);
+		ps.setInt(1, endpointId);
+//		ps.setString(2, FetchStatus.FETCHING.get());//we don't want the fetching status in there. Only the failed and succeeded ones
+		ps.setString(2, type.getSingular());
+		ps.setInt(3, numberOfFetchesToCheck);
 		ResultSet result = ps.executeQuery();
 		int count = 0;
 		boolean allFailed = true;
 		while (result.next()) {
 			count ++;
-			if (result.getString("Status").equals(FetchStatus.SUCCESSFUL)) {
+			if (!result.getString("Status").equals(FetchStatus.FAILED)) {
 				allFailed = false;
+				break;
 			}
 		}
 		if (count != numberOfFetchesToCheck) {
@@ -533,12 +548,22 @@ public class DbHelper {
 		result.close();
 		return allFailed;
 	}
-	public boolean stillFetching(String endpoint, FetchType fetchType, int timeFrameSearch) throws SQLException {
+	
+	/**
+	 * Check whether we are still fetching properties or classes for an endpoint
+	 * @param endpointId
+	 * @param fetchType
+	 * @param timeFrameSearch The number of minutes which we will check (e.g. only the last 5 minutes?). 
+	 * If the status is 'fetching', but was logged 2 months ago, we don't want to show it as 'still fetching'
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean stillFetching(int endpointId, FetchType fetchType, int timeFrameSearch) throws SQLException {
 		String sql = "SELECT Status "
-				+ "FROM CompletionsLog AS log, CompletionEndpoints AS endpoints "
-				+ "WHERE endpoints.Endpoint = ? AND endpoints.Id = log.EndpointId AND TIMESTAMPDIFF(minute,log.Time,NOW()) <= ? AND log.Type = ? ORDER BY log.Time DESC LIMIT 1";
+				+ "FROM CompletionsLog AS log "
+				+ "WHERE log.EndpointId = ? AND TIMESTAMPDIFF(minute,log.Time,NOW()) <= ? AND log.Type = ? ORDER BY log.Time DESC LIMIT 1";
 		PreparedStatement ps = connect.prepareStatement(sql);
-		ps.setString(1, endpoint.trim());
+		ps.setInt(1, endpointId);
 		ps.setInt(2, timeFrameSearch);
 		ps.setString(3, fetchType.getSingular());
 		ResultSet result = ps.executeQuery();
@@ -551,16 +576,25 @@ public class DbHelper {
 		result.close();
 		return stillFetching;
 	}
+	
+	/**
+	 * Get the number of times we have a 'failed' status in our logs for all endpoints.
+	 * @param type
+	 * @return
+	 * @throws SQLException
+	 */
 	public Map<String, Integer> getFailCountForEndpoints(FetchType type) throws SQLException {
 		String sql = "SELECT endpoints.Endpoint, COUNT( endpoints.Endpoint ) AS NumberFails " + 
 				"FROM CompletionsLog AS log"
 				+ " JOIN CompletionEndpoints AS endpoints on endpoints.Id = log.EndpointId " + 
 				"WHERE log.STATUS =  ? "
 				+ "AND log.Type = ? " + 
+				" AND (endpoints.UserId IS NULL OR endpoints.userId = ?) " +
 				"GROUP BY endpoints.Endpoint";
 		PreparedStatement ps = connect.prepareStatement(sql);
 		ps.setString(1, FetchStatus.FAILED.get());
 		ps.setString(2, type.getSingular());
+		ps.setInt(3, getUserId());
 		ResultSet result = ps.executeQuery();
 		Map<String, Integer> endpoints = new HashMap<String, Integer>();
 		while (result.next()) {
@@ -569,13 +603,20 @@ public class DbHelper {
 		return endpoints;
 	}
 	
+	/**
+	 * List all endpoints for which we have autocompletions
+	 * 
+	 * @param fetchType
+	 * @return
+	 * @throws SQLException
+	 */
 	public Set<String> getEndpointsWithAutocompletions(FetchType fetchType) throws SQLException {
 		Set<String> endpoints = new HashSet<String>();
-		
 		String sql = "SELECT DISTINCT endpoints.Endpoint "
 				+ "FROM " + fetchType.getPluralCamelCase() + " AS completions, CompletionEndpoints AS endpoints  "
-				+ "WHERE completions.EndpointId = endpoints.Id";
+				+ "WHERE completions.EndpointId = endpoints.Id AND (endpoints.UserId IS NULL OR endpoints.UserId = ?)";
 		PreparedStatement ps = connect.prepareStatement(sql);
+		ps.setInt(1, getUserId());
 		ResultSet result = ps.executeQuery();
 		while (result.next()) {
 			endpoints.add(result.getString("Endpoint"));
@@ -623,45 +664,98 @@ public class DbHelper {
 		return completionsInfo;
 	}
 	
-	public void setEndpointAccessible(String endpoint, boolean accessible) throws SQLException {
+	/**
+	 * Flag the 'accessibility' (i.e. via http from the YASGUI server) status of an endpoint
+	 * @param endpointId
+	 * @param accessible
+	 * @throws SQLException
+	 */
+	public void setEndpointAccessible(int endpointId, boolean accessible) throws SQLException {
 		String sql = "INSERT INTO AccessibleEndpoints (`EndpointId`, `Accessible`) VALUES (?, ?)";
 		PreparedStatement ps = connect.prepareStatement(sql);
-		ps.setInt(1, getIdForEndpoint(endpoint));
+		ps.setInt(1, endpointId);
 		ps.setBoolean(2, accessible);
 		ps.executeUpdate();
 	}
 	
-	public int getIdForEndpoint(String endpoint) throws SQLException {
+	
+	/**
+	 * Retrieve the endpoint ID for a given endpoint string. If the endpoint does not exist in db, create a new id
+	 * @param endpoint
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getEndpointId(String endpoint, EndpointPrivateFlag privateFlag) throws SQLException, EndpointIdException {
 		endpoint = endpoint.trim();
-		int endpointId;
-		String selectSql = "SELECT Id FROM CompletionEndpoints WHERE Endpoint = ?";
+		String selectSql = "SELECT Id FROM CompletionEndpoints WHERE Endpoint = ? ";
+		boolean addUserId = false;
+		switch (privateFlag) {
+	        case OWN: 
+	        	addUserId = true;
+				selectSql += " AND UserId = ?";
+				break;
+	        case OWN_AND_PUBLIC :
+	        	addUserId = true;
+	        	selectSql +=  " AND (UserId IS NULL OR UserId = ?)";
+	        	break;
+	        case PUBLIC:
+	        	selectSql += "AND UserId IS NULL";
+	        	break;
+	        case EVERYTHING:
+	        default: //nothing to add
+	    }
 		PreparedStatement ps = connect.prepareStatement(selectSql);
 		ps.setString(1, endpoint);
+		System.out.println("useId: " + getUserId());
+		if (addUserId) ps.setInt(2, getUserId());
 		ResultSet result = ps.executeQuery();
+		int endpointId;
 		if (result.next()) {
 			endpointId = result.getInt("Id");
 		} else {
-			String insertSql = "INSERT INTO CompletionEndpoints (Endpoint) VALUES (?)";
-			PreparedStatement psUpdate = connect.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS);
-			psUpdate.setString(1, endpoint);
-			
-			psUpdate.executeUpdate();
-			ResultSet keys = psUpdate.getGeneratedKeys();
-			keys.next();
-			endpointId = keys.getInt(1);
+			throw new EndpointIdException("No endpoint ID found in DB for provided endpoint string " + endpoint);
 		}
 		return endpointId;
 	}
-	public void setEndpointAccessible(String endpoint, AccessibilityStatus accessible) throws SQLException {
-		setEndpointAccessible(endpoint, accessible == AccessibilityStatus.ACCESSIBLE);
+	
+	public int generateIdForEndpoint(String endpoint) throws SQLException, EndpointIdException {
+		AccessibilityStatus accessibleStatus = Helper.checkEndpointAccessibility(endpoint);
+		int userId = getUserId();
+		
+		String insertSql = "INSERT INTO CompletionEndpoints (Endpoint, UserId) VALUES (?, ?)";
+		PreparedStatement psUpdate = connect.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS);
+		psUpdate.setString(1, endpoint);
+		if (accessibleStatus == AccessibilityStatus.ACCESSIBLE) {
+			psUpdate.setNull(2, Types.INTEGER);
+		} else if (userId >= 0){
+			//we need a user id for this one!
+			psUpdate.setInt(2, getUserId());
+		} else {
+			throw new EndpointIdException("Unable to generate endpoint ID for endpoint " + endpoint + ". Is the user logged in?");
+		}
+		psUpdate.executeUpdate();
+		ResultSet keys = psUpdate.getGeneratedKeys();
+		keys.next();
+		return keys.getInt(1);
+	}
+	public void setEndpointAccessible(int endpointId, AccessibilityStatus accessible) throws SQLException {
+		setEndpointAccessible(endpointId, accessible == AccessibilityStatus.ACCESSIBLE);
 	}
 	
-	public AccessibilityStatus isEndpointAccessible(String endpoint, boolean allowActiveCheck) throws SQLException {
-		String sql = "SELECT accessibleEndpoints.Accessible "
-				+ "FROM AccessibleEndpoints AS accessibleEndpoints, CompletionEndpoints AS endpoints "
-				+ "WHERE endpoints.Endpoint = ? AND endpoints.Id = accessibleEndpoints.EndpointId ORDER BY accessibleEndpoints.Time LIMIT 1 ";
+	/**
+	 * Checks whether this endpoint is accessible via http from the YASGUI server
+	 * 
+	 * @param endpointId
+	 * @param allowActiveCheck
+	 * @return
+	 * @throws SQLException
+	 */
+	public AccessibilityStatus isEndpointAccessible(int endpointId, boolean allowActiveCheck) throws SQLException {
+		String sql = "SELECT Accessible "
+				+ "FROM AccessibleEndpoints  "
+				+ "WHERE endpoints.Id = ? ORDER BY accessibleEndpoints.Time LIMIT 1 ";
 		PreparedStatement ps = connect.prepareStatement(sql);
-		ps.setString(1, endpoint);
+		ps.setInt(1, endpointId);
 		ResultSet result = ps.executeQuery();
 		AccessibilityStatus accessibleStatus = AccessibilityStatus.UNCHECKED;
 		if (result.next()) {
@@ -670,9 +764,6 @@ public class DbHelper {
 			} else {
 				accessibleStatus = AccessibilityStatus.INACCESSIBLE;
 			}
-		} else if (allowActiveCheck) {
-			accessibleStatus = Helper.checkEndpointAccessibility(endpoint);
-			setEndpointAccessible(endpoint, accessibleStatus);
 		}
 		return accessibleStatus;
 	}
@@ -680,10 +771,15 @@ public class DbHelper {
 
 	public static void main(String[] args) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
 		DbHelper dbHelper = new DbHelper(new File("src/main/webapp/"));
+		if (dbHelper.lastFetchesFailed(7, FetchType.PROPERTIES, 5)) {
+			System.out.println("fetches failed");
+		} else {
+			System.out.println("not failed");
+		}
 //		dbHelper.setEndpointAccessible("httpsdf", true);
-//		System.out.println("" + dbHelper.getIdForEndpoint("httpdsdf"));
-		AutocompletionsInfo info = dbHelper.getAutocompletionInfo();
-		System.out.println(info.toString());
+		System.out.println("" + dbHelper.getEndpointId("htddtpdsdf",EndpointPrivateFlag.EVERYTHING));
+//		AutocompletionsInfo info = dbHelper.getAutocompletionInfo();
+//		System.out.println(info.toString());
 //		for (String endpoint: dbHelper.getDisabledEndpointsForCompletionsFetching(FetchType.CLASSES, FetchMethod.QUERY_ANALYSIS)) {
 //			System.out.println(endpoint);
 //		}

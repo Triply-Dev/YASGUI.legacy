@@ -267,18 +267,16 @@ AutocompletionBase.prototype = {
 							 
 							if (completion.statusMsgs[method].text != undefined) {
 								var imgUrl;
-								var qtipTitle;
-								if (completion.statusMsgs[method].subject.contains("disabled")) {
-									qtipTitle = "Autocompletion disabled";
+								if (completion.statusMsgs[method].level == "WARN" || completion.statusMsgs[method].level == "INFO") {
 									imgUrl = "images/nounproject/questionMark.png";
 								} else {
-									qtipTitle = "Fetching suggestions failed";
+									//error
 									imgUrl = "images/nounproject/info.png";
 								}
 								var id = "warnIcon" + method;
 								this.qtipDrawStack[id] = {
 									text: completion.statusMsgs[method].text,
-									title: qtipTitle
+									title: completion.statusMsgs[method].subject
 								};
 								this.legendHtml += "&nbsp;<img id='" + id + "' src='" + imgUrl + "' style='cursor:default;vertical-align:middle;width:16px;height:16px;'>";
 							}
@@ -291,16 +289,6 @@ AutocompletionBase.prototype = {
 									completion.drawnResultSizes[method] + "/" + completion.resultSizes[method] +
 									"</span>";
 							}
-						} else if (completion.isLocalhostRequest() && completion.methods[method]) {
-							var id = "warnIcon" + method;
-							this.qtipDrawStack[id] = {
-								text: "The endpoint you use is unreachable by YASGUI. " +
-										"Therefore, YASGUI is not able to retrieve any " + completion.completionTypePlural + " for this endpoint. " +
-										"Autocompletion support for such endpoints is a planned future feature.",
-								title: "Autocompletion disabled"
-							};
-							this.legendHtml += "inaccessible&nbsp;<img id='" + id + "' src='images/nounproject/questionMark.png' style='cursor:default;vertical-align:middle;width:16px;height:16px;'>";
-	
 						} else {
 							this.legendHtml += "N/A";
 						}

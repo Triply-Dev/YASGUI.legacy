@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.server.queryanalysis;
+package com.data2semantics.yasgui.server.autocompletions;
 
 /*
  * #%L

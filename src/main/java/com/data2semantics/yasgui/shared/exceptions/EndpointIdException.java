@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.shared.autocompletions;
+package com.data2semantics.yasgui.shared.exceptions;
 
 /*
  * #%L
@@ -28,26 +28,17 @@ package com.data2semantics.yasgui.shared.autocompletions;
 
 import java.io.Serializable;
 
-public class AutocompleteKeys implements Serializable {
+public class EndpointIdException extends RuntimeException implements Serializable { 
+	
+	private static final long serialVersionUID = 6738785750198344230L;
 
-	private static final long serialVersionUID = -1550708057486559219L;
+	public EndpointIdException(){}
+	public EndpointIdException(String message) {
+		super(message);
+	}
+	public EndpointIdException(String message, Throwable e) {
+		super(message, e);
+	}
+
 	
-	public static String REQUEST_QUERY = "q";
-	public static String REQUEST_TYPE = "type";
-	public static String REQUEST_METHOD = "method";
-	public static String REQUEST_MAX_RESULTS = "max";
-	public static String REQUEST_ENDPOINT = "endpoint";
-	
-	public static String TYPE_PROPERTY = "property";
-	public static String TYPE_CLASS = "class";
-	
-	public static String RESPONSE_METHOD_QUERY_RESULTS = "queryResults";
-	public static String RESPONSE_METHOD_QUERY_ANALYSIS = "query";
-	
-	public static String RESPONSE_RESULT_SIZE = "resultSize";
-	public static String RESPONSE_RESULTS = "results";
-	public static String RESPONSE_STATUS = "status";
-	public static String RESPONSE_STATUS_TEXT = "text";
-	public static String RESPONSE_STATUS_SUBJECT = "subject";
-	public static String RESPONSE_STATUS_LEVEL = "level";
 }

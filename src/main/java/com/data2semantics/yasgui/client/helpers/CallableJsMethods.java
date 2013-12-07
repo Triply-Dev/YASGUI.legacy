@@ -156,7 +156,7 @@ public class CallableJsMethods {
 		}
 	}
 	public String getPropertyCompletionMethods() {
-		return view.getSettings().getPropertCompletionMethodsAsJson().toString();
+		return view.getSettings().getPropertyCompletionMethodsAsJson().toString();
 	}
 	public String getClassCompletionMethods() {
 		return view.getSettings().getClassCompletionMethodsAsJson().toString();

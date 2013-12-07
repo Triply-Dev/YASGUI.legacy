@@ -26,7 +26,6 @@ package com.data2semantics.yasgui.server.fetchers;
  * #L%
  */
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -34,13 +33,14 @@ import java.text.ParseException;
 
 import org.json.JSONException;
 
+import com.data2semantics.yasgui.server.db.DbHelper;
 import com.data2semantics.yasgui.shared.autocompletions.FetchMethod;
 import com.data2semantics.yasgui.shared.autocompletions.FetchType;
 
 
 public class ClassesFetcher extends AutocompletionFetcher {
-	public ClassesFetcher(File configDir, String endpoint) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
-		super(configDir, endpoint);
+	public ClassesFetcher(String endpoint, DbHelper dbHelper) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
+		super(endpoint, dbHelper);
 	}
 
 	protected String getPaginationQuery(int iterator, int count) {
@@ -71,7 +71,7 @@ public class ClassesFetcher extends AutocompletionFetcher {
 	}
 	
 	public static void main(String[] args) throws Exception  {
-		ClassesFetcher fetcher = new ClassesFetcher(new File("src/main/webapp/"), "http://services.data.gov/sparql");
-		fetcher.fetch();
+//		ClassesFetcher fetcher = new ClassesFetcher(new File("src/main/webapp/"), "http://services.data.gov/sparql");
+//		fetcher.fetch();
 	}
 }
