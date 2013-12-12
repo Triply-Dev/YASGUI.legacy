@@ -180,6 +180,10 @@ public class QueryTabs extends TabSet implements RpcElement {
 		addTabButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				TabSettings tabSettings = new TabSettings(view.getSettings());
+				if (view.getSelectedTabSettings() != null) {
+					//copy current selected endpoint, to the new tab
+					tabSettings.setEndpoint(view.getSelectedTabSettings().getEndpoint());
+				}
 				view.getSettings().addTabSettings(tabSettings);
 				view.getTabs().addTab(tabSettings, true);
 				LocalStorageHelper.storeSettings(view.getSettings());
