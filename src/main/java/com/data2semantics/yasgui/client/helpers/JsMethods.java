@@ -259,10 +259,10 @@ public class JsMethods {
 		}
 	}-*/;
 	
-	public static native void showLoadingNoty(String id, String text) /*-{
+	public static native void showLoadingNoty(String id, String text, String loadingIcon) /*-{
 		if ($wnd.$.noty.get(id) == false) {
 			$wnd.noty({
-				text: text,
+				text: "<img style='vertical-align:middle;' src='" + loadingIcon + "' width='20' height='20'>&nbsp;" + text,
 				layout: 'topCenter',
 				type: 'alert',
 				id: id,
@@ -509,5 +509,22 @@ public class JsMethods {
 	}-*/;
 	public static native boolean corsEnabled(String endpoint) /*-{
 		return ($wnd.corsEnabled[endpoint] == true);
+	}-*/;
+	public static native void executeLoginCallback(String jsonArray) /*-{
+		var jsonArrayObj = eval(jsonArray);
+		for (var i = 0; i < jsonArrayObj.length; i++) {
+			eval("$wnd." + jsonArrayObj[i] + ";");
+		}
+	}-*/;
+	public static native void showPropAutocompletionMethods() /*-{
+		var compl = new $wnd.PropertyAutocompletion();
+		compl.draw(compl, true, false);
+	}-*/;
+	public static native void showClassAutocompletionMethods() /*-{
+		var compl = new $wnd.ClassAutocompletion();
+		compl.draw(compl, true, false);
+	}-*/;
+	public static native void drawShouldWeFetchNotification() /*-{
+		$wnd.shouldWeFetchNotification.draw();
 	}-*/;
 }

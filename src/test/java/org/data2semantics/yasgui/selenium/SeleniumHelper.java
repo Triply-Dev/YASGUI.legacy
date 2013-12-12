@@ -47,10 +47,10 @@ public class SeleniumHelper {
     }
     
     
-    public void waitForElementClickable(String locator) {
+    public void gwtWaitForElementClickable(String locator) {
     	execCommand("waitForElementClickable", locator);
     }
-    public boolean isElementPresent(String locator) {
+    public boolean gwtIsElementPresent(String locator) {
     	boolean present = true;
     	try {
     		execCommand("verifyElementPresent", locator);
@@ -60,15 +60,19 @@ public class SeleniumHelper {
     	return present;
     }
     
+    public boolean elementExists(String locator) {
+    	return selenium.isElementPresent(locator);
+    }
+    
 
-    public void waitAndClickElementClickable(String locator) {
-        waitForElementClickable(locator);
+    public void gwtWaitAndClickElementClickable(String locator) {
+        gwtWaitForElementClickable(locator);
         selenium.click(locator);
         assertNoErrorWindow();
     }
     
     public void assertNoErrorWindow() {
-    	assertFalse("Error window found", isElementPresent(Locators.ERROR_WINDOW.get()));
+    	assertFalse("Error window found", gwtIsElementPresent(Locators.ERROR_WINDOW.get()));
     }
     
     public String getErrorWindowMessage() {
@@ -76,7 +80,7 @@ public class SeleniumHelper {
     }
     
     public void waitAndClickIcon(String contains) {
-    	waitForElementClickable(Locators.ICON.get(contains));
+    	gwtWaitForElementClickable(Locators.ICON.get(contains));
     	clickIcon(contains);
         
     }

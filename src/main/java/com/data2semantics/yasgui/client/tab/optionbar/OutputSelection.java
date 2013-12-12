@@ -65,7 +65,7 @@ public class OutputSelection extends DynamicForm {
 			@Override
 			public void onChanged(ChangedEvent event) {
 				view.getSelectedTabSettings().setOutputFormat(selectItem.getValueAsString());
-				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+				LocalStorageHelper.storeSettings(view.getSettings());
 				view.getSelectedTab().getResultContainer().drawIfPossible();
 			}
 		});

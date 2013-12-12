@@ -26,7 +26,6 @@ package com.data2semantics.yasgui.server.fetchers;
  * #L%
  */
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -36,9 +35,11 @@ import org.json.JSONException;
 
 import com.data2semantics.yasgui.server.SparqlService;
 import com.data2semantics.yasgui.server.db.DbHelper;
+import com.data2semantics.yasgui.shared.autocompletions.EndpointPrivateFlag;
 import com.data2semantics.yasgui.shared.autocompletions.FetchMethod;
 import com.data2semantics.yasgui.shared.autocompletions.FetchStatus;
 import com.data2semantics.yasgui.shared.autocompletions.FetchType;
+import com.data2semantics.yasgui.shared.exceptions.EndpointIdException;
 import com.data2semantics.yasgui.shared.exceptions.PossiblyNeedPaging;
 import com.hp.hpl.jena.query.ResultSet;
 
@@ -46,12 +47,23 @@ import com.hp.hpl.jena.query.ResultSet;
 public abstract class AutocompletionFetcher  {
 	
 	
-	
 	protected DbHelper dbHelper;
 	protected String endpoint;
-	public AutocompletionFetcher(File configDir, String endpoint) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
-		dbHelper = new DbHelper(configDir);
+	protected int endpointId;
+	public AutocompletionFetcher(String endpoint, DbHelper dbHelper) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException, EndpointIdException {
+		this.dbHelper = dbHelper;
 		this.endpoint = endpoint;
+		getEndpointId();
+	}
+	
+	private void getEndpointId() throws EndpointIdException, SQLException {
+		try {
+			this.endpointId = dbHelper.getEndpointId(endpoint, EndpointPrivateFlag.OWN_AND_PUBLIC);
+		} catch (EndpointIdException e) {
+			//endpoint id does not exists probably
+			this.endpointId = dbHelper.generateIdForEndpoint(endpoint);
+			
+		}
 	}
 	public void fetch() throws Exception {
 		try {
@@ -65,6 +77,7 @@ public abstract class AutocompletionFetcher  {
 				setLogStatus(FetchStatus.FAILED, e.getMessage(), true);
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			setLogStatus(FetchStatus.FAILED, e.getMessage());
 			throw e;
 		}
@@ -111,20 +124,20 @@ public abstract class AutocompletionFetcher  {
 	}
 	
 	protected void setLogStatus(FetchStatus status) throws SQLException {
-		dbHelper.setAutocompletionLog(endpoint, status, getFetchType());
+		dbHelper.setAutocompletionLog(endpointId, status, getFetchType());
 	}
 	protected void setLogStatus(FetchStatus status, String message) throws SQLException {
-		dbHelper.setAutocompletionLog(endpoint, status, getFetchType(), message);
+		dbHelper.setAutocompletionLog(endpointId, status, getFetchType(), message);
 	}
 	protected void setLogStatus(FetchStatus status, String message, boolean paging) throws SQLException {
-		dbHelper.setAutocompletionLog(endpoint, status, getFetchType(), message, true);
+		dbHelper.setAutocompletionLog(endpointId, status, getFetchType(), message, true);
 	}
 	
 	protected void storeSparqlResultInDb(ResultSet resultSet) throws PossiblyNeedPaging, SQLException {
-		dbHelper.storeCompletionFetchesFromQueryResult(endpoint, getFetchType(), getFetchMethod(), resultSet, getSparqlKeyword());
+		dbHelper.storeCompletionFetchesFromQueryResult(endpointId, getFetchType(), getFetchMethod(), resultSet, getSparqlKeyword());
 	}
 	protected void clearPreviousResultsFromDb() throws SQLException {
-		dbHelper.clearPreviousAutocompletionFetches(endpoint, getFetchMethod(), getFetchType());
+		dbHelper.clearPreviousAutocompletionFetches(endpointId, getFetchMethod(), getFetchType());
 	}
 	
 	protected abstract FetchMethod getFetchMethod();

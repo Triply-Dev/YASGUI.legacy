@@ -45,12 +45,14 @@ public class ConfigMenu extends Menu implements RpcElement {
 	private ArrayList<MenuItem> items = new ArrayList<MenuItem>();
 	private MenuItem refreshMenuItem;
 	private MenuItem logOutMenuItem;
+	private AutocompletionsMenu autocompletionsItem;
 	private MenuItem logInMenuItem;
 	private MenuItem bugReportItem;
 	public ConfigMenu(View view) {
 		this.view = view;
 		addOpenIdItem();
 		addRefreshSubMenu();
+		addAutocompletionsSubMenu();
 		if (JsMethods.offlineSupported() && view.getSettings().getEnabledFeatures().offlineCachingEnabled()) {
 			addOfflineAvailabilityItem();
 		}
@@ -142,6 +144,10 @@ public class ConfigMenu extends Menu implements RpcElement {
 				items.add(logInMenuItem);
 			}
 		}
+	}
+	private void addAutocompletionsSubMenu() {
+		autocompletionsItem = new AutocompletionsMenu(view, "Configure Autocompletions", Imgs.TEXT.get()); 
+		items.add(autocompletionsItem);
 	}
 	
 	private void addAboutItem() {

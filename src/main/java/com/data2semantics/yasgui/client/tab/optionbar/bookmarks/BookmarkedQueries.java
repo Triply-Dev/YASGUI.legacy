@@ -241,7 +241,7 @@ public class BookmarkedQueries extends ImgButton implements RpcElement {
 							}
 							view.getSelectedTabSettings().setQueryString(query);
 							view.getSelectedTab().setQueryString(query);
-							LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+							LocalStorageHelper.storeSettings(view.getSettings());
 							window.destroy();
 						}
 					});

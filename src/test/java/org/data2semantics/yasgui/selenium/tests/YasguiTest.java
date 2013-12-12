@@ -46,7 +46,7 @@ public class YasguiTest extends SeleniumBase {
 	public void testLinkCreatorButton() {
 		if (stopTesting) return;
 		helper.clickIcon(Imgs.LINK.get());
-		helper.waitForElementClickable(Locators.DIV_TEXT.get("Shorten url"));
+		helper.elementExists(Locators.DIV_TEXT.get("Shorten url"));
 	}
 	
 	@Test
@@ -54,6 +54,6 @@ public class YasguiTest extends SeleniumBase {
 		if (stopTesting) return;
 		helper.execCommand("clickAt", Locators.MENU_BUTTON_TEXT.get(ViewElements.CONFIG_MENU_LABEL), "10,10");
 		helper.clickMenuItem("Show help bubbles");
-		assertTrue(helper.isElementPresent(Locators.TOOLTIPS_VISIBLE.get()));
+		assertTrue(helper.gwtIsElementPresent(Locators.TOOLTIPS_VISIBLE.get()));
 	}
 }

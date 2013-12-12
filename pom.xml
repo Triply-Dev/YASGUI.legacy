@@ -311,6 +311,7 @@
 								<include>../assets/trie.js</include>
 								<include>../assets/codemirror/addon/hint/show-hint.js</include>
 								<include>../assets/yasguiHint.js</include>
+								<include>../assets/uriFetcher.js</include>
 								<include>../assets/codemirror/addon/search/searchcursor.js</include>
 								<include>../assets/codemirror/addon/edit/matchbrackets.js</include>
 								<include>../assets/codemirror/addon/runmode/runmode.js</include>

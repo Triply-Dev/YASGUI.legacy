@@ -34,6 +34,10 @@
 		<servlet-name>autocompleteServlet</servlet-name>
 		<servlet-class>com.data2semantics.yasgui.server.servlets.AutocompleteServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>autocompletionsInfoServlet</servlet-name>
+		<servlet-class>com.data2semantics.yasgui.server.servlets.AutocompletionsInfoServlet</servlet-class>
+	</servlet>
 
 
 	<servlet-mapping>
@@ -60,6 +64,10 @@
 	<servlet-mapping>
 		<servlet-name>autocompleteServlet</servlet-name>
 		<url-pattern>/Yasgui/autocomplete</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>autocompletionsInfoServlet</servlet-name>
+		<url-pattern>/Yasgui/autocompletionsInfo</url-pattern>
 	</servlet-mapping>
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>

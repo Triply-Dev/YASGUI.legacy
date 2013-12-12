@@ -161,7 +161,7 @@ public class QueryConfigMenu extends IconMenuButton {
 			@Override
 			public void onCloseClick(CloseClickEvent event) {
 				graphListGrid.setGraphsInSettings();
-				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+				LocalStorageHelper.storeSettings(view.getSettings());
 				if (graphWindow != null) {
 					graphWindow.destroy();
 				}
@@ -210,14 +210,14 @@ public class QueryConfigMenu extends IconMenuButton {
 			@Override
 			public void onClick(MenuItemClickEvent event) {
 				view.getSelectedTabSettings().setRequestMethod(REQUEST_POST);
-				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+				LocalStorageHelper.storeSettings(view.getSettings());
 			}
 		});
 		get.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(MenuItemClickEvent event) {
 				view.getSelectedTabSettings().setRequestMethod(REQUEST_GET);
-				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+				LocalStorageHelper.storeSettings(view.getSettings());
 			}
 		});
 		acceptHeadersSubMenu.setItems(post, get);
@@ -283,7 +283,7 @@ public class QueryConfigMenu extends IconMenuButton {
 					view.getSelectedTabSettings().setSelectContentType(contentType);
 				}
 				view.getSelectedTabSettings().setConstructContentType(contentType);
-				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+				LocalStorageHelper.storeSettings(view.getSettings());
 				view.getSelectedTab().adaptInterfaceToQueryType();
 			}
 		};
@@ -332,7 +332,7 @@ public class QueryConfigMenu extends IconMenuButton {
 			@Override
 			public void onCloseClick(CloseClickEvent event) {
 				paramListGrid.setArgsInSettings();
-				LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+				LocalStorageHelper.storeSettings(view.getSettings());
 				queryArgWindow.destroy();
 				
 			}});

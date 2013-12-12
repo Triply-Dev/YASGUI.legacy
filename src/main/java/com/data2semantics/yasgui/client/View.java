@@ -194,7 +194,7 @@ public class View extends VLayout implements RpcElement {
 
 			getSettings().addTabSettings(tabSettings);
 			getTabs().addTab(tabSettings, true);
-			LocalStorageHelper.storeSettingsInCookie(getSettings());
+			LocalStorageHelper.storeSettings(getSettings());
 		}
 	}
 

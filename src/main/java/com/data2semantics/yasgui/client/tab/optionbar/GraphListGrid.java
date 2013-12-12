@@ -73,7 +73,7 @@ public class GraphListGrid extends ListGrid {
 		} else {
 			view.getSelectedTabSettings().setDefaultGraphs(graphs);
 		}
-		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+		LocalStorageHelper.storeSettings(view.getSettings());
 	}
 	
 	

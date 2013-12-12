@@ -49,4 +49,5 @@ public class AutocompleteKeys implements Serializable {
 	public static String RESPONSE_STATUS = "status";
 	public static String RESPONSE_STATUS_TEXT = "text";
 	public static String RESPONSE_STATUS_SUBJECT = "subject";
+	public static String RESPONSE_STATUS_LEVEL = "level";
 }

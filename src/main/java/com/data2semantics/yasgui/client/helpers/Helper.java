@@ -51,16 +51,19 @@ package com.data2semantics.yasgui.client.helpers;
  */
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
 
 import com.data2semantics.yasgui.client.services.YasguiServiceAsync;
+import com.data2semantics.yasgui.client.settings.Imgs;
 import com.data2semantics.yasgui.shared.exceptions.ElementIdException;
 import com.google.common.collect.HashMultimap;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.regexp.shared.MatchResult;
@@ -99,7 +102,7 @@ public class Helper {
 	}
 	
 	public static void onLoadingStart(String message) {
-		JsMethods.showLoadingNoty(DEFAULT_LOADING_ID, message);
+		JsMethods.showLoadingNoty(DEFAULT_LOADING_ID, message, Imgs.LOADING.get());
 	}
 
 
@@ -432,6 +435,34 @@ public class Helper {
 
 	public static boolean isLocalhostDomain(String endpoint) {
 		return endpoint.matches("https*://(localhost|127).*");
+	}
+	
+	public static void addToLoginStack(String cmd) {
+		String jsonArrayString = LocalStorageHelper.getLoginStack();
+		JSONArray jsonArray = new JSONArray();
+		if (jsonArrayString != null) {
+			JSONValue jsonValue = JSONParser.parseStrict(jsonArrayString);
+			if (jsonArray.isArray() != null) {
+				jsonArray = jsonValue.isArray();
+			}
+		}
+		jsonArray.set(jsonArray.size(), new JSONString(cmd));
+		LocalStorageHelper.setLoginStack(jsonArray);
+	}
+	
+	public static List<String> getLoginStack() {
+		List<String> stack = new ArrayList<String>();
+		String jsonArrayString = LocalStorageHelper.getLoginStack();
+		if (jsonArrayString != null) {
+			JSONValue jsonValue = JSONParser.parseStrict(jsonArrayString);
+			JSONArray jsonArray = jsonValue.isArray();
+			if (jsonArray != null) {
+				for (int i = 0; i < jsonArray.size(); i++) {
+					stack.add(jsonArray.get(i).isString().stringValue());
+				}
+			}
+		}
+		return stack;
 	}
 	
 }

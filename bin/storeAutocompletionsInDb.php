@@ -110,26 +110,51 @@ function store($options, $type) {
 		echo "Stopping\n";
 		exit;
 	}
-	
+	$endpointId = (int)getIdForEndpoint($con, $endpoint);
 	if ($purge) {
-		purge($con, $endpoint, $method, $type);
+		purge($con, $endpointId, $method, $type);
 	}
 	if (checkStore($type)) {
-		doStore($con, $endpoint, $method, $type);
-		setSuccessfulStoreLog($con, $endpoint, $method, $type);
+		doStore($con, $endpointId, $method, $type);
+		setSuccessfulStoreLog($con, $endpointId, $method, $type);
 	}
 	
-	$currentMethodFlagged = getCurrentUpdateFlag($con, $endpoint, $type);
+	$currentMethodFlagged = getCurrentUpdateFlag($con, $endpointId, $type);
 	$askedMethodFlagged = askSetFlag($currentMethodFlagged, $type);
 	if ($askedMethodFlagged != $currentMethodFlagged) {
-		changeUpdateFlag($con, $endpoint, $method, $askedMethodFlagged, $type);
+		changeUpdateFlag($con, $endpointId, $method, $askedMethodFlagged, $type);
 	} else {
 		echo "\nwe did not change the flag setting\n";
 	}
 	mysqli_close($con);
 }
-function setSuccessfulStoreLog($con, $endpoint, $method, $type) {
-	$sqlQuery = "INSERT INTO Log" . $type['singularCamelCase'] .  "Fetcher (Endpoint, Status) VALUES ('".mysqli_real_escape_string($con, $endpoint)."', '".mysqli_real_escape_string($con, "successful")."')";
+
+function getIdForEndpoint($con, $endpoint) {
+	$sqlQuery = "SELECT Id FROM CompletionEndpoints WHERE Endpoint = '".mysqli_real_escape_string($con, $endpoint)."'";
+	$result=mysqli_query($con, $sqlQuery);
+	if (!$result) {
+		echo "failed fetching the endpoint id from db. exiting\n";
+		echo mysqli_error ($con)."\n";
+		exit;
+	} else {
+		if ($result->num_rows == 1) {
+			$row = $result->fetch_assoc();
+			return $row['Id'];
+		} else {
+			//insert it!
+			$sqlQuery = "INSERT INTO CompletionEndpoints (Endpoint) VALUES ('".mysqli_real_escape_string($con, $endpoint)."')";
+			$result = mysqli_query($con, $sqlQuery);
+			if (!$result) {
+				echo "Failed to create endpoint id for our endpoint. exiting\n";
+				echo mysqli_error ($con)."\n";
+				exit;
+			}
+			return mysqli_insert_id($con);
+		}
+	}
+}
+function setSuccessfulStoreLog($con, $endpointId, $method, $type) {
+	$sqlQuery = "INSERT INTO CompletionsLog (EndpointId, Type, Status) VALUES (".$endpointId.", '".mysqli_real_escape_string($con, $type['singular'])."', '".mysqli_real_escape_string($con, "successful")."')";
 	$result=mysqli_query($con, $sqlQuery);
 	if (!$result) {
 		echo "Failed to change our " . $type['plural'] .  " log table. exiting\n";
@@ -138,10 +163,10 @@ function setSuccessfulStoreLog($con, $endpoint, $method, $type) {
 	}
 }
 
-function changeUpdateFlag($con, $endpoint, $method, $methodFlagged, $type) {
+function changeUpdateFlag($con, $endpointId, $method, $methodFlagged, $type) {
 	//first clear settings for this endpoint
 	
-	$sqlQuery = "DELETE FROM Disabled" . $type['singularCamelCase'] .  "Endpoints WHERE Endpoint = '".mysqli_real_escape_string($con, $endpoint)."'";
+	$sqlQuery = "DELETE FROM DisabledCompletionEndpoints WHERE EndpointId = ".$endpointId." AND Type = '".mysqli_real_escape_string($con, $type['singular'])."'";
 	$result=mysqli_query($con, $sqlQuery);
 	if (!$result) {
 		echo "Failed to reset disable " . $type['singular'] .  " flags. exiting\n";
@@ -149,9 +174,9 @@ function changeUpdateFlag($con, $endpoint, $method, $methodFlagged, $type) {
 		exit;
 	}
 	if ($methodFlagged == "both") {
-		$sqlQuery = "INSERT INTO Disabled" . $type['singularCamelCase'] .  "Endpoints (Endpoint, Method) VALUES ('".mysqli_real_escape_string($con, $endpoint)."', 'query'), ('".mysqli_real_escape_string($con, $endpoint)."', 'queryResults')";
+		$sqlQuery = "INSERT INTO DisabledCompletionEndpoints (EndpointId, Type, Method) VALUES (".$endpointId.", '".mysqli_real_escape_string($con, $type['singular'])."', 'query'), (".$endpointId.", '".mysqli_real_escape_string($con, $type['singular'])."', 'queryResults')";
 	} else if ($methodFlagged != "none") {
-		$sqlQuery = "INSERT INTO Disabled" . $type['singularCamelCase'] .  "Endpoints (Endpoint, Method) VALUES ('".mysqli_real_escape_string($con, $endpoint)."', '".mysqli_real_escape_string($con, $methodFlagged)."')";
+		$sqlQuery = "INSERT INTO DisabledCompletionEndpoints (EndpointId,Type,  Method) VALUES (".$endpointId.", '".mysqli_real_escape_string($con, $type['singular'])."', '".mysqli_real_escape_string($con, $methodFlagged)."')";
 	} 
 	$result=mysqli_query($con, $sqlQuery);
 	if (!$result) {
@@ -163,9 +188,9 @@ function changeUpdateFlag($con, $endpoint, $method, $methodFlagged, $type) {
 }
 
 
-function getCurrentUpdateFlag($con, $endpoint, $type) {
+function getCurrentUpdateFlag($con, $endpointId, $type) {
 	$methodsFlagged = "none";
-	$sqlQuery = "SELECT * FROM Disabled" . $type['singularCamelCase'] .  "Endpoints WHERE Endpoint = '".mysqli_real_escape_string($con, $endpoint)."'";
+	$sqlQuery = "SELECT * FROM DisabledCompletionEndpoints WHERE EndpointId = ".$endpointId." AND Type = '".mysqli_real_escape_string($con, $type['singular'])."'";
 	$result=mysqli_query($con, $sqlQuery);
 	if (!$result) {
 		echo "failed fetching the current update flag status from db. exiting\n";
@@ -206,8 +231,8 @@ function askSetFlag($currentMethodFlagged, $type) {
 	}
 }
 
-function purge($con, $endpoint, $method, $type) {
-	$query="DELETE FROM " . $type['pluralCamelCase'] .  " WHERE Endpoint='".mysqli_real_escape_string($con, $endpoint)."' AND Method='".mysqli_real_escape_string($con, $method)."'";
+function purge($con, $endpointId, $method, $type) {
+	$query="DELETE FROM " . $type['pluralCamelCase'] .  " WHERE EndpointId = ".$endpointId." AND Method='".mysqli_real_escape_string($con, $method)."'";
 	$result=mysqli_query($con, $query);
 	if (!$result) {
 		echo "Failed to purge results. Exiting\n";
@@ -218,7 +243,7 @@ function purge($con, $endpoint, $method, $type) {
 }
 
 function checkStore($type) {
-	echo "\nA sample of what we will add to the database is shown below (each line is inserted separately). Is this correct? [Y/n]\n\n";
+	
 	$fh = fopen($type['file'], 'r');
 	$count = 0;
 	while ($property = fgets($fh)) {
@@ -228,7 +253,7 @@ function checkStore($type) {
 			break;
 		}
 	}
-	
+	echo "\nA sample of what we will add to the database is shown above (each line is inserted separately). Is this correct? [Y/n]\n\n";
 	$handle = fopen ("php://stdin","r");
 	$correct = strtolower(trim(fgets($handle)));
 	$optionsArray = [
@@ -244,18 +269,18 @@ function checkStore($type) {
 		return checkStore($type);
 	}
 }
-function doStore($con, $endpoint, $method, $type) {
+function doStore($con, $endpointId, $method, $type) {
 	echo "Storing " . $type['plural'] .  "\n";
 	$fh = fopen($type['file'], 'r');
 	$count = 0;
 	$values = [];
 	while ($property = fgets($fh)) {
 		if (strlen($property) > 0) {
-			$values[] = '("'.mysqli_real_escape_string($con, trim($property)).'", "'.mysqli_real_escape_string($con, $endpoint).'","'.mysqli_real_escape_string($con, $method).'")';
+			$values[] = '("'.mysqli_real_escape_string($con, trim($property)).'", '. $endpointId. ',"'.mysqli_real_escape_string($con, $method).'")';
 			$count++;
 		} 
 		if ($count % 1000 == 0) {
-			$sqlQuery = "INSERT INTO " . $type['pluralCamelCase'] .  " (Uri, Endpoint, Method) VALUES ".implode(',', $values);
+			$sqlQuery = "INSERT INTO " . $type['pluralCamelCase'] .  " (Uri, EndpointId, Method) VALUES ".implode(',', $values);
 			$values = [];
 			$result=mysqli_query($con, $sqlQuery);
 			if (!$result) {
@@ -267,7 +292,7 @@ function doStore($con, $endpoint, $method, $type) {
 			}
 		}
 	}
-	$sqlQuery = "INSERT INTO " . $type['pluralCamelCase'] .  " (Uri, Endpoint, Method) VALUES ".implode(',', $values);
+	$sqlQuery = "INSERT INTO " . $type['pluralCamelCase'] .  " (Uri, EndpointId, Method) VALUES ".implode(',', $values);
 	$result=mysqli_query($con, $sqlQuery);
 	if (!$result) {
 		echo "Failed to store " . $type['plural'] .  ". Exiting\n";

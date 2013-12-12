@@ -31,6 +31,7 @@ import java.util.Date;
 import com.data2semantics.yasgui.client.settings.Settings;
 import com.data2semantics.yasgui.shared.CookieKeys;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.storage.client.StorageMap;
 import com.google.gwt.user.client.Cookies;
@@ -43,13 +44,13 @@ public class LocalStorageHelper {
 	private static int PREFIXES_EXPIRE_DAYS = 30;
 	private static int ENDPOINTS_EXPIRE_DAYS = 30;
 	private static int SETTINGS_EXPIRE_DAYS = 1000;
+	private static int LOGIN_STACK_EXPIRE_DAYS = 10;
 	private static int VERSION_EXPIRE_DAYS = 1000;
 	private static int TOOLTIPS_EXPIRE_DAYS = 1000;
 	private static int COMPATIBILITIES_SHOWN_EXPIRE_DAYS = 1000;
 	private static int PROPERTIES_EXPIRE_DAYS = 360;
 	private static int DEFAULT_EXPIRE_DAYS = 1000;
-	@SuppressWarnings("unused")
-	private static int UNKNOWN_EXPIRE_DAYS = 30;
+	private static int FETCH_LOCALHOST_URIS_EXPIRE_DAYS = 1000;
 	
 	/**
 	 * Get value from local storage using expire date. 
@@ -180,7 +181,7 @@ public class LocalStorageHelper {
 	 * 
 	 * @param settings
 	 */
-	public static void storeSettingsInCookie(Settings settings) {
+	public static void storeSettings(Settings settings) {
 		if (Storage.isLocalStorageSupported()) {
 			setInLocalStorage(CookieKeys.SETTINGS, settings.toString(), true);
 		} else {
@@ -197,7 +198,7 @@ public class LocalStorageHelper {
 	 * Get settings from cookie (or html local storage if supported). Settings is saved as a json string, so need to parse as json object
 	 * @return
 	 */
-	public static String getSettingsStringFromCookie() {
+	public static String getSettings() {
 		String jsonString = getFromLocalStorage(CookieKeys.SETTINGS, SETTINGS_EXPIRE_DAYS);
 		if (jsonString == null) {
 			//We are using a browser which does not support html5
@@ -299,6 +300,22 @@ public class LocalStorageHelper {
 		}
 		return versionId;
 	}
+	public static void setUriFetcherNotificationShown() {
+		setAsCookie(CookieKeys.URI_FETCHER_NOTIFICATION_SHOWN, "1", FETCH_LOCALHOST_URIS_EXPIRE_DAYS, true);
+	}
+	
+	public static void setLoginStack() {
+		setAsCookie(CookieKeys.URI_FETCHER_NOTIFICATION_SHOWN, "1", FETCH_LOCALHOST_URIS_EXPIRE_DAYS, true);
+	}
+	
+	public static boolean showUriFetcherNotification() {
+		String shownString = getAsCookie(CookieKeys.URI_FETCHER_NOTIFICATION_SHOWN, true);
+		boolean show = true;
+		if (shownString != null) {
+			show = false;
+		}
+		return show;
+	}
 	
 	public static boolean newUser() {
 		return (getAsCookie(CookieKeys.VERSION_ID, true) == null);
@@ -309,5 +326,40 @@ public class LocalStorageHelper {
 	public static boolean localStorageSupported() {
 		return Storage.isLocalStorageSupported();
 	}
-
+	
+	public static void setLoginStack(String jsonArray) {
+		if (Storage.isLocalStorageSupported()) {
+			setInLocalStorage(CookieKeys.LOGIN_STACK, jsonArray, true);
+		} else {
+			//We are using a browser which does not support html5
+			setAsCookie(CookieKeys.LOGIN_STACK, jsonArray, LOGIN_STACK_EXPIRE_DAYS, true);
+		}
+	}
+	
+	public static void setLoginStack(JSONArray jsonArray) {
+		setLoginStack(jsonArray.toString());
+	}
+	
+	
+	public static String getLoginStack() {
+		String jsonString = getFromLocalStorage(CookieKeys.LOGIN_STACK, LOGIN_STACK_EXPIRE_DAYS);
+		if (jsonString == null) {
+			//We are using a browser which does not support html5
+			jsonString = getAsCookie(CookieKeys.LOGIN_STACK, true);
+		}
+		return jsonString;
+	}
+	public static void clearLoginStack() {
+		String key = Helper.getCurrentHost() + "_" + CookieKeys.LOGIN_STACK;
+		clear(key);
+	}
+	private static void clear(String key) {
+		if (Storage.isLocalStorageSupported()) {
+			Storage html5Storage = Storage.getLocalStorageIfSupported();
+			html5Storage.removeItem(key);
+		} else {
+			//We are using a browser which does not support html5
+			Cookies.removeCookie(key);
+		}
+	}
 }

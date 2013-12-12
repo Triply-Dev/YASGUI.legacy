@@ -40,6 +40,7 @@ public final class HttpCookies {
     public static final int dayInSeconds = 86400;
 
     public static Cookie findCookie(HttpServletRequest request, String name) {
+    	if (request == null) return null;
         final Cookie[] cookies = request.getCookies();
 
         if (cookies == null) {

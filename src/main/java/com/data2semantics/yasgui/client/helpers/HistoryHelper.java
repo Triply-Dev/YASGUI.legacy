@@ -114,7 +114,7 @@ public class HistoryHelper {
 		Settings histSettings = new Settings(JsMethods.getDefaultSettings());
 		histSettings.addToSettings(settingsString);
 		view.setSettings(histSettings);
-		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+		LocalStorageHelper.storeSettings(view.getSettings());
 		if (onlySelectedTabChanged(currentSettings, histSettings)) {
 			view.getTabs().selectTab(view.getSettings().getSelectedTabNumber());
 			view.getTabs().redrawTabs();

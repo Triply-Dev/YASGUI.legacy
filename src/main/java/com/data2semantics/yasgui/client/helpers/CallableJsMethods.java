@@ -27,6 +27,7 @@ package com.data2semantics.yasgui.client.helpers;
  */
 
 import com.data2semantics.yasgui.client.View;
+import com.data2semantics.yasgui.client.configmenu.AutocompletionsConfigWindow;
 import com.data2semantics.yasgui.client.configmenu.OfflineAvailabilityConfig;
 import com.data2semantics.yasgui.client.settings.ExternalLinks;
 import com.data2semantics.yasgui.client.tab.optionbar.endpoints.EndpointInput;
@@ -45,7 +46,7 @@ public class CallableJsMethods {
 	}
 	
 	public void storeSettings() {
-		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+		LocalStorageHelper.storeSettings(view.getSettings());
 	}
 	
 	public void setQueryType(String queryType) {
@@ -65,7 +66,7 @@ public class CallableJsMethods {
 	public void storeQueryInCookie() {
 		String query = view.getSelectedTab().getQueryTextArea().getQuery();
 		view.getSelectedTabSettings().setQueryString(query);
-		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+		LocalStorageHelper.storeSettings(view.getSettings());
 	}
 	
 	/**
@@ -145,7 +146,7 @@ public class CallableJsMethods {
 
 	public void clearQueryResultsFromSettings() {
 		view.getSettings().clearQueryResults();
-		LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+		LocalStorageHelper.storeSettings(view.getSettings());
 	}
 
 	public void sendQueryAnalyticsEvent(String endpoint, String queryString, String label, int timing) {
@@ -155,7 +156,7 @@ public class CallableJsMethods {
 		}
 	}
 	public String getPropertyCompletionMethods() {
-		return view.getSettings().getPropertCompletionMethodsAsJson().toString();
+		return view.getSettings().getPropertyCompletionMethodsAsJson().toString();
 	}
 	public String getClassCompletionMethods() {
 		return view.getSettings().getClassCompletionMethodsAsJson().toString();
@@ -174,7 +175,7 @@ public class CallableJsMethods {
 			} else if (type.equals("class")) {
 				view.getSettings().setClassCompletionMethods(jsonVal.isObject());
 			}
-			LocalStorageHelper.storeSettingsInCookie(view.getSettings());
+			LocalStorageHelper.storeSettings(view.getSettings());
 		}
 	}
 	public boolean isColdAutocompletionFetch(String endpoint, String type) {
@@ -203,6 +204,26 @@ public class CallableJsMethods {
 	}
 	public boolean isDbSet() {
 		return view.getSettings().isDbSet();
+	}
+	public void setUriFetcherNotificationShown() {
+		LocalStorageHelper.setUriFetcherNotificationShown();
+	}
+	public String getLoginStack() {
+		return LocalStorageHelper.getLoginStack();
+	}
+	public void setLoginStack(String jsonArray) {
+		LocalStorageHelper.setLoginStack(jsonArray);
+	}
+	public void addToLoginStack(String cmd) {
+		Helper.addToLoginStack(cmd);
+	}
+	public void login() {
+		if (view.getSettings().isDbSet() && view.getOpenId() != null && !view.getOpenId().isLoggedIn()) {
+			view.getOpenId().showOpenIdProviders();
+		}
+	}
+	public void drawAutocompletionConfig() {
+		new AutocompletionsConfigWindow(view);
 	}
 	
 	/**
@@ -313,6 +334,23 @@ public class CallableJsMethods {
 		$wnd.isDbSet = function() {
 			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::isDbSet()();
 		}
-		
+		$wnd.setUriFetcherNotificationShown = function() {
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::setUriFetcherNotificationShown()();
+		}
+		$wnd.getLoginStack = function() {
+			return viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::getLoginStack()();
+		}
+		$wnd.setLoginStack = function(jsonArray) {
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::setLoginStack(Ljava/lang/String;)(jsonArray);
+		}
+		$wnd.addToLoginStack = function(cmd) {
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::addToLoginStack(Ljava/lang/String;)(cmd);
+		}
+		$wnd.login = function() {
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::login()();
+		}
+		$wnd.drawAutocompletionConfig = function() {
+			viewJs.@com.data2semantics.yasgui.client.helpers.CallableJsMethods::drawAutocompletionConfig()();
+		}
 	}-*/;
 }

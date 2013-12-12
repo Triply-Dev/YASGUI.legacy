@@ -46,6 +46,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.data2semantics.yasgui.client.services.YasguiService;
+import com.data2semantics.yasgui.server.autocompletions.QueryCompletionExtractor;
 import com.data2semantics.yasgui.server.db.DbHelper;
 import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
 import com.data2semantics.yasgui.server.fetchers.PrefixesFetcher;
@@ -53,8 +54,8 @@ import com.data2semantics.yasgui.server.fetchers.endpoints.EndpointsFetcher;
 import com.data2semantics.yasgui.shared.Bookmark;
 import com.data2semantics.yasgui.shared.IssueReport;
 import com.data2semantics.yasgui.shared.SettingKeys;
-import com.data2semantics.yasgui.shared.autocompletions.AccessibilityStatus;
 import com.data2semantics.yasgui.shared.autocompletions.AutocompletionsInfo;
+import com.data2semantics.yasgui.shared.exceptions.EndpointIdException;
 import com.data2semantics.yasgui.shared.exceptions.FetchException;
 import com.data2semantics.yasgui.shared.exceptions.OpenIdException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -268,10 +269,11 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 	}
 
 	@Override
-	public AccessibilityStatus logLazyQuery(String query, String endpoint) throws IllegalArgumentException {
+	public void logLazyQuery(String query, String endpoint) throws IllegalArgumentException, EndpointIdException {
 		try {
-			
-			return QueryPropertyExtractor.store(new DbHelper(new File(getServletContext().getRealPath("/"))), query, endpoint);
+			QueryCompletionExtractor.store(new DbHelper(new File(getServletContext().getRealPath("/")), getThreadLocalRequest()), query, endpoint);
+		} catch (EndpointIdException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new IllegalArgumentException(e.getMessage());
 		}

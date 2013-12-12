@@ -1,4 +1,4 @@
-package com.data2semantics.yasgui.shared;
+package com.data2semantics.yasgui.shared.exceptions;
 
 /*
  * #%L
@@ -28,18 +28,17 @@ package com.data2semantics.yasgui.shared;
 
 import java.io.Serializable;
 
-public class CookieKeys implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class EndpointIdException extends RuntimeException implements Serializable { 
 	
-	public static String SETTINGS = "settings";
-	public static String LOGIN_STACK = "loginStack";
-	public static String TOOLTIPS_SHOWN = "tooltipsShown";
-	public static String PREFIXES = "prefixes";
-	public static String PROPERTIES = "properties";
-	public static String ENDPOINTS = "endpoints";
-	public static String VERSION = "version";
-	public static String VERSION_ID = "versionId";
-	public static String GWT_STRONG_NAME = "gwtStrongName";
-	public static String COMPATIBILITIES_SHOWN = "compatabilitiesShown";
-	public static String URI_FETCHER_NOTIFICATION_SHOWN = "uriFetcherNotificationShown";
+	private static final long serialVersionUID = 6738785750198344230L;
+
+	public EndpointIdException(){}
+	public EndpointIdException(String message) {
+		super(message);
+	}
+	public EndpointIdException(String message, Throwable e) {
+		super(message, e);
+	}
+
+	
 }

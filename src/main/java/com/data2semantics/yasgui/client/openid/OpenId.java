@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import com.data2semantics.yasgui.client.GwtCallbackWrapper;
 import com.data2semantics.yasgui.client.View;
 import com.data2semantics.yasgui.client.helpers.Helper;
+import com.data2semantics.yasgui.client.helpers.JsMethods;
+import com.data2semantics.yasgui.client.helpers.LocalStorageHelper;
 import com.data2semantics.yasgui.client.settings.ZIndexes;
 import com.data2semantics.yasgui.shared.LoginResult;
 import com.data2semantics.yasgui.shared.StaticConfig;
@@ -307,5 +309,10 @@ public class OpenId {
 	 */
 	public void loggedInCallback() {
 		view.getTabs().loggedInCallback();
+		String loginStack = LocalStorageHelper.getLoginStack();
+		if (loginStack != null) {
+			JsMethods.executeLoginCallback(loginStack);
+			LocalStorageHelper.clearLoginStack();
+		}
 	}
 }
