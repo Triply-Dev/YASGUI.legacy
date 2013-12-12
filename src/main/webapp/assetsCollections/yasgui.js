@@ -23,6 +23,7 @@ function checkCorsEnabled(endpoint) {
 		fetchingCors[endpoint] = true;
 		$.ajax({
 			url : endpoint,
+			data: {query: "ASK {?sub ?pred ?obj}"},
 			method : 'get',
 			complete : function(xhr) {
 				if (xhr.status != 0) { // CORS-enabled site
