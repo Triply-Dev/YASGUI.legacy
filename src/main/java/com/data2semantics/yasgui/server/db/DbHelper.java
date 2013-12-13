@@ -45,6 +45,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -247,7 +248,7 @@ public class DbHelper {
 		return userId;
 	}
 	
-	private int getUserId() throws SQLException {
+	public int getUserId() throws SQLException {
 		int userId = -1;
 		try {
 			userId = getUserId(HttpCookies.getCookieValue(request, OpenIdServlet.uniqueIdCookieName));
@@ -486,6 +487,23 @@ public class DbHelper {
 		}
 		ps.executeBatch(); // insert remaining records
 	}
+	public void storeCompletionFetchesFromLocalhost(int endpointId, FetchType type, FetchMethod method, JSONArray completions) throws SQLException, JSONException {
+		String sql = "insert into " + type.getPluralCamelCase() + " (Uri, EndpointId, Method) values (?, ?, ?)";
+		PreparedStatement ps = connect.prepareStatement(sql);
+		
+		final int batchSize = 1000;
+		int count = 0;
+		for (int i = 0; i < completions.length(); i++) {
+			ps.setString(1, completions.getString(i).trim());
+			ps.setInt(2, endpointId);
+			ps.setString(3, method.get());
+			ps.addBatch();
+			if (++count % batchSize == 0) {
+				ps.executeBatch();
+			}
+		}
+		ps.executeBatch(); // insert remaining records
+	}
 	
 	public boolean autocompletionFetchingEnabled(int endpointId, FetchType type, FetchMethod method) throws SQLException {
 		String sql = "SELECT * "
@@ -706,7 +724,6 @@ public class DbHelper {
 	    }
 		PreparedStatement ps = connect.prepareStatement(selectSql);
 		ps.setString(1, endpoint);
-		System.out.println("useId: " + getUserId());
 		if (addUserId) ps.setInt(2, getUserId());
 		ResultSet result = ps.executeQuery();
 		int endpointId;
@@ -720,12 +737,15 @@ public class DbHelper {
 	
 	public int generateIdForEndpoint(String endpoint) throws SQLException, EndpointIdException {
 		AccessibilityStatus accessibleStatus = Helper.checkEndpointAccessibility(endpoint);
+		return generateIdForEndpoint(endpoint, accessibleStatus);
+	}
+	
+	public int generateIdForEndpoint(String endpoint, AccessibilityStatus accessibilityStatus) throws SQLException, EndpointIdException {
 		int userId = getUserId();
-		
 		String insertSql = "INSERT INTO CompletionEndpoints (Endpoint, UserId) VALUES (?, ?)";
 		PreparedStatement psUpdate = connect.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS);
 		psUpdate.setString(1, endpoint);
-		if (accessibleStatus == AccessibilityStatus.ACCESSIBLE) {
+		if (accessibilityStatus == AccessibilityStatus.ACCESSIBLE) {
 			psUpdate.setNull(2, Types.INTEGER);
 		} else if (userId >= 0){
 			//we need a user id for this one!
@@ -738,6 +758,8 @@ public class DbHelper {
 		keys.next();
 		return keys.getInt(1);
 	}
+	
+	
 	public void setEndpointAccessible(int endpointId, AccessibilityStatus accessible) throws SQLException {
 		setEndpointAccessible(endpointId, accessible == AccessibilityStatus.ACCESSIBLE);
 	}

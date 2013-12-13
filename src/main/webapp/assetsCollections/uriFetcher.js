@@ -73,7 +73,7 @@ $.ajaxSetup({
         }
 });
 
-var fetchCompletions = function(endpoint, type) {
+var fetchCompletions = function(endpoint, type, successCallback, failCallback) {
 	var completions = [];
 	var pagedCount = 0;
 	var pagedIterator = 0;
@@ -101,7 +101,7 @@ var fetchCompletions = function(endpoint, type) {
 				return "" +
 					"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
 					"SELECT DISTINCT ?class WHERE {[] rdf:type ?class} " +
-					"LIMIT 101" +
+					"LIMIT 100" +
 					"";
 			},
 			paged: function(iterator, count) {
@@ -116,30 +116,32 @@ var fetchCompletions = function(endpoint, type) {
 		}
 	};
 	var simpleCallback = function(data) {
-		console.log("simple");
+		console.log("simple callback");
 		if (needPaging(data)) {
 			//hmm, guess we need paging
 			pagedCount = getResultsetSize(data);
-			console.log("need paging?");
+			fetchPaged();
 		} else {
 			getCompletionsFromResultset(data);
-			sendCompletionsToServer();
+			successCallback(completions);
 		}
 	};
 	var pagedCallback = function(data) {
 		console.log("paged callback");
-		var resultSetSize = getResultsetSize(data);
 		getCompletionsFromResultset(data);
-		if (resultSetSize < pagedMaxCount) {
-			//we are done! just stop
-		} else {
-			pagedIterator++;
-			fetchPaged(endpoint);
+		
+		if (pagedIterator == 1) {
+			console.log("reached iteration 3. just stop now");
+			successCallback(completions);
+			return;
 		}
-	};
-	var sendCompletionsToServer = function() {
-		console.log("sending results to server");
-		console.log(completions);
+		if (needPaging(data)) {
+			pagedIterator++;
+			fetchPaged();
+		} else {
+			//we are done! send completions to server
+			successCallback(completions);
+		}
 	};
 	var getCompletionsFromResultset = function(data) {
 		$( data ).find("uri").each(function() {
@@ -148,22 +150,24 @@ var fetchCompletions = function(endpoint, type) {
 	};
 	
 	var getResultsetSize = function(data) {
-		return $( data ).find("binding[name='" + type + "']").length;
+		var size = $( data ).find("binding[name='" + type + "']").length;
+		console.log("resultset size: " + size);
+		return size;
 	};
 	var needPaging = function(data) {
-		console.log(data);
 		var size = getResultsetSize(data);
-		return (size > 0 && size % 100 == 0);
+		var needPaging = (size > 0 && size % 100 == 0);
+		console.log("needpaging: " + needPaging);
+		return needPaging;
 	};
 	
-	this.execQuery = function(endpoint, queryStr, callback) {
+	this.execQuery = function(queryStr, callback) {
 		
         var acceptHeader = "application/sparql-results+xml";
         var ajaxData = [{name: "query", value: queryStr}];
-//        ajaxData.push({name: "query", value: queryStr});
         
         if (!corsEnabled[endpoint]) {
-        	console.log("trying to fetch completions from js on a cors disabled endpoint!");
+        	//console.log("trying to fetch completions from js on a cors disabled endpoint!");
         }
         $.ajax({
             url : endpoint,
@@ -171,21 +175,16 @@ var fetchCompletions = function(endpoint, type) {
             headers : {
                     Accept : acceptHeader
             },
-//            dataType : 'text',//get as text, let gwt parse it to gwt json object. Want to retrieve json though, so use header setting above
             data : ajaxData,
             beforeSend : function(xhr) {
                     //nothing
             },
             success : function(data, textStatus, jqXHR) {
             	callback(data);
-//            	console.log(data);
-//                callback(tabId, data, jqXHR.getResponseHeader('Content-Type'));
             },
             error : function(jqXHR, textStatus, errorThrown) {
                     if (textStatus != "abort") {
-                        //if user cancels query, textStatus will be 'abort'. No need to show error window then
-                        onQueryFinish();
-                        clearQueryResult();
+                        //if query is cancelled, textStatus will be 'abort'. No need to show error window then
                         var errorMsg;
                         if (jqXHR.status == 0 && errorThrown.length == 0) {
                                 checkIsOnline();
@@ -194,23 +193,56 @@ var fetchCompletions = function(endpoint, type) {
                                 errorMsg = "Error querying endpoint: "
                                                 + jqXHR.status + " - " + errorThrown;
                         }
-                        
-                        console.log(errorMsg);
+                        failCallback(errorMsg);
                     }
             },
         });
 	};
-	var fetchSimple = function(endpoint) {
+	var fetchSimple = function() {
 		//first try simple
-		execQuery(endpoint, queries[type].simple(), simpleCallback);
+		console.log("fetching simple");
+		execQuery(queries[type].simple(), simpleCallback);
 	};
 	
-	var fetchPaged = function(endpoint) {
-		var query = queries[type].paged(pagedCount, pagedIterator);
-		execQuery(endpoint, query, pagedCallback);
+	var fetchPaged = function() {
+		console.log("fetching paged. i: " + pagedIterator);
+		var query = queries[type].paged(pagedIterator, pagedCount);
+		execQuery(query, pagedCallback);
 	};
-	fetchSimple(endpoint);
-//	this.execQuery("http://dbpedia.org/sparql", "select * WHERE {?x ?y ?jh} LIMIT 10", function(){console.log("woeiii");});
+	fetchSimple();
+};
+
+
+var sendCompletionsToServer = function(endpoint, type, completions, successCallback, failCallback) {
+	var data = {
+    	endpoint: endpoint,
+    	type: type,
+    	completions: completions
+    };
+	$.ajax({
+        url : "Yasgui/autocompleteSaver",
+        type : "POST",
+        dataType: 'json',
+        data: JSON.stringify(data),
+        
+        success : function(data, textStatus, jqXHR) {
+        	successCallback();
+        },
+        error : function(jqXHR, textStatus, errorThrown) {
+                if (textStatus != "abort") {
+                    //if query is cancelled, textStatus will be 'abort'. No need to show error window then
+                    var errorMsg;
+                    if (jqXHR.status == 0 && errorThrown.length == 0) {
+                            checkIsOnline();
+                            errorMsg = "Error querying endpoint: empty response returned";
+                    } else {
+                            errorMsg = "Error querying endpoint: "
+                                            + jqXHR.status + " - " + errorThrown;
+                    }
+                    failCallback(errorMsg);
+                }
+        },
+    });
 };
 
 var fetchCompletionsSize = function(endpoint, type) {
