@@ -175,6 +175,7 @@ public final class OpenIdServlet extends HttpServlet implements RemoteService {
 	 */
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if (Boolean.valueOf(request.getParameter(authParameter))) {
+			System.out.println("trying to authenticate");
 			try {
 				authenticate(request, response);
 			} catch (Exception e) {
@@ -183,9 +184,11 @@ public final class OpenIdServlet extends HttpServlet implements RemoteService {
 			}
 		}
 		if (request.getParameter("logOut") != null) {
+			System.out.println("logging out");
 			logOut(request, response);
 		} else {
 			try {
+				System.out.println("verify authenticatation");
 				verify(request, response);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -195,14 +198,16 @@ public final class OpenIdServlet extends HttpServlet implements RemoteService {
 	}
 
 	private void logOut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		System.out.println("logging out");
 		String returnUrl = request.getParameter(appBaseUrl);
 		if (request.getParameter(StaticConfig.DEBUG_ARGUMENT_KEY) != null) {
 			returnUrl += "?" + StaticConfig.DEBUG_ARGUMENT_KEY + "="
 					+ request.getParameter(StaticConfig.DEBUG_ARGUMENT_KEY);
 		}
-
+		System.out.println("resetting cookies");
 		HttpCookies.resetCookie(request, response, openIdCookieName);
 		HttpCookies.resetCookie(request, response, uniqueIdCookieName);
+		System.out.println("sending redirect url");
 		response.sendRedirect(returnUrl);
 
 	}
@@ -237,30 +242,38 @@ public final class OpenIdServlet extends HttpServlet implements RemoteService {
 	private void authenticate(HttpServletRequest request, HttpServletResponse response) throws IOException,
 			ServletException, ParseException, JSONException, ClassNotFoundException, SQLException {
 		final String loginString = request.getParameter(nameParameter);
-
+		System.out.println("in authenticate");
 		try {
+			System.out.println("resetting cookies");
 			HttpCookies.resetCookie(request, response, uniqueIdCookieName);
 			HttpCookies.resetCookie(request, response, openIdCookieName);
-
+			
+			System.out.println("creating unique id");
 			String uuid = callback.createUniqueIdForUser(ConfigFetcher.getJsonObjectFromPath(getServletContext().getRealPath("/")), loginString);
 			HttpCookies.setCookie(request, response, uniqueIdCookieName, uuid);
 
 			// perform discovery on the user-supplied identifier
+			System.out.println("discovering");
 			@SuppressWarnings("rawtypes")
 			List discoveries = manager.discover(loginString);
 
 			// attempt to associate with the OpenID provider
 			// and retrieve one service endpoint for authentication
+			System.out.println("retrieve single authentication endpoint");
 			DiscoveryInformation discovered = manager.associate(discoveries);
-
+			
+			System.out.println("obtaining authrequest");
 			// obtain a AuthRequest message to be sent to the OpenID provider
 			String returnUrl = callback.getOpenIdServletURL(request.getParameter(appBaseUrl));
 			if (request.getParameter(StaticConfig.DEBUG_ARGUMENT_KEY) != null) {
 				returnUrl += "?" + StaticConfig.DEBUG_ARGUMENT_KEY + "="
 						+ request.getParameter(StaticConfig.DEBUG_ARGUMENT_KEY);
 			}
+			System.out.println("authenticate cookies");
 			AuthRequest authReq = manager.authenticate(discovered, returnUrl, null);
+			System.out.println("fetch request");
 			FetchRequest fetch = FetchRequest.createFetchRequest();
+			System.out.println("fetching attributes");
 			fetch.addAttribute("oiFirstName", "http://schema.openid.net/namePerson/first", true);
 			fetch.addAttribute("oiLastName", "http://schema.openid.net/namePerson/last", true);
 			fetch.addAttribute("aFirstName", "http://axschema.org/namePerson/first", true);
@@ -271,11 +284,13 @@ public final class OpenIdServlet extends HttpServlet implements RemoteService {
 			fetch.addAttribute("aEmail", "http://axschema.org/contact/email", true);
 			fetch.addAttribute("oiEmail", "http://schema.openid.net/contact/email", true);
 			
-			
+			System.out.println("adding extension");
 			authReq.addExtension(fetch);
 			// redirect to OpenID for authentication
+			System.out.println("sending redirect");
 			response.sendRedirect(authReq.getDestinationUrl(true));
 		} catch (OpenIDException e) {
+			System.out.println("oid exception!");
 			e.printStackTrace();
 			throw new ServletException("Login string probably caused an error. loginString = " + loginString, e);
 		}
@@ -314,49 +329,59 @@ public final class OpenIdServlet extends HttpServlet implements RemoteService {
 	 * @throws Exception 
 	 */
 	private void verify(HttpServletRequest request, HttpServletResponse response) throws FileNotFoundException, ParseException, JSONException, IOException, ServletException, ClassNotFoundException, SQLException {
+		System.out.println("verifying");
 		try {
 
 			// extract the parameters from the authentication response
 			// (which comes in as a HTTP request from the OpenID provider)
 			ParameterList responseParams = new ParameterList(request.getParameterMap());
-
+			System.out.println("extract receiving url");
 			// extract the receiving URL from the HTTP request
 			StringBuffer receivingURL = request.getRequestURL();
 			String queryString = request.getQueryString();
 			if (queryString != null && queryString.length() > 0)
 				receivingURL.append("?").append(request.getQueryString());
-
+			
 			// verify the response; ConsumerManager needs to be the same
 			// (static) instance used to place the authentication request
+			System.out.println("actual verify");
 			VerificationResult verification = manager.verify(receivingURL.toString(), responseParams, null);
 			// examine the verification result and extract the verified
 			// identifier
+			System.out.println("getting verified id");
 			Identifier id = verification.getVerifiedId();
 			
 			if (id != null) {
+				System.out.println("id found");
 				UserDetails userDetails = new UserDetails();
 				userDetails.setUniqueId(HttpCookies.getCookieValue(request, uniqueIdCookieName));
 				userDetails.setOpenId(id.getIdentifier());
 				AuthSuccess authSuccess = (AuthSuccess) verification.getAuthResponse();
-
+				System.out.println("retrieved auth response");
 				if (authSuccess.hasExtension(AxMessage.OPENID_NS_AX)) {
+					System.out.println("doing stuff for auth extension");
 					MessageExtension ext = authSuccess.getExtension(AxMessage.OPENID_NS_AX);
 
 					if (ext instanceof FetchResponse) {
 						FetchResponse fetchResp = (FetchResponse) ext;
+						System.out.println("adding attributes to user details");
 						userDetails = addAttributes(fetchResp, userDetails);
 					}
 
 				}
+				System.out.println("setting id cookie");
 				HttpCookies.setCookie(request, response, openIdCookieName, id.getIdentifier());
-				
+				System.out.println("saving identifies for unique id");
 				callback.saveIdentifierForUniqueId(new File(getServletContext().getRealPath("/")), userDetails);
+			} else {
+				System.out.println("id not found");
 			}
 			String url = callback.getLoginURL();
 			if (request.getParameter(StaticConfig.DEBUG_ARGUMENT_KEY) != null) {
 				url += "?" + StaticConfig.DEBUG_ARGUMENT_KEY + "="
 						+ request.getParameter(StaticConfig.DEBUG_ARGUMENT_KEY);
 			}
+			System.out.println("sending redirect url");
 			response.sendRedirect(url);
 		} catch (OpenIDException e) {
 			throw new ServletException("Could not verify identity", e);
