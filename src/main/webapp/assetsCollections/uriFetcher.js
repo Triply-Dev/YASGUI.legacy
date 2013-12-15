@@ -1,7 +1,7 @@
 var shouldWeFetchNotification = {
 	id: "shouldFetchNoty",
 	content: "YASGUI just tried to <a href='http://laurensrietveld.nl/yasgui/help.html#autocompletionmethods' target='_blank'>extract</a> properties and classes from your query, allowing you to autocomplete such URIs.<br>" +
-			"However, the YASGUI server was unsuccessful in reaching your endpoint. This either means the endpoint is installed on your local computer, or running in an intranet.<br>" +
+			"However, the YASGUI server failed to reache your endpoint. This either means the endpoint is installed on your local computer, or running in an intranet.<br>" +
 			"To support autocompletions for localhost endpoints, log in to YASGUI and configure localhost autocompletions.",
 	draw: function() {
 		noty({

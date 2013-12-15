@@ -27,20 +27,35 @@ package com.data2semantics.yasgui.shared.autocompletions;
  */
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 public class AutocompletionTypeInfo implements Serializable {
 	private static final long serialVersionUID = 7983956584768879376L;
-	private boolean hasAutocompletions = false;
 	private int fetchFailCount = 0;
 	private boolean queryAnalysisEnabled = true;
 	private boolean queryResultsFetching = true;
+	private HashMap<FetchMethod, Boolean> hasCompletions = new HashMap<FetchMethod, Boolean>();
 
 	public boolean hasAutocompletions() {
+		boolean hasAutocompletions = false;
+		for (Boolean hasCompletion: hasCompletions.values()) {
+			if (hasCompletion) {
+				hasAutocompletions = true;
+				break;
+			}
+		}
 		return hasAutocompletions;
 	}
+	public boolean hasAutocompletions(FetchMethod method) {
+		boolean hasCompletions = false;
+		if (this.hasCompletions.containsKey(method)) {
+			hasCompletions = this.hasCompletions.get(method);
+		}
+		return hasCompletions;
+	}
 
-	public void setHasAutocompletions(boolean hasAutocompletions) {
-		this.hasAutocompletions = hasAutocompletions;
+	public void setHasCompletions(FetchMethod method, boolean hasCompletions) {
+		this.hasCompletions.put(method, hasCompletions);
 	}
 
 	public int getFetchFailCount() {
@@ -71,7 +86,7 @@ public class AutocompletionTypeInfo implements Serializable {
 	
 	public String toString() {
 		String result = "";
-		result += "has autocompletions: " + (hasAutocompletions? "yes": "no") + "\n";
+		result += "has autocompletions: " + (hasAutocompletions()? "yes": "no") + "\n";
 		result += "fetchFailCount: " + fetchFailCount + "\n";
 		result += "queryAnalysisEnabled: " + (queryAnalysisEnabled? "yes": "no") + "\n";
 		result += "queryResultsFetchingEnabled: " + (queryResultsFetching? "yes": "no") + "\n";

@@ -38,7 +38,6 @@ import java.sql.Types;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -48,7 +47,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import com.data2semantics.yasgui.shared.autocompletions.Util;
+
 import com.data2semantics.yasgui.server.Helper;
 import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
 import com.data2semantics.yasgui.server.fetchers.PropertiesFetcher;
@@ -63,6 +62,7 @@ import com.data2semantics.yasgui.shared.autocompletions.EndpointPrivateFlag;
 import com.data2semantics.yasgui.shared.autocompletions.FetchMethod;
 import com.data2semantics.yasgui.shared.autocompletions.FetchStatus;
 import com.data2semantics.yasgui.shared.autocompletions.FetchType;
+import com.data2semantics.yasgui.shared.autocompletions.Util;
 import com.data2semantics.yasgui.shared.exceptions.EndpointIdException;
 import com.data2semantics.yasgui.shared.exceptions.OpenIdException;
 import com.data2semantics.yasgui.shared.exceptions.PossiblyNeedPaging;
@@ -629,22 +629,22 @@ public class DbHelper {
 	 * @return
 	 * @throws SQLException
 	 */
-	public Set<String> getEndpointsWithAutocompletions(FetchType fetchType) throws SQLException {
+	public HashMultimap<String, FetchMethod> getEndpointsWithAutocompletions(FetchType fetchType) throws SQLException {
 		int userId = -1;
 		try {
 			userId = getUserId();
 		} catch (OpenIdException e) {
 			//do nothing, just use the default (non-existing) userId
 		}
-		Set<String> endpoints = new HashSet<String>();
-		String sql = "SELECT DISTINCT endpoints.Endpoint "
+		HashMultimap<String, FetchMethod> endpoints = HashMultimap.create();
+		String sql = "SELECT DISTINCT endpoints.Endpoint, completions.Method "
 				+ "FROM " + fetchType.getPluralCamelCase() + " AS completions, CompletionEndpoints AS endpoints  "
 				+ "WHERE completions.EndpointId = endpoints.Id AND (endpoints.UserId IS NULL OR endpoints.UserId = ?)";
 		PreparedStatement ps = connect.prepareStatement(sql);
 		ps.setInt(1, userId);
 		ResultSet result = ps.executeQuery();
 		while (result.next()) {
-			endpoints.add(result.getString("Endpoint"));
+			endpoints.put(result.getString("Endpoint"), Util.stringToFetchMethod(result.getString("Method")));
 		}
 		return endpoints;
 	}
@@ -654,11 +654,17 @@ public class DbHelper {
 	public AutocompletionsInfo getAutocompletionInfo() throws SQLException {
 		AutocompletionsInfo completionsInfo = new AutocompletionsInfo();
 		
-		for (String endpoint: getEndpointsWithAutocompletions(FetchType.PROPERTIES)) {
-			completionsInfo.getOrCreateEndpointInfo(endpoint).getPropertyInfo().setHasAutocompletions(true);
+		HashMultimap<String, FetchMethod> endpointsWithCompletions = getEndpointsWithAutocompletions(FetchType.PROPERTIES);
+		for (String endpoint: endpointsWithCompletions.keySet()) {
+			for (FetchMethod method: endpointsWithCompletions.get(endpoint)) {
+				completionsInfo.getOrCreateEndpointInfo(endpoint).getPropertyInfo().setHasCompletions(method, true);
+			}
 		}
-		for (String endpoint: getEndpointsWithAutocompletions(FetchType.CLASSES)) {
-			completionsInfo.getOrCreateEndpointInfo(endpoint).getClassInfo().setHasAutocompletions(true);
+		endpointsWithCompletions = getEndpointsWithAutocompletions(FetchType.CLASSES);
+		for (String endpoint: endpointsWithCompletions.keySet()) {
+			for (FetchMethod method: endpointsWithCompletions.get(endpoint)) {
+				completionsInfo.getOrCreateEndpointInfo(endpoint).getClassInfo().setHasCompletions(method, true);
+			}
 		}
 		for (Entry<String, Integer> entry: getFailCountForEndpoints(FetchType.PROPERTIES).entrySet()) {
 			completionsInfo.getOrCreateEndpointInfo(entry.getKey()).getPropertyInfo().setFetchFailCount(entry.getValue());
