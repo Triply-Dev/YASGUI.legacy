@@ -524,4 +524,7 @@ public class JsMethods {
 		var compl = new $wnd.ClassAutocompletion();
 		compl.draw(compl, true, false);
 	}-*/;
+	public static native void drawShouldWeFetchNotification() /*-{
+		$wnd.shouldWeFetchNotification.draw();
+	}-*/;
 }

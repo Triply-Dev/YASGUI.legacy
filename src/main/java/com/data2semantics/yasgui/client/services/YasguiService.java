@@ -28,8 +28,10 @@ package com.data2semantics.yasgui.client.services;
 
 import com.data2semantics.yasgui.shared.Bookmark;
 import com.data2semantics.yasgui.shared.IssueReport;
-import com.data2semantics.yasgui.shared.autocompletions.AccessibilityStatus;
 import com.data2semantics.yasgui.shared.autocompletions.AutocompletionsInfo;
+import com.data2semantics.yasgui.shared.autocompletions.FetchMethod;
+import com.data2semantics.yasgui.shared.autocompletions.FetchType;
+import com.data2semantics.yasgui.shared.exceptions.EndpointIdException;
 import com.data2semantics.yasgui.shared.exceptions.FetchException;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -39,7 +41,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("YasguiService")
 public interface YasguiService extends RemoteService {
-	AccessibilityStatus logLazyQuery(String query, String endpoint) throws IllegalArgumentException;
+	void logLazyQuery(String query, String endpoint) throws IllegalArgumentException, EndpointIdException;
 	AutocompletionsInfo getAutocompletionsInfo() throws IllegalArgumentException, FetchException;
 	String fetchPrefixes(boolean forceUpdate) throws IllegalArgumentException, FetchException;
 	String fetchEndpoints(boolean forceUpdate) throws IllegalArgumentException, FetchException;
@@ -51,4 +53,6 @@ public interface YasguiService extends RemoteService {
 	boolean isOnline() throws IllegalArgumentException;
 	void logException(Throwable e);
 	String reportIssue(IssueReport issueReport) throws IllegalArgumentException;
+	boolean isEndpointAccessible(String endpoint) throws IllegalArgumentException;
+	void clearPrivateCompletions(FetchType type, FetchMethod method, String endpoint) throws IllegalArgumentException;
 }

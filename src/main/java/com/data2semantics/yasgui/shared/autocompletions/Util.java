@@ -28,28 +28,35 @@ package com.data2semantics.yasgui.shared.autocompletions;
 
 import java.io.Serializable;
 
-public class AutocompleteKeys implements Serializable {
+public class Util implements Serializable {
 
-	private static final long serialVersionUID = -1550708057486559219L;
-	
-	public static String REQUEST_QUERY = "q";
-	public static String REQUEST_TYPE = "type";
-	public static String REQUEST_METHOD = "method";
-	public static String REQUEST_MAX_RESULTS = "max";
-	public static String REQUEST_ENDPOINT = "endpoint";
-	public static String REQUEST_COMPLETIONS = "completions";
-	
-	
-	public static String TYPE_PROPERTY = "property";
-	public static String TYPE_CLASS = "class";
-	
-	public static String RESPONSE_METHOD_QUERY_RESULTS = "queryResults";
-	public static String RESPONSE_METHOD_QUERY_ANALYSIS = "query";
-	
-	public static String RESPONSE_RESULT_SIZE = "resultSize";
-	public static String RESPONSE_RESULTS = "results";
-	public static String RESPONSE_STATUS = "status";
-	public static String RESPONSE_STATUS_TEXT = "text";
-	public static String RESPONSE_STATUS_SUBJECT = "subject";
-	public static String RESPONSE_STATUS_LEVEL = "level";
+	private static final long serialVersionUID = -7991139026773308359L;
+	public static FetchType stringToFetchType(String typeString) throws IllegalArgumentException {
+		FetchType[] fetchTypes = new FetchType[]{FetchType.CLASSES, FetchType.PROPERTIES};
+		FetchType foundType = null;
+		for (FetchType type: fetchTypes) {
+			if (type.getSingular().equals(typeString)) {
+				foundType = type;
+				break;
+			}
+		}
+		if (foundType == null) {
+			throw new IllegalArgumentException("could not match " + typeString + " to enum");
+		}
+		return foundType;
+	}
+	public static FetchMethod stringToFetchMethod(String methodString) throws IllegalArgumentException {
+		FetchMethod[] fetchMethods = new FetchMethod[]{FetchMethod.QUERY_ANALYSIS, FetchMethod.QUERY_RESULTS};
+		FetchMethod foundMethod = null;
+		for (FetchMethod method: fetchMethods) {
+			if (method.get().equals(methodString)) {
+				foundMethod = method;
+				break;
+			}
+		}
+		if (foundMethod == null) {
+			throw new IllegalArgumentException("could not match " + methodString + " to enum");
+		}
+		return foundMethod;
+	}
 }

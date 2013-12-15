@@ -284,7 +284,7 @@ public class Settings extends JsonHelper {
 		}
 		return propertyCompletionMethods;
 	}
-	public JSONObject getPropertCompletionMethodsAsJson() {
+	public JSONObject getPropertyCompletionMethodsAsJson() {
 		return getMapAsObject(getPropertyCompletionMethods());
 	}
 	
@@ -295,11 +295,11 @@ public class Settings extends JsonHelper {
 	public Map<String, Boolean> getClassCompletionMethods() {
 		Map<String, Boolean> classCompletionMethods = getMap(SettingKeys.ENABLED_CLASS_COMPLETION_METHODS, null);
 		if (classCompletionMethods == null) {
-			Map<String, Boolean> enabledPropertyCompletionMethods = enabledFeatures.getEnabledClassCompletionMethods();
+			Map<String, Boolean> enabledClassCompletions = enabledFeatures.getEnabledClassCompletionMethods();
 			classCompletionMethods = new HashMap<String, Boolean>();
 			//if something is set to 'false' in enabled features, they should not be added to our final hashmap,
 			//as null means we won't show this method, false means it is disabled (but selectable), and true means it is enabled
-			for (Entry<String, Boolean> entry: enabledPropertyCompletionMethods.entrySet()) {
+			for (Entry<String, Boolean> entry: enabledClassCompletions.entrySet()) {
 				if (entry.getValue()) {
 					classCompletionMethods.put(entry.getKey(), true);
 				}

@@ -49,7 +49,7 @@ import com.data2semantics.yasgui.client.tab.results.output.RawResponse;
 import com.data2semantics.yasgui.client.tab.results.output.ResultGrid;
 import com.data2semantics.yasgui.client.tab.results.output.SimpleGrid;
 import com.data2semantics.yasgui.shared.Output;
-import com.data2semantics.yasgui.shared.autocompletions.AccessibilityStatus;
+import com.data2semantics.yasgui.shared.exceptions.EndpointIdException;
 import com.data2semantics.yasgui.shared.exceptions.SparqlEmptyException;
 import com.data2semantics.yasgui.shared.exceptions.SparqlParseException;
 import com.google.gwt.core.client.Scheduler;
@@ -72,15 +72,18 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 public class ResultContainer extends VLayout {
 	public static String XSD_DATA_PREFIX = "http://www.w3.org/2001/XMLSchema#";
-	
-	//use this setting to keep our memory use low. Only store query results in settings (for re-use) when the char lenght is below this value
-	private static int MAX_CHARS_RESULTS= 300000;//approx resultset of a 1000
-	//use this setting to keep our settings object small enough to fit in local storage. This value covers the aggregate resultset size of all tabs
-	private static int MAX_CHARS_RESULTS_TOTAL= 600000;
+
+	// use this setting to keep our memory use low. Only store query results in
+	// settings (for re-use) when the char lenght is below this value
+	private static int MAX_CHARS_RESULTS = 300000;// approx resultset of a 1000
+	// use this setting to keep our settings object small enough to fit in local
+	// storage. This value covers the aggregate resultset size of all tabs
+	private static int MAX_CHARS_RESULTS_TOTAL = 600000;
+
 	public enum ResultType {
 		Table, Boolean, Insert;
 	}
-	
+
 	private View view;
 	private QueryTab queryTab;
 	private RawResponse rawResponseOutput;
@@ -88,12 +91,13 @@ public class ResultContainer extends VLayout {
 	HashMap<String, ResultType> queryTypes = new HashMap<String, ResultType>();
 
 	private String endpoint;
+
 	public ResultContainer(View view, QueryTab queryTab) {
 		setPossibleQueryTypes();
 		this.view = view;
 		this.queryTab = queryTab;
 	}
-	
+
 	private void setPossibleQueryTypes() {
 		queryTypes.put("SELECT", ResultType.Table);
 		queryTypes.put("ASK", ResultType.Boolean);
@@ -109,15 +113,16 @@ public class ResultContainer extends VLayout {
 		queryTypes.put("CREATE", ResultType.Insert);
 		queryTypes.put("INSERT", ResultType.Insert);
 		queryTypes.put("DELETE", ResultType.Insert);
-		queryTypes.put("WITH", ResultType.Insert); //used in MODIFY
+		queryTypes.put("WITH", ResultType.Insert); // used in MODIFY
 	}
-	
+
 	/**
 	 * Empty query result area
 	 */
 	public void resetResultArea() {
 		if (rawResponseOutput != null) {
-			//We have an old codemirror object used for showing json results. Clean this up
+			// We have an old codemirror object used for showing json results.
+			// Clean this up
 			JsMethods.destroyCodeMirrorQueryResponse(rawResponseOutput.getInputId());
 			rawResponseOutput = null;
 		}
@@ -126,12 +131,12 @@ public class ResultContainer extends VLayout {
 			removeMember(member);
 		}
 	}
-	
+
 	public void resetVariables() {
 		queryString = null;
 		endpoint = null;
 	}
-	
+
 	public void drawIfPossible() {
 		TabSettings tabSettings = view.getSelectedTabSettings();
 		if (view.getSelectedTabSettings().getQueryResultsString() != null) {
@@ -146,12 +151,16 @@ public class ResultContainer extends VLayout {
 			resetVariables();
 		}
 	}
-	
+
 	/**
-	 * Process and draw results. Checks for content type. If it is missing or strange, try to detect by parsing to xml or json
+	 * Process and draw results. Checks for content type. If it is missing or
+	 * strange, try to detect by parsing to xml or json
 	 * 
-	 * @param queryString query string for which we got these results 
-	 * (this is -not- necessarily the query from the current tab object, as query execute might have a big latency with time to edit the query string)
+	 * @param queryString
+	 *            query string for which we got these results (this is -not-
+	 *            necessarily the query from the current tab object, as query
+	 *            execute might have a big latency with time to edit the query
+	 *            string)
 	 * @param resultString
 	 * @param contentType
 	 */
@@ -159,25 +168,25 @@ public class ResultContainer extends VLayout {
 		this.queryString = queryString;
 		this.endpoint = endpoint;
 		storeResult(endpoint, queryString, resultString, contentType);
-		doDraw(resultString, contentType);	
+		doDraw(resultString, contentType);
 	}
-	
+
 	private void doDraw(String resultString, String contentTypeString) {
 		if (resultString != null && resultString.length() > 0) {
 			resetResultArea();
 			Type contentType = ContentTypes.detectContentType(contentTypeString);
-			
+
 			if (contentType == null) {
-				//assuming select query here (no construct)
+				// assuming select query here (no construct)
 				contentType = detectContentTypeFromResultstring(resultString);
 			}
 			if (contentType == null) {
 				view.getErrorHelper().onQueryError(queryTab.getID(), "Unable to detect content type and parse the query results<br><br>" + resultString);
 				return;
 			}
-			
-			
-			if ((queryTab.getQueryType().equals("CONSTRUCT") || queryTab.getQueryType().equals("DESCRIBE")) && !ResultsHelper.tabularConstructContentType(contentType)) {
+
+			if ((queryTab.getQueryType().equals("CONSTRUCT") || queryTab.getQueryType().equals("DESCRIBE"))
+					&& !ResultsHelper.tabularConstructContentType(contentType)) {
 				drawGraphResult(resultString, contentType);
 			} else {
 				addQueryResult(resultString, contentType);
@@ -185,9 +194,7 @@ public class ResultContainer extends VLayout {
 			resetVariables();
 		}
 	}
-	
 
-	
 	private void storeResult(String endpoint, String queryString, String resultString, String contentType) {
 		/**
 		 * Store in settings
@@ -197,16 +204,22 @@ public class ResultContainer extends VLayout {
 			view.getSelectedTabSettings().setQueryResultsString(resultString);
 			view.getSelectedTabSettings().setQueryResultsContentType(contentType);
 		} else {
-			view.getSelectedTabSettings().clearQueryResultsString();;
+			view.getSelectedTabSettings().clearQueryResultsString();
+			;
 			view.getSelectedTabSettings().clearQueryResultsContentType();
 		}
-		
+
 		/**
-		 * Store in history helper as well. We store the resultsets in the settings object (above) and store this in localstorage,
-		 * but we remove this part when storing the history state. If we don't, then every resultset in our history gets stored,
-		 * making the memory size (about) linearly increase each time we execute a query...
-		 * Cleaning our history of our previous states is (for security reason) not possible.. (we can only edit our -current- history state)
-		 * Therefore, keep our last three resultsets in memory manually. Is ugly though (would prefer to use a proper history object for this instead of building on manually), but it'll have to do
+		 * Store in history helper as well. We store the resultsets in the
+		 * settings object (above) and store this in localstorage, but we remove
+		 * this part when storing the history state. If we don't, then every
+		 * resultset in our history gets stored, making the memory size (about)
+		 * linearly increase each time we execute a query... Cleaning our
+		 * history of our previous states is (for security reason) not
+		 * possible.. (we can only edit our -current- history state) Therefore,
+		 * keep our last three resultsets in memory manually. Is ugly though
+		 * (would prefer to use a proper history object for this instead of
+		 * building on manually), but it'll have to do
 		 */
 		view.getHistory().addQueryResults(endpoint, queryString, resultString, contentType);
 	}
@@ -214,7 +227,7 @@ public class ResultContainer extends VLayout {
 	private void drawGraphResult(String responseString, Type contentType) {
 		drawRawResponse(responseString, contentType);
 	}
-	
+
 	private void addQueryResult(String responseString, Type contentType) {
 		try {
 			String queryType = JsMethods.getQueryType(view.getSelectedTab().getQueryTextArea().getInputId());
@@ -223,71 +236,76 @@ public class ResultContainer extends VLayout {
 			}
 			ResultType queryMode = queryTypes.get(queryType);
 			switch (queryTypes.get(queryType)) {
-            case Insert:
-            	addMember(getResultsLabel(Imgs.CHECKBOX.get(), "Done"));
-                    break;
-            case Boolean:
-            case Table:
-            	String outputFormat = view.getSelectedTabSettings().getOutputFormat();
+			case Insert:
+				addMember(getResultsLabel(Imgs.CHECKBOX.get(), "Done"));
+				break;
+			case Boolean:
+			case Table:
+				String outputFormat = view.getSelectedTabSettings().getOutputFormat();
 				if (outputFormat.equals(Output.OUTPUT_RAW_RESPONSE)) {
 					drawRawResponse(responseString, contentType);
 				} else {
 					SparqlResults results = getSelectResultsFromString(responseString, contentType, queryTypes.get(queryType));
 					logQueryForAnalysis(results);
-					if (queryMode == ResultType.Boolean){
+					if (queryMode == ResultType.Boolean) {
 						drawResultsAsBoolean(results);
 					} else if (queryMode == ResultType.Table) {
 						drawResultsInTable(results, outputFormat);
 					}
 				}
 				break;
-                  
-    }
-		
+
+			}
+
 		} catch (SparqlEmptyException e) {
 			VLayout vLayout = new VLayout();
 			vLayout.setWidth100();
 			vLayout.setHeight100();
-			
+
 			ArrayList<String> usedNamedGraphs = view.getSelectedTabSettings().getNamedGraphs();
 			ArrayList<String> usedDefaultGraphs = view.getSelectedTabSettings().getDefaultGraphs();
-			if (
-					(view.getEnabledFeatures().defaultGraphsSpecificationEnabled() && usedDefaultGraphs.size() > 0) ||
-					(view.getEnabledFeatures().namedGraphsSpecificationEnabled() && usedNamedGraphs.size() > 0)) {
-				vLayout.addMember(getResultsLabelWithWarning(Imgs.CROSS.get(), e.getMessage(), "You have specified named and/or default graphs in your query request, which may explain this empty result set"));
+			if ((view.getEnabledFeatures().defaultGraphsSpecificationEnabled() && usedDefaultGraphs.size() > 0)
+					|| (view.getEnabledFeatures().namedGraphsSpecificationEnabled() && usedNamedGraphs.size() > 0)) {
+				vLayout.addMember(getResultsLabelWithWarning(Imgs.CROSS.get(), e.getMessage(),
+						"You have specified named and/or default graphs in your query request, which may explain this empty result set"));
 			} else {
 				vLayout.addMember(getResultsLabel(Imgs.CROSS.get(), e.getMessage()));
 			}
-			
+
 			addMember(vLayout);
 		} catch (Exception e) {
 			view.getErrorHelper().onError(e);
-			
-		} 
+
+		}
 	}
-	
+
 	private void logQueryForAnalysis(SparqlResults results) {
-		//only log when we actually have results
-		if (results.getBindings().size() > 0 && endpoint != null && (view.getAutocompletionsInfo() == null || view.getAutocompletionsInfo().queryAnalysisEnabled(endpoint))) {
-			new GwtCallbackWrapper<AccessibilityStatus>(view) {
-				public void onCall(AsyncCallback<AccessibilityStatus> callback) {
+		// only log when we actually have results
+		if (results.getBindings().size() > 0 && endpoint != null
+				&& (view.getAutocompletionsInfo() == null || view.getAutocompletionsInfo().queryAnalysisEnabled(endpoint))) {
+			new GwtCallbackWrapper<Void>(view) {
+				public void onCall(AsyncCallback<Void> callback) {
 					view.getRemoteService().logLazyQuery(queryString, endpoint, callback);
 				}
 
 				protected void onFailure(Throwable throwable) {
+					if (throwable instanceof EndpointIdException) {
+						// ok, endpoint is not reachable from server, and user
+						// is not logged in as well..
+						if (JsMethods.corsEnabled(endpoint)) {
+							JsMethods.drawShouldWeFetchNotification();
+						}
+					}
 					JsMethods.logConsole("exception: " + throwable.getMessage());
 				}
 
-				protected void onSuccess(AccessibilityStatus status) {
-					if (status == AccessibilityStatus.INACCESSIBLE && JsMethods.corsEnabled(endpoint)) {
-						//inaccessible from YASGUI, but accessible from client side!
-						
-					}
+				protected void onSuccess(Void val) {
 				}
 
 			}.call();
 		}
 	}
+
 	private SparqlResults getSelectResultsFromString(String responseString, Type contentType, ResultType resultType) {
 		SparqlResults results = null;
 		if (contentType == Type.SELECT_JSON) {
@@ -303,21 +321,22 @@ public class ResultContainer extends VLayout {
 		}
 		return results;
 	}
+
 	public HLayout getResultsLabelWithWarning(String iconSrc, String message, String warningMessage) {
 		HLayout resultLayout = new HLayout();
 		resultLayout.setDefaultLayoutAlign(VerticalAlignment.CENTER);
 		resultLayout.setHeight(60);
 		resultLayout.setWidth100();
-		
+
 		Img cross = new Img();
 		cross.setSrc(iconSrc);
 		cross.setSize(20);
-		
+
 		Img warning = new Img();
 		warning.setSrc(Imgs.WARNING.get());
 		warning.setSize(13);
 		warning.setTooltip(warningMessage);
-		
+
 		Label messageLabel = new Label("&nbsp;" + message);
 		messageLabel.setAutoHeight();
 		messageLabel.setStyleName("queryResultText");
@@ -325,18 +344,17 @@ public class ResultContainer extends VLayout {
 		resultLayout.addMembers(Helper.getHSpacer(), cross, messageLabel, warning, Helper.getHSpacer());
 		return resultLayout;
 	}
-	
+
 	public HLayout getResultsLabel(String iconSrc, String message) {
 		HLayout resultLayout = new HLayout();
 		resultLayout.setDefaultLayoutAlign(VerticalAlignment.CENTER);
 		resultLayout.setHeight(60);
 		resultLayout.setWidth100();
-		
+
 		Img cross = new Img();
 		cross.setSrc(iconSrc);
 		cross.setSize(16);
-		
-		
+
 		Label messageLabel = new Label("&nbsp;" + message);
 		messageLabel.setAutoHeight();
 		messageLabel.setStyleName("queryResultText");
@@ -345,9 +363,10 @@ public class ResultContainer extends VLayout {
 		resultLayout.addMember(cross);
 		resultLayout.addMember(messageLabel);
 		resultLayout.addMember(Helper.getHSpacer());
-		
+
 		return resultLayout;
 	}
+
 	private void drawResultsAsBoolean(SparqlResults sparqlResults) {
 		if (sparqlResults.getBooleanResult()) {
 			addMember(getResultsLabel(Imgs.CHECKBOX.get(), "true"));
@@ -355,7 +374,7 @@ public class ResultContainer extends VLayout {
 			addMember(getResultsLabel(Imgs.CROSS.get(), "false"));
 		}
 	}
-	
+
 	private void drawResultsInTable(SparqlResults sparqlResults, String outputFormat) {
 		Csv csvParser = new Csv(view, sparqlResults);
 		if (JsMethods.stringToDownloadSupported()) {
@@ -364,14 +383,14 @@ public class ResultContainer extends VLayout {
 		}
 		if (outputFormat.equals(Output.OUTPUT_TABLE)) {
 			HTMLPane html = new HTMLPane();
-			//html.setHeight(27);
+			// html.setHeight(27);
 			addMember(html);
 			addMember(new ResultGrid(view, sparqlResults, html));
 		} else if (outputFormat.equals(Output.OUTPUT_TABLE_SIMPLE)) {
 			addMember(new SimpleGrid(view, sparqlResults));
 		}
 	}
-	
+
 	private void drawRawResponse(String responseString, Type contentType) {
 		if (JsMethods.stringToDownloadSupported()) {
 			String url = JsMethods.stringToUrl(responseString, contentType.getContentType());
@@ -379,16 +398,17 @@ public class ResultContainer extends VLayout {
 		}
 		rawResponseOutput = new RawResponse(view, queryTab, responseString);
 		addMember(rawResponseOutput);
-		
+
 		final String mode;
 		if (contentType.getCmMode() != null) {
 			mode = contentType.getCmMode();
 		} else {
 			mode = Type.SELECT_XML.getCmMode();
 		}
-		//on window resize, part of the page get redrawn. This means we have to attach to codemirror again
-		//this is also called on first load
-		rawResponseOutput.addResizedHandler(new ResizedHandler(){
+		// on window resize, part of the page get redrawn. This means we have to
+		// attach to codemirror again
+		// this is also called on first load
+		rawResponseOutput.addResizedHandler(new ResizedHandler() {
 			@Override
 			public void onResized(ResizedEvent event) {
 				Scheduler.get().scheduleDeferred(new Command() {
@@ -397,12 +417,14 @@ public class ResultContainer extends VLayout {
 						rawResponseOutput.adjustForContent(true);
 					}
 				});
-		}});
+			}
+		});
 	}
+
 	public RawResponse getRawResponseOutput() {
 		return this.rawResponseOutput;
 	}
-	
+
 	public Type detectContentTypeFromResultstring(String responseString) {
 		Type contentType = null;
 		try {
@@ -414,14 +436,16 @@ public class ResultContainer extends VLayout {
 					return Type.SELECT_JSON;
 				}
 			}
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 		try {
 			Document xmlDoc = XMLParser.parse(responseString);
 			if (xmlDoc != null && xmlDoc.getElementsByTagName("sparql").getLength() > 0) {
 				return Type.SELECT_XML;
 			}
-		} catch (Exception e) {}
-		
+		} catch (Exception e) {
+		}
+
 		return contentType;
 	}
 }

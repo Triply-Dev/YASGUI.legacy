@@ -46,6 +46,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.data2semantics.yasgui.client.services.YasguiService;
+import com.data2semantics.yasgui.server.autocompletions.QueryCompletionExtractor;
 import com.data2semantics.yasgui.server.db.DbHelper;
 import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
 import com.data2semantics.yasgui.server.fetchers.PrefixesFetcher;
@@ -55,6 +56,10 @@ import com.data2semantics.yasgui.shared.IssueReport;
 import com.data2semantics.yasgui.shared.SettingKeys;
 import com.data2semantics.yasgui.shared.autocompletions.AccessibilityStatus;
 import com.data2semantics.yasgui.shared.autocompletions.AutocompletionsInfo;
+import com.data2semantics.yasgui.shared.autocompletions.EndpointPrivateFlag;
+import com.data2semantics.yasgui.shared.autocompletions.FetchMethod;
+import com.data2semantics.yasgui.shared.autocompletions.FetchType;
+import com.data2semantics.yasgui.shared.exceptions.EndpointIdException;
 import com.data2semantics.yasgui.shared.exceptions.FetchException;
 import com.data2semantics.yasgui.shared.exceptions.OpenIdException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -268,10 +273,11 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 	}
 
 	@Override
-	public AccessibilityStatus logLazyQuery(String query, String endpoint) throws IllegalArgumentException {
+	public void logLazyQuery(String query, String endpoint) throws IllegalArgumentException, EndpointIdException {
 		try {
-			
-			return QueryPropertyExtractor.store(new DbHelper(new File(getServletContext().getRealPath("/"))), query, endpoint);
+			QueryCompletionExtractor.store(new DbHelper(new File(getServletContext().getRealPath("/")), getThreadLocalRequest()), query, endpoint);
+		} catch (EndpointIdException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new IllegalArgumentException(e.getMessage());
 		}
@@ -283,9 +289,40 @@ public class YasguiServiceImpl extends RemoteServiceServlet implements YasguiSer
 			DbHelper db = new DbHelper(new File(getServletContext().getRealPath("/")), getThreadLocalRequest());
 			return db.getAutocompletionInfo();
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new FetchException(e.getMessage());
 		}
+	}
+
+	@Override
+	public boolean isEndpointAccessible(String endpoint) throws IllegalArgumentException {
+		try {
+			DbHelper db = new DbHelper(new File(getServletContext().getRealPath("/")), getThreadLocalRequest());
+			AccessibilityStatus status = AccessibilityStatus.UNCHECKED;
+			try {
+				db.isEndpointAccessible(db.getEndpointId(endpoint, EndpointPrivateFlag.OWN_AND_PUBLIC));
+			} catch (EndpointIdException e) {
+				//do nothing, endpoint not known yet. i.e., leave status 'unchecked'
+			}
+			
+			if (status == AccessibilityStatus.UNCHECKED) {
+				status = Helper.checkEndpointAccessibility(endpoint);
+			}
+			return (status == AccessibilityStatus.ACCESSIBLE);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(e.getMessage());
+		}
+	}
+
+	@Override
+	public void clearPrivateCompletions(FetchType type, FetchMethod method, String endpoint) throws IllegalArgumentException {
+		try {
+			DbHelper db = new DbHelper(new File(getServletContext().getRealPath("/")), getThreadLocalRequest());
+			int endpointId = db.getEndpointId(endpoint, EndpointPrivateFlag.OWN);
+			db.clearPreviousAutocompletionFetches(endpointId, method, type);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(e.getMessage());
+		}
+		
 	}
 
 }
