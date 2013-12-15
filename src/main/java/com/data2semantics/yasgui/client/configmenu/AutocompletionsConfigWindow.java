@@ -108,7 +108,7 @@ public class AutocompletionsConfigWindow extends Window {
 				
 			}  
         });
-        form.setItems(endpointItem, typesItem);
+        form.setItems(endpointItem, typesItem, saveButton);
         layout.addMember(form);
 	}
 	
