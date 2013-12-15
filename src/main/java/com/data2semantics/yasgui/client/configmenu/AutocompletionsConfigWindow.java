@@ -1,6 +1,6 @@
 package com.data2semantics.yasgui.client.configmenu;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import com.data2semantics.yasgui.client.GwtCallbackWrapper;
 import com.data2semantics.yasgui.client.View;
@@ -24,7 +24,13 @@ public class AutocompletionsConfigWindow extends Window {
 	private static int WINDOW_HEIGHT = 400;
 	private static int WINDOW_WIDTH = 500;
 	private View view;
+	private TextItem fetchEndpoint;
+	private SelectItem fetchTypes;
+
+	private LinkedHashMap<String, String> possibleTypes = new LinkedHashMap<String, String>();
 	VLayout layout = new VLayout();
+	private DynamicForm endpointAddForm;
+
 	public AutocompletionsConfigWindow(View view) {
 		this.view = view;
 		setHeight(WINDOW_HEIGHT);
@@ -53,35 +59,45 @@ public class AutocompletionsConfigWindow extends Window {
 		button.setShowRollOver(false);
 		button.setShowDown(false);
 		button.setIcon(Imgs.ADD.get());
-		button.addClickHandler(new ClickHandler(){
+		button.addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
 				drawEndpointAddDialogue();
-			}});
-		
+			}
+		});
+
 		return button;
 	}
-	
+
 	private void drawEndpointAddDialogue() {
-		DynamicForm form = new DynamicForm();
-		final TextItem endpointItem = new TextItem();  
-        endpointItem.setTitle("Endpoint");  
-        final SelectItem typesItem = new SelectItem();  
-        typesItem.setTitle("Completion Types");  
-        typesItem.setMultiple(true);  
-        typesItem.setMultipleAppearance(MultipleAppearance.GRID);  
-        final HashMap<String, String> types = new HashMap<String, String>();
-        types.put("Properties",  "property");
-        types.put("Classes",  "class");
-        typesItem.setValueMap(types.keySet().toArray(new String[types.keySet().size()]));
-        ButtonItem saveButton = new ButtonItem("Update");  
-        saveButton.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+		endpointAddForm = new DynamicForm();
+		fetchEndpoint = new TextItem();
+		fetchEndpoint.setTitle("Endpoint");
+
+		possibleTypes = new LinkedHashMap<String, String>();
+		possibleTypes.put("class", "Classses");
+		possibleTypes.put("property", "Propperties");
+		// fetchTypes.setValueMap("Properties", "Classes");
+
+		final SelectItem fetchTypes = new SelectItem();
+		fetchTypes.setTitle("Completion Types");
+		fetchTypes.setMultiple(true);
+		fetchTypes.setMultipleAppearance(MultipleAppearance.PICKLIST);
+//		fetchTypes.setValueMap("Properties", "Classes");
+
+		fetchTypes.setValueMap(possibleTypes);
+		ButtonItem saveButton = new ButtonItem("Fetch");
+		saveButton.addClickHandler(new com.smartgwt.client.widgets.form.fields.events.ClickHandler() {
+			
 			@Override
 			public void onClick(com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
+//				JsMethods.logConsole(Integer.toString(fetchTypes.getSelectedRecords().length));
+//				JsMethods.logConsole(Integer.toString(fetchTypes.getValues().length));
+//				if ("sdf".equals("sdf")) return;
 				new GwtCallbackWrapper<Boolean>(view) {
 					public void onCall(AsyncCallback<Boolean> callback) {
-						view.getRemoteService().isEndpointAccessible(endpointItem.getValueAsString(), callback);
+						view.getRemoteService().isEndpointAccessible(fetchEndpoint.getValueAsString(), callback);
 					}
 
 					protected void onFailure(Throwable throwable) {
@@ -89,28 +105,30 @@ public class AutocompletionsConfigWindow extends Window {
 					}
 
 					protected void onSuccess(Boolean accessible) {
-						destroy();
 						if (accessible) {
-							view.getErrorHelper().onError("The endpoint " + endpointItem.getValueAsString() + " is already accessible from the YASGUI server. The completions for this endpoint are managed by YASGUI by default. You are only able to manage your own private (e.g. localhost/intranet) endpoints");
+							view.getErrorHelper()
+									.onError(
+											"The endpoint "
+													+ fetchEndpoint.getValueAsString()
+													+ " is already accessible from the YASGUI server. The completions for this endpoint are managed by YASGUI by default. You are only able to manage your own private (e.g. localhost/intranet) endpoints");
 						} else {
-							if (typesItem.getValues().length > 0) {
+							if (fetchTypes.getValues().length > 0) {
 								String type = null;
-								if (typesItem.getValues().length == 1) {
-									type = typesItem.getValues()[0];
+								if (fetchTypes.getValues().length == 1) {
+									type = fetchTypes.getValues()[0];
 								}
-								JsMethods.fetchCompletions(endpointItem.getValueAsString(), type);
+								JsMethods.fetchCompletions(fetchEndpoint.getValueAsString(), type);
 							}
+							destroy();
 						}
 					}
 
 				}.call();
-				
-				
-			}  
-        });
-        form.setItems(endpointItem, typesItem, saveButton);
-        layout.addMember(form);
+
+			}
+		});
+		endpointAddForm.setItems(fetchEndpoint, fetchTypes, saveButton);
+		layout.addMember(endpointAddForm);
 	}
-	
-	
+
 }
