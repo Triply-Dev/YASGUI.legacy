@@ -57,6 +57,7 @@ import com.data2semantics.yasgui.server.openid.OpenIdServlet;
 import com.data2semantics.yasgui.shared.Bookmark;
 import com.data2semantics.yasgui.shared.UserDetails;
 import com.data2semantics.yasgui.shared.autocompletions.AccessibilityStatus;
+import com.data2semantics.yasgui.shared.autocompletions.AutocompletionConfigCols;
 import com.data2semantics.yasgui.shared.autocompletions.AutocompletionsInfo;
 import com.data2semantics.yasgui.shared.autocompletions.EndpointPrivateFlag;
 import com.data2semantics.yasgui.shared.autocompletions.FetchMethod;
@@ -248,14 +249,8 @@ public class DbHelper {
 		return userId;
 	}
 	
-	public int getUserId() throws SQLException {
-		int userId = -1;
-		try {
-			userId = getUserId(HttpCookies.getCookieValue(request, OpenIdServlet.uniqueIdCookieName));
-		} catch (OpenIdException e) {
-			//user is not in db (i.e. not logged in?)
-		}
-		return userId;
+	public int getUserId() throws SQLException, OpenIdException {
+		return getUserId(HttpCookies.getCookieValue(request, OpenIdServlet.uniqueIdCookieName));
 	}
 
 	/**
@@ -602,6 +597,12 @@ public class DbHelper {
 	 * @throws SQLException
 	 */
 	public Map<String, Integer> getFailCountForEndpoints(FetchType type) throws SQLException {
+		int userId = -1;
+		try {
+			userId = getUserId();
+		} catch (OpenIdException e) {
+			//do nothing, just use the default (non-existing) userId
+		}
 		String sql = "SELECT endpoints.Endpoint, COUNT( endpoints.Endpoint ) AS NumberFails " + 
 				"FROM CompletionsLog AS log"
 				+ " JOIN CompletionEndpoints AS endpoints on endpoints.Id = log.EndpointId " + 
@@ -612,7 +613,7 @@ public class DbHelper {
 		PreparedStatement ps = connect.prepareStatement(sql);
 		ps.setString(1, FetchStatus.FAILED.get());
 		ps.setString(2, type.getSingular());
-		ps.setInt(3, getUserId());
+		ps.setInt(3, userId);
 		ResultSet result = ps.executeQuery();
 		Map<String, Integer> endpoints = new HashMap<String, Integer>();
 		while (result.next()) {
@@ -629,12 +630,18 @@ public class DbHelper {
 	 * @throws SQLException
 	 */
 	public Set<String> getEndpointsWithAutocompletions(FetchType fetchType) throws SQLException {
+		int userId = -1;
+		try {
+			userId = getUserId();
+		} catch (OpenIdException e) {
+			//do nothing, just use the default (non-existing) userId
+		}
 		Set<String> endpoints = new HashSet<String>();
 		String sql = "SELECT DISTINCT endpoints.Endpoint "
 				+ "FROM " + fetchType.getPluralCamelCase() + " AS completions, CompletionEndpoints AS endpoints  "
 				+ "WHERE completions.EndpointId = endpoints.Id AND (endpoints.UserId IS NULL OR endpoints.UserId = ?)";
 		PreparedStatement ps = connect.prepareStatement(sql);
-		ps.setInt(1, getUserId());
+		ps.setInt(1, userId);
 		ResultSet result = ps.executeQuery();
 		while (result.next()) {
 			endpoints.add(result.getString("Endpoint"));
@@ -682,6 +689,51 @@ public class DbHelper {
 		return completionsInfo;
 	}
 	
+	
+	public JSONArray getPersonalAutocompletionsInfo() throws OpenIdException, SQLException, JSONException {
+		int userId = getUserId();
+		JSONArray propDataArray = getPersonalAutocompletionsInfo(userId, FetchType.PROPERTIES);
+		JSONArray classDataArray = getPersonalAutocompletionsInfo(userId, FetchType.CLASSES);
+		//need to concatenate both
+		for (int i = 0; i < classDataArray.length(); i++) {
+			propDataArray.put(classDataArray.get(i));
+		}
+		return propDataArray;
+	}
+	
+	private JSONArray getPersonalAutocompletionsInfo(int userId, FetchType type) throws JSONException, OpenIdException, SQLException {
+		
+		String sql = "SELECT Method, endpoints.Endpoint, COUNT( Method ) AS Count " + 
+				"FROM CompletionEndpoints AS endpoints, " + type.getPluralCamelCase() + " " + 
+				"WHERE endpoints.UserId = ? " +
+				"AND " + type.getPluralCamelCase() + ".EndpointId = endpoints.Id " + 
+				"GROUP BY " + type.getPluralCamelCase() + ".Method,  " + type.getPluralCamelCase() + ".EndpointId" +
+				"";
+		System.out.println(sql);
+		PreparedStatement ps = connect.prepareStatement(sql);
+		ps.setInt(1, userId);
+		ResultSet result = ps.executeQuery();
+		HashMap<String, JSONObject> completionsInfo = new HashMap<String, JSONObject>();
+		while (result.next()) {
+			String endpoint = result.getString("Endpoint");
+			if (completionsInfo.containsKey(endpoint)) {
+				//only need to add the 'method count' thing (rest is already added to object;
+				JSONObject dataObj = completionsInfo.get(endpoint);
+				dataObj.put(result.getString("Method"), result.getString("Count"));
+			} else {
+				JSONObject dataObj = new JSONObject();
+				dataObj.put(AutocompletionConfigCols.TYPE.getKey(), type.getSingular());
+				dataObj.put(AutocompletionConfigCols.ENDPOINT.getKey(), endpoint);
+				dataObj.put(result.getString("Method"), result.getString("Count"));
+				completionsInfo.put(endpoint, dataObj);
+			}
+			
+		}
+		
+		
+		JSONArray dataArray = new JSONArray(completionsInfo.values());
+		return dataArray;
+	}
 	/**
 	 * Flag the 'accessibility' (i.e. via http from the YASGUI server) status of an endpoint
 	 * @param endpointId
