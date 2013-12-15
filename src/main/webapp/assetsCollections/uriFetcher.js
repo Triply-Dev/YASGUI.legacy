@@ -245,6 +245,60 @@ var sendCompletionsToServer = function(endpoint, type, completions, successCallb
     });
 };
 
+var fetchAndStoreCompletions = function(endpoint) {
+	//do this for both types of completions
+	noty({
+		text: "Fetching completions from endpoint " + endpoint,
+		layout: 'bottomLeft',
+		type: 'alert',
+		closeWith: ["button", "click"],
+	});
+};
+
+var fetchAndStoreCompletions = function(endpoint, type, skipFirstNotification) {
+	if (skipFirstNotification == undefined) {
+		noty({
+			text: "Fetching " + (type == null? "": type + " ") + " completions from endpoint " + endpoint,
+			layout: 'bottomLeft',
+			type: 'alert',
+			closeWith: ["button", "click"],
+		});
+	}
+	if (type == null) {
+		fetchAndStoreCompletions(endpoint, "class", true);
+		fetchAndStoreCompletions(endpoint, "property", true);
+		return;
+	}
+	fetchCompletions(
+		endpoint, 
+		type, 
+		function(data) {
+			noty({
+				text: "Fetched " + type + " completions successfully. Now sending the completions to the server",
+				layout: 'bottomLeft',
+				type: 'alert',
+				closeWith: ["button", "click"],
+			});
+			//fetch success
+			sendCompletionsToServer(endpoint, type, data, function() {
+				noty({
+					text: "Successfully stored " + type + " completions on the YASGUI server!",
+					layout: 'bottomLeft',
+					type: 'alert',
+					closeWith: ["button", "click"],
+				});
+				},
+				function(msg) {
+					onError("Failed sending " + type + " completions to the YASGUI server");
+				}
+			);
+		},
+		function(msg) {
+			onError("Failed fetching " + type + " completions from the endpoint");
+		}
+	);
+};
+
 var fetchCompletionsSize = function(endpoint, type) {
 	
 };

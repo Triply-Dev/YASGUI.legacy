@@ -527,4 +527,8 @@ public class JsMethods {
 	public static native void drawShouldWeFetchNotification() /*-{
 		$wnd.shouldWeFetchNotification.draw();
 	}-*/;
+	public static native void fetchCompletions(String endpoint, String type) /*-{
+		$wnd.fetchAndStoreCompletions(endpoint, type);
+	}-*/;
+
 }
