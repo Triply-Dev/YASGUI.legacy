@@ -42,13 +42,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.data2semantics.yasgui.server.Helper;
 import com.data2semantics.yasgui.server.db.DbHelper;
 import com.data2semantics.yasgui.shared.autocompletions.AccessibilityStatus;
 import com.data2semantics.yasgui.shared.autocompletions.AutocompleteKeys;
 import com.data2semantics.yasgui.shared.autocompletions.EndpointPrivateFlag;
 import com.data2semantics.yasgui.shared.autocompletions.FetchMethod;
 import com.data2semantics.yasgui.shared.autocompletions.FetchType;
+import com.data2semantics.yasgui.shared.autocompletions.Util;
 import com.data2semantics.yasgui.shared.exceptions.EndpointIdException;
 
 public class AutocompletionsSaverServlet extends HttpServlet {
@@ -117,7 +117,7 @@ public class AutocompletionsSaverServlet extends HttpServlet {
 			throw new IllegalArgumentException("Required arg in json missing: " + AutocompleteKeys.REQUEST_TYPE);
 		} else {
 			try {
-				return Helper.stringToFetchType(typeString);
+				return Util.stringToFetchType(typeString);
 			} catch (IllegalArgumentException e) {
 				throw new IllegalArgumentException("Unrecognized value given in json. " + AutocompleteKeys.REQUEST_ENDPOINT + ": " + typeString);
 			}

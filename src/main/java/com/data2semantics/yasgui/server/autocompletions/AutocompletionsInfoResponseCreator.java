@@ -36,22 +36,6 @@ public class AutocompletionsInfoResponseCreator {
 		jsonResponse.put("startRow", 0);
 		jsonResponse.put("endRow", dataArray.length() - 1);
 		jsonResponse.put("totalRows", dataArray.length());
-		
-		
-//		  {
-//			     "response": {
-//			        "status": 0,
-//			        "startRow": 0,
-//			        "endRow": 76,
-//			        "totalRows": 546,
-//			        "data": [
-//			            {"field1": "value", "field2": "value"},
-//			            {"field1": "value", "field2": "value"},
-//			            ... 76 total records ...
-//			        ]
-//			     }
-//			  }
-		
 		jsonResponse.put("data", dataArray);
 		resultObject.put("response", jsonResponse);
 		return resultObject;

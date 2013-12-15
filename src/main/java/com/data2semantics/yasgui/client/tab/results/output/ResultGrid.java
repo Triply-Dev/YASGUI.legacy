@@ -82,53 +82,54 @@ public class ResultGrid extends ListGrid {
 	
 	protected Canvas getRollOverCanvas(final Integer rowNum, Integer colNum) {
 		rollOverRecord = getRecord(rowNum);
-		if (rollOverRecord != null) {
-			String varName = getFieldName(colNum);
-			final String value = rollOverRecord.getAttribute(varName);
-			
-			if (value != null && value.startsWith("http")) {
-				//the check above is done to avoid needing to use the solutions hashtable (might be a performance thingy)
-				if (rollOverCanvas == null) {
-					rollOverCanvas = new HLayout();
-					rollOverCanvas.setSnapTo("TR");
-					rollOverCanvas.setWidth(22);
-					rollOverCanvas.setHeight100();
-					rollOverCanvas.setAlign(VerticalAlignment.CENTER);
-					ImgButton openExtLink = new ImgButton();
-					openExtLink.setShowDown(false);
-					openExtLink.setShowRollOver(false);
-					openExtLink.setLayoutAlign(Alignment.CENTER);
-					if (view.getSettings().useUrlAsSnorql()) {
-						openExtLink.setSrc(Imgs.EXTERNAL_LINK.get());
-						openExtLink.setPrompt("Open resource information in new window");
-					} else {
-						openExtLink.setSrc(Imgs.INTERNAL_LINK.get());
-						openExtLink.setPrompt("Show resource information in YASGUI");
-					}
-					
-					openExtLink.setHeight(16);
-					openExtLink.setWidth(16);
-					rollOverCanvas.addMember(openExtLink);
-					
+		String varName = getFieldName(colNum);
+		final String value = rollOverRecord.getAttribute(varName);
+		if (value != null && value.startsWith("http") && rollOverRecord != null) {
+			//the check above is done to avoid needing to use the solutions hashtable (might be a performance thingy)
+			if (rollOverCanvas == null) {
+				rollOverCanvas = new HLayout();
+				rollOverCanvas.setSnapTo("TR");
+				rollOverCanvas.setWidth(22);
+				rollOverCanvas.setHeight100();
+				rollOverCanvas.setAlign(VerticalAlignment.CENTER);
+				ImgButton openExtLink = new ImgButton();
+				openExtLink.setShowDown(false);
+				openExtLink.setShowRollOver(false);
+				openExtLink.setLayoutAlign(Alignment.CENTER);
+				if (view.getSettings().useUrlAsSnorql()) {
+					openExtLink.setSrc(Imgs.EXTERNAL_LINK.get());
+					openExtLink.setPrompt("Open resource information in new window");
+				} else {
+					openExtLink.setSrc(Imgs.INTERNAL_LINK.get());
+					openExtLink.setPrompt("Show resource information in YASGUI");
 				}
 				
-				//now, rollOverCanvas always exists, and always has 1 member. Get the member and change the onclick handler.
-				//This way we can use the same canvas for every URI, and still change the click handler
-				if (rollOverCanvasClickHandler != null) rollOverCanvasClickHandler.removeHandler();
-				rollOverCanvasClickHandler = rollOverCanvas.getMembers()[0].addClickHandler(new ClickHandler() {
-					public void onClick(ClickEvent event) {
-						if (view.getSettings().useUrlAsSnorql()) {
-							Window.open(value, "_blank", "");
-						} else {
-							view.getCallableJsMethods().queryForResource(value);
-						}
-					}
-				});
-				return rollOverCanvas;
+				openExtLink.setHeight(16);
+				openExtLink.setWidth(16);
+				rollOverCanvas.addMember(openExtLink);
 			}
+			
+			//now, rollOverCanvas always exists, and always has 1 member. Get the member and change the onclick handler.
+			//This way we can use the same canvas for every URI, and still change the click handler
+			if (rollOverCanvasClickHandler != null) rollOverCanvasClickHandler.removeHandler();
+			rollOverCanvasClickHandler = rollOverCanvas.getMembers()[0].addClickHandler(new ClickHandler() {
+				public void onClick(ClickEvent event) {
+					if (view.getSettings().useUrlAsSnorql()) {
+						Window.open(value, "_blank", "");
+					} else {
+						view.getCallableJsMethods().queryForResource(value);
+					}
+				}
+			});
+			return rollOverCanvas;
+		} else {
+			if (rollOverCanvas != null) {
+				rollOverCanvas.destroy();
+				rollOverCanvas = null;
+			}
+			//this isnt a url. don't show rollover
+			return getEmptyCanvas();
 		}
-		//this isnt a url. don't show rollover
-		return getEmptyCanvas();
 
 	}
 

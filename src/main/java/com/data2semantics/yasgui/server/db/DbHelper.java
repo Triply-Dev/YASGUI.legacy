@@ -48,7 +48,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import com.data2semantics.yasgui.shared.autocompletions.Util;
 import com.data2semantics.yasgui.server.Helper;
 import com.data2semantics.yasgui.server.fetchers.ConfigFetcher;
 import com.data2semantics.yasgui.server.fetchers.PropertiesFetcher;
@@ -523,7 +523,7 @@ public class DbHelper {
 		ResultSet result = ps.executeQuery();
 		HashMultimap<String, FetchMethod> endpoints = HashMultimap.create();
 		while (result.next()) {
-			endpoints.put(result.getString("Endpoint"), Helper.stringToFetchMethod(result.getString("Method")));
+			endpoints.put(result.getString("Endpoint"), Util.stringToFetchMethod(result.getString("Method")));
 		}
 		result.close();
 		return endpoints;
@@ -824,7 +824,7 @@ public class DbHelper {
 	 * @return
 	 * @throws SQLException
 	 */
-	public AccessibilityStatus isEndpointAccessible(int endpointId, boolean allowActiveCheck) throws SQLException {
+	public AccessibilityStatus isEndpointAccessible(int endpointId) throws SQLException {
 		String sql = "SELECT Accessible "
 				+ "FROM AccessibleEndpoints  "
 				+ "WHERE endpoints.Id = ? ORDER BY accessibleEndpoints.Time LIMIT 1 ";

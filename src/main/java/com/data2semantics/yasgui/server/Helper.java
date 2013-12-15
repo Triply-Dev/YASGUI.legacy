@@ -48,7 +48,6 @@ import org.json.JSONObject;
 
 import com.data2semantics.yasgui.shared.Bookmark;
 import com.data2semantics.yasgui.shared.SettingKeys;
-import com.data2semantics.yasgui.shared.StaticConfig;
 import com.data2semantics.yasgui.shared.autocompletions.AccessibilityStatus;
 import com.data2semantics.yasgui.shared.autocompletions.FetchMethod;
 import com.data2semantics.yasgui.shared.autocompletions.FetchType;
@@ -154,34 +153,7 @@ public class Helper {
 		return status;
 	}
 	
-	public static FetchType stringToFetchType(String typeString) throws IllegalArgumentException {
-		FetchType[] fetchTypes = new FetchType[]{FetchType.CLASSES, FetchType.PROPERTIES};
-		FetchType foundType = null;
-		for (FetchType type: fetchTypes) {
-			if (type.getSingular().equals(typeString)) {
-				foundType = type;
-				break;
-			}
-		}
-		if (foundType == null) {
-			throw new IllegalArgumentException("could not match " + typeString + " to enum");
-		}
-		return foundType;
-	}
-	public static FetchMethod stringToFetchMethod(String methodString) throws IllegalArgumentException {
-		FetchMethod[] fetchMethods = new FetchMethod[]{FetchMethod.QUERY_ANALYSIS, FetchMethod.QUERY_RESULTS};
-		FetchMethod foundMethod = null;
-		for (FetchMethod method: fetchMethods) {
-			if (method.get().equals(methodString)) {
-				foundMethod = method;
-				break;
-			}
-		}
-		if (foundMethod == null) {
-			throw new IllegalArgumentException("could not match " + methodString + " to enum");
-		}
-		return foundMethod;
-	}
+	
 	public static void main(String[] args) throws URISyntaxException {
 		System.out.println(getAbsoluteRedirectPath("http://bla.bla2.com/woei", "/redirect/blaredir"));
 	}
