@@ -273,8 +273,17 @@ var fetchAndStoreCompletions = function(endpoint, type, skipFirstNotification) {
 		endpoint, 
 		type, 
 		function(data) {
+			if (data.length == 0) {
+				noty({
+					text: "Could not find any "+ type + " completions completions for endpoint " + endpoint,
+					layout: 'bottomLeft',
+					type: 'alert',
+					closeWith: ["button", "click"],
+				});
+				return;
+			}
 			noty({
-				text: "Fetched " + type + " completions successfully. Now sending the completions to the server",
+				text: "Fetched " + data.length + " "+ type + " completion" + (data.length > 1? "s":"") + " successfully. Now sending the completions to the server",
 				layout: 'bottomLeft',
 				type: 'alert',
 				closeWith: ["button", "click"],
