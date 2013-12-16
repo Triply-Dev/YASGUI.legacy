@@ -782,7 +782,15 @@ public class DbHelper {
 	    }
 		PreparedStatement ps = connect.prepareStatement(selectSql);
 		ps.setString(1, endpoint);
-		if (addUserId) ps.setInt(2, getUserId());
+		
+		if (addUserId) {
+			try {
+				ps.setInt(2, getUserId());
+			} catch (OpenIdException e) {
+				//user is not logged in. just use -1 (i.e., id which is never used)
+				ps.setInt(2, -1);
+			}
+		}
 		ResultSet result = ps.executeQuery();
 		int endpointId;
 		if (result.next()) {
