@@ -616,7 +616,12 @@ AutocompletionBase.prototype = {
 			}
 			completion.fetched['servlet'] = true;
 			completion.drawIfNeeded(completion);
-			completion.earlyNotificationDialogue.greyOut(completion);
+			if (completion.earlyNotificationDialogue.drawn(completion)) {
+				fetchAutocompletionsInfo();//yasgui may have cached completions by fetching them. Fetch info again, to keep up to date
+				completion.earlyNotificationDialogue.greyOut(completion);
+			}
+			
+			
 			return;
 		}
 		
