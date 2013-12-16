@@ -1,0 +1,27 @@
+.queryResults{
+	margin-top: 3px;
+}
+
+.outputSelector .ui-button-text-only .ui-button-text {
+	padding: .2em 1em;
+}
+.outputSelector {
+	z-index: 5;
+	position:relative;
+	float:left;
+}
+
+.dataTables_wrapper {
+	margin-top: -25px;
+	z-index: 4;
+}
+
+.queryResultsContent .CodeMirror {
+	margin-top: 4px;
+}
+.downloadIcon {
+	cursor:pointer;
+}
+.downloadIcon.downloadIconDisabled {
+	cursor:inherit;
+}

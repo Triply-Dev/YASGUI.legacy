@@ -1,0 +1,11 @@
+@font-face {
+    font-family: 'Audiowide';
+    src: url('audiowide-regular-webfont.eot');
+    src: url('audiowide-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('audiowide-regular-webfont.woff') format('woff'),
+         url('audiowide-regular-webfont.ttf') format('truetype'),
+         url('audiowide-regular-webfont.svg#audiowideregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}

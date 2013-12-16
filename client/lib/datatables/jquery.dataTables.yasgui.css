@@ -1,0 +1,25 @@
+table.dataTable thead th {
+	background-color: #3399ff;
+	color: white;
+}
+
+.dataTables_filter{
+	display: none;
+}
+.dataTables_length {
+	float:right;
+	margin-right: 5px;
+	margin-bottom: 5px;
+}
+.sorting {
+	background: url('/images/nounproject/arrows.png') no-repeat center right;
+}
+.sorting {
+	background: url('/images/nounproject/arrows.png') no-repeat center right;
+}
+.sorting_asc {
+	background: url('/images/nounproject/arrowUp_white.png') no-repeat center right;
+}
+.sorting_desc {
+	background: url('/images/nounproject/arrowDown_white.png') no-repeat center right;
+}

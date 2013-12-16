@@ -1,0 +1,27 @@
+/**fix to get the menu divider to work**/
+.ui-menu .ui-menu-divider {
+	margin:0;
+	zoom: 1;
+	float: left;
+	clear: left;
+	width: 100%;
+	text-decoration:none;
+	display:block;
+	height: 2px;
+	color: white;
+    border: 0 !important;
+    margin-top: 2px;
+    border-top: 1px solid #ccc !important;
+}
+
+.ui-menu img {
+	vertical-align:middle;
+	height:16px;
+	width:16px;
+	margin-right: 4px;
+}
+.ui-menu span.spacer {
+	display: inline-block;
+	width:16px;
+	margin-right: 4px;
+}

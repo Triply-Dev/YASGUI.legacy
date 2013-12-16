@@ -1,0 +1,60 @@
+html, body {
+    height: 100%;
+    margin: 0px;
+    font-size: 12px;
+}
+/* select { */
+/* 	border: 1px solid #000; */
+/* 	font-size: 14px; */
+/* 	color: #fff; */
+/* 	background: #444; */
+/* 	padding: 5px; */
+/* } */
+.yasguiLogo {
+	font-family: 'Audiowide';
+	font-size: 40px;
+	cursor: pointer;
+}
+
+.mainLogo {
+	position: absolute;
+	right: 4px;
+	top: -7px;
+	z-index: 15;
+}
+
+/* .header { */
+/* 	top: 0px; */
+/* 	left: 0px; */
+/* 	right: 0px; */
+/* 	position: fixed; */
+/* 	width: 100%; */
+/* 	height: 50px; */
+/* 	z-index: 10; */
+/* 	background-color: white; */
+/* } */
+
+/* .mainContent { */
+/* 	padding-top: 50px; */
+/* } */
+
+/* #queryIcon { */
+/* 	position: absolute; */
+/* 	left: 0px; */
+/* 	top: 40px; */
+/* 	cursor: pointer; */
+/* } */
+#queryIcon img {
+	height:34px;width:48px;
+}
+
+#loginButtons {
+	position: absolute;
+	top: 0px;
+	right: 190px;
+}
+
+
+.topLabel {
+	display: block;
+}

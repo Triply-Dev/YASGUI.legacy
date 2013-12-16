@@ -1,0 +1,4 @@
+Meteor.AppCache.config(
+{firefox: true,
+chrome: false}
+);

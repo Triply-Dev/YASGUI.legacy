@@ -1,0 +1,9 @@
+{
+  "packages": {
+    "yasguiPackages": {
+      "git": "https://github.com/LaurensRietveld/yasgui.git",
+      "branch": "packages"
+    },
+    "jquery-validation": {}
+  }
+}

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
+<g id="Captions">
+</g>
+<g id="Plus">
+</g>
+<g id="Minus">
+</g>
+<g id="Right">
+</g>
+<g id="Left">
+</g>
+<g id="Up">
+</g>
+<g id="Down">
+</g>
+<g id="Play">
+	<circle fill="none" stroke="#000000" stroke-width="6" stroke-miterlimit="10" cx="50" cy="49.998" r="47"/>
+	<polygon points="36,28 72,49.96 36,71.921  "/>
+</g>
+<g id="Forward">
+</g>
+<g id="Reverse">
+</g>
+<g id="Stop">
+</g>
+<g id="Pause_1_">
+</g>
+<g id="Record">
+</g>
+<g id="Close">
+</g>
+<g id="Check">
+</g>
+<g id="Power">
+</g>
+<g id="Skip_Forward">
+</g>
+<g id="Skip_Backward">
+</g>
+<g id="Cancel">
+</g>
+<g id="Info">
+</g>
+<g id="Help">
+</g>
+</svg>

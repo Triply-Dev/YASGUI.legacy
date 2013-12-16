@@ -1,0 +1,74 @@
+.ui-autocomplete {
+	z-index: 30;
+}
+
+.custom-combobox-input {
+	margin-right: 1px;
+	width: 300px;
+}
+.ui-autocomplete .ui-menu-item a{
+	display:block;
+	height: 100%;
+}
+.custom-combobox .ui-button {
+	font-size: 1.5em;
+}
+.custom-combobox .ui-button-icon-primary {
+	top: 0.6em;
+	left: 0px;
+	margin-left: 0px;
+}
+
+.custom-combobox .ui-button-icon-only {
+	width: 1em;
+	vertical-align: bottom;
+	margin-bottom: 2px;
+	padding-top: 1px;
+}
+.ui-menu-item {
+	cursor: pointer;
+}
+
+.ui-autocomplete .ui-menu-item:hover {
+	background-color: #3399ff ;
+	border-color: #3399ff;
+	color: #ffffff;
+	font-weight: strong;
+}
+.ui-autocomplete .ui-state-active {
+	background-color: inherit;
+	border-color: inherit;
+	color: inherit;
+	font-weight: inherit;
+}
+.ui-autocomplete .ui-state-focus {
+	background-color: inherit;
+	border-color: inherit;
+	color: inherit;
+	font-weight: inherit;
+}
+.endpointComboLabel {
+	float:left;
+	width: 150px;
+    word-wrap:break-word;
+}
+.endpointComboValue {
+	float:left;
+	width: 150px;
+	word-wrap:break-word;
+}
+.endpointComboDelete {
+	float:left;
+	width: 24px;
+}
+.endpointComboDesc {
+	width: 150px;
+}
+.endpointComboDelete img{
+	height: 20px;
+	width: 20px;
+}
+.endpointComboDesc img{
+	height: 20px;
+	width: 20px;
+}

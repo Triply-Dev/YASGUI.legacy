@@ -1,0 +1,15 @@
+.ui-dialog { 
+	z-index: 50;
+}
+
+.ui-dialog .ui-icon-closethick {
+	/**cross icon**/
+	margin: 0px;
+	left: 0px;
+	top: 0px;
+}
+.ui-dialog .ui-dialog-titlebar-close {
+	/**button containing cross icon and circle**/
+	border: none;
+	background-color: #3399ff;
+}
