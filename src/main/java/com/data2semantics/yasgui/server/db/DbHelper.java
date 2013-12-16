@@ -825,7 +825,12 @@ public class DbHelper {
 	}
 	
 	public int generateIdForEndpoint(String endpoint, AccessibilityStatus accessibilityStatus) throws SQLException, EndpointIdException {
-		int userId = getUserId();
+		int userId = -1;
+		try {
+			userId = getUserId();
+		} catch (OpenIdException e) {
+			//user nog logged in
+		}
 		String insertSql = "INSERT INTO CompletionEndpoints (Endpoint, UserId) VALUES (?, ?)";
 		PreparedStatement psUpdate = connect.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS);
 		psUpdate.setString(1, endpoint);
@@ -833,7 +838,7 @@ public class DbHelper {
 			psUpdate.setNull(2, Types.INTEGER);
 		} else if (userId >= 0){
 			//we need a user id for this one!
-			psUpdate.setInt(2, getUserId());
+			psUpdate.setInt(2, userId);
 		} else {
 			throw new EndpointIdException("Unable to generate endpoint ID for endpoint " + endpoint + ". Is the user logged in?");
 		}
