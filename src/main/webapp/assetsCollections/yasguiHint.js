@@ -673,9 +673,6 @@ AutocompletionBase.prototype = {
 			console.log(errorThrown);
 		});
 	},
-	isLocalhostRequest: function(){
-		return getCurrentEndpoint().contains("http://localhost");
-	},
 	doRequests: function(completion) {
 		
 		//reset settings which might have been previously set
@@ -703,7 +700,7 @@ AutocompletionBase.prototype = {
 						requestsStarted = false;
 					}
 					completion.requestLovAutocompletions(completion);
-				} else if (!completion.isLocalhostRequest()){
+				} else {
 					allDisabled = false;
 					if (isDbSet()) servletMethods.push(method);
 					//both other methods are executed as 1 single request
