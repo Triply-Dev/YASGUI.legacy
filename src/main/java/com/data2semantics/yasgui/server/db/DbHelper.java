@@ -571,8 +571,10 @@ public class DbHelper {
 		ps.setString(2, type.getSingular());
 		ResultSet result = ps.executeQuery();
 		boolean lastFetchSuccesful = false;
-		if (result.next() && result.getString("Status").equals(FetchStatus.SUCCESSFUL)) {
-			lastFetchSuccesful = true;
+		if (result.next()) {
+			if (result.getString("Status").equals(FetchStatus.SUCCESSFUL.get())) {
+				lastFetchSuccesful = true;
+			}
 		}
 		result.close();
 		return lastFetchSuccesful;
@@ -875,7 +877,7 @@ public class DbHelper {
 
 	public static void main(String[] args) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
 		DbHelper dbHelper = new DbHelper(new File("src/main/webapp/"));
-		if (dbHelper.isEndpointAccessible(1) == AccessibilityStatus.ACCESSIBLE) {
+		if (dbHelper.lastFetchSuccesful(12, FetchType.PROPERTIES)) {
 			System.out.println("accessible");
 		} else {
 			System.out.println("not accessible");
