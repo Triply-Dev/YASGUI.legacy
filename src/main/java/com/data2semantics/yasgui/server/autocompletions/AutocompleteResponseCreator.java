@@ -116,7 +116,7 @@ public class AutocompleteResponseCreator {
 	private JSONObject getQueryResultsJson() throws SQLException, ClassNotFoundException, FileNotFoundException, JSONException, IOException, ParseException {
 		JSONObject resultsObject = new JSONObject();
 		JSONObject statusObj = getStatusObject(FetchMethod.QUERY_RESULTS);
-		if (statusObj == null && queryResultsResults.length() == 0) {
+		if (statusObj == null && queryResultsResults.length() == 0 && !dbHelper.lastFetchSuccesful(endpointId, type)) {
 			//no error or exception. just try fetching our stuff!
 			AutocompletionFetcher fetcher = null;
 			if (type == FetchType.PROPERTIES) {

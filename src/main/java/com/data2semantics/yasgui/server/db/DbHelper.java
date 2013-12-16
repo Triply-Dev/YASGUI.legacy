@@ -562,6 +562,22 @@ public class DbHelper {
 		return allFailed;
 	}
 	
+	public boolean lastFetchSuccesful(int endpointId, FetchType type) throws SQLException {
+		String sql = "SELECT * "
+				+ "FROM CompletionsLog AS log "
+				+ "WHERE log.EndpointId = ? AND log.Type = ? ORDER BY Time DESC LIMIT 1";
+		PreparedStatement ps = connect.prepareStatement(sql);
+		ps.setInt(1, endpointId);
+		ps.setString(2, type.getSingular());
+		ResultSet result = ps.executeQuery();
+		boolean lastFetchSuccesful = false;
+		if (result.next() && result.getString("Status").equals(FetchStatus.SUCCESSFUL)) {
+			lastFetchSuccesful = true;
+		}
+		result.close();
+		return lastFetchSuccesful;
+	}
+	
 	/**
 	 * Check whether we are still fetching properties or classes for an endpoint
 	 * @param endpointId
@@ -873,6 +889,8 @@ public class DbHelper {
 //		}
 //		System.out.println((dbHelper.lastFetchesFailed("http://dbpedia.org/sparql", FetchType.PROPERTIES, 5)? "still fetching":"done fetching"));
 	}
+
+
 
 
 }
