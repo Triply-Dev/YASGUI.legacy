@@ -65,6 +65,8 @@ public class AutocompleteServlet extends HttpServlet {
 			} catch(JSONException e) {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 			}
+			
+			
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());

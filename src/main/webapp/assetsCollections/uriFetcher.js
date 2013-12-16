@@ -298,12 +298,12 @@ var fetchAndStoreCompletions = function(endpoint, type, skipFirstNotification) {
 				});
 				},
 				function(msg) {
-					onError("Failed sending " + type + " completions to the YASGUI server");
+					onError("Failed sending " + type + " completions to the YASGUI server: " + msg);
 				}
 			);
 		},
 		function(msg) {
-			onError("Failed fetching " + type + " completions from the endpoint");
+			onError("Failed fetching " + type + " completions from the endpoint: " + msg);
 		}
 	);
 };
