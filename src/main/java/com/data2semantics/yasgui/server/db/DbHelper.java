@@ -839,9 +839,9 @@ public class DbHelper {
 	 * @throws SQLException
 	 */
 	public AccessibilityStatus isEndpointAccessible(int endpointId) throws SQLException {
-		String sql = "SELECT Accessible "
+		String sql = "SELECT `Accessible` "
 				+ "FROM AccessibleEndpoints  "
-				+ "WHERE endpoints.Id = ? ORDER BY accessibleEndpoints.Time LIMIT 1 ";
+				+ "WHERE EndpointId = ? ORDER BY Time LIMIT 1 ";
 		PreparedStatement ps = connect.prepareStatement(sql);
 		ps.setInt(1, endpointId);
 		ResultSet result = ps.executeQuery();
@@ -859,10 +859,10 @@ public class DbHelper {
 
 	public static void main(String[] args) throws ClassNotFoundException, FileNotFoundException, JSONException, SQLException, IOException, ParseException {
 		DbHelper dbHelper = new DbHelper(new File("src/main/webapp/"));
-		if (dbHelper.lastFetchesFailed(7, FetchType.PROPERTIES, 5)) {
-			System.out.println("fetches failed");
+		if (dbHelper.isEndpointAccessible(1) == AccessibilityStatus.ACCESSIBLE) {
+			System.out.println("accessible");
 		} else {
-			System.out.println("not failed");
+			System.out.println("not accessible");
 		}
 //		dbHelper.setEndpointAccessible("httpsdf", true);
 		System.out.println("" + dbHelper.getEndpointId("htddtpdsdf",EndpointPrivateFlag.EVERYTHING));
