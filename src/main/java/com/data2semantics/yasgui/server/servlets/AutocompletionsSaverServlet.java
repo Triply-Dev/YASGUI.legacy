@@ -30,7 +30,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.text.ParseException;
 
@@ -94,13 +93,14 @@ public class AutocompletionsSaverServlet extends HttpServlet {
 				//endpoint does not exist yet for this user. create a private one!
 				endpointId = dbHelper.generateIdForEndpoint(endpoint, AccessibilityStatus.INACCESSIBLE);	
 			}
+			//clear previous fetches for this endpoint!
+			dbHelper.clearPreviousAutocompletionFetches(endpointId, FetchMethod.QUERY_RESULTS, type);
+			
 			dbHelper.storeCompletionFetchesFromLocalhost(endpointId, type, FetchMethod.QUERY_RESULTS, completions);
 			//done!
+			response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 			
 			
-			PrintWriter out = response.getWriter();
-			out.println("{status: 'success'}");
-			out.close();
 		} catch (JSONException e) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unable to parse request json :" + e.getMessage());
 		} catch (SQLException e) {
