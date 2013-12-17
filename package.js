@@ -19,4 +19,9 @@ Package.on_use(function(api, where) {
 //formatting not in v3.0...
         api.add_files('lib/codemirror/lib/codemirror.css', where);
         api.add_files('lib/codemirror/addon/hint/show-hint.css', where);
+        
+        //jquery ui
+        api.add_files('lib/jquery-ui-1.10.3.custom/css/cupertino/jquery-ui-1.10.3.custom.css', where);
+        api.add_files('lib/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.js', where);
+        
 });
