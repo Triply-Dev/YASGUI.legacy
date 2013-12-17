@@ -25,7 +25,4 @@ Package.on_use(function(api, where) {
         api.add_files('lib/jquery-ui-1.10.3.custom/css/cupertino/jquery-ui-1.10.3.custom.css', where);
         api.add_files('lib/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.js', where);
         
-        //jquery validation
-        //IMPORTANT: make sure to find/replace jquery -> window.$
-        api.add_files('lib/jquery-validation-1.11.1.js');
 });
