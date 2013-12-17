@@ -1,0 +1,8 @@
+/bin
+.project
+config.json
+errorLog
+packages
+smart.lock
+src
+target
