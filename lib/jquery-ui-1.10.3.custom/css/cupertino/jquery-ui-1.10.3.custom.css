@@ -4,6 +4,21 @@
 * To view and modify this theme, visit http://jqueryui.com/themeroller/?ffDefault=Lucida%20Grande%2CLucida%20Sans%2CArial%2Csans-serif&fwDefault=bold&fsDefault=1.1em&cornerRadius=6px&bgColorHeader=deedf7&bgTextureHeader=highlight_soft&bgImgOpacityHeader=100&borderColorHeader=aed0ea&fcHeader=222222&iconColorHeader=72a7cf&bgColorContent=f2f5f7&bgTextureContent=highlight_hard&bgImgOpacityContent=100&borderColorContent=dddddd&fcContent=362b36&iconColorContent=72a7cf&bgColorDefault=d7ebf9&bgTextureDefault=glass&bgImgOpacityDefault=80&borderColorDefault=aed0ea&fcDefault=2779aa&iconColorDefault=3d80b3&bgColorHover=e4f1fb&bgTextureHover=glass&bgImgOpacityHover=100&borderColorHover=74b2e2&fcHover=0070a3&iconColorHover=2694e8&bgColorActive=3baae3&bgTextureActive=glass&bgImgOpacityActive=50&borderColorActive=2694e8&fcActive=ffffff&iconColorActive=ffffff&bgColorHighlight=ffef8f&bgTextureHighlight=highlight_soft&bgImgOpacityHighlight=25&borderColorHighlight=f9dd34&fcHighlight=363636&iconColorHighlight=2e83ff&bgColorError=cd0a0a&bgTextureError=flat&bgImgOpacityError=15&borderColorError=cd0a0a&fcError=ffffff&iconColorError=ffffff&bgColorOverlay=eeeeee&bgTextureOverlay=diagonals_thick&bgImgOpacityOverlay=90&opacityOverlay=80&bgColorShadow=000000&bgTextureShadow=highlight_hard&bgImgOpacityShadow=70&opacityShadow=30&thicknessShadow=7px&offsetTopShadow=-7px&offsetLeftShadow=-7px&cornerRadiusShadow=8px
 * Copyright 2013 jQuery Foundation and other contributors; Licensed MIT */
 
+
+/*
+ * 
+ * 
+ * 
+ * 
+ * IMPORTANT: when adding a new version, make sure the image paths in this css file are changed
+ * 
+ * 
+ * 
+ * 
+ */
+
+
+
 /* Layout helpers
 ----------------------------------*/
 .ui-helper-hidden {
@@ -603,7 +618,7 @@ button.ui-button::-moz-focus-inner {
 	height: 100%;
 }
 .ui-progressbar .ui-progressbar-overlay {
-	background: url("images/animated-overlay.gif");
+	background: url("images/jquery-ui/cupertino/animated-overlay.gif");
 	height: 100%;
 	filter: alpha(opacity=25);
 	opacity: 0.25;
@@ -801,7 +816,7 @@ body .ui-tooltip {
 }
 .ui-widget-content {
 	border: 1px solid #dddddd;
-	background: #f2f5f7 url(images/ui-bg_highlight-hard_100_f2f5f7_1x100.png) 50% top repeat-x;
+	background: #f2f5f7 url(images/jquery-ui/cupertino/ui-bg_highlight-hard_100_f2f5f7_1x100.png) 50% top repeat-x;
 	color: #362b36;
 }
 .ui-widget-content a {
@@ -809,7 +824,7 @@ body .ui-tooltip {
 }
 .ui-widget-header {
 	border: 1px solid #aed0ea;
-	background: #deedf7 url(images/ui-bg_highlight-soft_100_deedf7_1x100.png) 50% 50% repeat-x;
+	background: #deedf7 url(images/jquery-ui/cupertino/ui-bg_highlight-soft_100_deedf7_1x100.png) 50% 50% repeat-x;
 	color: #222222;
 	font-weight: bold;
 }
@@ -823,7 +838,7 @@ body .ui-tooltip {
 .ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default {
 	border: 1px solid #aed0ea;
-	background: #d7ebf9 url(images/ui-bg_glass_80_d7ebf9_1x400.png) 50% 50% repeat-x;
+	background: #d7ebf9 url(images/jquery-ui/cupertino/ui-bg_glass_80_d7ebf9_1x400.png) 50% 50% repeat-x;
 	font-weight: bold;
 	color: #2779aa;
 }
@@ -840,7 +855,7 @@ body .ui-tooltip {
 .ui-widget-content .ui-state-focus,
 .ui-widget-header .ui-state-focus {
 	border: 1px solid #74b2e2;
-	background: #e4f1fb url(images/ui-bg_glass_100_e4f1fb_1x400.png) 50% 50% repeat-x;
+	background: #e4f1fb url(images/jquery-ui/cupertino/ui-bg_glass_100_e4f1fb_1x400.png) 50% 50% repeat-x;
 	font-weight: bold;
 	color: #0070a3;
 }
@@ -855,7 +870,7 @@ body .ui-tooltip {
 .ui-widget-content .ui-state-active,
 .ui-widget-header .ui-state-active {
 	border: 1px solid #2694e8;
-	background: #3baae3 url(images/ui-bg_glass_50_3baae3_1x400.png) 50% 50% repeat-x;
+	background: #3baae3 url(images/jquery-ui/cupertino/ui-bg_glass_50_3baae3_1x400.png) 50% 50% repeat-x;
 	font-weight: bold;
 	color: #ffffff;
 }
@@ -872,7 +887,7 @@ body .ui-tooltip {
 .ui-widget-content .ui-state-highlight,
 .ui-widget-header .ui-state-highlight {
 	border: 1px solid #f9dd34;
-	background: #ffef8f url(images/ui-bg_highlight-soft_25_ffef8f_1x100.png) 50% top repeat-x;
+	background: #ffef8f url(images/jquery-ui/cupertino/ui-bg_highlight-soft_25_ffef8f_1x100.png) 50% top repeat-x;
 	color: #363636;
 }
 .ui-state-highlight a,
@@ -884,7 +899,7 @@ body .ui-tooltip {
 .ui-widget-content .ui-state-error,
 .ui-widget-header .ui-state-error {
 	border: 1px solid #cd0a0a;
-	background: #cd0a0a url(images/ui-bg_flat_15_cd0a0a_40x100.png) 50% 50% repeat-x;
+	background: #cd0a0a url(images/jquery-ui/cupertino/ui-bg_flat_15_cd0a0a_40x100.png) 50% 50% repeat-x;
 	color: #ffffff;
 }
 .ui-state-error a,
@@ -930,27 +945,27 @@ body .ui-tooltip {
 }
 .ui-icon,
 .ui-widget-content .ui-icon {
-	background-image: url(images/ui-icons_72a7cf_256x240.png);
+	background-image: url(images/jquery-ui/cupertino/ui-icons_72a7cf_256x240.png);
 }
 .ui-widget-header .ui-icon {
-	background-image: url(images/ui-icons_72a7cf_256x240.png);
+	background-image: url(images/jquery-ui/cupertino/ui-icons_72a7cf_256x240.png);
 }
 .ui-state-default .ui-icon {
-	background-image: url(images/ui-icons_3d80b3_256x240.png);
+	background-image: url(images/jquery-ui/cupertino/ui-icons_3d80b3_256x240.png);
 }
 .ui-state-hover .ui-icon,
 .ui-state-focus .ui-icon {
-	background-image: url(images/ui-icons_2694e8_256x240.png);
+	background-image: url(images/jquery-ui/cupertino/ui-icons_2694e8_256x240.png);
 }
 .ui-state-active .ui-icon {
-	background-image: url(images/ui-icons_ffffff_256x240.png);
+	background-image: url(images/jquery-ui/cupertino/ui-icons_ffffff_256x240.png);
 }
 .ui-state-highlight .ui-icon {
-	background-image: url(images/ui-icons_2e83ff_256x240.png);
+	background-image: url(images/jquery-ui/cupertino/ui-icons_2e83ff_256x240.png);
 }
 .ui-state-error .ui-icon,
 .ui-state-error-text .ui-icon {
-	background-image: url(images/ui-icons_ffffff_256x240.png);
+	background-image: url(images/jquery-ui/cupertino/ui-icons_ffffff_256x240.png);
 }
 
 /* positioning */
@@ -1163,14 +1178,14 @@ body .ui-tooltip {
 
 /* Overlays */
 .ui-widget-overlay {
-	background: #eeeeee url(images/ui-bg_diagonals-thick_90_eeeeee_40x40.png) 50% 50% repeat;
+	background: #eeeeee url(images/jquery-ui/cupertino/ui-bg_diagonals-thick_90_eeeeee_40x40.png) 50% 50% repeat;
 	opacity: .8;
 	filter: Alpha(Opacity=80);
 }
 .ui-widget-shadow {
 	margin: -7px 0 0 -7px;
 	padding: 7px;
-	background: #000000 url(images/ui-bg_highlight-hard_70_000000_1x100.png) 50% top repeat-x;
+	background: #000000 url(images/jquery-ui/cupertino/ui-bg_highlight-hard_70_000000_1x100.png) 50% top repeat-x;
 	opacity: .3;
 	filter: Alpha(Opacity=30);
 	border-radius: 8px;
