@@ -29,5 +29,5 @@ Package.on_use(function(api, where) {
         //jquery ui theme
         api.add_files('lib/delta-jquery-theme/css/normalise.css', where);
         api.add_files('lib/delta-jquery-theme/css/custom.css', where);
-        api.add_files('js/modernizr-2.0.6.min.js', where);
+        api.add_files('lib/delta-jquery-theme/js/modernizr-2.0.6.min.js', where);
 });
