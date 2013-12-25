@@ -1,3 +1,6 @@
 [submodule "lib/codemirror"]
 	path = lib/codemirror
 	url = git@github.com:marijnh/CodeMirror.git
+[submodule "lib/delta-jquery-theme"]
+	path = lib/delta-jquery-theme
+	url = git@github.com:kiandra/Delta-jQuery-UI-Theme.git

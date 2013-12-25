@@ -22,8 +22,12 @@ Package.on_use(function(api, where) {
         
         //jquery ui
 	//IMPORTANT: when adding a new jquery ui version, make sure the image paths in the css file are changed
-        api.add_files('lib/jquery-ui-1.10.3.custom/css/bootstrap/jquery-ui-1.10.0.custom.css', where);
-        api.add_files('lib/jquery-ui-1.10.3.custom/css/bootstrap/jquery.ui.1.10.0.ie.css', where);
+        //api.add_files('lib/jquery-ui-1.10.3.custom/css/bootstrap/jquery-ui-1.10.0.custom.css', where);
+        //api.add_files('lib/jquery-ui-1.10.3.custom/css/bootstrap/jquery.ui.1.10.0.ie.css', where);
         api.add_files('lib/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.js', where);
         
+        //jquery ui theme
+        api.add_files('lib/delta-jquery-theme/css/normalise.css', where);
+        api.add_files('lib/delta-jquery-theme/css/custom.css', where);
+        api.add_files('js/modernizr-2.0.6.min.js', where);
 });
