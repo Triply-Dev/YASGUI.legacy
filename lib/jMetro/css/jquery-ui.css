@@ -598,7 +598,7 @@ html, body{background-color:#ffffff;}
 .ui-tabs-nav .ui-state-default a{border:2px solid;position:relative;top:2px;font-weight:bold;margin-bottom:4px;height:16px;}
 /*.ui-tabs-nav .ui-tabs-selected a{border:2px solid;height:1.8em;border-bottom:none !important;}*/
 .ui-tabs-nav .ui-state-active a{border:2px solid;border-bottom:none !important;margin-bottom:0;height:22px;}
-.ui-tabs .ui-widget-content{border:2px solid !important;}
+.ui-tabs .ui-widget-content{border:2px solid;}
 .ui-tabs .ui-widget-content .ui-tabs {border:none !important;}
 .ui-tabs-nav .ui-state-hover{border:none;}
 
