@@ -35,5 +35,5 @@ Package.on_use(function(api, where) {
         
         //datatable
         api.add_files('lib/DataTables/media/js/jquery.dataTables.js', where);
-        api.add_files('lib/DataTables/media/js/jquery.dataTables.css', where);
+        api.add_files('lib/DataTables/media/css/jquery.dataTables.css', where);
 });
