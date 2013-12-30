@@ -4,3 +4,6 @@
 [submodule "lib/delta-jquery-theme"]
 	path = lib/delta-jquery-theme
 	url = git@github.com:kiandra/Delta-jQuery-UI-Theme.git
+[submodule "lib/DataTables"]
+	path = lib/DataTables
+	url = git@github.com:DataTables/DataTables.git

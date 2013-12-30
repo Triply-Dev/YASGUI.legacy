@@ -33,4 +33,7 @@ Package.on_use(function(api, where) {
         //api.add_files('lib/delta-jquery-theme/js/modernizr-2.0.6.min.js', where);
         api.add_files('lib/jMetro/css/jquery-ui.css', where);
         
+        //datatable
+        api.add_files('lib/DataTables/media/js/jquery.dataTables.js', where);
+        api.add_files('lib/DataTables/media/js/jquery.dataTables.css', where);
 });
