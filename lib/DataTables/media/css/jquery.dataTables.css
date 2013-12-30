@@ -124,7 +124,7 @@ table.dataTable tr.even td.sorting_3 { background-color: #F9F9FF; }
 	margin-left: 10px;
 }
 
-.paginate_enabled_previous { background: url/images/dataTables/dataTables/back_enabled.png') no-repeat top left; }
+.paginate_enabled_previous { background: url'/images/dataTables/dataTables/back_enabled.png') no-repeat top left; }
 .paginate_enabled_previous:hover { background: url('/images/dataTables/back_enabled_hover.png') no-repeat top left; }
 .paginate_disabled_previous { background: url('/images/dataTables/back_disabled.png') no-repeat top left; }
 
