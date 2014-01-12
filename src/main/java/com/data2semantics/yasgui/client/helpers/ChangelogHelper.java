@@ -79,7 +79,7 @@ public class ChangelogHelper {
 				+ "View the complete list of changes <a href=\"" + ExternalLinks.YASGUI_CHANGELOG +"\" target=\"_blank\">here</a>.<br>"
 				+ "A selection of the new features:"
 				+ "<ul>\n" + 
-					"<li>Autocompletion for properties</li>\n" + 
+					"<li>Autocompletion for properties and classes</li>\n" + 
 					"<li>Persistent query results between sessions</li>\n" + 
 				"</ul>");
 		tProp.setMy(TooltipProperties.POS_CENTER);
