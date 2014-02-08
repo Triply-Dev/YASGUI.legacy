@@ -84,22 +84,6 @@
 	        return result;
 	    };
 	};
-	
-	if (typeof String.prototype.startsWith != 'function') {
-		String.prototype.startsWith = function(str) {
-			return this.slice(0, str.length) == str;
-		};
-	}
-	if (typeof String.prototype.endsWith != 'function') {
-		String.prototype.endsWith = function(str) {
-			return this.slice(-str.length) == str;
-		};
-	};
-	if (typeof String.prototype.contains != 'function') {
-		String.prototype.contains = function(str) {
-			return this.indexOf(str) >= 0;
-		};
-	};
 	this.dismissOnOutsideClick = function(elementId, callback) {
 		$(document).on("click." + elementId, function(event) {
 		    if(!$(event.target).parents().andSelf().is("#" + elementId)) {
@@ -108,8 +92,5 @@
 		    		$(document).off("click." + elementId);
 			}
 		});
-	};
-	this.getHtmlAsText = function(htmlString) {
-		return $('<i>').html(htmlString).text();
 	};
 }).call(this);

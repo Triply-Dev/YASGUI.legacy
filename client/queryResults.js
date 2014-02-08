@@ -44,42 +44,52 @@ var QueryResults = function(tabSettings) {
 	var updateDownloadIcon = function() {
 		//check: do we have results to download?
 		if (results == null) {
-			downloadIcon
+			downloadLink
+			.attr("href", "#")
+			.children()
 			.attr("src", Yasgui.constants.imgs.getDisabled("download"))
-			.off()
 			.addClass("downloadIconDisabled")
 			.attr("title", "Nothing to download");
 		} else {
 			var isTable = (tabSettings.outputFormat == "table");
-//			console.log("istable", isTable);
-			downloadIcon
+			targetUrl = null;
+			if (isTable) {
+				console.log("todo, download as csv");
+			} else {
+				targetUrl = stringToUrl(results.getResponse(), "text/plain");
+			}
+			
+			var downloadAttrSupported = true;
+			if (downloadAttrSupported) {
+				downloadLink.attr("download", "bla.csv");;
+			} else {
+				downloadLink.attr("target", "_blank");
+			}
+			
+			downloadLink
+			.attr("href", targetUrl)
+			.children()
 			.attr("src", (isTable ? Yasgui.constants.imgs.table: Yasgui.constants.imgs.download))
-			.off()
-			.click(function() {
-				if (isTable) {
-					console.log("todo, download as csv");
-				} else {
-					console.log("todo, download query response");
-				}
-			})
 			.removeClass("downloadIconDisabled")
 			.attr("title", (isTable? "Download as CSV": "Download query response"));
 		}
 		
 	};
-	var drawDownloadIcon = function() {
-		downloadIcon = $('<img class="downloadIcon">');
-		header.append(downloadIcon);
-		updateDownloadIcon();
-	};
+//	var drawDownloadLink = function() {
+//		downloadLink = $('<a id="downloadLink"><img class="downloadIcon"></a>');
+//		header.append(downloadLink);
+//		updateDownloadIcon();
+//	};
 	var drawHeader = function() {
 		drawOutputSelector();
-		drawDownloadIcon();
+		downloadIcon = Yasgui.widgets.DownloadIcon(header, tabSettings);
+//		drawDownloadLink();
 	};
 	var drawTable = function() {
 		console.log("darwing table");
 		if (results != null) {
-			updateDownloadIcon();
+			downloadIcon.update(results);
+//			updateDownloadIcon();
 			content.html("");
 			Yasgui.widgets.ResultsTable(content, results);
 		}
@@ -87,7 +97,8 @@ var QueryResults = function(tabSettings) {
 	var drawRawResponse = function() {
 		console.log("drawing raw response");
 		if (results != null) {
-			updateDownloadIcon();
+			downloadIcon.update(results);
+//			updateDownloadIcon();
 			content.html("");
 			Yasgui.widgets.ResultsCodemirror(content, results);
 		}
