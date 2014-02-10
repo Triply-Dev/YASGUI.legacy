@@ -285,7 +285,7 @@ public class ResultContainer extends VLayout {
 				&& (view.getAutocompletionsInfo() == null || view.getAutocompletionsInfo().queryAnalysisEnabled(endpoint))) {
 			new GwtCallbackWrapper<Void>(view) {
 				public void onCall(AsyncCallback<Void> callback) {
-					view.getRemoteService().logLazyQuery(queryString, endpoint, callback);
+					if (view.getSettings().isDbSet()) view.getRemoteService().logLazyQuery(queryString, endpoint, callback);
 				}
 
 				protected void onFailure(Throwable throwable) {

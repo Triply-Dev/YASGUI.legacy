@@ -130,7 +130,7 @@ public class View extends VLayout implements RpcElement {
 
 		getHistory().replaceHistoryState();
 		
-		if (getSettings().isDbSet() && getEnabledFeatures().getEnabledClassCompletionMethods().size() > 0 || getEnabledFeatures().getEnabledPropertyCompletionMethods().size() > 0) {
+		if (getSettings().isDbSet() && (getEnabledFeatures().getEnabledClassCompletionMethods().size() > 0 || getEnabledFeatures().getEnabledPropertyCompletionMethods().size() > 0)) {
 			retrieveAutocompletionsInfo();
 		}
 		
