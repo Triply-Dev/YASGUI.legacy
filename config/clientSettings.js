@@ -6,7 +6,7 @@ clientSettings = {
 			"query": "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n\nSELECT * WHERE {\n  ?sub ?pred ?obj\n} LIMIT 10\n",
 			"tabTitle": "Query",
 			"contentTypeSelect": "application/sparql-results+xml",
-			"contentTypeConstruct": "text/turtle",
+			"contentTypeGraph": "text/turtle",
 			"outputFormat": "table",
 			"requestMethod": "POST",
 			"extraArgs": []

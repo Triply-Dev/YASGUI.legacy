@@ -15,7 +15,13 @@ html, body {
 	font-size: 40px;
 	cursor: pointer;
 }
-
+.queryHeader {
+	height: 24px;
+	margin-bottom: 10px;
+}
+.configRequestButton .ui-button-text{
+padding: 3px 10px;
+}
 .mainLogo {
 	position: absolute;
 	right: 4px;

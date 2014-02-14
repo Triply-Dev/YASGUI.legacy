@@ -31,6 +31,7 @@ Endpoints = function() {
 	};
 	var addEndpointIfNeeded = function(endpoint) {
 		if (endpoint && endpoint.length > 0 && !endpointInList(endpoint)) {
+			
 			endpoints.push({
 				value: endpoint,
 				isCustomEndpoint: true
@@ -52,11 +53,13 @@ Endpoints = function() {
 		}
 	};
 	var endpointInList = function(endpoint) {
-		for (var i = 0; i < endpoints.length; i++) {
-			if (endpoints[i].value == endpoint) {
-				return true;
+		if (endpoints) {
+			for (var i = 0; i < endpoints.length; i++) {
+				if (endpoints[i].value == endpoint) {
+					return true;
+				}
+				if (stopEarly(i, endpoint)) return false;
 			}
-			if (stopEarly(i, endpoint)) return false;
 		}
 		return false;
 	};
@@ -77,6 +80,9 @@ Endpoints = function() {
 	};
 	var loadEndpoints = function() {
 		endpoints = Yasgui.storage.get("endpoints");
+		if (endpoints == null) {
+			endpoints = [];
+		}
 	};
 	
 	loadEndpoints();

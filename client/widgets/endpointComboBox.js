@@ -4,8 +4,7 @@
 	
 	
 	this.Yasgui.widgets.EndpointComboBox = function(parent, tabSettings) {
-		var wrapper = $("<div class='endpointSelectorWrapper ui-widget'></div>");
-		parent.append(wrapper);
+
 //		wrapper.append("<label class='topLabel'>Select an endpoint</label>" +
 //				"<select class='endpointSelector'>" +
 //				"<option value='bla'>bla</option>" +
@@ -162,8 +161,11 @@
 		    });
 //		  })( jQuery );
 		  $(function() {
-			  
-		    $( ".endpointSelectorWrapper" ).combobox({endpoints: Yasgui.endpoints.endpoints, selectedEndpoint: tabSettings.endpoint});
+				var fakeInput = $("<div></div>");
+				
+				
+				parent.append(fakeInput);
+				fakeInput.combobox({endpoints: Yasgui.endpoints.endpoints, selectedEndpoint: tabSettings.endpoint});
 		  });
 		
 		

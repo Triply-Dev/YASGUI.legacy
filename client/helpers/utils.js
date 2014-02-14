@@ -85,7 +85,7 @@
 	    };
 	};
 	this.dismissOnOutsideClick = function(elementId, callback) {
-		$(document).on("click." + elementId, function(event) {
+		$(document).on("mousedown." + elementId, function(event) {
 		    if(!$(event.target).parents().andSelf().is("#" + elementId)) {
 		    		callback();
 		    		//remove this listener to avoid garbage

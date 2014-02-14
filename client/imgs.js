@@ -12,7 +12,7 @@ var Imgs = function() {
 		questionMark: "images/nounproject/questionMark.png",
 		download: "images/nounproject/download.png",
 		table: "images/nounproject/table.png",
-		
+		checkMark: "images/nounproject/checkMark.png",
 		
 		
 		

@@ -4,8 +4,9 @@ var QueryHeader = function(tabSettings) {
 	var queryIcon;
 	$("#" + tabSettings.id).append(queryHeader);
 	var init = function() {
-		drawQueryIcon();
+//		drawQueryIcon();
 		Yasgui.widgets.EndpointComboBox(queryHeader, tabSettings);
+		Yasgui.widgets.RequestConfigMenu(queryHeader, tabSettings);
 //		appendEndpointSelector();
 		
 		

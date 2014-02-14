@@ -25,3 +25,10 @@
 	width:16px;
 	margin-right: 4px;
 }
+.ui-menu-icon.ui-icon.ui-icon-carat-1-e {
+	position: static;
+	float: right;
+}
+.ui-menu-item > .ui-menu {
+	position:absolute;
+}

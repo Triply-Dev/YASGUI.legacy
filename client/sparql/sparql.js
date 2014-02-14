@@ -23,14 +23,52 @@
 		};
 		
 		var acceptHeaders = {
-//				SELECT_JSON("application/sparql-results+json", "json", ".json"),
-//				SELECT_XML("application/sparql-results+xml", "xml", ".xml"),
-//				SELECT_CSV("text/csv", null, ".xml"),
-//				SELECT_TSV("text/tab-separated-values", null, ".tsv"),
-//				CONSTRUCT_TURTLE("text/turtle", "text/turtle", ".ttl"),
-//				CONSTRUCT_XML("application/rdf+xml", "xml", ".xml"),
-//				CONSTRUCT_CSV("text/csv", null, ".csv"),
-//				CONSTRUCT_TSV("text/tab-separated-values", null, ".tsv");
+			select: [
+				{
+					header: "application/sparql-results+json",
+					extension: "json",
+					name: "JSON",
+				},
+				{
+					header: "application/sparql-results+xml",
+					extension: "xml",
+					name: "XML"
+				},
+				{
+					header: "text/csv",
+					extension: "csv",
+					name: "CSV"
+				},
+				{
+					header: "text/tab-separated-values",
+					extension: ".tsv",
+					name: "TSV"
+				},
+			],
+			graph: [
+				{
+					header: "text/turtle",
+					extension: "ttl",
+					name: "Turtle"
+				},
+				{
+					header: "application/rdf+xml",
+					extension: "xml",
+					name: "RDF/XML"
+				},
+				{
+					header: "text/csv",
+					extension: "csv",
+					name: "CSV"
+				},
+				{
+					header: "text/tab-separated-values",
+					extension: "tsv",
+					name: "TSV"
+				}
+				
+			]
+	
 		};
 		var getAcceptHeader = function(acceptHeader) {
 			return acceptHeader + ",*/*;q=0.9";
@@ -99,6 +137,7 @@
 			executedQueries = {};
 		};
 		return {
+			acceptHeaders: acceptHeaders,
 			corsEnabled: corsEnabled,
 			checkCorsEnabled: checkCorsEnabled,
 			query: query,
