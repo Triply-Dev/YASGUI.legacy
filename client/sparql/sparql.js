@@ -70,7 +70,15 @@
 			]
 	
 		};
-		var getAcceptHeader = function(acceptHeader) {
+		var getAcceptHeader = function(tabSettings) {
+			var qType = Yasgui.tabs[tabSettings.id].cm.getQueryType();
+			var acceptHeader;
+			if (qType == "CONSTRUCT" || qType == "DESCRIBE") {
+				//Change content type automatically for construct queries
+				acceptHeader = tabSettings.contentTypeGraph;
+			} else {
+				acceptHeader = tabSettings.contentTypeSelect;
+			}
 			return acceptHeader + ",*/*;q=0.9";
 		};
 		
@@ -84,27 +92,33 @@
 			executedQueries[executionId] = true;
 			Session.set("queryStatus", "busy");
 			Yasgui.tabs[tabSettings.id].results.clearResults();
-			var method = "GET";
+			var method = tabSettings.requestMethod;
 			var endpoint = tabSettings.endpoint;
+			
+			
 			var options = {
-				params: {
-					query: tabSettings.query
-				},
-				headers: {
-					Accept: "application/sparql-results+json"
-				}
-			};
+					
+					headers: {
+						Accept: getAcceptHeader(tabSettings)
+					}
+				};
+			var args = [{ name: "query", value: tabSettings.query }];
+			var argsString = $.param(args);
+			if (method == "GET") {
+				options.query = argsString;
+			} else {
+				options.content = argsString;
+				options.headers['Content-Type'] = "application/x-www-form-urlencoded";
+			}
+			
 			var callback = function(error, result) {
 				console.log(executedQueries);
 				if (executionId in executedQueries) {
-					executedQueries[executionId] = null;
-					try {
-						delete executedQueries[executionId];
-					} catch(e){}
-					console.log(result);
+					deleteKey(executedQueries, executionId);
 					if (error) {
-						console.log("error");
-						Yasgui.errors.draw(getHtmlAsText(error));
+						console.log("error1");
+						console.log(error);
+						Yasgui.errors.draw(getHtmlAsText(error.message));
 					} else if (result.error) {
 						console.log("result error");
 						console.log(result.message);
@@ -119,9 +133,9 @@
 					console.log("cancelled query!");
 				}
 			};
-			
 			try {
-				if (false) {
+				if (corsEnabled[endpoint]) {
+					console.log("cors enabled");
 					HTTP.call(method, endpoint, options, callback);
 				} else {
 					Meteor.call("query", method, endpoint, options, callback);
@@ -131,6 +145,7 @@
 				Yasgui.tabs[tabSettings.id].cm.check();
 				console.log("caught error", e);
 			}
+			
 		};
 		
 		var cancelQueries = function() {

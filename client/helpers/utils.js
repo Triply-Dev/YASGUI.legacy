@@ -93,4 +93,14 @@
 			}
 		});
 	};
+	
+	/**
+	 * IE does not always support deleting an entry from jsonobj. use this workaround
+	 */
+	this.deleteKey = function(jsonObj, key) {
+		jsonObj[key] = null;
+		try {
+			delete jsonObj[key];
+		} catch(e){}
+	}
 }).call(this);

@@ -102,11 +102,13 @@
 		          autocompleteselect: function( event, ui ) {
 //		        	  tabSettings.endpoint = ui.item.value;
 //		        	  Yasgui.settings.store();
+		        	  
 		          },
 		          blur: function(){
 		        	  tabSettings.endpoint = this.input.val();
 		        	  Yasgui.settings.store();
 		        	  Yasgui.endpoints.addEndpointIfNeeded(this.input.val());
+		        	  Yasgui.sparql.checkCorsEnabled(this.input.val());
 //		        	  tabSettings.endpoint = ui.item.value;
 //		        	  Yasgui.settings.store();
 		          }
@@ -166,6 +168,7 @@
 				
 				parent.append(fakeInput);
 				fakeInput.combobox({endpoints: Yasgui.endpoints.endpoints, selectedEndpoint: tabSettings.endpoint});
+				Yasgui.sparql.checkCorsEnabled(tabSettings.endpoint);
 		  });
 		
 		

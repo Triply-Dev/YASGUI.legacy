@@ -7,6 +7,12 @@
 		var codemirror = null;
 		var prevQueryValid = false;
 		var clearError = null;
+		
+		var getQueryType = function() {
+			var lineCount = codemirror.lineCount();
+			return codemirror.getTokenAt({line : lineCount - 1, ch: codemirror.getLine(lineCount-1).length-1}).state.queryType;
+		}
+		
 		var checkSyntax = function(cm, updateQueryButton) {
 			if (cm == undefined && updateQueryButton == undefined) {
 				cm = codemirror;
@@ -126,6 +132,7 @@
 		init();
 		
 		return {
+			getQueryType: getQueryType,
 			cm: codemirror,
 			check: checkSyntax,
 			storeInSettings: storeInSettings
