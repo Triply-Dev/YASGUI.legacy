@@ -17,7 +17,7 @@
 		var tryXmlParser = function() {
 			try {
 				var xml = $.parseXML(response);
-				parser = new Yasgui.parsers.XmlParser(xml, response);
+				parser = new Yasgui.parsers.XmlParser($( xml ), response);
 			} catch (e) {}
 		};
 		
