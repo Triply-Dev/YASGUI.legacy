@@ -1,7 +1,7 @@
 
 .ui-tabs {
 	/**complete tab object**/
-	margin-top: 60px !important;
+/* 	margin-top: 60px !important; */
 }
 .ui-tabs-nav {
 	/**tab header ul**/
@@ -22,7 +22,7 @@
 .ui-tabs-panel{
 	/**content divs**/
     position: relative;
-	margin: 0px !important;
+	margin: 0px;
 	padding: 0px !important;
 	width: 100%;
 	height: 100%;

@@ -1,5 +1,5 @@
 
-var QueryResults = function(tabSettings) {
+var QueryResults = function(parent, tabSettings) {
 	var mainResultsDiv = null;
 	var downloadIcon = null;
 	var header = null;
@@ -7,7 +7,7 @@ var QueryResults = function(tabSettings) {
 	var results = null;
 	var init = function() {
 		mainResultsDiv = $("<div class='queryResults'></div>");
-		$("#" + tabSettings.id).append(mainResultsDiv);
+		parent.append(mainResultsDiv);
 		header = $("<div class='queryResultsHeader'></div>");
 		mainResultsDiv.append(header);
 		content = $("<div class='queryResultsContent'></div>");

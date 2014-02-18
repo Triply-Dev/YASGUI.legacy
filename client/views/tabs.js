@@ -278,8 +278,14 @@ $(function() {
 				li = $(tabTemplate = "<li style='vertical-align:middle;'><a href='#" + id + "'>" + label + getCloseButton() + "</a></li>");
 		tabSettings.id = id;
 		tabs.find(".ui-tabs-nav").append(li);
-		tabs.append("<div id='" + id + "'></div>");
+		var tabContent = $("<div id='" + id + "'></div>");
+//		$('#bottom').position().top+$('#bottom').outerHeight(true)
+//		console.log("adding tab content with event handler");
+//		tabContent.on("show", function(){console.log("loaded!");});
+//		
+		tabs.append(tabContent);;
 		tabs.tabs("refresh");
+		tabContent.css("margin-top", ( $("#tabs").outerHeight(true)) + "px");
 		tabCounter++;
 		
 		//make sure our 'add tab' button is last!

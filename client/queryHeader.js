@@ -1,8 +1,8 @@
 
-var QueryHeader = function(tabSettings) {
+var QueryHeader = function(parent, tabSettings) {
 	var queryHeader = $("<div class='queryHeader'></div>");
 	var queryIcon;
-	$("#" + tabSettings.id).append(queryHeader);
+	parent.append(queryHeader);
 	var init = function() {
 		drawQueryIcon();
 		Yasgui.widgets.EndpointComboBox(queryHeader, tabSettings);

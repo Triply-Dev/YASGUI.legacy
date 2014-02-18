@@ -3,7 +3,7 @@
 	this.Yasgui.widgets = this.Yasgui.widgets || {};
 	
 	
-	this.Yasgui.widgets.QueryCodemirror = function(tabSettings) {
+	this.Yasgui.widgets.QueryCodemirror = function(parent, tabSettings) {
 		var codemirror = null;
 		var prevQueryValid = false;
 		var clearError = null;
@@ -11,7 +11,7 @@
 		var getQueryType = function() {
 			var lineCount = codemirror.lineCount();
 			return codemirror.getTokenAt({line : lineCount - 1, ch: codemirror.getLine(lineCount-1).length-1}).state.queryType;
-		}
+		};
 		
 		var checkSyntax = function(cm, updateQueryButton) {
 			if (cm == undefined && updateQueryButton == undefined) {
@@ -73,7 +73,7 @@
 			}
 		};
 		var init = function() {
-			codemirror = CodeMirror(document.getElementById(tabSettings.id), {
+			codemirror = CodeMirror(parent.get(0), {
 				mode : "sparql11",
 				theme: "yasgui",
 				value: tabSettings.query,

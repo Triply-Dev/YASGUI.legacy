@@ -16,6 +16,7 @@ html, body {
 	cursor: pointer;
 }
 .queryHeader {
+	position:fixed;
 	height: 24px;
 	margin-bottom: 10px;
 /* 	position: relative; */
@@ -25,7 +26,7 @@ padding: 3px 10px;
 height: 24px;
 }
 .mainLogo {
-	position: absolute;
+	position: fixed;
 	right: 4px;
 	top: -7px;
 	z-index: 15;
