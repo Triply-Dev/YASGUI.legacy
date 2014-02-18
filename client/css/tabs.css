@@ -21,7 +21,7 @@
 }
 .ui-tabs-panel{
 	/**content divs**/
-    position: relative;
+/*     position: relative; */
 	margin: 0px;
 	padding: 0px !important;
 	width: 100%;

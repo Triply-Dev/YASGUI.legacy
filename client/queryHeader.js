@@ -4,6 +4,7 @@ var QueryHeader = function(parent, tabSettings) {
 	var queryIcon;
 	parent.append(queryHeader);
 	var init = function() {
+		
 		drawQueryIcon();
 		Yasgui.widgets.EndpointComboBox(queryHeader, tabSettings);
 		Yasgui.widgets.RequestConfigMenu(queryHeader, tabSettings);
@@ -12,7 +13,9 @@ var QueryHeader = function(parent, tabSettings) {
 		
 		
 	};
-	
+	var positionElement = function(){
+		queryHeader.css("top", ( $("#tabs").outerHeight(true)) + "px");
+	};
 	var drawQueryIcon = function() {
 //		queryIcon = $("<a class='queryIcon' href='#'><img src='" + Yasgui.constants.imgs.playSquare + "'></a>");
 		queryIcon = $("<div class='centerize'><a class='queryIcon' href='#'><img src='" + Yasgui.constants.imgs.playSquare + "'></a></div>");
@@ -46,6 +49,8 @@ var QueryHeader = function(parent, tabSettings) {
 	init();
 	
 	return {
+		get: function(){return queryHeader;},
+		positionElement: positionElement
 //		cm: codemirror,
 //		check: checkSyntax
 	};

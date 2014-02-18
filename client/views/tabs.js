@@ -285,7 +285,7 @@ $(function() {
 //		
 		tabs.append(tabContent);;
 		tabs.tabs("refresh");
-		tabContent.css("margin-top", ( $("#tabs").outerHeight(true)) + "px");
+//		tabContent.css("margin-top", ( $("#tabs").outerHeight(true)) + "px");
 		tabCounter++;
 		
 		//make sure our 'add tab' button is last!

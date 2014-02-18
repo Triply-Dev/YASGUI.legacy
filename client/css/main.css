@@ -16,6 +16,7 @@ html, body {
 	cursor: pointer;
 }
 .queryHeader {
+	
 	position:fixed;
 	height: 24px;
 	margin-bottom: 10px;
