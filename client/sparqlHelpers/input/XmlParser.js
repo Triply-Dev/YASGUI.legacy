@@ -3,7 +3,6 @@
 	this.Yasgui.parsers = this.Yasgui.parsers || {};
 	
 	var XmlParser = function(xml, actualResponseString) {
-		console.log("xml parser", actualResponseString);
 		var getVariables = function() {
 			var vars = [];
 			xml.find("head").children().each(function(key, value){
@@ -13,7 +12,6 @@
 		};
 		
 		var getBindings = function() {
-			console.log(xml.find("bindings"));
 			var querySolutions = [];
 //			console.log(xml.find("results").children());
 			xml.find("results").children().each(function (qsKey, value){
@@ -26,7 +24,6 @@
 					var type = bindingInfo[0].nodeName;
 					var value = bindingInfo[0].innerHTML;
 					
-					console.log(bindingInfo);
 					querySolution[variable] = {
 						"type": type,
 						"value": value
@@ -42,19 +39,16 @@
 		};
 		
 		var getBoolean = function() {
-			console.log("todo: parse boolean" )
-//			console.log(actualResponseString);
-//			var boolean = xml.find("boolean");
-//			console.log("boolean");
-//			if (boolean) {
-//				console.log(boolean);
-//				console.log(boolean.innerHTML);
-//			}
-//			if ("boolean" in json) {
-//				return json.boolean;
-//			} else {
-//				return null;
-//			}
+			var result = null;
+			var booleanEl = xml.find("boolean");
+			if (booleanEl.get().length > 0) {
+				if (booleanEl.get()[0].innerHTML.toLowerCase() == "true") {
+					result = true;
+				} else {
+					result = false;
+				}
+			}
+			return result;
 		};
 		var getResponse = function() {
 			return actualResponseString;

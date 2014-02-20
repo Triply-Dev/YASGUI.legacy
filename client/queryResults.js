@@ -86,7 +86,6 @@ var QueryResults = function(parent, tabSettings) {
 //		drawDownloadLink();
 	};
 	var drawTable = function() {
-		console.log("darwing table");
 		if (results != null) {
 			downloadIcon.update(results);
 //			updateDownloadIcon();
@@ -98,7 +97,6 @@ var QueryResults = function(parent, tabSettings) {
 		console.log("drawing raw response");
 		if (results != null) {
 			downloadIcon.update(results);
-//			updateDownloadIcon();
 			content.html("");
 			Yasgui.widgets.ResultsCodemirror(content, results);
 		}
@@ -106,13 +104,21 @@ var QueryResults = function(parent, tabSettings) {
 	var clearResults = function() {
 		results = null;
 	};
+	var drawBooleanResult = function() {
+		if (results != null) {
+			downloadIcon.update(results);
+			content.html("");
+			Yasgui.widgets.BooleanResult(content, results.getBoolean());
+		}
+	};
 	
 	var drawContent = function(parser) {
 		results = parser;
-		if (tabSettings.outputFormat == "rawResponse") {
+		if (parser.getBoolean() !== null) {
+			drawBooleanResult();
+		} else if (tabSettings.outputFormat == "rawResponse") {
 			drawRawResponse();
-			
-		} else {
+		} else { 
 			drawTable();
 		}
 		

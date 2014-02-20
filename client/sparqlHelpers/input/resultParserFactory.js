@@ -10,7 +10,7 @@
 				var json = $.parseJSON(response);
 				parser = new Yasgui.parsers.JsonParser(json, response);
 			} catch (e) {
-				console.log(e);
+//				console.log(e);
 			}
 		};
 		

@@ -13,6 +13,8 @@ var Imgs = function() {
 		download: "images/nounproject/download.png",
 		table: "images/nounproject/table.png",
 		checkMark: "images/nounproject/checkMark.png",
+		cross: "images/nounproject/cross.png",
+		
 		
 		
 		

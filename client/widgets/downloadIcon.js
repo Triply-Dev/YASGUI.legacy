@@ -45,7 +45,7 @@
 				.attr("src", Yasgui.constants.imgs.getDisabled("download"))
 				.attr("title", "Nothing to download");
 			} else {
-				var isTable = (tabSettings.outputFormat == "table");
+				var isTable = (tabSettings.outputFormat == "table" && results.getBoolean === null);
 				
 				downloadLink
 				.removeClass("downloadIconDisabled")
