@@ -14,7 +14,10 @@ var QueryHeader = function(parent, tabSettings) {
 		
 	};
 	var positionElement = function(){
+		//position header itself
 		queryHeader.css("top", ( $("#tabs").outerHeight(true)) + "px");
+		//redraw background div, otherwise the query content will appear under our query header
+		$("#queryHeaderBackground").height($("#tabs").outerHeight(true) + queryHeader.outerHeight(true));
 	};
 	var drawQueryIcon = function() {
 //		queryIcon = $("<a class='queryIcon' href='#'><img src='" + Yasgui.constants.imgs.playSquare + "'></a>");
