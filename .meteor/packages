@@ -6,8 +6,6 @@
 standard-app-packages
 insecure
 preserve-inputs
-yasguiPackages
-jquery-validation
 amplify
 accounts-ui
 accounts-facebook
@@ -16,3 +14,4 @@ accounts-google
 accounts-twitter
 accounts-weibo
 http
+externalLibs

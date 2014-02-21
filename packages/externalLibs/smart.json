@@ -1,0 +1,8 @@
+{
+  "name": "externalLibs",
+  "description": "Packaged version of libraries used by YASGUI",
+  "homepage": "http://yasgui.org",
+  "author": "Laurens Rietveld <laurens.rietveld@gmail.com>",
+  "version": "0.0.2",
+  "packages": {}
+}
