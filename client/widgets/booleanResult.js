@@ -7,9 +7,9 @@
 		var draw = function() {
 			var innerHtml = "";
 			if (booleanResult) {
-				innerHtml = "<img src='" + Yasgui.constants.imgs.checkMark.get() + "'>true";
+				innerHtml = "<img src='" + Yasgui.constants.imgs.checkMark.get() + "'><strong>true</strong>";
 			} else {
-				innerHtml = "<img src='" + Yasgui.constants.imgs.cross.get() + "'>false";
+				innerHtml = "<img src='" + Yasgui.constants.imgs.cross.get() + "'><strong>false</strong>";
 			}
 			$(container).html( '<div class="booleanResult">' + innerHtml + '</div>' );
 			

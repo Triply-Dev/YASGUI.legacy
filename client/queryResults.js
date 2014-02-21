@@ -32,13 +32,12 @@ var QueryResults = function(parent, tabSettings) {
 			tabSettings.outputFormat = "table";
 			Yasgui.settings.store();
 			
-			drawTable();
+			drawContent();
 		});
 		$("#" + rawResponseSelectorId).click(function(){
-			console.log("click");
 			tabSettings.outputFormat = "rawResponse";
 			Yasgui.settings.store();
-			drawRawResponse();
+			drawContent();
 		});
 	};
 	
@@ -80,11 +79,11 @@ var QueryResults = function(parent, tabSettings) {
 	};
 	
 	var drawContent = function(parser) {
-		results = parser;
-		if (parser.getBoolean() !== null) {
-			drawBooleanResult();
-		} else if (tabSettings.outputFormat == "rawResponse") {
+		if (parser) results = parser;
+		if (tabSettings.outputFormat == "rawResponse") {
 			drawRawResponse();
+		} else if (results.getBoolean() !== null) {
+			drawBooleanResult();
 		} else { 
 			drawTable();
 		}
