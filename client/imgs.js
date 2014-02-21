@@ -1,19 +1,37 @@
 var Imgs = function() {
-	var paths = {
-		playRound : "images/nounproject/play.png",
-		playSquare : "images/nounproject/playLow.png",
-		playSquareError : "images/nounproject/playSquareError.png",
-		crossThin : "images/nounproject/crossThin.png",
-		loading: "images/other/ajax_loader.gif",
-		addTab : "images/nounproject/addPage.png",
-		editText: "images/nounproject/editText.png",
-		copy: "images/nounproject/copy.png",
-		crossRound: "images/nounproject/close.png",
-		questionMark: "images/nounproject/questionMark.png",
-		download: "images/nounproject/download.png",
-		table: "images/nounproject/table.png",
-		checkMark: "images/nounproject/checkMark.png",
-		cross: "images/nounproject/cross.png",
+	Img = function(path) {
+		return {
+			getDisabled: function() {
+				return path.replace(/(\.[^\.]+)$/, '_disabled$1');;
+			},
+			getBold: function() {
+				return path.replace(/(\.[^\.]+)$/, '_bold$1');;
+			},
+			get: function(){
+				return path;
+			}
+		};
+	};
+	
+	
+	return  {
+		playRound : new Img("images/nounproject/play.png"),
+		playSquare : new Img("images/nounproject/playLow.png"),
+		playSquareError : new Img("images/nounproject/playSquareError.png"),
+		crossThin : new Img("images/nounproject/crossThin.png"),
+		loading: new Img("images/other/ajax_loader.gif"),
+		addTab : new Img("images/nounproject/addPage.png"),
+		editText: new Img("images/nounproject/editText.png"),
+		copy: new Img("images/nounproject/copy.png"),
+		crossRound: new Img("images/nounproject/close.png"),
+		questionMark: new Img("images/nounproject/questionMark.png"),
+		download: new Img("images/nounproject/download.png"),
+		table: new Img("images/nounproject/table.png"),
+		checkMark: new Img("images/nounproject/checkMark.png"),
+		cross: new Img("images/nounproject/cross.png"),
+		crossSmall: new Img("images/nounproject/crossSmall.png"),
+		
+	};
 		
 		
 		
@@ -64,16 +82,6 @@ var Imgs = function() {
 //		
 //		OTHER_IMAGES_DIR("images/"),
 //		OTHER_1PX("other/1px.png");
-	};
-	var getDisabled = function(key) {
-		return paths[key].replace(/(\.[^\.]+)$/, '_disabled$1');;
-	};
-	var getBold = function(key) {
-		return paths[key].replace(/(\.[^\.]+)$/, '_bold$1');;
-	};
-	paths.getDisabled = getDisabled;
-	paths.getBold = getBold;
-	return paths;
 };
 Yasgui.objs.Imgs = Imgs;
 

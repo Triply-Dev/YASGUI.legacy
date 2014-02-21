@@ -104,7 +104,8 @@ height: 24px;
     
 }
 .booleanResult img {
-	margin-bottom: -5px;
+	margin-bottom: -7px;
+	margin-right: 4px;
 }
 .topLabel {
 	display: block;

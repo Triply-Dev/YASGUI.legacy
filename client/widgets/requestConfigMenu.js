@@ -58,7 +58,7 @@
 			$.each(Yasgui.sparql.acceptHeaders.select, function(index, acceptHeader) {
 				var icon = getSpacer();
 				if (tabSettings.contentTypeSelect == acceptHeader.header) {
-					icon = "<img src='" + Yasgui.constants.imgs.checkMark + "'>";
+					icon = "<img src='" + Yasgui.constants.imgs.checkMark.get() + "'>";
 				}
 				selectAcceptHeadersSubMenu.append(
 						$("<li><a href='#'>" + icon  + acceptHeader.name + "</a></li>")
@@ -74,7 +74,7 @@
 			$.each(Yasgui.sparql.acceptHeaders.graph, function(index, acceptHeader) {
 				var icon = getSpacer();
 				if (tabSettings.contentTypeGraph == acceptHeader.header) {
-					icon = "<img src='" + Yasgui.constants.imgs.checkMark + "'>";
+					icon = "<img src='" + Yasgui.constants.imgs.checkMark.get() + "'>";
 				}
 				graphAcceptHeadersSubMenu.append($("<li><a href='#'>" + icon + acceptHeader.name + "</a></li>")
 						.on("click", function() {
@@ -89,9 +89,9 @@
 			var getIcon = getSpacer();
 			var postIcon = getSpacer();
 			if (tabSettings.requestMethod == "GET") {
-				getIcon = "<img src='" + Yasgui.constants.imgs.checkMark + "'>";
+				getIcon = "<img src='" + Yasgui.constants.imgs.checkMark.get() + "'>";
 			} else {
-				postIcon = "<img src='" + Yasgui.constants.imgs.checkMark + "'>";
+				postIcon = "<img src='" + Yasgui.constants.imgs.checkMark.get() + "'>";
 			}
 			var requestMethodSubMenu = $("<ul></ul>")
 				.width(80)

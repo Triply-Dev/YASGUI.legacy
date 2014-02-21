@@ -24,7 +24,7 @@
 // 		"crossThin" => array(
 // 			"size" => 11
 // 		),
-		"cross" => array(
+		"crossSmall" => array(
 			"size" => 12
 		)
 	);

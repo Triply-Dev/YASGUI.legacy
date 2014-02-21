@@ -66,10 +66,10 @@
             		"<span class='endpointComboLabel'>" + (item.label?item.label:"&nbsp") + "</span>" +
     				"<span class='endpointComboValue'>" + item.value + "</span>" +
     				"<span class='endpointComboDelete'>" + 
-    					(item.isCustomEndpoint? "<img class='comboDeleteEndpointIcon' title='Dont suggest this endpoint anymore' src='" + Yasgui.constants.imgs.crossRound + "'>": "&nbsp;") +
+    					(item.isCustomEndpoint? "<img class='comboDeleteEndpointIcon' title='Dont suggest this endpoint anymore' src='" + Yasgui.constants.imgs.crossRound.get() + "'>": "&nbsp;") +
     				"</span>" + 
     				"<span class='endpointComboDesc'>" + 
-    					(item.descLink != undefined? "<img class='comboOpenEndpointDesc' title='show additional endpoint information' src='" + Yasgui.constants.imgs.questionMark + "'>": "&nbsp;") + 
+    					(item.descLink != undefined? "<img class='comboOpenEndpointDesc' title='show additional endpoint information' src='" + Yasgui.constants.imgs.questionMark.get() + "'>": "&nbsp;") + 
 					"</span>" +
 					"</a>" ;
 		        	

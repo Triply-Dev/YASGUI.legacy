@@ -41,40 +41,7 @@ var QueryResults = function(parent, tabSettings) {
 			drawRawResponse();
 		});
 	};
-	var updateDownloadIcon = function() {
-		//check: do we have results to download?
-		if (results == null) {
-			downloadLink
-			.attr("href", "#")
-			.children()
-			.attr("src", Yasgui.constants.imgs.getDisabled("download"))
-			.addClass("downloadIconDisabled")
-			.attr("title", "Nothing to download");
-		} else {
-			var isTable = (tabSettings.outputFormat == "table");
-			targetUrl = null;
-			if (isTable) {
-				console.log("todo, download as csv");
-			} else {
-				targetUrl = stringToUrl(results.getResponse(), "text/plain");
-			}
-			
-			var downloadAttrSupported = true;
-			if (downloadAttrSupported) {
-				downloadLink.attr("download", "bla.csv");;
-			} else {
-				downloadLink.attr("target", "_blank");
-			}
-			
-			downloadLink
-			.attr("href", targetUrl)
-			.children()
-			.attr("src", (isTable ? Yasgui.constants.imgs.table: Yasgui.constants.imgs.download))
-			.removeClass("downloadIconDisabled")
-			.attr("title", (isTable? "Download as CSV": "Download query response"));
-		}
-		
-	};
+	
 //	var drawDownloadLink = function() {
 //		downloadLink = $('<a id="downloadLink"><img class="downloadIcon"></a>');
 //		header.append(downloadLink);

@@ -14,7 +14,7 @@ $(function() {
 				return Yasgui.tabs[Yasgui.settings.getSelectedTab().id];
 			}
 		};
-		$("#addTab").attr("src", Yasgui.constants.imgs.addTab);
+		$("#addTab").attr("src", Yasgui.constants.imgs.addTab.get());
 		
 		tabs = $(tabSetSelector).tabs({
 			activate: function(event, ui) {

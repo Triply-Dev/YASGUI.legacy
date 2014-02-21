@@ -1,8 +1,8 @@
 Template.header.queryIconSrc = function() {
 //	var src = Session.get("queryIcon");
 	if (src == undefined) {
-		Session.set("queryIcon", Yasgui.constants.imgs.playSquare);
-		src = Yasgui.constants.imgs.playSquare;
+		Session.set("queryIcon", Yasgui.constants.imgs.playSquare.get());
+		src = Yasgui.constants.imgs.playSquare.get();
 	}
 	return src;
 };

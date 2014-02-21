@@ -21,7 +21,7 @@ var QueryHeader = function(parent, tabSettings) {
 	};
 	var drawQueryIcon = function() {
 //		queryIcon = $("<a class='queryIcon' href='#'><img src='" + Yasgui.constants.imgs.playSquare + "'></a>");
-		queryIcon = $("<div class='centerize'><a class='queryIcon' href='#'><img src='" + Yasgui.constants.imgs.playSquare + "'></a></div>");
+		queryIcon = $("<div class='centerize'><a class='queryIcon' href='#'><img src='" + Yasgui.constants.imgs.playSquare.get() + "'></a></div>");
 		queryHeader.append(queryIcon);
 		
 		Deps.autorun(function() {
@@ -31,19 +31,19 @@ var QueryHeader = function(parent, tabSettings) {
 					Session.set("queryStatus", "query");
 					Yasgui.sparql.cancel();
 					return false;
-				}).children().attr("src",  Yasgui.constants.imgs.loading);
+				}).children().attr("src",  Yasgui.constants.imgs.loading.get());
 			} else if (queryStatus == "error") {
 				queryIcon.off("click").click(function(){
 					console.log("query");
 					Yasgui.sparql.query();
 					return false;
-				}).children().attr("src",  Yasgui.constants.imgs.playSquareError);
+				}).children().attr("src",  Yasgui.constants.imgs.playSquareError.get());
 		//		Session.set("oldest", oldest.name);
 			} else if (queryStatus == undefined || queryStatus == "query") {
 				queryIcon.off("click").click(function(){
 					Yasgui.sparql.query();
 					return false;
-				}).children().attr("src",  Yasgui.constants.imgs.playSquare);
+				}).children().attr("src",  Yasgui.constants.imgs.playSquare.get());
 			} else {
 				console.log("unrecognized query status in session: " + queryStatus);
 			}

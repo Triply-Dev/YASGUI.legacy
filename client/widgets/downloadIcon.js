@@ -22,9 +22,9 @@
 			return url;
 		};
 		
-		var getFilename = function(results) {
+		var getFilename = function(results, isTable) {
 			filename = tabSettings.tabTitle;
-			if (tabSettings.outputFormat == "table") {
+			if (isTable) {
 				filename += ".csv";
 			} else {
 				filename += "." + results.getContentType();
@@ -37,19 +37,19 @@
 			if (!Yasgui.compatabilities.stringToUrl()) {
 				downloadLink
 				.addClass("downloadIconDisabled")
-				.attr("src", Yasgui.constants.imgs.getDisabled("download"))
+				.attr("src", Yasgui.constants.imgs.download.getDisabled())
 				.attr("title", "Your browser does not support client-side downloading of files");
 			} else if (results == null) {
 				downloadLink
 				.addClass("downloadIconDisabled")
-				.attr("src", Yasgui.constants.imgs.getDisabled("download"))
+				.attr("src", Yasgui.constants.imgs.download.getDisabled())
 				.attr("title", "Nothing to download");
 			} else {
 				var isTable = (tabSettings.outputFormat == "table" && results.getBoolean === null);
 				
 				downloadLink
 				.removeClass("downloadIconDisabled")
-				.attr("src", (isTable ? Yasgui.constants.imgs.table: Yasgui.constants.imgs.download))
+				.attr("src", (isTable ? Yasgui.constants.imgs.table: Yasgui.constants.imgs.download.get()))
 				.attr("title", (isTable? "Download as CSV": "Download query response"))
 				.off()
 				.on("click", function() {
@@ -63,7 +63,7 @@
 					if (Yasgui.compatabilities.downloadAttribute()) {
 						var downloadMockLink = $("<a></a>");
 						downloadMockLink.attr("href", targetUrl);
-						downloadMockLink.attr("download", getFilename(results));
+						downloadMockLink.attr("download", getFilename(results, isTable));
 						downloadMockLink.get(0).click();
 					} else {
 						window.open(targetUrl);
