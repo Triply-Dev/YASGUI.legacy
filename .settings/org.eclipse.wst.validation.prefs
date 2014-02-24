@@ -1,0 +1,11 @@
+DELEGATES_PREFERENCE=delegateValidatorList
+USER_BUILD_PREFERENCE=enabledBuildValidatorList
+USER_MANUAL_PREFERENCE=enabledManualValidatorList
+USER_PREFERENCE=overrideGlobalPreferencestruedisableAllValidationfalseversion1.2.500.v201303130500
+eclipse.preferences.version=1
+override=true
+suspend=false
+vals/org.eclipse.php.ui.HTMLValidatorForPHP/groups=0107include01111contentType130org.eclipse.php.core.phpsourceT0107exclude0104file08packagesF02
+vals/org.eclipse.wst.html.core.HTMLValidator/groups=0107include06111contentType136org.eclipse.wst.html.core.htmlsourceT07fileext04htmlF07fileext05xhtmlF07fileext03htmF07fileext04htplF07fileext03wmlF0107exclude0204file123packages/yasguiPackagesF0204file08packagesF02
+vals/org.eclipse.wst.jsdt.web.core.JsBatchValidator/global=TT01
+vf.version=3

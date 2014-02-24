@@ -39,11 +39,11 @@
 	height: 12px;
 	width: 12px;
 	vertical-align: middle;
-	background-image: url('/images/nounproject/cross.png');
+	background-image: url('/images/nounproject/crossSmall.png');
 }
 .closeTab:hover {
-	background-image: url('/images/nounproject/cross_white.png');
+	background-image: url('/images/nounproject/crossSmall_white.png');
 }
 .ui-state-active .closeTab:hover {
-	background-image: url('/images/nounproject/cross_disabled.png');
+	background-image: url('/images/nounproject/crossSmall_disabled.png');
 }

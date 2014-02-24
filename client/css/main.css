@@ -11,11 +11,11 @@ html, body {
 /* 	background: #444; */
 /* 	padding: 5px; */
 /* } */
-.yasguiLogo {
-	font-family: 'Audiowide';
-	font-size: 40px;
-	cursor: pointer;
-}
+/* .yasguiLogo { */
+/* 	font-family: 'Audiowide'; */
+/* 	font-size: 40px; */
+/* 	cursor: pointer; */
+/* } */
 #queryHeaderBackground {
 	position:fixed;
 	top: 0;
@@ -45,10 +45,12 @@ padding: 3px 10px;
 height: 24px;
 }
 .mainLogo {
+	cursor: pointer; 
 	position: fixed;
-	right: 4px;
-	top: -7px;
+	right: 2px;
+	top: 0px;
 	z-index: 15;
+	height: 36px;
 }
 
 /* .header { */
