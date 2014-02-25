@@ -31,8 +31,54 @@
 }
 
 #addTab {
+	margin-top: 4px;
 	cursor: pointer;
+	display:block;
+/* 	margin-left: 10px; */
+/* 	height: 15px; */
+/* 	width: 15px; */
+	vertical-align: middle;
+	background-color: #d4d4d4;
+/* 	padding: 6px 6px; */
+	padding: 0;
+	
 }
+#addTab:hover {
+	background-color: #66B3FF;
+}
+#addTab span {
+	display:inline-block;
+	height: 15px;
+	width: 15px;
+	margin: 3px;
+	vertical-align: middle;
+	background-image: url('/images/nounproject/plus.png');
+}
+#addTab span:hover {
+	background-image: url('/images/nounproject/plus_white.png');
+}
+.addTabItm{
+/* 	border: 2px solid #d4d4d4; */
+/* 	position: relative; */
+/* 	top: 1px; */
+/* 	margin: 0 .2em 1px 0; */
+	
+/* 	height: 100%; */
+/* 	vertical-align:middle; */
+/* 	margin-top: 50% !important; */
+
+}
+
+.closeTab {
+	display:inline-block;
+	margin-left: 10px;
+	height: 12px;
+	width: 12px;
+	vertical-align: middle;
+	background-image: url('/images/nounproject/crossSmall.png');
+}
+
+
 .closeTab {
 	display:inline-block;
 	margin-left: 10px;

@@ -686,7 +686,7 @@ html, body{background-color:#ffffff;}
 .ui-tabs-nav > .ui-state-default a{border-color:#3399ff;background:#3399ff;color:#ffffff;}
 .ui-tabs-nav > .ui-state-active a{border-color:#d4d4d4 !important;background:#ffffff !important;color:#525252 !important;}
 .ui-tabs-nav > .ui-state-hover a{background:#66B3FF;border-color:#66B3FF;color:#ffffff;}
-.ui-tabs-nav > .ui-state-focus a{background:#66B3FF;border-color:;color:#ffffff;}
+.ui-tabs-nav > .ui-state-focus a{background:#66B3FF;border-color:#66B3FF;color:#ffffff;}
 .ui-tabs .ui-widget-content{border-color:#d4d4d4 !important;background-color:#ffffff;}
 .ui-tabs-nav{border-color:#d4d4d4;}
 

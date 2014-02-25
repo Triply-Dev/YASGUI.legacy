@@ -26,6 +26,9 @@
 // 		),
 		"crossSmall" => array(
 			"size" => 12
+		),
+		"plus" => array(
+			"size" => 14
 		)
 	);
 	$imgs = array();

@@ -14,7 +14,6 @@ $(function() {
 				return Yasgui.tabs[Yasgui.settings.getSelectedTab().id];
 			}
 		};
-		$("#addTab").attr("src", Yasgui.constants.imgs.addTab.get());
 		
 		tabs = $(tabSetSelector).tabs({
 			activate: function(event, ui) {
@@ -92,7 +91,7 @@ $(function() {
 						var lastElClassname = $(($(this).find("li:last").get(0)))
 								.attr("class");
 						if (lastElClassname == undefined
-								|| lastElClassname != "list_btn") {
+								|| lastElClassname != "addTabItm") {
 							// we are trying to move a tab behind the 'add tab'
 							// button! We say NO to that!
 							$(this).sortable("cancel");
@@ -102,6 +101,7 @@ $(function() {
 						tabs.tabs("refresh");
 					}
 				});
+//		$('#addTab').attr("src", Yasgui.constants.imgs.addTab.get()).on('click', function() {
 		$('#addTab').on('click', function() {
 			var tabSettings = addTab(Yasgui.settings.defaultTabSettings, true);
 			selectTabFromId(tabSettings.id);
@@ -289,8 +289,8 @@ $(function() {
 		tabCounter++;
 		
 		//make sure our 'add tab' button is last!
-		$(".list_btn").clone(true).appendTo("#tabs");
-		$(".list_btn:first").remove();
+		$(".addTabItm").clone(true).appendTo("#tabs");
+		$(".addTabItm:first").remove();
 		if (store) {
 			Yasgui.settings.tabs.push(tabSettings);
 			Yasgui.settings.store();
