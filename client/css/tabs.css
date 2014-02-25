@@ -31,7 +31,7 @@
 }
 
 #addTab {
-	margin-top: 4px;
+	margin-top: 2px;
 	cursor: pointer;
 	display:block;
 /* 	margin-left: 10px; */
@@ -48,8 +48,8 @@
 }
 #addTab span {
 	display:inline-block;
-	height: 15px;
-	width: 15px;
+	height: 13px;
+	width: 13px;
 	margin: 3px;
 	vertical-align: middle;
 	background-image: url('/images/nounproject/plus.png');

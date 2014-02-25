@@ -28,7 +28,7 @@
 			"size" => 12
 		),
 		"plus" => array(
-			"size" => 14
+			"size" => 12
 		)
 	);
 	$imgs = array();

@@ -1,17 +1,20 @@
 
 var QueryHeader = function(parent, tabSettings) {
-	var queryHeader = $("<div class='queryHeader'></div>");
+	var queryHeader = $("<ul class='queryHeader'></ul>");
 	var queryIcon;
 	parent.append(queryHeader);
 	var init = function() {
 		
 		drawQueryIcon();
-		Yasgui.widgets.EndpointComboBox(queryHeader, tabSettings);
-		Yasgui.widgets.RequestConfigMenu(queryHeader, tabSettings);
+		Yasgui.widgets.EndpointComboBox(addListItem(), tabSettings);
+		Yasgui.widgets.RequestConfigMenu(addListItem(), tabSettings);
 //		appendEndpointSelector();
-		
-		
-		
+	};
+	
+	var addListItem = function() {
+		var listItem = $("<li></li>");
+		queryHeader.append(listItem);
+		return listItem;
 	};
 	var positionElement = function(){
 		//position header itself
@@ -21,7 +24,7 @@ var QueryHeader = function(parent, tabSettings) {
 	};
 	var drawQueryIcon = function() {
 //		queryIcon = $("<a class='queryIcon' href='#'><img src='" + Yasgui.constants.imgs.playSquare + "'></a>");
-		queryIcon = $("<div class='centerize'><a class='queryIcon' href='#'><img src='" + Yasgui.constants.imgs.playSquare.get() + "'></a></div>");
+		queryIcon = $("<li><a class='queryIcon' href='#'><img src='" + Yasgui.constants.imgs.play.get() + "'></a></li>");
 		queryHeader.append(queryIcon);
 		
 		Deps.autorun(function() {
@@ -37,13 +40,13 @@ var QueryHeader = function(parent, tabSettings) {
 					console.log("query");
 					Yasgui.sparql.query();
 					return false;
-				}).children().attr("src",  Yasgui.constants.imgs.playSquareError.get());
+				}).children().attr("src",  Yasgui.constants.imgs.play.get());
 		//		Session.set("oldest", oldest.name);
 			} else if (queryStatus == undefined || queryStatus == "query") {
 				queryIcon.off("click").click(function(){
 					Yasgui.sparql.query();
 					return false;
-				}).children().attr("src",  Yasgui.constants.imgs.playSquare.get());
+				}).children().attr("src",  Yasgui.constants.imgs.play.get());
 			} else {
 				console.log("unrecognized query status in session: " + queryStatus);
 			}

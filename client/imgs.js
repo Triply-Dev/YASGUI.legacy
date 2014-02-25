@@ -15,12 +15,11 @@ var Imgs = function() {
 	
 	
 	return  {
-		playRound : new Img("images/nounproject/play.png"),
-		playSquare : new Img("images/nounproject/playLow.png"),
-		playSquareError : new Img("images/nounproject/playSquareError.png"),
+		play : new Img("images/nounproject/play.png"),
+//		playSquare : new Img("images/nounproject/playLow.png"),
+//		playSquareError : new Img("images/nounproject/playSquareError.png"),
 		crossThin : new Img("images/nounproject/crossThin.png"),
 		loading: new Img("images/other/ajax_loader.gif"),
-		addTab : new Img("images/nounproject/addPage.png"),
 		editText: new Img("images/nounproject/editText.png"),
 		copy: new Img("images/nounproject/copy.png"),
 		crossRound: new Img("images/nounproject/close.png"),
