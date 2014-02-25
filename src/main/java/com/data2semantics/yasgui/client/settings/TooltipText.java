@@ -45,7 +45,8 @@ public enum TooltipText {
 			"<li>Change requested content (XML/JSON/Turtle)</li>\n" + 
 		"</ul>"),
 	LINK_GENERATOR("Share your queries with others by <br>generating a YASGUI link for them"),
-	ADD_TO_BOOKMARKS("Add queries as a bookmark (requires login)");
+	ADD_TO_BOOKMARKS("Add queries as a bookmark (requires login)"),
+	ATTRIBUTION("YASGUI is developed by <a href='http://laurensrietveld.nl' target='_blank'>Laurens Rietveld</a> and funded by <a href='http://data2semantics.org' target='_blank'>Data2Semantics</a>");
 
 	private String text;
 	private String subject;

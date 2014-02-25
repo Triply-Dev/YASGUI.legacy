@@ -48,6 +48,7 @@ public class QueryTextArea extends HTMLPane {
 	private static String PREFIX_PATTERN = "\\s*PREFIX\\s*(\\w*):\\s*<(.*)>\\s*$";
 	private static final int TOOLTIP_VERSION_KEYBOARD_SHORTCUTS = 1;
 	private static final int TOOLTIP_VERSION_PREFIX = 1;
+	private static final int TOOLTIP_VERSION_ATTRIBUTION = 10;
 	private View view;
 	private static String APPEND_INPUT_ID = "_queryInput";
 	private String inputId;
@@ -77,6 +78,7 @@ public class QueryTextArea extends HTMLPane {
 	public void showTooltips(int fromVersionId) throws ElementIdException {
 		showPrefixTooltip(fromVersionId);
 		showKeyShortcutsTooltip(fromVersionId);
+		showAttributionsTooltip(fromVersionId);
 	}
 	
 	private void showPrefixTooltip(int fromVersionId) throws ElementIdException {
@@ -87,6 +89,18 @@ public class QueryTextArea extends HTMLPane {
 			tProp.setMy(TooltipProperties.POS_TOP_LEFT);
 			tProp.setAt(TooltipProperties.POS_TOP_LEFT);
 			tProp.setXOffset(240);
+			tProp.setYOffset(50);
+			Helper.drawTooltip(tProp);
+		}
+	}
+	private void showAttributionsTooltip(int fromVersionId) throws ElementIdException {
+		if (fromVersionId < TOOLTIP_VERSION_ATTRIBUTION) {
+			TooltipProperties tProp = new TooltipProperties();
+			tProp.setId(getDOM().getId());
+			tProp.set(TooltipText.ATTRIBUTION);
+			tProp.setMy(TooltipProperties.POS_CENTER);
+			tProp.setAt(TooltipProperties.POS_BOTTOM_LEFT);
+			tProp.setXOffset(400);
 			tProp.setYOffset(50);
 			Helper.drawTooltip(tProp);
 		}
