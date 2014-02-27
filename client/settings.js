@@ -29,7 +29,7 @@ var Settings = function() {
 		
 		if (settings.tabs == undefined) {
 			settings.tabs = [];
-			settings.tabs.push(settings.defaultTabSettings);
+			settings.tabs.push(jQuery.extend(true, {}, settings.defaultTabSettings));//we want to CLONE, not just store the pointer
 		}
 		return settings;
 	};

@@ -250,7 +250,7 @@ $(function() {
 		return (newTitle? newTitle: defaultTabTitle);
 	};
 	var addTab = function(tabSettings, newlyCreatedTab) {
-		var tabSettings = jQuery.extend(true, {}, tabSettings);
+//		tabSettings = jQuery.extend(true, {}, tabSettings);
 		var id;
 		if (tabSettings.id == undefined || tabIdExists(tabSettings.id)) {
 			id = getValidNewId();
