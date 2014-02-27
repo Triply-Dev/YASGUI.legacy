@@ -223,7 +223,34 @@ $(function() {
 		return "<span class='closeTab'>&nbsp;</span>";
 	};
 	
-	var addTab = function(tabSettings, store) {
+	var getNewTabTitle = function(defaultTabTitle) {
+		var tabTitleExists = function(titleToCheck) {
+			var exists = false;
+			for (var i = 0; i < Yasgui.settings.tabs.length; i++) {
+				if (Yasgui.settings.tabs[i].tabTitle == titleToCheck) {
+					exists = true;
+					break;
+				}
+			}
+			return exists;
+		};
+		var newTitle = null;
+		if (!tabTitleExists(defaultTabTitle)) {
+			newTitle = defaultTabTitle;
+		} else {
+			//only try for a limited period
+			for (var i = 1; i < 100; i++) {
+				var testTitle = defaultTabTitle + "-" + i;
+				if (!tabTitleExists(testTitle)) {
+					newTitle = testTitle;
+					break;
+				}
+			}
+		}
+		return (newTitle? newTitle: defaultTabTitle);
+	};
+	var addTab = function(tabSettings, newlyCreatedTab) {
+		var tabSettings = jQuery.extend(true, {}, tabSettings);
 		var id;
 		if (tabSettings.id == undefined || tabIdExists(tabSettings.id)) {
 			id = getValidNewId();
@@ -231,9 +258,12 @@ $(function() {
 		} else {
 			id = tabSettings.id;
 		}
-		var label = tabSettings.tabTitle,
-				li = $(tabTemplate = "<li style='vertical-align:middle;'><a href='#" + id + "'>" + label + getCloseButton() + "</a></li>");
+		
+		
+		var tabTitle = (newlyCreatedTab? getNewTabTitle(tabSettings.tabTitle): tabSettings.tabTitle),
+				li = $(tabTemplate = "<li style='vertical-align:middle;'><a href='#" + id + "'>" + tabTitle + getCloseButton() + "</a></li>");
 		tabSettings.id = id;
+		tabSettings.tabTitle = tabTitle;
 		tabs.find(".ui-tabs-nav").append(li);
 		var tabContent = $("<div id='" + id + "'></div>");
 		tabs.append(tabContent);;
@@ -243,7 +273,7 @@ $(function() {
 		//make sure our 'add tab' button is last!
 		$(".addTabItm").clone(true).appendTo("#tabs");
 		$(".addTabItm:first").remove();
-		if (store) {
+		if (newlyCreatedTab) {
 			Yasgui.settings.tabs.push(tabSettings);
 			Yasgui.settings.store();
 		}
