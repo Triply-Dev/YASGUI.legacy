@@ -12,15 +12,27 @@ $(function() {
 			getCurrentTab: function() {
 				//helper function for getting selected tab content
 				return Yasgui.tabs[Yasgui.settings.getSelectedTab().id];
+			},
+			getAllTabIds: function() {
+				var keys = [];
+				for(var k in Yasgui.tabs) {
+					if (k.startsWith("tabs-")) keys.push(k);
+				}
+				return keys;
+			},
+			positionElements : function() {
+				var tabIds = Yasgui.tabs.getAllTabIds();
+				for (var tabIdKey = 0; tabIdKey < tabIds.length; tabIdKey++) {
+					var tabId = tabIds[tabIdKey];
+					if (Yasgui.tabs[tabId].positionElements) Yasgui.tabs[tabId].positionElements();
+				}
 			}
 		};
 		
 		tabs = $(tabSetSelector).tabs({
 			activate: function(event, ui) {
-				
 				//a tab is selected
 				var selectedTabId = ui.newTab.find("a").first().attr('href');
-//				console.log("selected tab id: " + selectedTabId);
 				if (selectedTabId != undefined) {
 					selectedTabId = selectedTabId.substring(1); //remove #!
 					var tabKey = getTabKeyFromId(selectedTabId);
@@ -55,32 +67,11 @@ $(function() {
 				event.preventDefault();
 				drawTabContextMenu(event);
 				return false;
-//			}).
-//			delegate("img.closeTab, mouseover", function(){
-//				console.log(this);
-////				$(this).attr("src", Yasgui.constants.imgs.crossThin);
-//			}).
-//			delegate("img.closeTab, mouseout", function(){
-////				$(this).attr("src", Yasgui.constants.imgs.copy);
 			});
 		
 		$("#tabContextMenu").hide().zIndex(Yasgui.constants.zIndexes.popupDialogues).width(200).menu();
 		
 
-//		$(tabSetSelector).contextmenu({
-//		    delegate: "li",
-//		    menu: [
-//		        {title: "Copy", cmd: "copy", uiIcon: "ui-icon-copy"},
-//		        {title: "----"},
-//		        {title: "More", children: [
-//		            {title: "Sub 1", cmd: "sub1"},
-//		            {title: "Sub 2", cmd: "sub1"}
-//		            ]}
-//		        ],
-//		    select: function(event, ui) {
-//		        alert("select " + ui.cmd + " on " + ui.target.text());
-//		    }
-//		});
 		
 		// make them sortable
 		tabs.find(".ui-tabs-nav").sortable(
@@ -101,7 +92,6 @@ $(function() {
 						tabs.tabs("refresh");
 					}
 				});
-//		$('#addTab').attr("src", Yasgui.constants.imgs.addTab.get()).on('click', function() {
 		$('#addTab').on('click', function() {
 			var tabSettings = addTab(Yasgui.settings.defaultTabSettings, true);
 			selectTabFromId(tabSettings.id);
@@ -111,31 +101,12 @@ $(function() {
 		tabs.delegate("span.closeTab", "click", function(event) {
 			event.stopPropagation();
 			closeTab($(this).closest("a").attr("href").substring(1));
-//			var panelId = $(this).closest("li").remove().attr("aria-controls");
-//			//remove content from dom
-//			$("#" + panelId).remove();
-//			//remove from settings
-//			Yasgui.settings.tabs.splice(getTabKeyFromId(panelId), 1);
-//			tabs.tabs("refresh");
-//			
-//			//recheck our selected tab
-//			Yasgui.settings.selectedTabKey = getSelectedTabFromDom();
-//			Yasgui.settings.store();
 		});
 		
 		
-//		}).
-//		delegate("img.closeTab", "mouseover", function(){
-//			console.log(this);
-//			$(this).attr("src", Yasgui.constants.imgs.getBold("crossThin"));
-//		}).
-//		delegate("img.closeTab", "mouseout", function(){
-//			$(this).attr("src", Yasgui.constants.imgs.crossThin);
-//		});
 	};
 	
 	var closeTab = function(panelId, store) {
-//		console.log("removing id " + panelId);
 		$('a[href="#' + panelId + '"]').closest("li").remove().attr("aria-controls");
 		//remove content from dom
 		$("#" + panelId).remove();
@@ -153,7 +124,6 @@ $(function() {
 		
 		//recheck our selected tab
 		Yasgui.settings.selectedTabKey = getSelectedTabFromDom();
-//		console.log("new selected tab: " + Yasgui.settings.selectedTabKey);
 		if (store) Yasgui.settings.store();
 	};
 	var closeOtherTabs = function(tabId) {
@@ -181,8 +151,6 @@ $(function() {
 			event.stopPropagation(); //otherwise, the rename tab click handler is fired
 			$("#" + menuSelector).hide();
 			renameTab(tabId);
-			
-//			$("#" + menuSelector).hide();
 		});
 		$("#closeTab").click(function() {
 			closeTab(tabId, true);
@@ -212,13 +180,6 @@ $(function() {
 			of : event
 		}).show();
 		dismissOnOutsideClick(menuSelector, function(){$("#" + menuSelector).hide();});
-//		$(document).on("click." + menuSelector, function(event) {
-//		    if(!$(event.target).parents().andSelf().is("#" + menuSelector)) {
-//		    		$("#" + menuSelector).hide();
-//		    		//remove this listener to avoid garbage
-//		    		$(document).off("click." + menuSelector);
-//			}
-//		});
 	};
 	
 	var updateSortedTabsInSettings = function() {
@@ -259,10 +220,7 @@ $(function() {
 	};
 	
 	var getCloseButton = function() {
-//		return "<span class='ui-icon ui-icon-close' role='presentation'>Remove Tab</span>";
 		return "<span class='closeTab'>&nbsp;</span>";
-//		return "<img class='closeTab' src='" + Yasgui.constants.imgs.crossThin +  "'>";
-//		return "";
 	};
 	
 	var addTab = function(tabSettings, store) {
@@ -273,19 +231,13 @@ $(function() {
 		} else {
 			id = tabSettings.id;
 		}
-//		console.log("new tab id: " + id);
 		var label = tabSettings.tabTitle,
 				li = $(tabTemplate = "<li style='vertical-align:middle;'><a href='#" + id + "'>" + label + getCloseButton() + "</a></li>");
 		tabSettings.id = id;
 		tabs.find(".ui-tabs-nav").append(li);
 		var tabContent = $("<div id='" + id + "'></div>");
-//		$('#bottom').position().top+$('#bottom').outerHeight(true)
-//		console.log("adding tab content with event handler");
-//		tabContent.on("show", function(){console.log("loaded!");});
-//		
 		tabs.append(tabContent);;
 		tabs.tabs("refresh");
-//		tabContent.css("margin-top", ( $("#tabs").outerHeight(true)) + "px");
 		tabCounter++;
 		
 		//make sure our 'add tab' button is last!
@@ -320,7 +272,6 @@ $(function() {
 			} else if (e.keyCode == 13) {
 				// enter
 				replaceName(tabId, $("#new_tab_name"), $("#new_tab_name").val());
-//				Yasgui.settings.getSelectedTab().tabTitle = $("#new_tab_name").val();
 			} else if (e.keyCode == 27) {
 				// escape
 				replaceName(tabId, $("#new_tab_name"), oldName);
@@ -330,7 +281,6 @@ $(function() {
 			var target = e.target.id;
 			if (target != 'new_tab_name') {
 				replaceName(tabId, $("#new_tab_name"), $("#new_tab_name").val());
-//				Yasgui.settings.getSelectedTab().tabTitle = $("#new_tab_name").val();
 				$("body").off("click.tabnamedit");
 			}
 		});
@@ -362,7 +312,6 @@ $(function() {
 		var tabId = null;
 		if (selectedTabSettings == null || !tabIdExists(selectedTabSettings.id)) {
 			//select first tab item
-//			var firstTabId = undefined;
 			if (Yasgui.settings.tabs.length > 0 && Yasgui.settings.tabs[0].id != undefined) {
 				tabId = Yasgui.settings.tabs[0].id;
 			}
@@ -380,15 +329,11 @@ $(function() {
 		
 	};
 	var getTabKeyFromId = function(id) {
-//		console.log("getting tab from id: " + id);
 		for (var key = 0; key < Yasgui.settings.tabs.length; key++) {
 			if (Yasgui.settings.tabs[key].id == id) {
-//				console.log("found!: " + key);
 				return key;
 			}
 		}
-//		console.log(Yasgui.settings.tabs);
-//		console.log("result: null");
 		return null;
 	};
 	

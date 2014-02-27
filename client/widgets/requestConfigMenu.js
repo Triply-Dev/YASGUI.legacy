@@ -8,9 +8,11 @@
 		var menu;
 		var drawButton = function() {
 			menuButton = $('<button class="configRequestButton">Configure Request</button>');
-			menuButton.height("100%");
-			menuButton.button();
-			
+//			
+//			menuButton.css("height", "100%");
+			menuButton.height(33).button();
+//			menuButton.height("100%");
+//			menuButton.height(parent.parent().prev().outerHeight());
 			menuButton.on("click", drawMenu);
 			parent.append(menuButton);
 		};
@@ -21,6 +23,7 @@
 				menu.remove();
 				menu = null;
 			}
+			menuButton.blur();
 		}
 		var editQueryParameters = function() {
 			console.log("todo: edit query params");

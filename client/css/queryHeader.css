@@ -1,0 +1,31 @@
+
+.queryHeader {
+	position:fixed;
+	height: 37px;
+/* 	margin-left: 4px; */
+/* 	margin-bottom: 10px; */
+	width: 100%;
+	background: white;
+	z-index: 10;
+	display: inline-block;
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0;
+    overflow: hidden;
+/*     text-align: center; */
+/*     font-size: 20px; */
+/*     color: white; */
+/*     padding: 0px; */
+/*     margin-top: 0px; */
+/*     width: 65%; */
+/* 	position: relative; */
+}
+.queryHeader li {
+	display: inline;
+	margin-left: 3px;
+	height: 37px;
+}
+
+.configRequestButton {
+	height: 100%;
+}

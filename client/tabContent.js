@@ -16,15 +16,14 @@ var TabContent = function(tabSettings) {
 	
 	var positionElements = function() {
 		queryHeader.positionElement();
-//		console.log("settings scrollable content margin-top to " + queryHeader.get().outerHeight());
-//		scrollableSubContent.css("margin-top", (queryHeader.get().outerHeight()) + "px"); 
 		scrollableSubContent.css("margin-top", ($("#tabs").outerHeight(true) + queryHeader.get().outerHeight(true)) + "px"); 
 	};
 	positionElements();
 	return {
 		cm: codemirror,
 		queryHeader: queryHeader,
-		results: results
+		results: results,
+		positionElements: positionElements
 	};
 };
 Yasgui.objs.TabContent = TabContent;

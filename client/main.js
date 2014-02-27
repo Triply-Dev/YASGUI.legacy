@@ -10,6 +10,14 @@ Yasgui.settings = new Yasgui.objs.Settings();
 Yasgui.prefixes = new Yasgui.objs.Prefixes();
 Yasgui.endpoints = new Yasgui.objs.Endpoints();
 Session.set("queryStatus", "query");//on page load, reset our query status (there can't be any running queries anyway)
+
+//Register handlers
+window.onresize = function() {
+   Yasgui.tabs.positionElements();
+};
+
+
+
 //Meteor.startup(function() {
 //	Meteor.call("forcePrefixUpdate", function(errorMsg, result){
 //		if (result == undefined) {

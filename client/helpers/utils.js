@@ -1,3 +1,6 @@
+/**
+ * Generic utils
+ */
 (function(){
 
 	// a convenience function for parsing string namespaces and 
@@ -102,5 +105,5 @@
 		try {
 			delete jsonObj[key];
 		} catch(e){}
-	}
+	};
 }).call(this);
