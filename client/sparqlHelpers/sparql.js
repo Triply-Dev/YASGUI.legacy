@@ -118,12 +118,16 @@
 					if (error) {
 						console.log("error1");
 						console.log(error);
-						Yasgui.errors.draw(getHtmlAsText(error.message));
+						Yasgui.widgets.errorDialog({
+							content: getHtmlAsText(error.message)
+						});
 					} else if (result.error) {
 						console.log("result error");
 						console.log(result.message);
 						
-						Yasgui.errors.draw(getHtmlAsText(result.message));
+						Yasgui.widgets.errorDialog({
+							content: getHtmlAsText(result.message)
+						});
 					} else {
 						var parser = Yasgui.parsers.SparqlParserFactory(result.content);
 						Yasgui.tabs[tabSettings.id].results.drawContent(parser);

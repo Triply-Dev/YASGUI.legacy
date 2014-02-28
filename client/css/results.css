@@ -12,7 +12,7 @@
 }
 
 .dataTables_wrapper {
-	margin-top: -25px;
+	top: -25px;
 	z-index: 4;
 }
 
