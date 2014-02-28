@@ -20,9 +20,10 @@ var Errors = function() {
 		var el = getElement(errorMsg, title);
 		el.dialog({
 			closeOnEscape: true,
-			height: 'auto'
+			height: 'auto',
+			position: 'center'
 		}).dialog("open");
-		//add event handler on -complete- error obj (i.e. use class name)
+		//add event handler on -complete- error dialog (i.e. use class name)
 		dismissOnOutsideClick(".ui-dialog-titlebar", function(){$("#" + id).dialog("close");});
 	};
 	
