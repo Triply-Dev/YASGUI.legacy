@@ -93,7 +93,7 @@ $(function() {
 					}
 				});
 		$('#addTab').on('click', function() {
-			var tabSettings = addTab(Yasgui.settings.defaultTabSettings, true);
+			var tabSettings = addTab(jQuery.extend(true, {}, Yasgui.settings.defaultTabSettings), true);
 			selectTabFromId(tabSettings.id);
 		});
 		
@@ -108,10 +108,11 @@ $(function() {
 	
 	var closeTab = function(panelId, store) {
 		$('a[href="#' + panelId + '"]').closest("li").remove().attr("aria-controls");
-		//remove content from dom
-		$("#" + panelId).remove();
+		
 		//remove from settings
 		Yasgui.settings.tabs.splice(getTabKeyFromId(panelId), 1);
+		//remove content from dom
+		$("#" + panelId).remove();
 		tabs.tabs("refresh");
 		
 
@@ -128,9 +129,11 @@ $(function() {
 	};
 	var closeOtherTabs = function(tabId) {
 		$("#tabs a").each(function() {
-			var currentTabId = $(this).attr("href").substring(1);
-			if (currentTabId != tabId) {
-				closeTab($(this).attr("href").substring(1));
+			if($(this).attr("href")) {
+				var currentTabId = $(this).attr("href").substring(1);
+				if (currentTabId != tabId) {
+					closeTab($(this).attr("href").substring(1));
+				}
 			}
 		});
 		Yasgui.settings.store();
@@ -157,6 +160,7 @@ $(function() {
 			$("#" + menuSelector).hide();
 		});
 		$("#closeOtherTabs").click(function() {
+			console.log("close other than", tabId);
 			closeOtherTabs(tabId, true);
 			$("#" + menuSelector).hide();
 		});
@@ -185,7 +189,9 @@ $(function() {
 	var updateSortedTabsInSettings = function() {
 		var tabIds = [], newTabSettingsArray = [];
 		$(tabSetSelector + " a").each(function() {
-			tabIds.push($(this).attr('href').substring(1)); //remove final #
+			if ($(this).attr('href')) {
+				tabIds.push($(this).attr('href').substring(1)); //remove final #
+			}
 		});
 		var tabSettingsArray = Yasgui.settings.tabs;
 		
@@ -250,7 +256,6 @@ $(function() {
 		return (newTitle? newTitle: defaultTabTitle);
 	};
 	var addTab = function(tabSettings, newlyCreatedTab) {
-//		tabSettings = jQuery.extend(true, {}, tabSettings);
 		var id;
 		if (tabSettings.id == undefined || tabIdExists(tabSettings.id)) {
 			id = getValidNewId();
@@ -260,7 +265,7 @@ $(function() {
 		}
 		
 		
-		var tabTitle = (newlyCreatedTab? getNewTabTitle(tabSettings.tabTitle): tabSettings.tabTitle),
+		var tabTitle = (newlyCreatedTab? getNewTabTitle(Yasgui.settings.defaultTabSettings.tabTitle): tabSettings.tabTitle),
 				li = $(tabTemplate = "<li style='vertical-align:middle;'><a href='#" + id + "'>" + tabTitle + getCloseButton() + "</a></li>");
 		tabSettings.id = id;
 		tabSettings.tabTitle = tabTitle;
