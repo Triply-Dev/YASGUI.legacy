@@ -14,15 +14,6 @@ var Errors = function() {
 		return el;
 	};
 	
-//	var dismissOnOutsideClick = function() {
-//		$(document).on("click." + id, function(event) {
-//		    if(!$(event.target).parents().andSelf().is("#" + id)) {
-//		    		$("#" + id).dialog("close");
-//		    		//remove this listener to avoid garbage
-//		    		$(document).off("click." + id);
-//			}
-//		});
-//	};
 	
 	var drawError = function(errorMsg, title){
 		if (!title) title = "Error";
@@ -31,11 +22,12 @@ var Errors = function() {
 			closeOnEscape: true,
 			height: 'auto'
 		}).dialog("open");
-		dismissOnOutsideClick(id, function(){$("#" + id).dialog("close");});
+		//add event handler on -complete- error obj (i.e. use class name)
+		dismissOnOutsideClick(".ui-dialog-titlebar", function(){$("#" + id).dialog("close");});
 	};
 	
 	return {
-		draw: drawError,
+		draw: drawError
 	};
 };
 Yasgui.errors = new Errors();

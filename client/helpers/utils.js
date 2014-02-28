@@ -87,12 +87,13 @@
 	        return result;
 	    };
 	};
-	this.dismissOnOutsideClick = function(elementId, callback) {
-		$(document).on("mousedown." + elementId, function(event) {
-		    if(!$(event.target).parents().andSelf().is("#" + elementId)) {
+	this.dismissOnOutsideClick = function(selector, callback) {
+		var eventIdentifier = "mousedown." + selector.substring(1);
+		$(document).on(eventIdentifier, function(event) {
+		    if(!$(event.target).parents().andSelf().is(selector)) {
 		    		callback();
 		    		//remove this listener to avoid garbage
-		    		$(document).off("click." + elementId);
+		    		$(document).off(eventIdentifier);
 			}
 		});
 	};

@@ -101,7 +101,12 @@ html, body {
 /* 	height:34px;width:48px; */
 }
 .configRequestButton{
-	top: -1px;
+	top: 2px;
+	margin-left: 0;
+}
+.queryHeader li .configRequestButton span{
+	padding-top: 3px;
+	padding-bottom: 3px;
 }
 .queryIcon {
 /* 	display: inline-block; */

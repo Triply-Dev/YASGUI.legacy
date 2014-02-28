@@ -10,7 +10,7 @@
 			menuButton = $('<button class="configRequestButton">Configure Request</button>');
 //			
 //			menuButton.css("height", "100%");
-			menuButton.height(33).button();
+			menuButton.height(26).button();
 //			menuButton.height("100%");
 //			menuButton.height(parent.parent().prev().outerHeight());
 			menuButton.on("click", drawMenu);
@@ -115,7 +115,7 @@
 				of: menuButton,
 				collision: "none",
 			}).menu();
-			dismissOnOutsideClick('requestConfigMenu', destroy);
+			dismissOnOutsideClick('#requestConfigMenu', destroy);
 			return false;
 		};
 		

@@ -183,7 +183,7 @@ $(function() {
 			my : "left top",
 			of : event
 		}).show();
-		dismissOnOutsideClick(menuSelector, function(){$("#" + menuSelector).hide();});
+		dismissOnOutsideClick("#" + menuSelector, function(){$("#" + menuSelector).hide();});
 	};
 	
 	var updateSortedTabsInSettings = function() {
