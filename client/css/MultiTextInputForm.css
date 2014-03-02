@@ -1,0 +1,40 @@
+.multiTextInputTable {
+	width: 100%;
+}
+.multiTextInputTable tr{
+	margin: 5px 0;
+}
+.multiTextInputTable td, .multiTextInputTable th{
+	padding: 0 5px;
+}
+.multiTextInputIntro {
+	margin: 5px;
+}
+.multiTextInputTable .iconCell{
+	width: 15px;
+}
+
+.multiTextInputTable input {
+	width: 100%;
+}
+
+
+.addTableRow.ui-button-icon-primary.ui-icon {
+	background-image: url('/images/nounproject/plus.png');
+}
+.addTableRow.ui-button-icon-primary.ui-icon:hover {
+	background-image: url('/images/nounproject/plus_white.png');
+}
+.delTableRow.ui-button-icon-primary.ui-icon, .addTableRow.ui-button-icon-primary.ui-icon {
+	height: 13px;
+	width: 13px;
+	margin: 0px;
+	top: 1px;
+	left: 1px;
+}
+.delTableRow.ui-button-icon-primary.ui-icon {
+	background-image: url('/images/nounproject/crossSmall.png');
+}
+.delTableRow.ui-button-icon-primary.ui-icon:hover {
+	background-image: url('/images/nounproject/crossSmall_white.png');
+}

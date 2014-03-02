@@ -41,20 +41,13 @@ var QueryResults = function(parent, tabSettings) {
 		});
 	};
 	
-//	var drawDownloadLink = function() {
-//		downloadLink = $('<a id="downloadLink"><img class="downloadIcon"></a>');
-//		header.append(downloadLink);
-//		updateDownloadIcon();
-//	};
 	var drawHeader = function() {
 		drawOutputSelector();
 		downloadIcon = Yasgui.widgets.DownloadIcon(header, tabSettings);
-//		drawDownloadLink();
 	};
 	var drawTable = function() {
 		if (results != null) {
 			downloadIcon.update(results);
-//			updateDownloadIcon();
 			content.html("");
 			Yasgui.widgets.ResultsTable(content, results);
 		}

@@ -8,25 +8,70 @@
 		var menu;
 		var drawButton = function() {
 			menuButton = $('<button class="configRequestButton">Configure Request</button>');
-//			
-//			menuButton.css("height", "100%");
 			menuButton.height(26).button();
-//			menuButton.height("100%");
-//			menuButton.height(parent.parent().prev().outerHeight());
 			menuButton.on("click", drawMenu);
 			parent.append(menuButton);
 		};
 		
 		var destroy = function() {
 			if (menu) {
-				console.log("destroying");
 				menu.remove();
 				menu = null;
 			}
 			menuButton.blur();
-		}
+		};
+		
+		/**
+		 * [{ name: "first", value: "Rick" }] ----> [['first','Rick']]
+		 */
+		var getNameValuePairsAsArray = function(nameValuePairs) {
+			if (!nameValuePairs) nameValuePairs = [];
+			var array = [];
+			for (var i = 0; i < nameValuePairs.length; i++) {
+				var nameValuePair = nameValuePairs[i];
+				array.push([nameValuePair.name, nameValuePair.value]);
+			}
+			return array;
+		};
+		
+		/**
+		 * [['first','Rick']] ----> [{ name: "first", value: "Rick" }]
+		 */
+		var getArrayAsNameValuePairs = function(arrays) {
+			if (!arrays) arrays = [];
+			var nameValuePairs = [];
+			for (var i = 0; i < arrays.length; i++) {
+				var array = arrays[i];
+				nameValuePairs.push({name: array[0], value: array[1]});
+			}
+			return nameValuePairs;
+		};
+		
+		
 		var editQueryParameters = function() {
-			console.log("todo: edit query params");
+			var inputForm = new Yasgui.widgets.MultiTextInputForm({
+				allowDel: true,
+				allowNew: true,
+				maxCols: 2,
+				headers: ["key", "value"],
+				values: getNameValuePairsAsArray(Yasgui.settings.getSelectedTab().params),
+				intro: "Manually specify query parameters below. Use this for those triple stores supporting additional parameters, such as <a href='http://4store.org/' target='_blank'>4-store</a> which allows you to specify a <a href='http://4store.org/trac/wiki/Query' target='_blank'>'soft limit'</a> in your request",
+				requiredCols: [0]
+				
+			});
+			Yasgui.widgets.dialog({
+				title: "Specify query parameters",
+				id: 'editQueryParam',
+				width: 600,
+				height: 300,
+				position: 'right-10 bottom+10',
+//				content: "blaat"
+				content: inputForm.getElement(),
+				onClose: function() {
+					Yasgui.settings.getSelectedTab().params = getArrayAsNameValuePairs(inputForm.getValues());
+					Yasgui.settings.store();
+				}
+			});
 			destroy();
 		};
 		var editQueryHeaders = function() {
