@@ -23,6 +23,10 @@ var Settings = function() {
 		//We want to overwrite the allowedFeatures! Our server config (i.e. the clientConfig file), might have changed after the previous user session
 		settings.allowedFeatures = clientSettings.allowedFeatures;
 		
+		
+		//TODO: improve this (changes in clientsettings files do not get loaded when settings are retrieved from local storage)
+		settings.defaultBrowsingTemplate = clientSettings.defaultBrowsingTemplate;
+		
 		//if 'enabledFeatures' does not exist, then copy the allowedFeatures. 
 		//all enabledFeatures is, is a user-changeable version of the 'allowedFeatures'
 		if (settings.enabledFeatures == undefined) settings.enabledFeatures = settings.allowedFeatures;

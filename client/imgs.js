@@ -29,7 +29,8 @@ var Imgs = function() {
 		checkMark: new Img("images/nounproject/checkMark.png"),
 		cross: new Img("images/nounproject/cross.png"),
 		crossSmall: new Img("images/nounproject/crossSmall.png"),
-		crossSmall: new Img("images/nounproject/plus.png"),
+		plus: new Img("images/nounproject/plus.png"),
+		externalLink: new Img("images/nounproject/externalLink.png"),
 		yasguiLogo: new Img("images/logos/yasgui.png")
 		
 	};

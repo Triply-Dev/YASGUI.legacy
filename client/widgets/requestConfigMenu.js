@@ -196,7 +196,6 @@
 				selectAcceptHeadersSubMenu.append(
 						$("<li><a href='#'>" + icon  + acceptHeader.name + "</a></li>")
 							.on("click", function(){
-								console.log("setting to ", acceptHeader.header);
 								tabSettings.contentTypeSelect = acceptHeader.header;
 								destroy();
 						})

@@ -4,6 +4,7 @@
 	
 	
 	this.Yasgui.widgets.ResultsTable = function(container, resultsParser) {
+		var table;
 		var getVariablesAsCols = function() {
 			var cols = [];
 			cols.push({"sTitle": ""});//row numbers
@@ -14,9 +15,17 @@
 			return cols;
 		};
 		
+		var getFormattedValueFromBinding = function(binding) {
+			var value = null;
+			if (binding.type == "uri") {
+				value = "<a class='snorqlLink' href='#'>" + binding.value + "</a>";
+			} else {
+				value = "<span class='regularValue'>" + binding.value + "</span>";
+			}
+			return value;
+		};
 		var getRows = function() {
 			var rows = [];
-			
 			var bindings = resultsParser.getBindings();
 			var vars = resultsParser.getVariables();
 			for (var rowId = 0; rowId < bindings.length; rowId++) {
@@ -26,7 +35,7 @@
 				for (var colId = 0; colId < vars.length; colId++) {
 					var sparqlVar = vars[colId];
 					if (sparqlVar in binding) {
-						row.push(binding[sparqlVar].value);
+						row.push(getFormattedValueFromBinding(binding[sparqlVar]));
 					} else {
 						row.push("");
 					}
@@ -36,8 +45,42 @@
 			return rows;
 		};
 		
+		var getExternalLinkElement = function() {
+			var element = $("#externalLink");
+			if (element.length == 0) {
+				element = $("<img id='externalLink' src='" + Yasgui.constants.imgs.externalLink.get() + "'></img>")
+					.on("click", function(){
+						window.open($(this).parent().text());
+					});
+			}
+			return element;
+		};
+		
+		var executeSnorqlQuery = function(uri) {
+			var newQuery = Yasgui.settings.defaultBrowsingTemplate;
+			newQuery = newQuery.replace(/<URI>/g, "<" + uri + ">");
+			Yasgui.settings.getSelectedTab().query = newQuery;
+			Yasgui.tabs.getCurrentTab().cm.reloadFromSettings();
+			Yasgui.sparql.query();
+		};
+		var addEvents = function() {
+			table.delegate(".snorqlLink", "click", function() {
+				executeSnorqlQuery(this.innerHTML);
+				return false;
+			});
+			
+			
+			table.delegate("td",'mouseenter', function(event) {
+				var extLinkElement = getExternalLinkElement();
+				$(this).append(extLinkElement);
+				extLinkElement.css("top", ($(this).height() - extLinkElement.height() / 2)); 
+				extLinkElement.show();
+			}).delegate("td",'mouseleave', function(event) {
+				getExternalLinkElement().hide();
+			});
+		};
 		var draw = function() {
-			var table = $('<table cellpadding="0" cellspacing="0" border="0" class="resultsTable"></table>');
+			table = $('<table cellpadding="0" cellspacing="0" border="0" class="resultsTable"></table>');
 			$(container).html( table );
 			table.dataTable( {
 		    	"iDisplayLength": 50,
@@ -45,29 +88,7 @@
 		    	"bLengthChange": true,
 		    	"sPaginationType": "full_numbers",
 		        "aaData": getRows(),
-//		        	[
-//		            /* Reduced data set */
-//		            [ "Trident", "Internet Explorer 4.0", "Win 95+", 4, "X" ],
-//		            [ "Trident", "Internet Explorer 5.0", "Win 95+", 5, "C" ],
-//		            [ "Trident", "Internet Explorer 5.5", "Win 95+", 5.5, "A" ],
-//		            [ "Trident", "Internet Explorer 6.0", "Win 98+", 6, "A" ],
-//		            [ "Trident", "Internet Explorer 7.0", "Win XP SP2+", 7, "A" ],
-//		            [ "Gecko", "Firefox 1.5", "Win 98+ / OSX.2+", 1.8, "A" ],
-//		            [ "Gecko", "Firefox 2", "Win 98+ / OSX.2+", 1.8, "A" ],
-//		            [ "Gecko", "Firefox 3", "Win 2k+ / OSX.3+", 1.9, "A" ],
-//		            [ "Webkit", "Safari 1.2", "OSX.3", 125.5, "A" ],
-//		            [ "Webkit", "Safari 1.3", "OSX.3", 312.8, "A" ],
-//		            [ "Webkit", "Safari 2.0", "OSX.4+", 419.3, "A" ],
-//		            [ "Webkit", "Safari 3.0", "OSX.4+", 522.1, "A" ]
-//		        ],
 		        "aoColumns": getVariablesAsCols(),
-//		        	[
-//		            { "sTitle": "Engine" },
-//		            { "sTitle": "Browser" },
-//		            { "sTitle": "Platform" },
-//		            { "sTitle": "Version", "sClass": "center" },
-//		            { "sTitle": "Grade", "sClass": "center" }
-//		        ]
 		        "fnDrawCallback": function ( oSettings ) {
 					for ( var i = 0; i < oSettings.aiDisplay.length; i++) {
 						$('td:eq(0)',oSettings.aoData[oSettings.aiDisplay[i]].nTr).html(i + 1);
@@ -76,8 +97,8 @@
 				"aoColumnDefs": [
 					{ "sWidth": "12px", "bSortable": false, "aTargets": [ 0 ] }
 				],
-				//"aaSorting": [[ 1, 'asc' ]]
 		    } ); 
+			addEvents();
 		};
 		draw();
 		

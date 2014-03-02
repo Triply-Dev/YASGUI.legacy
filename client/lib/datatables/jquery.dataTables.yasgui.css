@@ -3,6 +3,7 @@ table.dataTable thead th {
 	color: white;
 }
 
+
 .dataTables_filter{
 	display: none;
 }
@@ -22,4 +23,10 @@ table.dataTable thead th {
 }
 .sorting_desc {
 	background: url('/images/nounproject/arrowDown_white.png') no-repeat center right;
+}
+
+table.dataTable td {
+	vertical-align: middle;
+	padding: 7px;
+	position:relative;
 }

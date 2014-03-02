@@ -338,7 +338,7 @@ $(function() {
 		return $('#tabs .ui-tabs-active').index();
 	};
 	var selectTabFromId = function(tabId) {
-		var tabIndex = $('#tabs a[href="#' + tabId + '"').parent().index();
+		var tabIndex = $('#tabs a[href="#' + tabId + '"]').parent().index();
 		$(tabSetSelector).tabs("option", "active", tabIndex);
 	};
 	

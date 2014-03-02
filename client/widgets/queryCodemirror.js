@@ -124,6 +124,9 @@
 //			}
 		};
 		
+		var reloadFromSettings = function() {
+			codemirror.setValue(tabSettings.query);
+		};
 		var storeInSettings = function() {
 			tabSettings.query = codemirror.getValue();
 			Yasgui.settings.store();
@@ -134,7 +137,8 @@
 			getQueryType: getQueryType,
 			cm: codemirror,
 			check: checkSyntax,
-			storeInSettings: storeInSettings
+			storeInSettings: storeInSettings,
+			reloadFromSettings: reloadFromSettings
 		};
 	};
 }).call(this);

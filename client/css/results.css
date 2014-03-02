@@ -29,3 +29,18 @@
 .ui-state-disabled.outputSelector {
 	opacity: 0.55;
 }
+
+td a.snorqlLink {
+	color:blue;
+}
+#externalLink {
+	cursor:pointer;
+	position:absolute;
+	top: 0px;
+	right: 4px;
+	height: 18px;
+	width: 18px;
+}
+.regularValue {
+	
+}

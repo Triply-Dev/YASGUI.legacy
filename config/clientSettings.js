@@ -14,6 +14,7 @@ clientSettings = {
 		"namedGraphs": [],
 		"defaultGraphs": []
 	},
+	"defaultBrowsingTemplate": "SELECT ?property ?hasValue ?isValueOf\nWHERE {\t{ <URI> ?property ?hasValue\t}\nUNION\t{ ?isValueOf ?property <URI> }\n}",
 	"allowedFeatures": {
 		"endpointSelection": true,
 		"queryParameters": true,

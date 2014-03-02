@@ -54,7 +54,6 @@ var QueryResults = function(parent, tabSettings) {
 		}
 	};
 	var drawRawResponse = function() {
-		console.log("drawing raw response");
 		if (results != null) {
 			downloadIcon.update(results);
 			content.html("");
@@ -93,7 +92,6 @@ var QueryResults = function(parent, tabSettings) {
 		if (tableOutputEnabled !== enabled) {
 			tableOutputEnabled = enabled;
 			outputSelector.buttonset("option", "disabled", !tableOutputEnabled);
-//			console.log("table output", enabled);
 		}
 	};
 	
@@ -102,7 +100,6 @@ var QueryResults = function(parent, tabSettings) {
 		drawContent: drawContent,
 		clearResults: clearResults,
 		setTableOutputEnabled: setTableOutputEnabled
-//		check: checkSyntax
 	};
 };
 Yasgui.objs.QueryResults = QueryResults;
