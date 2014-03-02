@@ -34,13 +34,24 @@
 		
 		
 		var draw = function(){
+			console.log(config);
+//			var el = getElement();
+//			el.dialog({
+//				closeOnEscape: true,
+////				height: 'auto',
+//				height: options.height || 'auto',
+//				width: options.width || 'auto',
+//			}).dialog("open").dialog('widget').position(config.position || 'center');
+//			console.log(config.position || 'center');
+			
+			
 			var el = getElement();
 			el.dialog({
 				closeOnEscape: true,
 //				height: 'auto',
 				height: options.height || 'auto',
 				width: options.width || 'auto',
-				position: config.position || 'center'
+				position: options.position || 'center'
 			}).dialog("open");
 			//add event handler on -complete- error dialog (i.e. use class name)
 			dismissOnOutsideClick(".ui-dialog", function() {

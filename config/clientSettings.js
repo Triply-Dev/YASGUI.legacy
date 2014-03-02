@@ -10,7 +10,9 @@ clientSettings = {
 		"outputFormat": "table",
 		"requestMethod": "POST",
 		"params": [],//[{ name: "first", value: "Rick" }] (used to be 'extraArgs'
-		"headers": []
+		"headers": {},
+		"namedGraphs": [],
+		"defaultGraphs": []
 	},
 	"allowedFeatures": {
 		"endpointSelection": true,

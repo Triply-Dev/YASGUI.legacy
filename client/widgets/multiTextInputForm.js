@@ -15,7 +15,7 @@
 	 * @returns
 	 */
 	this.Yasgui.widgets.MultiTextInputForm = function(config) {
-		var maxCols = config.maxCols || 1;
+		var cols = config.cols || 1;
 		var requiredCols = config.requiredCols || [];
 		var mainElement = $("<div class='multiTextInputDiv'></div>");
 		var values = config.values || [];
@@ -24,7 +24,7 @@
 			rowArray = rowArray || [];
 			var rowEl = $("<tr></tr>");
 			
-			for (var  colIt = 0; colIt < maxCols; colIt++) {
+			for (var  colIt = 0; colIt < cols; colIt++) {
 				var val = rowArray[colIt] || "";
 				rowEl.append($("<td></td>").append($("<input type='text'>").val(val)));
 			}
@@ -85,7 +85,6 @@
 				var colIt = 0;
 				var addRow = true;
 				$(row).find("input").each(function(colKey, cell) {
-					console.log(colIt);
 					if ($.inArray(colIt, requiredCols) !== -1) {
 						//we need to check whether this value is filled in!
 						if (!$(cell).val() || $(cell).val().length == 0) {
@@ -100,7 +99,6 @@
 					values.push(rowVals);
 				}
 			});
-			console.log(values);
 			return values;
 		};
 		
