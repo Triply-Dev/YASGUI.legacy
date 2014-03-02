@@ -82,8 +82,76 @@
 			return acceptHeader + ",*/*;q=0.9";
 		};
 		
+		var getHeaders = function(tabSettings) {
+			var headers = {
+					Accept: getAcceptHeader(tabSettings)
+			};
+			var customHeaders = tabSettings.headers || {};
+			$.extend(headers, customHeaders);
+			
+			return headers;
+			
+		};
+		
+		var getParams = function(tabSettings) {
+			var params = [{ name: "query", value: tabSettings.query }];
+			var customParams = tabSettings.params || [];
+			$.merge(params, customParams);
+			if (tabSettings.defaultGraphs) {
+				for (var i = 0; i < tabSettings.defaultGraphs.length; i++) {
+					params.push({name: "default-graph-uri", value: tabSettings.defaultGraphs[i]});
+				}
+			}
+			if (tabSettings.namedGraphs) {
+				for (var i = 0; i < tabSettings.namedGraphs.length; i++) {
+					params.push({name: "named-graph-uri", value: tabSettings.namedGraphs[i]});
+				}
+			}
+			return params;
+		};
 		
 		var query = function(tabSettings) {
+			var callback = function(error, result) {
+				console.log(executedQueries);
+				if (executionId in executedQueries) {
+					deleteKey(executedQueries, executionId);
+					if (error) {
+						console.log("error1");
+						console.log(error);
+						console.log(result);
+//						console.log(error.message.replace(/\n/g, '<br/>'));
+						onQueryError(error.message);
+					} else if (result.error) {
+						console.log("result error");
+						console.log(result.message);
+						
+						onQueryError(result.message);
+					} else {
+						var parser = Yasgui.parsers.SparqlParserFactory(result.content);
+						Yasgui.tabs[tabSettings.id].results.drawContent(parser);
+					}
+					Yasgui.tabs[tabSettings.id].cm.check();
+				} else {
+					console.log("cancelled query!");
+				}
+			};
+			var onQueryError = function(errorMsg) {
+				var content = $("<div></div>");
+				
+				content.append($("<div></div>").html(errorMsg));
+				
+				var openQuery = $("<button>Open query in new window</button>")
+					.on("click", function(){
+						window.open(tabSettings.endpoint + "?" + paramsString);
+					})
+					.button();
+				content.append($("<div style='margin-top: 10px;text-align: center; width: 100%'></div>").append(openQuery));
+				Yasgui.widgets.errorDialog({
+					content: content,
+					title: "Error Executing Query"
+				});
+			};
+			
 			Yasgui.tabs.getCurrentTab().cm.storeInSettings();
 			if (tabSettings == undefined) {
 				tabSettings = Yasgui.settings.getSelectedTab();
@@ -97,46 +165,19 @@
 			
 			
 			var options = {
-					
-					headers: {
-						Accept: getAcceptHeader(tabSettings)
-					}
+					headers: getHeaders(tabSettings)
 				};
-			var args = [{ name: "query", value: tabSettings.query }];
-			var argsString = $.param(args);
+			
+			var paramsString = $.param(getParams(tabSettings));
 			if (method == "GET") {
-				options.query = argsString;
+				options.query = paramsString;
 			} else {
-				options.content = argsString;
+				options.content = paramsString;
 				options.headers['Content-Type'] = "application/x-www-form-urlencoded";
 			}
+//			return;
+//			console.log(options);
 			
-			var callback = function(error, result) {
-				console.log(executedQueries);
-				if (executionId in executedQueries) {
-					deleteKey(executedQueries, executionId);
-					if (error) {
-						console.log("error1");
-						console.log(error);
-						Yasgui.widgets.errorDialog({
-							content: getHtmlAsText(error.message)
-						});
-					} else if (result.error) {
-						console.log("result error");
-						console.log(result.message);
-						
-						Yasgui.widgets.errorDialog({
-							content: getHtmlAsText(result.message)
-						});
-					} else {
-						var parser = Yasgui.parsers.SparqlParserFactory(result.content);
-						Yasgui.tabs[tabSettings.id].results.drawContent(parser);
-					}
-					Yasgui.tabs[tabSettings.id].cm.check();
-				} else {
-					console.log("cancelled query!");
-				}
-			};
 			try {
 				if (corsEnabled[endpoint]) {
 					console.log("cors enabled");

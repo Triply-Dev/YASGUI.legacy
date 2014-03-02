@@ -17,7 +17,12 @@
 		};
 	};
 	this.getHtmlAsText = function(htmlString) {
-		return $('<i>').html(htmlString).text();
+		var cleanedString = htmlString;
+		if (htmlString.trim().startsWith("<")) {
+			cleanedString = $('<i>').html(htmlString).text();
+		}
+		
+		return cleanedString;
 	};
 	
 	
