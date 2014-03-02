@@ -112,7 +112,6 @@
 		
 		var query = function(tabSettings) {
 			var callback = function(error, result) {
-				console.log(executedQueries);
 				if (executionId in executedQueries) {
 					deleteKey(executedQueries, executionId);
 					if (error) {
@@ -127,7 +126,7 @@
 						
 						onQueryError(result.message);
 					} else {
-						var parser = Yasgui.parsers.SparqlParserFactory(result.content);
+						var parser = Yasgui.parsers.SparqlParserFactory(result);
 						Yasgui.tabs[tabSettings.id].results.drawContent(parser);
 					}
 					Yasgui.tabs[tabSettings.id].cm.check();
@@ -180,7 +179,6 @@
 			
 			try {
 				if (corsEnabled[endpoint]) {
-					console.log("cors enabled");
 					HTTP.call(method, endpoint, options, callback);
 				} else {
 					Meteor.call("query", method, endpoint, options, callback);

@@ -54,8 +54,7 @@
 			return actualResponseString;
 		};
 		
-		var getContentType = function() {
-			console.log("todo: getting content type from parser");
+		var getCmMode = function() {
 			return "xml";
 		};
 		return {
@@ -63,7 +62,7 @@
 			getBindings: getBindings,
 			getBoolean: getBoolean,
 			getResponse: getResponse,
-			getContentType: getContentType
+			getCmMode: getCmMode
 		};
 	};
 	

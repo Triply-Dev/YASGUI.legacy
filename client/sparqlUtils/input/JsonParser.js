@@ -31,16 +31,18 @@
 			return actualResponseString;
 		};
 		
-		var getContentType = function() {
-			console.log("todo: getting content type from parser");
-			return "json";
+		var getCmMode = function() {
+			return {
+				name: "javascript",
+				json: true
+			};
 		};
 		return {
 			getVariables: getVariables,
 			getBindings: getBindings,
 			getBoolean: getBoolean,
 			getResponse: getResponse,
-			getContentType: getContentType
+			getCmMode: getCmMode
 		};
 	};
 	

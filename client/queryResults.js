@@ -5,6 +5,7 @@ var QueryResults = function(parent, tabSettings) {
 	var header = null;
 	var content = null;
 	var results = null;
+	var outputSelector = null;
 	var init = function() {
 		mainResultsDiv = $("<div class='queryResults'></div>");
 		parent.append(mainResultsDiv);
@@ -19,7 +20,7 @@ var QueryResults = function(parent, tabSettings) {
 		var tableSelectorId = tabSettings.id + "_tableSelect";
 		var rawResponseSelectorId = tabSettings.id + "_responseSelect";
 
-		var outputSelector = $(
+		outputSelector = $(
 			'<div class="outputSelector">' +
 			'<input id="' + tableSelectorId + '" type="radio"  name="radio" ' + (tabSettings.outputFormat != "rawResponse"? 'checked="checked"': "") + '><label for="' + tableSelectorId + '">Show as table</label>' +
 			'<input id="' + rawResponseSelectorId + '" type="radio"  name="radio" ' + (tabSettings.outputFormat == "rawResponse"? 'checked="checked"': "") + '><label for="' + rawResponseSelectorId + '">Show raw response</label>'+
@@ -73,21 +74,34 @@ var QueryResults = function(parent, tabSettings) {
 	
 	var drawContent = function(parser) {
 		if (parser) results = parser;
-		if (tabSettings.outputFormat == "rawResponse") {
-			drawRawResponse();
-		} else if (results.getBoolean() !== null) {
-			drawBooleanResult();
-		} else { 
-			drawTable();
+		if (results) {
+			if (tabSettings.outputFormat == "rawResponse") {
+				drawRawResponse();
+			} else if (results.getBoolean() !== null) {
+				drawBooleanResult();
+			} else if (results.getVariables().length > 0){ 
+				drawTable();
+			} else {
+				//if all else fails, just draw the raw response
+				drawRawResponse();
+			}
 		}
 		
 	};
-	
+	var tableOutputEnabled = null;
+	var setTableOutputEnabled = function(enabled) {
+		if (tableOutputEnabled !== enabled) {
+			tableOutputEnabled = enabled;
+			outputSelector.buttonset("option", "disabled", !tableOutputEnabled);
+//			console.log("table output", enabled);
+		}
+	};
 	
 	init();
 	return {
 		drawContent: drawContent,
-		clearResults: clearResults
+		clearResults: clearResults,
+		setTableOutputEnabled: setTableOutputEnabled
 //		check: checkSyntax
 	};
 };

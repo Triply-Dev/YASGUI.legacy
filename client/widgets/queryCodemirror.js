@@ -3,7 +3,7 @@
 	this.Yasgui.widgets = this.Yasgui.widgets || {};
 	
 	
-	this.Yasgui.widgets.QueryCodemirror = function(parent, tabSettings) {
+	this.Yasgui.widgets.QueryCodemirror = function(parent, tabSettings, onChangeCallback) {
 		var codemirror = null;
 		var prevQueryValid = false;
 		var clearError = null;
@@ -105,15 +105,14 @@
 			
 			codemirror.on("change", function(cm, change){
 				checkSyntax(cm, true);
-//				queryType = cm.getStateAfter().queryType;
+//				queryType = getQueryType();
 				CodeMirror.showHint(cm, Yasgui.Codemirror.prefixHint, {closeCharacters: /(?=a)b/});
 				Yasgui.Codemirror.appendPrefixIfNeeded(cm);
+				if (onChangeCallback) onChangeCallback();
 			});
 			codemirror.on("blur", function(cm, change) {
 				storeInSettings();
 			});
-			//init query type
-//			queryType = codemirror.getStateAfter().queryType;
 			
 			
 			//Append another classname to the codemirror div, so we can set width and height via css

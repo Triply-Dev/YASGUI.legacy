@@ -25,3 +25,7 @@
 .downloadIcon.downloadIconDisabled {
 	cursor:default;
 }
+
+.ui-state-disabled.outputSelector {
+	opacity: 0.55;
+}

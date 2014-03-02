@@ -4,16 +4,8 @@
 	
 	
 	this.Yasgui.widgets.ResultsCodemirror = function(container, resultsParser) {
-		var contentType = resultsParser.getContentType();
-		cmMode = "javascript";
-		if (contentType.contains("json")) {
-			cmMode = {
-				name: "javascript",
-				json: true
-			};
-		}
 		CodeMirror(container.get()[0], {
-			mode : cmMode,
+			mode : resultsParser.getCmMode(),
 			theme: "yasgui",
 			lineNumbers : true,
 			highlightSelectionMatches: {showToken: /\w/},

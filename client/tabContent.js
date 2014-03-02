@@ -1,6 +1,18 @@
 
 var TabContent = function(tabSettings) {
-	
+	var codemirrorChangeCallback = function() {
+		var queryType = codemirror.getQueryType();
+		if (queryType) {
+			queryType = queryType.toLowerCase();
+			if (queryType == "construct" || queryType == "describe") {
+				results.setTableOutputEnabled(false);
+			} else {
+				results.setTableOutputEnabled(true);
+			}
+		}
+		
+		
+	};
 	var mainTabContent = $("#" + tabSettings.id);
 	
 	//fixed
@@ -9,9 +21,9 @@ var TabContent = function(tabSettings) {
 	var scrollableSubContent = $("<div class='scrollableTabContent'></div>");
 	mainTabContent.append(scrollableSubContent);
 	
-	var codemirror = new Yasgui.widgets.QueryCodemirror(scrollableSubContent, tabSettings);
+	var codemirror = new Yasgui.widgets.QueryCodemirror(scrollableSubContent, tabSettings, codemirrorChangeCallback);
 	var results = new Yasgui.objs.QueryResults(scrollableSubContent, tabSettings);
-	
+	codemirrorChangeCallback();
 	
 	
 	var positionElements = function() {

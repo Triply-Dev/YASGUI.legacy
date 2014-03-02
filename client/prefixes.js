@@ -10,7 +10,6 @@ var PrefixesFetcher = function() {
 		if (prefixes.prefixes == 0) fetchFromDb();
 	};
 	var fetchFromLocalStorage = function() {
-		console.log("fetching prefixes from local storage");
 		var prefixArray = Yasgui.storage.get("prefixes");
 		if (prefixArray != null && prefixArray.length > 0) {
 			addArrayToTrie(prefixArray);
