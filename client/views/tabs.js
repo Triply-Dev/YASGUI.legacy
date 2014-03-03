@@ -60,7 +60,6 @@ $(function() {
 		$(tabSetSelector).
 			delegate("li.ui-state-active a", "dblclick",
 				function() {
-					
 					renameTab($(this).attr("href").substring(1));
 				}).
 			delegate("li a", "contextmenu", function(event) {
@@ -93,6 +92,7 @@ $(function() {
 					}
 				});
 		$('#addTab').on('click', function() {
+			
 			var tabSettings = addTab(jQuery.extend(true, {}, Yasgui.settings.defaultTabSettings), true);
 			selectTabFromId(tabSettings.id);
 		});
@@ -226,7 +226,7 @@ $(function() {
 	};
 	
 	var getCloseButton = function() {
-		return "<span class='closeTab'>&nbsp;</span>";
+		return "<span class='closeTab'></span>";
 	};
 	
 	var getNewTabTitle = function(defaultTabTitle) {
@@ -288,6 +288,7 @@ $(function() {
 
 	function renameTab(tabId) {
 		var  obj = $('a[href="#' + tabId + '"]'),
+			clonedOldObj = obj.clone(),
 			oldName = obj.text(), 
 			editMode = '<div class="editable"><form id="rename_tab_form"><input type="text" style="width: 120px;"id="new_tab_name" value="'
 				+ oldName
@@ -306,32 +307,35 @@ $(function() {
 				e.stopPropagation();
 			} else if (e.keyCode == 13) {
 				// enter
-				replaceName(tabId, $("#new_tab_name"), $("#new_tab_name").val());
+				replaceName(clonedOldObj, $("#new_tab_name"), $("#new_tab_name").val());
 			} else if (e.keyCode == 27) {
 				// escape
-				replaceName(tabId, $("#new_tab_name"), oldName);
+				replaceName(clonedOldObj, $("#new_tab_name"), oldName);
 			}
 		});
 		$("body").on("click.tabnamedit", function(e) {
 			var target = e.target.id;
 			if (target != 'new_tab_name') {
-				replaceName(tabId, $("#new_tab_name"), $("#new_tab_name").val());
+				replaceName(clonedOldObj, $("#new_tab_name"), $("#new_tab_name").val());
 				$("body").off("click.tabnamedit");
 			}
 		});
 	}
-	function replaceName(tabId, editObj, newVal) {
+	function replaceName(clonedOldObj, editObj, newVal) {
 		if (newVal == '' || newVal == undefined) {
 			newVal = 'Untitled';
 		}
 		Yasgui.settings.getSelectedTab().tabTitle = newVal;
 		Yasgui.settings.store();
 		// remove current title
-		$(editObj).parents("div.editable").after('<a href="#' + tabId + '">' + newVal +  getCloseButton() + '</a> ').remove();
+		
+//		$(editObj).parents("div.editable").after('<a href="#' + tabId + '">' + newVal +  getCloseButton() + '</a> ').remove();
+		$(editObj).parents("div.editable").after(clonedOldObj.html(newVal + getCloseButton())).remove();
 		// remove editing part
 		$("li.ui-state-active a", "#tabs-nav").closest("a").removeClass(
 				"editing");
 		$("body").off("click.tabnamedit");
+		tabs.tabs("refresh");
 	}
 	
 	var getSelectedTabFromDom = function() {
