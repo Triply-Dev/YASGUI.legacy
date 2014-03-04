@@ -73,6 +73,7 @@
 			}
 		};
 		var init = function() {
+			
 			codemirror = CodeMirror(parent.get(0), {
 				mode : "sparql11",
 				theme: "yasgui",
@@ -102,6 +103,13 @@
 					"Shift-Tab": Yasgui.Codemirror.unindentTab
 				}
 			});
+			codemirror.setSize(null, 300);
+			parent.find(".CodeMirror").resizable({
+			      handles: "s",
+			      resize: function() {
+			    	codemirror.setSize(null, $(this).height());
+			      },
+			    });
 			
 			codemirror.on("change", function(cm, change){
 				checkSyntax(cm, true);

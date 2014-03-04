@@ -89,7 +89,7 @@
 				id: 'editRequestParam',
 				width: 600,
 				height: 300,
-				position: { my: "right bottom", at: "right bottom", of: window },
+//				position: { my: "right bottom", at: "right bottom", of: window },
 				content: inputForm.getElement(),
 				onClose: function() {
 					Yasgui.settings.getSelectedTab().params = getArrayAsNameValuePairs(inputForm.getValues());
@@ -114,7 +114,7 @@
 				id: 'editRequestHeaders',
 				width: 600,
 				height: 300,
-				position: { my: "right bottom", at: "right bottom", of: window },
+//				position: { my: "right bottom", at: "right bottom", of: window },
 				content: inputForm.getElement(),
 				onClose: function() {
 					Yasgui.settings.getSelectedTab().headers = getArrayAsObject(inputForm.getValues());
@@ -138,7 +138,7 @@
 				id: 'editNamedGraphs',
 				width: 500,
 				height: 300,
-				position: { my: "right bottom", at: "right bottom", of: window },
+//				position: { my: "right bottom", at: "right bottom", of: window },
 				content: inputForm.getElement(),
 				onClose: function() {
 					Yasgui.settings.getSelectedTab().namedGraphs = inputForm.getValues();
@@ -162,7 +162,7 @@
 				id: 'editDefaultGraphs',
 				width: 500,
 				height: 300,
-				position: { my: "right bottom", at: "right bottom", of: window },
+//				position: { my: "right bottom", at: "right bottom", of: window },
 				content: inputForm.getElement(),
 				onClose: function() {
 					Yasgui.settings.getSelectedTab().defaultGraphs = inputForm.getValues();

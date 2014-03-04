@@ -48,29 +48,13 @@ span.cm-sp-error {
 	border-width: 1px;
 	border-left: none;
 	border-right: none;
+	border-bottom-width: 4px;
 	height: auto;
-	min-height: 300px;
-	position: relative;
-	overflow: hidden;
 }
 
-.CodeMirror-hints {
-/* 	z-index: 99999999 !important; */
-}
 
 .CodeMirror-hint {
 	max-width: 30em !important;
-}
-
-.CodeMirror-vscrollbar {
-	overflow: hidden;
-}
-
-.CodeMirror-scroll {
-	height: auto;
-	min-height: 300px;
-	overflow-x: auto;
-	overflow-y: hidden;
 }
 
 .CodeMirror pre {
