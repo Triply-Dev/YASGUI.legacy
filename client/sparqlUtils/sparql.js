@@ -126,8 +126,17 @@
 						
 						onQueryError(result.message);
 					} else {
-						var parser = Yasgui.parsers.SparqlParserFactory(result);
-						Yasgui.tabs[tabSettings.id].results.drawContent(parser);
+						var referencedTabSettings = Yasgui.settings.getTabById(tabSettings.id);
+						if (referencedTabSettings) {
+							if (result.content.length < 100000) {
+								referencedTabSettings.results = result;
+							} else {
+								referencedTabSettings.results = null;
+							}
+						}
+						
+						
+						Yasgui.tabs[tabSettings.id].results.drawContent(result);
 					}
 					Yasgui.tabs[tabSettings.id].cm.check();
 				} else {

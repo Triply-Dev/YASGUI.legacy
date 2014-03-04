@@ -54,10 +54,17 @@ var Settings = function() {
 		}
 	};
 	
+	var getTabById = function(id) {
+		for (var i = 0; i < settings.tabs.length; i++) {
+			if (settings.tabs[i].id == id) return settings.tabs[i];
+		}
+	};
+	
 	var settings = fetchSettings();
 	store();
 	settings.store = store;
 	settings.getSelectedTab = getSelectedTab;
+	settings.getTabById = getTabById;
 	return settings;
 };
 Yasgui.objs.Settings = Settings;

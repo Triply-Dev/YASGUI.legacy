@@ -90,6 +90,7 @@
 		        "aaData": getRows(),
 		        "aoColumns": getVariablesAsCols(),
 		        "fnDrawCallback": function ( oSettings ) {
+		        	console.log("draw callback");
 					for ( var i = 0; i < oSettings.aiDisplay.length; i++) {
 						$('td:eq(0)',oSettings.aoData[oSettings.aiDisplay[i]].nTr).html(i + 1);
 					}

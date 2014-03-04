@@ -23,7 +23,9 @@ var TabContent = function(tabSettings) {
 	
 	var codemirror = new Yasgui.widgets.QueryCodemirror(scrollableSubContent, tabSettings, codemirrorChangeCallback);
 	var results = new Yasgui.objs.QueryResults(scrollableSubContent, tabSettings);
-	codemirrorChangeCallback();
+	console.log(tabSettings.results);
+	if (tabSettings.results) results.drawContent(tabSettings.results);
+	codemirrorChangeCallback(); //init query types
 	
 	
 	var positionElements = function() {

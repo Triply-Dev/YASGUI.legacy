@@ -71,8 +71,8 @@ var QueryResults = function(parent, tabSettings) {
 		}
 	};
 	
-	var drawContent = function(parser) {
-		if (parser) results = parser;
+	var drawContent = function(response) {
+		if (response) results = Yasgui.parsers.SparqlParserFactory(response);
 		if (results) {
 			if (tabSettings.outputFormat == "rawResponse") {
 				drawRawResponse();
