@@ -17,10 +17,11 @@ var QueryHeader = function(parent, tabSettings) {
 		return listItem;
 	};
 	var positionElement = function(){
+		var extraOffset = 8; //need to concept overflow of query icon
 		//position header itself
-		queryHeader.css("top", ( $("#tabs").outerHeight(true)) + "px");
+		queryHeader.css("top", ( $("#tabs").outerHeight(true) + extraOffset) + "px");
 		//redraw background div, otherwise the query content will appear under our query header
-		$("#queryHeaderBackground").height($("#tabs").outerHeight(true) + queryHeader.outerHeight(true));
+		$("#queryHeaderBackground").height($("#tabs").outerHeight(true) + extraOffset + queryHeader.outerHeight(true));
 	};
 	init();
 	

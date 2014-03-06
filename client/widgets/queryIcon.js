@@ -23,7 +23,6 @@
 						return false;
 					}).blur().button( "option", "icons", { primary: "queryIconBusy" } );
 				} else if (queryStatus == "error") {
-					console.log("errorrrr");
 					queryIcon.off("click").click(function(){
 						console.log("query");
 						Yasgui.sparql.query();
@@ -39,23 +38,13 @@
 					console.log("unrecognized query status in session: " + queryStatus);
 				}
 			});
+			queryIcon.parent().width(queryIcon.width() + 4);
 		};
 		
 		
 		var updateIconStatus = function() {
 			
 		};
-//		var setStatusQuery = function() {
-//			queryIcon.button( "option", "icons", { primary: "queryIcon" } );
-//		};
-//		
-//		var setStatusInvalid = function() {
-//			queryIcon.button( "option", "icons", { primary: "queryIconInvalid" } );
-//		};
-//		
-//		var setStatusLoading = function() {
-//			queryIcon.button( "option", "icons", { primary: "queryIconLoading" } );
-//		};
 		
 		draw();// initialize
 		return {
