@@ -4,30 +4,25 @@
 }
 
 .custom-combobox {
-	height: 100%;
 	width: 340px;
 	display: inline-block;
 }
 .comboBoxTextWrapper {
-	position:absolute; top:0px;
+	position:absolute; 
+	top:0px;
 	bottom:4px;
 }
 .custom-combobox-input {
-	margin: 0px;
 	padding-left: 5px;
 	padding-bottom: 0px;
 	padding-top: 0px;
 	height:100%;
-	display:block;
-	width: 300px; 
+	width: 302px;
 }
 .custom-combobox-toggle {
 	width: 20px;
 	position:absolute;
      top:0;  bottom:0; right:0;
-     display: inline-block;
-	vertical-align: bottom;
-	padding: 0px;
 }
 .ui-autocomplete .ui-menu-item a{
 	display:block;

@@ -1,40 +1,23 @@
 
 .queryHeader {
 	position:fixed;
-/* 	height: 37px; */
-/* 	margin-left: 4px; */
-/* 	margin-bottom: 10px; */
 	width: 100%;
 	background: white;
 	z-index: 10;
-	display: inline-block;
     list-style-type: none;
     padding-left: 0;
     margin: 0;
-    overflow: hidden;
     height: 44px;
-/*     vertical-align: bottom; */
-/*     text-align: center; */
-/*     font-size: 20px; */
-/*     color: white; */
-/*     padding: 0px; */
-/*     margin-top: 0px; */
-/*     width: 65%; */
-/* 	position: relative; */
 }
 .queryHeader li {
-	vertical-align: bottom;
-	display: block;
 	float:left;
 	margin-left: 6px;
-/* 	line-height: 37px; */
-	height: 37px;
+	height: 27px;
 	position: relative;
 	
 }
 
 .configRequestButton {
-	height: 100%;
 	width: 150px;
 	position: absolute;
 	bottom: 0px;
