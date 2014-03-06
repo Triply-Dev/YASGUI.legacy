@@ -38,8 +38,10 @@
 		      },
 		 
 		      _createAutocomplete: function() {
+		    	  //need to wrap input in div, as in firefox we cannot 'stretch' the input by defining top and bottom offsets
+		    	  var inputWrapper = $("<div class='comboBoxTextWrapper'></div>").appendTo(this.wrapper);
 		        this.input = $( "<input>" )
-		          .appendTo( this.wrapper )
+		          .appendTo( inputWrapper )
 		          .val( this.options.selectedEndpoint )
 		          .attr( "title", "" )
 		          .addClass( "custom-combobox-input ui-widget ui-widget-content ui-state-default ui-corner-left" );

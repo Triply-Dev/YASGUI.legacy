@@ -101,8 +101,12 @@ html, body {
 /* 	height:34px;width:48px; */
 }
 .configRequestButton{
-	top: 2px;
-	margin-left: 0;
+/* 	top: 2px; */
+	top: 0px; bottom: 0px;
+/* 	position: absolute; */
+/* 	padding: 3px 0; */
+/* 	padding: auto; */
+	margin: auto;
 }
 .queryHeader li .configRequestButton span{
 	padding-top: 3px;

@@ -8,7 +8,8 @@
 		var menu;
 		var drawButton = function() {
 			menuButton = $('<button class="configRequestButton">Configure Request</button>');
-			menuButton.height(26).button();
+//			menuButton.height(26).button();
+			menuButton.button();
 			menuButton.on("click", drawMenu);
 			parent.append(menuButton);
 		};
