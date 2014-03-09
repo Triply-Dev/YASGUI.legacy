@@ -31,7 +31,7 @@
 			
 			
 			addTabItem("compatabilitiesList", "Browser Compatabilities", Yasgui.widgets.Compatabilities);
-			addTabItem("toggleFeatures", "Toggle Features", Yasgui.widgets.ToggleFeatures);
+			addTabItem("advancedConfig", "Advanced Configuration", Yasgui.widgets.AdvancedConfiguration);
 			addTabItem("help", "Help", Yasgui.widgets.Help);
 			addTabItem("about", "About", Yasgui.widgets.About);
 //			addCompatabilies(tabs);

@@ -3,10 +3,10 @@
 	this.Yasgui.widgets = this.Yasgui.widgets || {};
 	
 	
-	this.Yasgui.widgets.ToggleFeatures = function(parent, tabSettings) {
+	this.Yasgui.widgets.AdvancedConfiguration = function(parent, tabSettings) {
 		
 		var draw = function() {
-			parent.append($("<div>toggleFeatuers</div>"));
+			parent.append($("<div>AdvancedConfiguration</div>"));
 		};
 		
 		draw();
