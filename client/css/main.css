@@ -23,40 +23,6 @@ html, body {
 	overflow:auto;
 	width: 100%;
 }
-.ui-icon.queryIcon, .ui-icon.queryIconInvalid, .ui-icon.queryIconBusy {
-	width: 48px;
-    height: 48px;
-}
-.ui-icon.queryIconBusy {
-	width: 48px;
-    height: 48px;
-}
-.ui-icon.queryIcon {
-		width: 48px;
-    height: 48px;
-}
-/* .ui-widget-content .ui-state-focus .queryButton { */
-/* background-color: #d4d4d4; */
-/* } */
-.ui-button .ui-icon.queryIcon {
-	background-image: url('/images/nounproject/play.png');
-/*     background-image: url(your-path-to-normal-image-file.png); */
-
-}
-.ui-button .ui-icon.queryIconBusy {
-	background-image: url('/images/other/ajax_loader.gif');
-/*     background-image: url(your-path-to-normal-image-file.png); */
-
-}
-.ui-button .ui-icon.queryIconInvalid {
-	background-image: url('/images/nounproject/playError.png');
-/*     background-image: url(your-path-to-normal-image-file.png); */
-
-}
-.ui-button.ui-state-hover .ui-icon.queryIcon {
-/* 	background-image: url('/images/nounproject/play_white.png'); */
-/*     background-image: url(your-path-to-highlighted-image-file.png); */
-}
 
 .mainLogo {
 	cursor: pointer; 

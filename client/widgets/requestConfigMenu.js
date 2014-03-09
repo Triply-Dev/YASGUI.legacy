@@ -7,10 +7,15 @@
 		var menuButton;
 		var menu;
 		var drawButton = function() {
-			menuButton = $('<button class="configRequestButton">Configure Request</button>');
+			menuButton = $('<button class="configRequestButton">Configure Request</button>').button({
+				icons: {
+			        primary: "gearIcon",
+			        secondary: "ui-icon-triangle-1-s"
+			      }
+			}).on("click", drawMenu);
 //			menuButton.height(26).button();
-			menuButton.button();
-			menuButton.on("click", drawMenu);
+//			menuButton.button();
+//			menuButton.on("click", drawMenu);
 			parent.append(menuButton);
 		};
 		

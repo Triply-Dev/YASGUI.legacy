@@ -8,11 +8,13 @@ var QueryHeader = function(parent, tabSettings) {
 		Yasgui.widgets.QueryIcon(addListItem(), tabSettings);
 		Yasgui.widgets.EndpointComboBox(addListItem(), tabSettings);
 		Yasgui.widgets.RequestConfigMenu(addListItem(), tabSettings);
+		Yasgui.widgets.MainYasguiConfigMenu(addListItem(true), tabSettings);
 //		appendEndpointSelector();
 	};
 	
-	var addListItem = function() {
+	var addListItem = function(rightAligned) {
 		var listItem = $("<li></li>");
+		if (rightAligned) listItem.addClass("rightAlignQueryHeader");
 		queryHeader.append(listItem);
 		return listItem;
 	};

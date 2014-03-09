@@ -32,7 +32,10 @@
 		),
 		"plus" => array(
 			"size" => 12
-		)
+		),
+		"gear" => array(
+				"size" => 12
+		),
 	);
 	$imgs = array();
 	if (count($argv) > 1) {
