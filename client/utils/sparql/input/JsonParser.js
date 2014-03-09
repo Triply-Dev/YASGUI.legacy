@@ -3,7 +3,9 @@
 	this.Yasgui.parsers = this.Yasgui.parsers || {};
 	
 	var JsonParser = function(json, actualResponseString) {
-		
+		var metaInfo = $.grep(Yasgui.sparql.acceptHeaders.select, function( element, index ) {
+			  return element.extension == "json";
+		}).get(0);
 		var getVariables = function() {
 			if ("head" in json) {
 				return json.head.vars;
@@ -42,7 +44,8 @@
 			getBindings: getBindings,
 			getBoolean: getBoolean,
 			getResponse: getResponse,
-			getCmMode: getCmMode
+			getCmMode: getCmMode,
+			getMetaInfo: metaInfo
 		};
 	};
 	

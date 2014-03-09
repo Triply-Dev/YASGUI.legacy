@@ -27,7 +27,7 @@
 			if (isTable) {
 				filename += ".csv";
 			} else {
-				filename += "." + results.getContentType();
+				filename += "." + results.getMetaInfo.extension;
 			}
 			return filename;
 		};

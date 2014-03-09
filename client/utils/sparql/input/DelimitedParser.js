@@ -2,7 +2,11 @@
 	this.Yasgui = this.Yasgui || {};
 	this.Yasgui.parsers = this.Yasgui.parsers || {};
 	
-	var DelimitedParser = function(arrays, actualResponseString) {
+	var DelimitedParser = function(arrays, actualResponseString, separator) {
+		var metaInfo = $.grep(Yasgui.sparql.acceptHeaders.select, function( element, index ) {
+			  return element.extension == (separator == ","? "csv": "tsv");
+		}).get(0);
+		
 		var getVariables = function() {
 			if (arrays.length > 0) {
 				return arrays[0];
@@ -61,7 +65,8 @@
 			getBindings: getBindings,
 			getBoolean: getBoolean,
 			getResponse: getResponse,
-			getCmMode: getCmMode
+			getCmMode: getCmMode,
+			getMetaInfo: metaInfo
 		};
 	};
 	

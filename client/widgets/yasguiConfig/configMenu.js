@@ -30,8 +30,8 @@
 			var tabList = $("<ul></ul>").appendTo(tabs);
 			
 			
-			addTabItem("compatabilitiesList", "Browser Compatabilities", Yasgui.widgets.Compatabilities);
-			addTabItem("advancedConfig", "Advanced Configuration", Yasgui.widgets.AdvancedConfiguration);
+//			addTabItem("compatabilitiesList", "Browser Compatabilities", Yasgui.widgets.Compatabilities);
+			addTabItem("advancedConfig", "Advanced Options", Yasgui.widgets.AdvancedConfiguration);
 			addTabItem("help", "Help", Yasgui.widgets.Help);
 			addTabItem("about", "About", Yasgui.widgets.About);
 //			addCompatabilies(tabs);

@@ -28,10 +28,10 @@
 		};
 		var doCsvParser = function() {
 //			console.log("before parsing", $.csv.toArrays(response.content));
-			parser = new Yasgui.parsers.DelimitedParser($.csv.toArrays(response.content, {separator: ","}), response.content);
+			parser = new Yasgui.parsers.DelimitedParser($.csv.toArrays(response.content, {separator: ","}), response.content, ",");
 		};
 		var doTsvParser = function() {
-			parser = new Yasgui.parsers.DelimitedParser($.csv.toArrays(response.content, {separator: "\t"}), response.content);
+			parser = new Yasgui.parsers.DelimitedParser($.csv.toArrays(response.content, {separator: "\t"}), response.content, "\t");
 		};
 		var tryJsonParser = function() {
 			try {

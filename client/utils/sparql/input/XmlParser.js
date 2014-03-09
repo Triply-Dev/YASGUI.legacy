@@ -3,6 +3,9 @@
 	this.Yasgui.parsers = this.Yasgui.parsers || {};
 	
 	var XmlParser = function(xml, actualResponseString) {
+		var metaInfo = $.grep(Yasgui.sparql.acceptHeaders.select, function( element, index ) {
+			  return element.extension == "json";
+		}).get(0);
 		var getVariables = function() {
 			var vars = [];
 			xml.find("head").children().each(function(key, value){
@@ -62,7 +65,8 @@
 			getBindings: getBindings,
 			getBoolean: getBoolean,
 			getResponse: getResponse,
-			getCmMode: getCmMode
+			getCmMode: getCmMode,
+			getMetaInfo: metaInfo
 		};
 	};
 	

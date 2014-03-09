@@ -28,43 +28,54 @@
 					header: "application/sparql-results+json",
 					extension: "json",
 					name: "JSON",
+					cmMode: {
+						name: "javascript",
+						json: true
+					},
 				},
 				{
 					header: "application/sparql-results+xml",
 					extension: "xml",
-					name: "XML"
+					name: "XML",
+					cmMode: "xml"
 				},
 				{
 					header: "text/csv",
 					extension: "csv",
-					name: "CSV"
+					name: "CSV",
+					cmMode: "json"
 				},
 				{
 					header: "text/tab-separated-values",
 					extension: ".tsv",
-					name: "TSV"
+					name: "TSV",
+					cmMode: "json"
 				},
 			],
 			graph: [
 				{
 					header: "text/turtle",
 					extension: "ttl",
-					name: "Turtle"
+					name: "Turtle",
+					cmMode: "turtle"
 				},
 				{
 					header: "application/rdf+xml",
 					extension: "xml",
-					name: "RDF/XML"
+					name: "RDF/XML",
+					cmMode: "xml"
 				},
 				{
 					header: "text/csv",
 					extension: "csv",
-					name: "CSV"
+					name: "CSV",
+					cmMode: "json"
 				},
 				{
 					header: "text/tab-separated-values",
 					extension: "tsv",
-					name: "TSV"
+					name: "TSV",
+					cmMode: "json"
 				}
 				
 			]

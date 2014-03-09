@@ -6,7 +6,7 @@
 	this.Yasgui.widgets.About = function(parent, tabSettings) {
 		
 		var draw = function() {
-			parent.append($("<div>about</div>"));
+			parent.append($("<div>about + compatabilities</div>"));
 		};
 		
 		draw();
