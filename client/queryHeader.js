@@ -8,7 +8,7 @@ var QueryHeader = function(parent, tabSettings) {
 		Yasgui.widgets.QueryIcon(addListItem(), tabSettings);
 		Yasgui.widgets.EndpointComboBox(addListItem(), tabSettings);
 		Yasgui.widgets.RequestConfigMenu(addListItem(), tabSettings);
-		Yasgui.widgets.MainYasguiConfigMenu(addListItem(true), tabSettings);
+		Yasgui.widgets.YasguiConfigMenu(addListItem(true), tabSettings);
 //		appendEndpointSelector();
 	};
 	

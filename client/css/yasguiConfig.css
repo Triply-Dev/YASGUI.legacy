@@ -1,0 +1,14 @@
+.yasguiConfigButton {
+	cursor: pointer;
+	height: 20px;
+	width: 20px;
+	margin-top: -10px;
+}
+
+.yasguiConfigTabs {
+	
+}
+#configWindowContent {
+	padding: 0px;
+	
+}

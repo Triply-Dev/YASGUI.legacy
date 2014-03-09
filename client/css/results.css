@@ -20,6 +20,8 @@
 	margin-top: 4px;
 }
 .downloadIcon {
+	z-index: 5;
+	position: relative;
 	cursor:pointer;
 }
 .downloadIcon.downloadIconDisabled {
