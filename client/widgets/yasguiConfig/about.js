@@ -9,6 +9,13 @@
 			parent.append($("<div>about + compatabilities</div>"));
 		};
 		
+		var store = function() {
+			console.log("store");
+		};
 		draw();
+		
+		return {
+			store: store
+		};
 	};
 }).call(this);

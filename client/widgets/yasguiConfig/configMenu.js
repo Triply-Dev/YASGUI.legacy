@@ -5,40 +5,42 @@
 	
 	this.Yasgui.widgets.YasguiConfigMenu = function(parent, tabSettings) {
 		var menuButton;
+		var menu;
 		var drawButton = function() {
-			menuButton = $('<img class="yasguiConfigButton"></img>').attr("src",Yasgui.constants.imgs.gear.get()).on("click", drawWindow);
+			menuButton = $('<img class="yasguiConfigButton"></img>').attr("src",Yasgui.constants.imgs.gear.get()).on("click", drawMenu);
 			parent.append(menuButton);
 		};
 		
-		var drawWindow = function() {
+		var drawWindow = function(contentFunction) {
+			menu.hide();
+			var windowContent = $("<div></div>");
+			var contentObj = contentFunction(windowContent);
 			new Yasgui.widgets.dialog({
 				id: "configWindowContent",
 				title: "Configure YASGUI",
 				width: 800,
 				height: 500,
-				content: getConfigTabs()
+				content: windowContent,
+				onClose: function(){contentObj.store();}
 			});
 		};
 		
-		var getConfigTabs = function() {
-			
-			var addTabItem = function(tabId, tabTitle, addFunction) {
-				tabList.append("<li><a href='#" + tabId + "'>" + tabTitle + "</a></li>");
-				addFunction($("<div id='" + tabId + "'></div>").appendTo(tabs), tabSettings);
-			};
-			var tabs = $("<div class='yasguiConfigTabs'></div>");
-			var tabList = $("<ul></ul>").appendTo(tabs);
-			
-			
-//			addTabItem("compatabilitiesList", "Browser Compatabilities", Yasgui.widgets.Compatabilities);
-			addTabItem("advancedConfig", "Advanced Options", Yasgui.widgets.AdvancedConfiguration);
-			addTabItem("help", "Help", Yasgui.widgets.Help);
-			addTabItem("about", "About", Yasgui.widgets.About);
-//			addCompatabilies(tabs);
-			
-			
-			return tabs.tabs();
-			
+		var drawMenu = function() {
+			if (menu == undefined) {
+				menu = $("<ul id='yasguiConfigMenu'></ul>");
+				$("<li><a href='#'>Advanced Options</a></li>").appendTo(menu).on("click", function(){drawWindow(Yasgui.widgets.AdvancedConfiguration);});
+				$("<li><a href='#'>Manage Caches</a></li>").appendTo(menu).on("click", function(){drawWindow(Yasgui.widgets.Cache);});
+				$("<li><a href='#'>Help</a></li>").appendTo(menu).on("click", function(){drawWindow(Yasgui.widgets.Help);});
+				$("<li><a href='#'>About</a></li>").appendTo(menu).on("click", function(){drawWindow(Yasgui.widgets.About);});
+				menu.zIndex(Yasgui.constants.zIndexes.popupDialogues).appendTo($("body")).menu();
+			}
+			menu.show().position({
+		        of: menuButton,
+		        my: "right-5 top",
+		        at: "right bottom",
+		        collision: "none"
+			});
+			dismissOnOutsideClick(menu, function(){menu.hide();});
 		};
 		
 		drawButton();

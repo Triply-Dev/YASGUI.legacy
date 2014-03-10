@@ -88,7 +88,12 @@
 	    };
 	};
 	this.dismissOnOutsideClick = function(selector, callback) {
-		var eventIdentifier = "mousedown." + selector.substring(1);
+		var eventIdentifier = "mousedown.";
+		if (typeof selector == "string") {
+			eventIdentifier += selector.substring(1);
+		} else {
+			eventIdentifier += Math.random().toString(36).slice(2);
+		}
 		$(document).on(eventIdentifier, function(event) {
 		    if(!$(event.target).parents().andSelf().is(selector)) {
 		    		callback();

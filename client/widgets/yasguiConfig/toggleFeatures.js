@@ -8,7 +8,13 @@
 		var draw = function() {
 			parent.append($("<div>AdvancedConfiguration</div>"));
 		};
-		
+		var store = function() {
+			console.log("store");
+		};
 		draw();
+		
+		return {
+			store: store
+		};
 	};
 }).call(this);
