@@ -129,7 +129,6 @@
 						console.log("error1");
 						console.log(error);
 						console.log(result);
-//						console.log(error.message.replace(/\n/g, '<br/>'));
 						onQueryError(error.message);
 					} else if (result.error) {
 						console.log("result error");

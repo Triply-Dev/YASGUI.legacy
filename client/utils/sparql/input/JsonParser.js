@@ -5,7 +5,7 @@
 	var JsonParser = function(json, actualResponseString) {
 		var metaInfo = $.grep(Yasgui.sparql.acceptHeaders.select, function( element, index ) {
 			  return element.extension == "json";
-		}).get(0);
+		})[0];
 		var getVariables = function() {
 			if ("head" in json) {
 				return json.head.vars;

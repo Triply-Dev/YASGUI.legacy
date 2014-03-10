@@ -5,7 +5,7 @@
 	var DelimitedParser = function(arrays, actualResponseString, separator) {
 		var metaInfo = $.grep(Yasgui.sparql.acceptHeaders.select, function( element, index ) {
 			  return element.extension == (separator == ","? "csv": "tsv");
-		}).get(0);
+		})[0];
 		
 		var getVariables = function() {
 			if (arrays.length > 0) {

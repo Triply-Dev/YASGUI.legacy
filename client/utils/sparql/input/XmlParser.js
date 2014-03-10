@@ -5,7 +5,7 @@
 	var XmlParser = function(xml, actualResponseString) {
 		var metaInfo = $.grep(Yasgui.sparql.acceptHeaders.select, function( element, index ) {
 			  return element.extension == "json";
-		}).get(0);
+		})[0];
 		var getVariables = function() {
 			var vars = [];
 			xml.find("head").children().each(function(key, value){
