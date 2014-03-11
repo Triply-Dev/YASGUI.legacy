@@ -48,6 +48,9 @@
 		"gearMedium" => array(
 			"size" => 18
 		),
+		"save" => array(
+			"size" => 18
+		),
 	);
 	$imgs = array();
 	if (count($argv) > 1) {
