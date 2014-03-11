@@ -34,7 +34,13 @@
 			"size" => 12
 		),
 		"gear" => array(
-				"size" => 12
+				"size" => 20
+		),
+		"table" => array(
+				"size" => 20
+		),
+		"download" => array(
+				"size" => 20
 		),
 	);
 	$imgs = array();

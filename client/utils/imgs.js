@@ -32,6 +32,7 @@
 			plus: new Img("images/nounproject/plus.png"),
 			externalLink: new Img("images/nounproject/externalLink.png"),
 			gear: new Img("images/nounproject/gearLarge.png"),
+			share: new Img("images/nounproject/share.png"),
 			yasguiLogo: new Img("images/logos/yasgui.png")
 			
 		};

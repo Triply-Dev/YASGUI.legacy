@@ -7,7 +7,12 @@
 		var downloadLink = null;
 		
 		var draw = function() {
-			downloadLink = $('<img class="downloadIcon">');
+			downloadLink = $('<button class="downloadButton"></button>').button({
+				icons: {
+			        primary: "downloadTableIcon"
+			      },
+			      text: false
+			});
 			parent.append(downloadLink);
 			updateIcon();
 		};
@@ -35,23 +40,26 @@
 		var updateIcon = function(results) {
 			//check: do we have results to download?
 			if (!Yasgui.compatabilities.stringToUrl()) {
-				downloadLink
-				.addClass("downloadIconDisabled")
-				.attr("src", Yasgui.constants.imgs.download.getDisabled())
+				downloadLink.button( "option", "icons", { primary: "downloadTableIcon" })
 				.attr("title", "Your browser does not support client-side downloading of files");
+				
+//				downloadLink
+//				.addClass("downloadIconDisabled")
+//				.attr("src", Yasgui.constants.imgs.download.getDisabled())
+				
 			} else if (results == null) {
-				downloadLink
-				.addClass("downloadIconDisabled")
-				.attr("src", Yasgui.constants.imgs.download.getDisabled())
+				downloadLink.button( "option", "icons", { primary: "downloadIcon" }).button( "option", "disabled", true )
 				.attr("title", "Nothing to download");
+//				downloadLink
+//				.addClass("downloadIconDisabled")
+//				.attr("src", Yasgui.constants.imgs.download.getDisabled())
+//				.attr("title", "Nothing to download");
 			} else {
 				var isTable = (tabSettings.outputFormat == "table" && results.getBoolean === null);
 				
-				downloadLink
-				.removeClass("downloadIconDisabled")
-				.attr("src", (isTable ? Yasgui.constants.imgs.table: Yasgui.constants.imgs.download.get()))
+				downloadLink.button( "option", "icons", { primary: (isTable? "downloadTableIcon": "downloadIcon") })
 				.attr("title", (isTable? "Download as CSV": "Download query response"))
-				.off()
+				.off("click")
 				.on("click", function() {
 					var targetUrl = null;
 					if (isTable) {

@@ -72,7 +72,7 @@
 				}
 			}
 		};
-		var init = function() {
+		var initCodemirror = function() {
 			
 			codemirror = CodeMirror(parent.get(0), {
 				mode : "sparql11",
@@ -122,14 +122,20 @@
 				storeInSettings();
 			});
 			
-			
-			//Append another classname to the codemirror div, so we can set width and height via css
-//			if (qInput.nextSibling != null && qInput.nextSibling.className == "CodeMirror") {
-//				qInput.nextSibling.className = "CodeMirror queryCm";
-//				scrollElement = qInput.nextSibling.getElementsByClassName("CodeMirror-scroll");
-//				//use jquery for this (a bit easier). for this element, find scroll class, and append another class
-//				$("#"+elementId).next().find($(".CodeMirror-scroll")).addClass("queryScrollCm");
-//			}
+		};
+		var addHoverComponents = function() {
+			var hoverDiv = $("<div class='queryHoverComponents'></div>").zIndex(Yasgui.constants.zIndexes.tabHeader).appendTo(parent);
+			$("<button class='queryLinkButton'></button>").appendTo(hoverDiv).button({
+			    icons: {
+			        primary: "shareIcon"
+			      },
+			      text: false
+			}).on("click", getQueryLink);
+//			$("<img></img>").attr("src", Yasgui.constants.imgs.share.get()).appendTo(hoverDiv).on("click", getQueryLink);
+		};
+		
+		var getQueryLink = function() {
+			console.log("query link");
 		};
 		
 		var reloadFromSettings = function() {
@@ -139,8 +145,9 @@
 			tabSettings.query = codemirror.getValue();
 			Yasgui.settings.store();
 		};
-		init();
 		
+		initCodemirror();
+		addHoverComponents();
 		return {
 			getQueryType: getQueryType,
 			cm: codemirror,

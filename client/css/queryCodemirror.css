@@ -1,0 +1,30 @@
+.queryHoverComponents {
+	position:absolute;
+	top: 10px;
+	right: 5px;
+}
+button.ui-button.queryLinkButton {
+	width: 35px;
+	height:35px;
+	background: inherit;
+	border: 0px;
+}
+
+button.ui-button.queryLinkButton.ui-state-hover {
+	background: #66B3FF;
+}
+
+.queryLinkButton .shareIcon {
+/* 		top: 50%; */
+/* 	margin-top: -7px; */
+/* 	position:absolute; */
+/* 	height: 13px; */
+/* 	width: 13px; */
+/* 	display: block; */
+	height: 24px;
+	width: 24px;
+	background-image: url('/images/nounproject/share.png');
+}
+.queryLinkButton.ui-state-hover .shareIcon {
+	background-image: url('/images/nounproject/share_white.png');
+}

@@ -1,0 +1,37 @@
+button.ui-button.downloadButton {
+	width: 27px;
+	height:27px;
+	background: inherit;
+	border: 0px;
+	z-index:99999999;
+	padding-top: 8px;
+	padding-left: 8px;
+}
+button.ui-button.downloadButton.ui-state-hover {
+	background: #66B3FF;
+}
+
+.downloadButton .ui-button-icon-primary {
+	display: inline-block;
+	vertical-align: middle;
+	height: 20px;
+	width: 20px;
+	margin-top: -10px;
+	margin-left: -10px;
+}
+
+.downloadButton .downloadTableIcon {
+	background-image: url('/images/nounproject/table.png');
+}
+.downloadButton .downloadIcon {
+	background-image: url('/images/nounproject/download.png');
+}
+.queryResultsHeader .downloadButton.ui-button-disabled.ui-state-disabled {
+	cursor:default;
+}
+.downloadButton.ui-state-hover .downloadIcon {
+	background-image: url('/images/nounproject/download_white.png');
+}
+.downloadButton.ui-state-hover .downloadTableIcon {
+/* 	background-image: url('/images/nounproject/table_white.png'); */
+}
