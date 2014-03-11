@@ -42,6 +42,12 @@
 		"download" => array(
 				"size" => 20
 		),
+		"gear" => array(
+			"size" => 14
+		),
+		"gearMedium" => array(
+			"size" => 18
+		),
 	);
 	$imgs = array();
 	if (count($argv) > 1) {

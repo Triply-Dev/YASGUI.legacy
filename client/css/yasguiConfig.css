@@ -1,9 +1,9 @@
-.yasguiConfigButton {
-	cursor: pointer;
-	height: 20px;
-	width: 20px;
-	margin-top: -10px;
-}
+/* .yasguiConfigButton { */
+/* 	cursor: pointer; */
+/* 	height: 20px; */
+/* 	width: 20px; */
+/* 	margin-top: -10px; */
+/* } */
 
 .yasguiConfigTabs {
 	
@@ -11,4 +11,30 @@
 #configWindowContent {
 /* 	padding: 0px; */
 	
+}
+
+button.ui-button.ui-widget.yasguiConfigButton {
+	margin-top: -10px;
+	width: 25px;
+	height: 25px;
+	background: inherit;
+	border: 0px;
+}
+button.ui-button.yasguiConfigButton.ui-state-hover, button.ui-button.yasguiConfigButton.ui-state-focus {
+	background: #66B3FF;
+}
+
+.yasguiConfigButton .gearMediumIcon {
+	top: 50%;
+	margin-top: -9px;
+	left: 50%;
+	margin-left: -9px;
+	position:absolute;
+	height: 18px;
+	width: 18px;
+	display: block;
+	background-image: url('/images/nounproject/gearMedium.png');
+}
+.yasguiConfigButton.ui-state-hover .gearMediumIcon, .configRequestButton.ui-state-focus .gearMediumIcon {
+	background-image: url('/images/nounproject/gearMedium_white.png');
 }

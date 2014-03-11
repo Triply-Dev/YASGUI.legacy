@@ -7,7 +7,13 @@
 		var menuButton;
 		var menu;
 		var drawButton = function() {
-			menuButton = $('<img class="yasguiConfigButton"></img>').attr("src",Yasgui.constants.imgs.gear.get()).on("click", drawMenu);
+			menuButton = $("<button class='yasguiConfigButton'></button>").button({
+				icons: {
+			        primary: "gearMediumIcon"
+			      },
+			      text: false
+			}).on("click", drawMenu);
+//			menuButton = $('<img class="yasguiConfigButton"></img>').attr("src",Yasgui.constants.imgs.gear.get()).on("click", drawMenu);
 			parent.append(menuButton);
 		};
 		
@@ -36,7 +42,7 @@
 			}
 			menu.show().position({
 		        of: menuButton,
-		        my: "right-5 top",
+		        my: "right top",
 		        at: "right bottom",
 		        collision: "none"
 			});
