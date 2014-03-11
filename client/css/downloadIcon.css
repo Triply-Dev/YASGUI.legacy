@@ -32,6 +32,3 @@ button.ui-button.downloadButton.ui-state-hover {
 .downloadButton.ui-state-hover .downloadIcon {
 	background-image: url('/images/nounproject/download_white.png');
 }
-.downloadButton.ui-state-hover .downloadTableIcon {
-/* 	background-image: url('/images/nounproject/table_white.png'); */
-}

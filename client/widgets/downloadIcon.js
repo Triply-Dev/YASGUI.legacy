@@ -41,6 +41,8 @@
 			//check: do we have results to download?
 			if (!Yasgui.compatabilities.stringToUrl()) {
 				downloadLink.button( "option", "icons", { primary: "downloadTableIcon" })
+				.button( "option", "disabled", true )
+				.button("refresh")
 				.attr("title", "Your browser does not support client-side downloading of files");
 				
 //				downloadLink
@@ -55,29 +57,32 @@
 //				.attr("src", Yasgui.constants.imgs.download.getDisabled())
 //				.attr("title", "Nothing to download");
 			} else {
-				var isTable = (tabSettings.outputFormat == "table" && results.getBoolean === null);
+				var isTable = (tabSettings.outputFormat == "table" && results.getBoolean() === null);
 				
-				downloadLink.button( "option", "icons", { primary: (isTable? "downloadTableIcon": "downloadIcon") })
-				.attr("title", (isTable? "Download as CSV": "Download query response"))
-				.off("click")
-				.on("click", function() {
-					var targetUrl = null;
-					if (isTable) {
-						targetUrl = stringToUrl(resultToCsv(results), "text/csv");
-					} else {
-						targetUrl = stringToUrl(results.getResponse(), "text/plain");
-					}
-					
-					if (Yasgui.compatabilities.downloadAttribute()) {
-						var downloadMockLink = $("<a></a>");
-						downloadMockLink.attr("href", targetUrl);
-						downloadMockLink.attr("download", getFilename(results, isTable));
-						downloadMockLink.get(0).click();
-					} else {
-						window.open(targetUrl);
-					}
-					
-				});
+				downloadLink
+					.button( "option", "icons", { primary: (isTable? "downloadTableIcon": "downloadIcon") })
+					.button( "option", "disabled", false)
+					.button("refresh")
+					.attr("title", (isTable? "Download as CSV": "Download query response"))
+					.off("click")
+					.on("click", function() {
+						var targetUrl = null;
+						if (isTable) {
+							targetUrl = stringToUrl(resultToCsv(results), "text/csv");
+						} else {
+							targetUrl = stringToUrl(results.getResponse(), "text/plain");
+						}
+						
+						if (Yasgui.compatabilities.downloadAttribute()) {
+							var downloadMockLink = $("<a></a>");
+							downloadMockLink.attr("href", targetUrl);
+							downloadMockLink.attr("download", getFilename(results, isTable));
+							downloadMockLink.get(0).click();
+						} else {
+							window.open(targetUrl);
+						}
+						
+					});
 			}
 		};
 		

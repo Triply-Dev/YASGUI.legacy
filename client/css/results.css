@@ -19,14 +19,6 @@
 .queryResultsContent .CodeMirror {
 	margin-top: 4px;
 }
-.downloadIcon {
-	z-index: 5;
-	position: relative;
-	cursor:pointer;
-}
-.downloadIcon.downloadIconDisabled {
-	cursor:default;
-}
 
 .ui-state-disabled.outputSelector {
 	opacity: 0.55;
