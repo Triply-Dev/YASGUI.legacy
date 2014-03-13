@@ -13,3 +13,6 @@
 	border: none;
 	background-color: #3399ff;
 }
+.noDialogTitle .ui-dialog-titlebar {
+	display:none;
+}

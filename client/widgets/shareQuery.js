@@ -5,9 +5,8 @@
 	
 	this.Yasgui.widgets.ShareQuery = function(parent, tabSettings) {
 		var menuButton;
-		var menu;
 		var drawButton = function() {
-			$("<button class='queryLinkButton'></button>").appendTo(parent).button({
+			menuButton = $("<button class='queryLinkButton'></button>").appendTo(parent).button({
 			    icons: {
 			        primary: "shareIcon"
 			      },
@@ -21,7 +20,23 @@
 			deleteKey(linkTabSettings, 'results');
 			deleteKey(linkTabSettings, 'id');
 			
-			console.log(linkTabSettings);
+			var windowContent = $("<div></div>");
+			var link = window.location.href + "?" +  $.param(linkTabSettings);
+			
+			windowContent.append($('<input style="width:100%" type="text" value="'+ link + '" class="class anotherclass" readonly >'));
+			Yasgui.widgets.dialog({
+				content: windowContent,
+				hideTitleBar: true,
+				width: "400px",
+				position: {
+					my: "top right",
+					at: "bottom right",
+					of: menuButton,
+					collission: "none"
+					
+				}
+			});
+//			console.log(JSON.stringify(linkTabSettings));
 		};
 		
 		drawButton();

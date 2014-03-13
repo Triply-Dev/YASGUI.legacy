@@ -12,6 +12,7 @@
 	 * 	height
 	 * 	position
 	 *  onClose
+	 *  hideTitleBar
 	 * 
 	 * }
 	 */
@@ -35,15 +36,18 @@
 		
 		
 		var draw = function(){
-			console.log(config);
-			var el = getElement();
-			el.dialog({
+			var dialogSettings = {
 				closeOnEscape: true,
-//				height: 'auto',
+//					height: 'auto',
 				height: options.height || 'auto',
 				width: options.width || 'auto',
 				position: options.position || 'center'
-			}).dialog("open");
+			};
+			if (options.hideTitleBar) {
+				dialogSettings.dialogClass = "noDialogTitle";
+			}
+			var el = getElement();
+			el.dialog(dialogSettings).dialog("open");
 			//add event handler on -complete- error dialog (i.e. use class name)
 			dismissOnOutsideClick(".ui-dialog", function() {
 				if (options.onClose) options.onClose();
