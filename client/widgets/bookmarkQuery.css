@@ -10,8 +10,10 @@ button.ui-button.bookmarkButton.ui-state-hover {
 }
 
 .bookmarkButton .bookmarkIcon {
-	height: 24px;
-	width: 24px;
+	margin-top: -11px;
+	margin-left: -11px;
+	height: 22px;
+	width: 22px;
 	background-image: url('/images/nounproject/save.png');
 }
 .bookmarkButton.ui-state-hover .bookmarkIcon {

@@ -44,9 +44,9 @@
 		"gearMedium" => array(
 			"size" => 18
 		),
-// 		"save" => array(
-// 			"size" => 18
-// 		),
+		"save" => array(
+			"size" => 22
+		),
 		"search" => array(
 				"size" => 20
 		),

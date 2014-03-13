@@ -17,8 +17,11 @@
 		};
 		
 		var getQueryLink = function() {
-			console.log("get query link");
+			var linkTabSettings = $.extend({}, tabSettings);
+			deleteKey(linkTabSettings, 'results');
+			deleteKey(linkTabSettings, 'id');
 			
+			console.log(linkTabSettings);
 		};
 		
 		drawButton();
