@@ -59,7 +59,7 @@
 		var executeSnorqlQuery = function(uri) {
 			var newQuery = Yasgui.settings.defaultBrowsingTemplate;
 			newQuery = newQuery.replace(/<URI>/g, "<" + uri + ">");
-			Yasgui.settings.getSelectedTab().query = newQuery;
+			Yasgui.settings.getCurrentTab().query = newQuery;
 			Yasgui.tabs.getCurrentTab().cm.reloadFromSettings();
 			Yasgui.sparql.query();
 		};

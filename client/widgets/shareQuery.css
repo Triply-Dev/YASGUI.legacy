@@ -1,0 +1,19 @@
+button.ui-button.queryLinkButton {
+	width: 30px;
+	height:30px;
+	background: inherit;
+	border: 0px;
+}
+
+button.ui-button.queryLinkButton.ui-state-hover {
+	background: #66B3FF;
+}
+
+.queryLinkButton .shareIcon {
+	height: 24px;
+	width: 24px;
+	background-image: url('/images/nounproject/share.png');
+}
+.queryLinkButton.ui-state-hover .shareIcon {
+	background-image: url('/images/nounproject/share_white.png');
+}

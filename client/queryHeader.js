@@ -4,12 +4,12 @@ var QueryHeader = function(parent, tabSettings) {
 	parent.append(queryHeader);
 	var init = function() {
 		
-//		drawQueryIcon();
 		Yasgui.widgets.QueryIcon(addListItem(), tabSettings);
+		Yasgui.widgets.BookmarkManager(addListItem(), tabSettings);
 		Yasgui.widgets.EndpointComboBox(addListItem(), tabSettings);
+		Yasgui.widgets.SearchEndpoints(addListItem(), tabSettings);
 		Yasgui.widgets.RequestConfigMenu(addListItem(), tabSettings);
 		Yasgui.widgets.YasguiConfigMenu(addListItem(true), tabSettings);
-//		appendEndpointSelector();
 	};
 	
 	var addListItem = function(rightAligned) {
@@ -19,7 +19,7 @@ var QueryHeader = function(parent, tabSettings) {
 		return listItem;
 	};
 	var positionElement = function(){
-		var extraOffset = 8; //need to concept overflow of query icon
+		var extraOffset = 12; //need to adjust to overflow of query icon
 		//position header itself
 		queryHeader.css("top", ( $("#tabs").outerHeight(true) + extraOffset) + "px");
 		//redraw background div, otherwise the query content will appear under our query header

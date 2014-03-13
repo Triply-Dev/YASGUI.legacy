@@ -26,7 +26,7 @@
 
 .configRequestButton {
 	width: 170px;
-	position: absolute;
+/* 	position: absolute; */
 	bottom: 0px;
 	top: 0px;
 }

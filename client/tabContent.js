@@ -30,7 +30,7 @@ var TabContent = function(tabSettings) {
 	
 	var positionElements = function() {
 		queryHeader.positionElement();
-		scrollableSubContent.css("margin-top", ($("#tabs").outerHeight(true) + 8 + queryHeader.get().outerHeight(true)) + "px"); 
+		scrollableSubContent.css("margin-top", ($("#tabs").outerHeight(true) + 12 + queryHeader.get().outerHeight(true)) + "px"); 
 	};
 	positionElements();
 	return {

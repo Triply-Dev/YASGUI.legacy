@@ -38,7 +38,7 @@
 					console.log("unrecognized query status in session: " + queryStatus);
 				}
 			});
-			queryIcon.parent().width(queryIcon.width() + 4);
+			queryIcon.parent().width(queryIcon.width() + 8);
 		};
 		
 		

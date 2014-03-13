@@ -1,0 +1,26 @@
+
+.ui-button .ui-icon.searchEndpointsIcon {
+	background-image: url('/images/nounproject/search.png');
+	width: 20px;
+	height: 20px;
+	position:absolute;
+	top: 50%;
+	margin-top: -10px;
+	left: 50%;
+	margin-left: -10px;
+
+}
+
+.searchEndpointsButton.ui-state-hover .searchEndpointsIcon {
+	background-image: url('/images/nounproject/search_white.png');
+}
+
+
+.searchEndpointsButton{
+	width: 30px;
+/* 	position: absolute; */
+	bottom: 0px;
+	top: 0px;
+	margin:auto;
+	height: 100%;
+}

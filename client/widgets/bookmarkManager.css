@@ -1,0 +1,21 @@
+
+.ui-button .ui-icon.bookmarksIcon {
+	background-image: url('/images/nounproject/bookmarks.png');
+	width: 24px;
+	height: 24px;
+
+}
+
+.manageBookmarksButton.ui-state-hover .bookmarksIcon {
+	background-image: url('/images/nounproject/bookmarks_white.png');
+}
+
+
+.manageBookmarksButton{
+	width: 30px;
+/* 	position: absolute; */
+	bottom: 0px;
+	top: 0px;
+	margin:auto;
+	height: 100%;
+}

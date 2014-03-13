@@ -48,7 +48,7 @@
 		var store = function() {
 			Yasgui.storage.set("settings", settings);
 		};
-		var getSelectedTab = function() {
+		var getCurrentTab = function() {
 			if (settings.selectedTabKey != undefined && settings.selectedTabKey >= 0 && settings.selectedTabKey < settings.tabs.length) {
 				return settings.tabs[settings.selectedTabKey];
 			} else {
@@ -65,7 +65,7 @@
 		var settings = fetchSettings();
 		store();
 		settings.store = store;
-		settings.getSelectedTab = getSelectedTab;
+		settings.getCurrentTab = getCurrentTab;
 		settings.getTabById = getTabById;
 		return settings;
 	};

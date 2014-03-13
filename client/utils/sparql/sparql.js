@@ -172,7 +172,7 @@
 			
 			Yasgui.tabs.getCurrentTab().cm.storeInSettings();
 			if (tabSettings == undefined) {
-				tabSettings = Yasgui.settings.getSelectedTab();
+				tabSettings = Yasgui.settings.getCurrentTab();
 			}
 			executionId = Math.random();
 			executedQueries[executionId] = true;

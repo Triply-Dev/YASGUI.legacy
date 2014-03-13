@@ -85,7 +85,7 @@
 				allowNew: true,
 				cols: 2,
 				headers: ["key", "value"],
-				values: getNameValuePairsAsArray(Yasgui.settings.getSelectedTab().params),
+				values: getNameValuePairsAsArray(tabSettings.params),
 				intro: "Manually specify query parameters below. Use this for those triple stores supporting additional parameters, such as <a href='http://4store.org/' target='_blank'>4-store</a> which allows you to specify a <a href='http://4store.org/trac/wiki/Query' target='_blank'>'soft limit'</a> in your request",
 				requiredCols: [0]
 				
@@ -98,7 +98,7 @@
 //				position: { my: "right bottom", at: "right bottom", of: window },
 				content: inputForm.getElement(),
 				onClose: function() {
-					Yasgui.settings.getSelectedTab().params = getArrayAsNameValuePairs(inputForm.getValues());
+					tabSettings.params = getArrayAsNameValuePairs(inputForm.getValues());
 					Yasgui.settings.store();
 				}
 			});
@@ -110,7 +110,7 @@
 				allowNew: true,
 				cols: 2,
 				headers: ["name", "value"],
-				values: getObjectAsArray(Yasgui.settings.getSelectedTab().headers),
+				values: getObjectAsArray(tabSettings.headers),
 				intro: "Manually specify query parameters below. Such headers can be used for authentication purposes, or for passing other relevant information to the SPARQL endpoint",
 				requiredCols: [0]
 				
@@ -123,7 +123,7 @@
 //				position: { my: "right bottom", at: "right bottom", of: window },
 				content: inputForm.getElement(),
 				onClose: function() {
-					Yasgui.settings.getSelectedTab().headers = getArrayAsObject(inputForm.getValues());
+					tabSettings.headers = getArrayAsObject(inputForm.getValues());
 					Yasgui.settings.store();
 				}
 			});
@@ -135,7 +135,7 @@
 				allowNew: true,
 				cols: 1,
 				headers: ["Named Graph"],
-				values: Yasgui.settings.getSelectedTab().namedGraphs,
+				values: tabSettings.namedGraphs,
 				requiredCols: [0]
 				
 			});
@@ -147,7 +147,7 @@
 //				position: { my: "right bottom", at: "right bottom", of: window },
 				content: inputForm.getElement(),
 				onClose: function() {
-					Yasgui.settings.getSelectedTab().namedGraphs = inputForm.getValues();
+					tabSettings.namedGraphs = inputForm.getValues();
 					Yasgui.settings.store();
 				}
 			});
@@ -159,7 +159,7 @@
 				allowNew: true,
 				cols: 1,
 				headers: ["Default Graph"],
-				values: Yasgui.settings.getSelectedTab().defaultGraphs,
+				values: tabSettings.defaultGraphs,
 				requiredCols: [0]
 				
 			});
@@ -171,7 +171,7 @@
 //				position: { my: "right bottom", at: "right bottom", of: window },
 				content: inputForm.getElement(),
 				onClose: function() {
-					Yasgui.settings.getSelectedTab().defaultGraphs = inputForm.getValues();
+					tabSettings.defaultGraphs = inputForm.getValues();
 					Yasgui.settings.store();
 				}
 			});

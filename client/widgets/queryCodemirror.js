@@ -125,17 +125,9 @@
 		};
 		var addHoverComponents = function() {
 			var hoverDiv = $("<div class='queryHoverComponents'></div>").zIndex(Yasgui.constants.zIndexes.tabHeader).appendTo(parent);
-			$("<button class='queryLinkButton'></button>").appendTo(hoverDiv).button({
-			    icons: {
-			        primary: "shareIcon"
-			      },
-			      text: false
-			}).on("click", getQueryLink);
-//			$("<img></img>").attr("src", Yasgui.constants.imgs.share.get()).appendTo(hoverDiv).on("click", getQueryLink);
-		};
-		
-		var getQueryLink = function() {
-			console.log("query link");
+			
+			Yasgui.widgets.BookmarkQuery(hoverDiv, tabSettings);
+			Yasgui.widgets.ShareQuery(hoverDiv, tabSettings);
 		};
 		
 		var reloadFromSettings = function() {

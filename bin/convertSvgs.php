@@ -5,15 +5,11 @@
 
 
 	$imgConfigs = array(
-// 		"play" => array(
-// 			"size" => 48
-// 		),
-// 		"playError" => array(
-// 			"size" => 48
-// 		),
-		"playLow" => array(
-			"ar" => "100:71",
-			"size" => 48
+		"play" => array(
+			"size" => 32
+		),
+		"playError" => array(
+			"size" => 32
 		),
 		"arrows" => array(
 			"size" => 19
@@ -50,6 +46,9 @@
 		),
 		"save" => array(
 			"size" => 18
+		),
+		"search" => array(
+				"size" => 20
 		),
 	);
 	$imgs = array();

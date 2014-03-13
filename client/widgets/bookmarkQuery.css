@@ -1,0 +1,19 @@
+button.ui-button.bookmarkButton {
+	width: 30px;
+	height:30px;
+	background: inherit;
+	border: 0px;
+}
+
+button.ui-button.bookmarkButton.ui-state-hover {
+	background: #66B3FF;
+}
+
+.bookmarkButton .bookmarkIcon {
+	height: 24px;
+	width: 24px;
+	background-image: url('/images/nounproject/save.png');
+}
+.bookmarkButton.ui-state-hover .bookmarkIcon {
+	background-image: url('/images/nounproject/save_white.png');
+}

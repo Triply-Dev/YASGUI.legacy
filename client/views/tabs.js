@@ -11,7 +11,7 @@ $(function() {
 		Yasgui.tabs = {
 			getCurrentTab: function() {
 				//helper function for getting selected tab content
-				return Yasgui.tabs[Yasgui.settings.getSelectedTab().id];
+				return Yasgui.tabs[Yasgui.settings.getCurrentTab().id];
 			},
 			getAllTabIds: function() {
 				var keys = [];
@@ -47,7 +47,7 @@ $(function() {
 					if ($("#" + selectedTabId).html().length == 0) {
 						//content is not drawn yet. Draw it!
 						if (Yasgui.tabs[selectedTabId] == undefined) {
-							Yasgui.tabs[selectedTabId] = new Yasgui.objs.TabContent(Yasgui.settings.getSelectedTab());
+							Yasgui.tabs[selectedTabId] = new Yasgui.objs.TabContent(Yasgui.settings.getCurrentTab());
 						}
 					}
 				} else {
@@ -325,7 +325,7 @@ $(function() {
 		if (newVal == '' || newVal == undefined) {
 			newVal = 'Untitled';
 		}
-		Yasgui.settings.getSelectedTab().tabTitle = newVal;
+		Yasgui.settings.getCurrentTab().tabTitle = newVal;
 		Yasgui.settings.store();
 		// remove current title
 		
@@ -347,7 +347,7 @@ $(function() {
 	};
 	
 	var selectTabFromSettings = function() {
-		var selectedTabSettings = Yasgui.settings.getSelectedTab();
+		var selectedTabSettings = Yasgui.settings.getCurrentTab();
 		var tabId = null;
 		if (selectedTabSettings == null || !tabIdExists(selectedTabSettings.id)) {
 			//select first tab item
