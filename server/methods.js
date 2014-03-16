@@ -5,15 +5,16 @@ Meteor.methods({
 	forcePrefixUpdate: function() {
 		return PrefixFetcher().fetch();
 	},
+	shortenUrl: function(longUrl) {
+		return HTTP.get("http://tinyurl.com/api-create.php", {
+			params: {
+				url: longUrl
+			}
+		});
+	},
 	query: function(method, url, options) {
-//		Npm.require('jquery');
 		try {
 			return HTTP.call(method, url, options);
-			
-			
-			
-			
-			
 		} catch (e) {
 			return new Meteor.Error(500, e.message);
 		}

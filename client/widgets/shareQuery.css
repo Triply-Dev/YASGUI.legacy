@@ -17,3 +17,13 @@ button.ui-button.queryLinkButton.ui-state-hover {
 .queryLinkButton.ui-state-hover .shareIcon {
 	background-image: url('/images/nounproject/share_white.png');
 }
+input.queryLink {
+	padding: 4px;
+	width: 100%;
+}
+button.shortenUrl {
+	height: 28px;
+}
+button.shortenUrl span.ui-button-text {
+	padding: .2em 1em;
+}

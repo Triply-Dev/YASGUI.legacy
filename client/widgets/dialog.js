@@ -13,6 +13,8 @@
 	 * 	position
 	 *  onClose
 	 *  hideTitleBar
+	 *  minHeight
+	 *  minWidth
 	 * 
 	 * }
 	 */
@@ -41,11 +43,14 @@
 //					height: 'auto',
 				height: options.height || 'auto',
 				width: options.width || 'auto',
-				position: options.position || 'center'
+				position: options.position || 'center',
+				
 			};
 			if (options.hideTitleBar) {
 				dialogSettings.dialogClass = "noDialogTitle";
 			}
+			if ("minHeight" in options) dialogSettings.minHeight = options.minHeight;
+			if ("minWidth" in options) dialogSettings.minWidth = options.minWidth;
 			var el = getElement();
 			el.dialog(dialogSettings).dialog("open");
 			//add event handler on -complete- error dialog (i.e. use class name)
