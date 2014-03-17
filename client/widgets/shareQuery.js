@@ -25,15 +25,22 @@
 				}
 				
 			});
-		}
+		};
+		
+		var getRegularLink = function(linkTabSettings) {
+			var alreadyExistingUrlParams = {};
+			if (window.location.search.length > 1) {
+				//we already have some arguments. overwrite the ones we want to add
+				linkTabSettings = $.extend({}, $.deparam(window.location.search.substring(1)), linkTabSettings);
+			}
+			return [location.protocol, '//', location.host, location.pathname, '?', $.param(linkTabSettings)].join('');
+		};
 		var drawLinkWindow = function() {
-			
 			var linkTabSettings = $.extend({}, tabSettings);
 			deleteKey(linkTabSettings, 'results');
 			deleteKey(linkTabSettings, 'id');
-			
 			var windowContent = $("<div></div>");
-			var link = window.location.href + "?" +  $.param(linkTabSettings);
+			var link = getRegularLink(linkTabSettings);
 			var inputElement = $('<input class="queryLink" type="text">').val(link).on("focus", function(){
 			    this.select();
 			    return false;
@@ -45,7 +52,6 @@
 				windowContent.append($("<p></p>").html("You are using YASGUI via an external site. Note that this link points to the original YASGUI website: <a href='" + window.location.href + "' target='_blank'>" + window.location.href + "</a>!"));
 			}
 			var shortenButton = $("<button class='shortenUrl'>Shorten URL</button>").button().on("click", function() {
-				console.log("shorten url");
 				getShortLink(link, function(shortLink){
 					inputElement.val(shortLink).focus();
 				});

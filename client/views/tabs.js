@@ -93,7 +93,7 @@ $(function() {
 				});
 		$('#addTab').on('click', function() {
 			
-			var tabSettings = addTab(jQuery.extend(true, {}, Yasgui.settings.defaultTabSettings), true);
+			var tabSettings = addTab(jQuery.extend(true, {}, Yasgui.settings.defaults.tabSettings), true);
 			selectTabFromId(tabSettings.id);
 		});
 		
@@ -265,7 +265,7 @@ $(function() {
 		}
 		
 		
-		var tabTitle = (newlyCreatedTab? getNewTabTitle(Yasgui.settings.defaultTabSettings.tabTitle): tabSettings.tabTitle),
+		var tabTitle = (newlyCreatedTab? getNewTabTitle(Yasgui.settings.defaults.tabSettings.tabTitle): tabSettings.tabTitle),
 				li = $(tabTemplate = "<li style='vertical-align:middle;'><a href='#" + id + "'>" + tabTitle + getCloseButton() + "</a></li>");
 		tabSettings.id = id;
 		tabSettings.tabTitle = tabTitle;

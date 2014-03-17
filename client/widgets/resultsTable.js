@@ -57,7 +57,7 @@
 		};
 		
 		var executeSnorqlQuery = function(uri) {
-			var newQuery = Yasgui.settings.defaultBrowsingTemplate;
+			var newQuery = Yasgui.settings.defaults.tabularBrowsingTemplate;
 			newQuery = newQuery.replace(/<URI>/g, "<" + uri + ">");
 			Yasgui.settings.getCurrentTab().query = newQuery;
 			Yasgui.tabs.getCurrentTab().cm.reloadFromSettings();

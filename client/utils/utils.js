@@ -112,4 +112,5 @@
 			delete jsonObj[key];
 		} catch(e){}
 	};
+
 }).call(this);
