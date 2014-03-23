@@ -1,0 +1,35 @@
+
+.queryHeader li .configRequestButton span{
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+
+.configRequestButton {
+	width: 170px;
+/* 	position: absolute; */
+	bottom: 0px;
+	top: 0px;
+	margin: auto;
+}
+
+.configRequestButton .ui-button-text {
+	padding-left: 15px;
+	padding-right: 15px;
+}
+.configRequestButton .ui-button-icon-secondary {
+	/*position 'icon down'*/
+	margin-top: -9px;
+}
+
+.configRequestButton .gearIcon {
+	top: 50%;
+	margin-top: -7px;
+	position:absolute;
+	height: 14px;
+	width: 14px;
+	display: block;
+	background-image: url('/images/nounproject/gear.png');
+}
+.configRequestButton.ui-state-hover .gearIcon, .configRequestButton.ui-state-focus .gearIcon {
+	background-image: url('/images/nounproject/gear_white.png');
+}

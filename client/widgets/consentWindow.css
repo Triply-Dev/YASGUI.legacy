@@ -1,0 +1,31 @@
+.consentButtonRow button span.ui-button-icon-primary {
+	top: 50%;
+	margin-top: -8px;
+	position:absolute;
+	height: 16px;
+	width: 16px;
+	display: block;
+}
+.consentButtonRow button span.checkIcon {
+	background-image: url('/images/nounproject/checkMark.png');
+}
+.consentButtonRow {
+	text-align:center;
+/* 	height: 50px; */
+/* 	position: relative; */
+}
+/* .consentButtonRow button { */
+/* 	top: 0px; */
+/* 	bottom: 0px; */
+/* 	height: 100%; */
+	
+/* } */
+.consentButtonRow button span.checkCrossIcon {
+	background-image: url('/images/nounproject/checkCross.png');
+}
+.consentButtonRow button span.crossIcon {
+	background-image: url('/images/nounproject/crossMedium.png');
+}
+.configRequestButton.ui-state-hover .gearIcon, .configRequestButton.ui-state-focus .gearIcon {
+	background-image: url('/images/nounproject/gear_white.png');
+}

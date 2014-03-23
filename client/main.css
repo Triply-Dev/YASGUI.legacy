@@ -1,21 +1,7 @@
 html, body {
-/*     height: 100%; */
     margin: 0px;
     font-size: 12px;
-/*     overflow:hidden; */
 }
-/* select { */
-/* 	border: 1px solid #000; */
-/* 	font-size: 14px; */
-/* 	color: #fff; */
-/* 	background: #444; */
-/* 	padding: 5px; */
-/* } */
-/* .yasguiLogo { */
-/* 	font-family: 'Audiowide'; */
-/* 	font-size: 40px; */
-/* 	cursor: pointer; */
-/* } */
 
 .scrollableTabContent {
 	padding-top: 4px;
@@ -33,16 +19,6 @@ html, body {
 	height: 36px;
 }
 
-
-.configRequestButton{
-	top: 0px; 
-	bottom: 0px;
-	margin: auto;
-}
-.queryHeader li .configRequestButton span{
-	padding-top: 3px;
-	padding-bottom: 3px;
-}
 
 
 #loginButtons {

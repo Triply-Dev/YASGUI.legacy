@@ -15,6 +15,7 @@
 	 *  hideTitleBar
 	 *  minHeight
 	 *  minWidth
+	 *  onOpen
 	 * 
 	 * }
 	 */
@@ -24,6 +25,9 @@
 		var title = options.title || "&nbsp";
 		var content = options.content || "";
 		
+		var close = function() {
+			$("#" + id).remove();
+		};
 		var getElement = function() {
 			var el = $("#" + id);
 			if (el.length == 0) {
@@ -49,19 +53,25 @@
 			if (options.hideTitleBar) {
 				dialogSettings.dialogClass = "noDialogTitle";
 			}
+			if (options.onOpen) {
+				dialogSettings.open = options.onOpen;
+			}
 			if ("minHeight" in options) dialogSettings.minHeight = options.minHeight;
 			if ("minWidth" in options) dialogSettings.minWidth = options.minWidth;
 			var el = getElement();
 			el.dialog(dialogSettings).dialog("open");
-			//add event handler on -complete- error dialog (i.e. use class name)
+			//add event handler on -complete- dialog (i.e. use class name)
 			dismissOnOutsideClick(".ui-dialog", function() {
 				if (options.onClose) options.onClose();
-				$("#" + id).remove();
+				close();
 			});
 		};
 		
 		
 		draw();
+		return {
+			close: close
+		}
 	};
 }).call(this);
 

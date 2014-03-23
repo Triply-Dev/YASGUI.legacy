@@ -50,6 +50,15 @@
 		"search" => array(
 				"size" => 20
 		),
+		"checkMark" => array(
+				"size" => 16
+		),
+		"checkCross" => array(
+				"size" => 16
+		),
+		"crossMedium" => array(
+			"size" => 16
+		),
 	);
 	$imgs = array();
 	if (count($argv) > 1) {

@@ -6,6 +6,20 @@
 	this.Yasgui.widgets.YasguiConfigMenu = function(parent, tabSettings) {
 		var menuButton;
 		var menu;
+		
+		
+		/**
+		 * 
+		 * config:
+		 * - change browsing query
+		 * - change logging thing
+		 * - clear caches
+		 
+		 * - help
+		 * - about
+		 */
+		
+		
 		var drawButton = function() {
 			menuButton = $("<button class='yasguiConfigButton'></button>").button({
 				icons: {
