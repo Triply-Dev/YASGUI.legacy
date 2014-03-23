@@ -6,7 +6,7 @@ clientSettings = {
 	"githubOathToken": "",
 	"githubRepo": "",
 	"browserTitle": "YASGUI",
-	"trackingUsage": null,//yes, no, partial, or null (i.e. show consent window)
+	"trackUsage": null,//yes, no, partial, or null (i.e. show consent window)
 	"defaults": {
 		"tabularBrowsingTemplate": "SELECT ?property ?hasValue ?isValueOf\nWHERE {\t{ <URI> ?property ?hasValue\t}\nUNION\t{ ?isValueOf ?property <URI> }\n}",
 		"showDownloadProgressBar": true,

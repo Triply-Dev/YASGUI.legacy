@@ -18,6 +18,13 @@ window.onresize = function() {
 
 
 
+$( document ).ready(function() {
+	if (Yasgui.settings.trackUsage == null || Yasgui.settings.trackUsage == undefined) {
+		Yasgui.widgets.ConsentWindow();
+	}
+});
+
+
 //Meteor.startup(function() {
 //	Meteor.call("forcePrefixUpdate", function(errorMsg, result){
 //		if (result == undefined) {
