@@ -74,7 +74,10 @@
 			 * 6.
 			 * Settings passed via a parent callback function. Deal with this the same as 5
 			 */
-			
+//			if (parent && parent.yasguiParentHandler) {
+//				settings = $.extend(true, settings, parent.yasguiParentHandler());
+//			}
+			sendToParent("blaat");
 			
 			/**
 			 * Some post processing stuff
