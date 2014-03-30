@@ -6,8 +6,9 @@
 		
 		var fetchSettings = function() {
 			var newUser = Yasgui.storage.get("settings") == undefined;
-			//we have 6 sources for our settings: 
-			
+			//we have 5 sources for our settings: 
+			//1. The local storage
+			//2. Our default config
 			//3. Our server-side config: this one contains sensitive data. Always overwrite settings object with this config
 			//4. Query arguments passed via the url. Check whether this is a new visitor. If it is, use these args to change our only tab. Otherwise, create new tab using these args
 			//5. The settings passed via the url (i.e. 'jsonSettings'). Overwrite settings object
@@ -22,7 +23,7 @@
 			
 			/**
 			 * 2.
-			 * Our client-side default config: interesting, as this one contains the 'allowedFeatures' setting, 
+			 * Our default config: interesting, as this one contains the 'allowedFeatures' setting, 
 			 * which might have changed after the previous user session. 
 			 */
 			//Overwrite settings from 1 with 2.
@@ -65,10 +66,10 @@
 			 * 5.
 			 * The settings passed via the url (i.e. 'settings'). Overwrite settings object
 			 */
-			if (window.location.search && window.location.search > 1 && window.location.search.contains("settings")) {
+			if (window.location.search && window.location.search.length > 1 && window.location.search.contains("settings")) {
 				var urlParams = $.deparam(window.location.search.substring(1));
 				if (urlParams.settings) {
-					$.extend(true, settings, urlParams.settings);
+					$.extend(true, settings, JSON.parse(urlParams.settings));
 				}
 			}
 			
@@ -83,10 +84,13 @@
 				//should we've added a new features, we want this one incorporated as well
 				settings.enabledFeatures = $.extend(true, {}, settings.allowedFeatures, settings.enabledFeatures);
 				
-				
+				for (var key in settings.allowedFeatures) {
+					//hmm, we want to avoid having something enabled, when we've switched it to not allows
+					if (!settings.allowedFeatures[key] && settings.enabledFeatures[key]) settings.enabledFeatures[key] = false;
+				}
 			}
-		};
-		
+		}
+			
 		var getTabSettingsFromUrl = function() {
 			var urlSettings = {};
 			var urlParamString = (window.location.search.length > 1? window.location.search.substring(1): null);
