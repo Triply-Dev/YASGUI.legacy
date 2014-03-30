@@ -2,7 +2,7 @@
 	this.Yasgui = this.Yasgui || {};
 	this.Yasgui.iframe = this.Yasgui.iframe || {};
 	this.Yasgui.iframe = new function() {
-		Yasgui.settings.callbacks = Yasgui.settings.callbacks || {};
+//		Yasgui.settings.callbacks = Yasgui.settings.callbacks || {};
 		//extract parent domain (without any ports) when we are in an iframe
 		var parentDomain = (parent !== window? document.referrer.match(/^(https?\:\/\/[^\/:?#]+)(?:[\/:?#]|$)/i)[1]: null);
 		
