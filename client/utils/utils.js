@@ -114,6 +114,9 @@
 	};
 	
 	this.sendToParent = function(obj){
+		var parent_url = decodeURIComponent( document.location.hash.replace( /^#/, '' ) );
+		parent_url = document.referrer;
+		top.postMessage(obj, parent_url);
 		 // var parent_url = decodeURIComponent( document.location.hash.replace( /^#/, '' ) );
 		 // $.postMessage(obj,parent_url,parent);
 		};

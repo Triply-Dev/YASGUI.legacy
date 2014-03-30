@@ -24,7 +24,6 @@
 					}).blur().button( "option", "icons", { primary: "queryIconBusy" } );
 				} else if (queryStatus == "error") {
 					queryIcon.off("click").click(function(){
-						console.log("query");
 						Yasgui.sparql.query();
 						return false;
 					}).blur().button( "option", "icons", { primary: "queryIconInvalid" } );

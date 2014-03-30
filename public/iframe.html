@@ -1,0 +1,17 @@
+<html>
+<head>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
+<script src="iframeHelper.js"></script>
+<script type='text/javascript'>
+var iframeManager;
+	$( document ).ready(function() {
+		iframeManager = yasguiIframeManager(document.getElementById("blaat"), "http://localhost:3000", {});
+	});
+</script>
+</head>
+<body>
+<iframe id="blaat" width="100%" height="100%" allowtransparency="true" frameborder="0" border="0" style="border:0 none;"></iframe>
+</body>
+
+
+</html>
