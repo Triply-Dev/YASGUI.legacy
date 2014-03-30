@@ -5,9 +5,13 @@ var QueryHeader = function(parent, tabSettings) {
 	var init = function() {
 		
 		Yasgui.widgets.QueryIcon(addListItem(), tabSettings);
-		Yasgui.widgets.BookmarkManager(addListItem(), tabSettings);
-		Yasgui.widgets.EndpointComboBox(addListItem(), tabSettings);
-		Yasgui.widgets.SearchEndpoints(addListItem(), tabSettings);
+		if (Yasgui.settings.enabledFeatures.queryBookmarks) {
+			Yasgui.widgets.BookmarkManager(addListItem(), tabSettings);
+		}
+		if (Yasgui.settings.enabledFeatures.endpointSelection) {
+			Yasgui.widgets.EndpointComboBox(addListItem(), tabSettings);
+			Yasgui.widgets.SearchEndpoints(addListItem(), tabSettings);
+		}
 		Yasgui.widgets.RequestConfigMenu(addListItem(), tabSettings);
 		Yasgui.widgets.YasguiConfigMenu(addListItem(true), tabSettings);
 	};

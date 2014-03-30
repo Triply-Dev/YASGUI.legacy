@@ -4,9 +4,6 @@
 	this.Yasgui.objs.Settings = function() {
 		var settings;
 		
-		var addUnknownValuesToSettings = function(settingsToAdd) {
-			
-		};
 		var fetchSettings = function() {
 			var newUser = Yasgui.storage.get("settings") == undefined;
 			//we have 6 sources for our settings: 
@@ -14,7 +11,6 @@
 			//3. Our server-side config: this one contains sensitive data. Always overwrite settings object with this config
 			//4. Query arguments passed via the url. Check whether this is a new visitor. If it is, use these args to change our only tab. Otherwise, create new tab using these args
 			//5. The settings passed via the url (i.e. 'jsonSettings'). Overwrite settings object
-			//6. Settings passed via a parent callback function. Deal with this the same as 5
 			
 			
 	
@@ -30,7 +26,7 @@
 			 * which might have changed after the previous user session. 
 			 */
 			//Overwrite settings from 1 with 2.
-			settings = $.extend(true, {}, clientSettings, settings);
+			settings = $.extend(true, {}, settings, clientSettings);
 			//Add 'defaultSettings' to root settings object (except the default tab settings, as we use this manually later on in this class)
 			var defaultSettings = $.extend(true, {}, settings.defaultSettings);//make clone. we don't want to remove tabSettings from original object
 			deleteKey(defaultSettings, "tabSettings");
@@ -67,17 +63,14 @@
 			
 			/**
 			 * 5.
-			 * The settings passed via the url (i.e. 'jsonSettings'). Overwrite settings object
+			 * The settings passed via the url (i.e. 'settings'). Overwrite settings object
 			 */
-			
-			/**
-			 * 6.
-			 * Settings passed via a parent callback function. Deal with this the same as 5
-			 */
-//			if (parent && parent.yasguiParentHandler) {
-//				settings = $.extend(true, settings, parent.yasguiParentHandler());
-//			}
-			sendToParent("blaat");
+			if (window.location.search && window.location.search > 1 && window.location.search.contains("settings")) {
+				var urlParams = $.deparam(window.location.search.substring(1));
+				if (urlParams.settings) {
+					$.extend(true, settings, urlParams.settings);
+				}
+			}
 			
 			/**
 			 * Some post processing stuff
@@ -88,9 +81,10 @@
 				settings.enabledFeatures = settings.allowedFeatures;
 			} else {
 				//should we've added a new features, we want this one incorporated as well
-				settings.enabledFeatures = $.merge(true, {}, settings.allowedFeatures, settings.enabledFeatures);
+				settings.enabledFeatures = $.extend(true, {}, settings.allowedFeatures, settings.enabledFeatures);
+				
+				
 			}
-			
 		};
 		
 		var getTabSettingsFromUrl = function() {

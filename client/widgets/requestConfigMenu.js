@@ -6,16 +6,16 @@
 	this.Yasgui.widgets.RequestConfigMenu = function(parent, tabSettings) {
 		var menuButton;
 		var menu;
+		
+		
 		var drawButton = function() {
+			if (!somethingToDraw()) return;
 			menuButton = $('<button class="configRequestButton">Configure Request</button>').button({
 				icons: {
 			        primary: "gearIcon",
 			        secondary: "ui-icon-triangle-1-s"
 			      }
 			}).on("click", drawMenu);
-//			menuButton.height(26).button();
-//			menuButton.button();
-//			menuButton.on("click", drawMenu);
 			parent.append(menuButton);
 		};
 		
@@ -180,14 +180,31 @@
 		var getSpacer = function() {
 			return "<span style='margin-left:22px;'></span>";
 		}
+		
+		var somethingToDraw = function() {
+			return Yasgui.settings.enabledFeatures.requestParameters ||
+			Yasgui.settings.enabledFeatures.requestHeaders ||
+			Yasgui.settings.enabledFeatures.namedGraphs ||
+			Yasgui.settings.enabledFeatures.defaultGraphs;
+		};
 		var drawMenu = function(event) {
 			menu = $("<ul id='requestConfigMenu'></ul>").width(200).zIndex(Yasgui.objs.ZIndexes().tabHeader);
 			
-			
-			menu.append($("<li><a href='#'>Specify Request Parameters</li>").on("click", editQueryParameters));
-			menu.append($("<li><a href='#'>Specify Request Headers</li>").on("click", editQueryHeaders));
-			menu.append($("<li><a href='#'>Specify Named Graphs</li>").on("click", editNamedGraphs));
-			menu.append($("<li><a href='#'>Specify Default Graphs</li>").on("click", editDefaultGraphs));
+			/**
+			 * NOTE TO SELF: when we add a check here, make sure to also update the method 'somethingToDraw'
+			 */
+			if (Yasgui.settings.enabledFeatures.requestParameters) {
+				menu.append($("<li><a href='#'>Specify Request Parameters</li>").on("click", editQueryParameters));
+			}
+			if (Yasgui.settings.enabledFeatures.requestHeaders) {
+				menu.append($("<li><a href='#'>Specify Request Headers</li>").on("click", editQueryHeaders));
+			}
+			if (Yasgui.settings.enabledFeatures.namedGraphs) {
+				menu.append($("<li><a href='#'>Specify Named Graphs</li>").on("click", editNamedGraphs));
+			}
+			if (Yasgui.settings.enabledFeatures.defaultGraphs) {
+				menu.append($("<li><a href='#'>Specify Default Graphs</li>").on("click", editDefaultGraphs));
+			}
 			
 			/**
 			 * Draw accept headers

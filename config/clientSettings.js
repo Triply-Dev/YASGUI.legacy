@@ -26,12 +26,15 @@ clientSettings = {
 	},
 	"allowedFeatures": {
 		"endpointSelection": true,
-		"queryParameters": true,
+		"requestParameters": true,
+		"requestHeaders": true,
 		"namedGraphs": true,
 		"defaultGraphs": true,
 		"acceptHeaders": true,
 		"requestMethod": true,
 		"offlineCaching": true,
+		"querySharing": true,
+		"queryBookmarks": true,
 		"propertyCompletionMethods": {
 			"lov": true,
 			"query": true,
