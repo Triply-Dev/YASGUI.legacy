@@ -28,6 +28,7 @@
 				} else {
 					var prefixArray = [];
 					for (var prefix in result) {
+						if (prefix == "bif") continue;//skip this one! see #231
 						var completeString = prefix + ": <" + result[prefix] + ">";
 						prefixes.insert(completeString);//the trie we have in memory
 						prefixArray.push(completeString);//the array we want to store in localstorage
