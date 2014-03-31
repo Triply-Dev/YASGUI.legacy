@@ -10,45 +10,29 @@
 			
 			//then try if we have anything cached in our db (done async)
 			//if the things in our dataset are stale, then a force fetch is executed
-			if (prefixes.prefixes == 0) fetchFromDb();
+			if (prefixes.prefixes == 0) fetchFromServer();
 		};
 		var fetchFromLocalStorage = function() {
 			var prefixArray = Yasgui.storage.get("prefixes");
 			if (prefixArray != null && prefixArray.length > 0) {
 				addArrayToTrie(prefixArray);
+			} else {
+				fetchFromServer();
 			}
 		};
 		
-		var fetchFromDb = function() {
-			console.log("fetching prefixes from db");
-			Meteor.subscribe("prefixes", function(){
-				console.log(Prefixes);
-				var prefix = Prefixes.findOne({}, {reactive: false});
-				if (prefix != null && dateDiffInDays(new Date(), prefix.date) < cacheExpireDays) {
-					var results = Prefixes.find({}).fetch();
-					var prefixArray = [];
-					for (var i = 0; i < results.length; i++) {
-						var completeString = results.prefix + ": <" + results.uri + ">";
-						prefixes.insert(completeString);
-						prefixArray.push(completeString);
-					}
-					Yasgui.storage.set("prefixes", prefixArray, "month", true);
-				} else {
-					//no results, or stale results
-					fetchFromPrefixCc();
-				}
-			});
-			
-			
-		};
-		var fetchFromPrefixCc = function() {
-			console.log("forcing prefixes update");
-			Meteor.call("forcePrefixUpdate", function(errorMsg, result){
+		var fetchFromServer = function() {
+			Meteor.call("fetchPrefixes", function(errorMsg, result){
 				if (result == undefined) {
 					console.log(errorMsg);
 				} else {
-					console.log(result);
-					fetchFromDb();
+					var prefixArray = [];
+					for (var prefix in result) {
+						var completeString = prefix + ": <" + result[prefix] + ">";
+						prefixes.insert(completeString);//the trie we have in memory
+						prefixArray.push(completeString);//the array we want to store in localstorage
+					}
+					Yasgui.storage.set("prefixes", prefixArray, "month", true);
 				}
 				
 			});
@@ -65,8 +49,7 @@
 		fetch();
 		return {
 			complete: autocomplete,
-			forceFetch: fetchFromPrefixCc, 
-			fetchFromDb: fetchFromDb
+			forceFetch: fetchFromServer 
 		};
 	};
 }).call(this);

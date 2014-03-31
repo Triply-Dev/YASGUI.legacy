@@ -2,8 +2,8 @@ Meteor.methods({
 	getSettings : function() {
 		return JSON.parse(Assets.getText("serverSettings.json"));
 	},
-	forcePrefixUpdate: function() {
-		return PrefixFetcher().fetch();
+	fetchPrefixes: function() {
+		return JSON.parse(HTTP.get("http://prefix.cc/popular/all.file.json").content);
 	},
 	shortenUrl: function(longUrl) {
 		return HTTP.get("http://tinyurl.com/api-create.php", {

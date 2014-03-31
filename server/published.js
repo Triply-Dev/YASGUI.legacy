@@ -1,3 +1,3 @@
-Meteor.publish("prefixes", function () {
-  return Prefixes.find({});
-});
+//Meteor.publish("prefixes", function () {
+//  return Prefixes.find({});
+//});
