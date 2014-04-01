@@ -100,9 +100,15 @@ public class SparqlQuery {
 		RequestBuilder.Method requestMethod = queryRequestMethod;
 		queryArgs.put("query", queryString);
 		if (JsMethods.corsEnabled(endpoint)) {
-			builder = new RequestBuilder(queryRequestMethod, endpoint + "?" + Helper.getParamsAsString(queryArgs));
+			String params = Helper.getParamsAsString(queryArgs);
+			String url = endpoint;
+			if (queryRequestMethod == RequestBuilder.GET) {
+				url += "?" + params;
+			}
+			builder = new RequestBuilder(queryRequestMethod, url);
 			if (queryRequestMethod == RequestBuilder.POST) {
 				builder.setHeader("Content-Type", "application/x-www-form-urlencoded");
+				builder.setRequestData(params);
 			}
 		} else {
 			requestMethod = RequestBuilder.POST;

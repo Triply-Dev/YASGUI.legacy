@@ -56,4 +56,15 @@
 		<nature>org.eclipse.wst.jsdt.core.jsNature</nature>
 		<nature>com.google.gwt.eclipse.core.gwtNature</nature>
 	</natures>
+	<filteredResources>
+		<filter>
+			<id>1396353701345</id>
+			<name></name>
+			<type>30</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-bin</arguments>
+			</matcher>
+		</filter>
+	</filteredResources>
 </projectDescription>
