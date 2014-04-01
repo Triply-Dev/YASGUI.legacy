@@ -1,6 +1,6 @@
 (function(){
-
-	
+	this.Yasgui = this.Yasgui || {};
+	this.Yasgui.stringutils = {};
 	if (typeof String.prototype.startsWith != 'function') {
 		String.prototype.startsWith = function(str) {
 			return this.slice(0, str.length) == str;
@@ -16,13 +16,23 @@
 			return this.indexOf(str) >= 0;
 		};
 	};
-	this.getHtmlAsText = function(htmlString) {
+	
+	this.Yasgui.stringutils.getHtmlAsText = function(htmlString) {
 		var cleanedString = htmlString;
 		if (htmlString.trim().startsWith("<")) {
 			cleanedString = $('<i>').html(htmlString).text();
 		}
 		
 		return cleanedString;
+	};
+	this.Yasgui.stringutils.getUncommentedSparqlQuery = function(origQuery) {
+		var cleanedQuery = "";
+		CodeMirror.runMode(origQuery, "sparql11", function(stringVal, className) {
+			if (className != "sp-comment") {
+				cleanedQuery += stringVal;
+			}
+		});
+		return cleanedQuery;
 	};
 	
 	

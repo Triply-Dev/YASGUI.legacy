@@ -122,20 +122,26 @@
 		};
 		
 		var query = function(tabSettings) {
+			var loggingEnabled = Yasgui.logger.isQueryLoggingEnabled();
 			var callback = function(error, result) {
 				if (executionId in executedQueries) {
+					var startTime = executedQueries[executionId];
+					var endTime = new Date().getMilliseconds();
+					var loggedQuery = Yasgui.stringutils.getUncommentedSparqlQuery(tabSettings.query);
 					deleteKey(executedQueries, executionId);
 					if (error) {
 						console.log("error1");
 						console.log(error);
 						console.log(result);
+						if (loggingEnabled) Yasgui.logger.track(tabSettings.endpoint, loggedQuery, -1, -1);
 						onQueryError(error.message);
 					} else if (result.error) {
 						console.log("result error");
 						console.log(result.message);
-						
+						if (loggingEnabled) Yasgui.logger.track(tabSettings.endpoint, loggedQuery, -1, -1);
 						onQueryError(result.message);
 					} else {
+						if (loggingEnabled) Yasgui.logger.track(tabSettings.endpoint, loggedQuery, endTime - startTime, endTime - startTime);
 						var referencedTabSettings = Yasgui.settings.getTabById(tabSettings.id);
 						if (referencedTabSettings) {
 							if (result.content.length < 100000) {
@@ -169,13 +175,12 @@
 					title: "Error Executing Query"
 				});
 			};
-			
 			Yasgui.tabs.getCurrentTab().cm.storeInSettings();
 			if (tabSettings == undefined) {
 				tabSettings = Yasgui.settings.getCurrentTab();
 			}
 			executionId = Math.random();
-			executedQueries[executionId] = true;
+			executedQueries[executionId] = new Date().getMilliseconds();//track start time as well, so we can measure how long the query takes
 			Session.set("queryStatus", "busy");
 			Yasgui.tabs[tabSettings.id].results.clearResults();
 			var method = tabSettings.requestMethod;

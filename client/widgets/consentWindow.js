@@ -14,7 +14,8 @@
 							primary : "checkIcon"
 						}
 					}).on("click", function(){
-						Yasgui.settings.trackgUsage = "yes";
+						Yasgui.logger.track("consent", "yes");
+						Yasgui.settings.logging.enabled = "yes";
 						Yasgui.settings.store();
 						dialog.close();
 				}))
@@ -23,7 +24,8 @@
 							primary : "checkCrossIcon"
 						}
 					}).on("click", function(){
-						Yasgui.settings.trackUsage = "partial";
+						Yasgui.logger.track("consent", "yes/no");
+						Yasgui.settings.logging.enabled = "partial";
 						Yasgui.settings.store();
 						dialog.close();
 				}))
@@ -32,7 +34,8 @@
 							primary : "crossIcon"
 						}
 					}).on("click", function(){
-						Yasgui.settings.trackUsage = "no";
+						Yasgui.logger.track("consent", "no");
+						Yasgui.settings.logging.enabled = "no";
 						Yasgui.settings.store();
 						dialog.close();
 				}))

@@ -26,9 +26,12 @@
 			 * Our default config: interesting, as this one contains the 'allowedFeatures' setting, 
 			 * which might have changed after the previous user session. 
 			 */
-			//Overwrite settings from 1 with 2.
+			//Overwrite settings from 1 with 2. We should be able to safely overwrite -every- prop from our clientsettings.
+			//all user-chaneable props are not stored under the same key as found in the clientsettings (that's why we have the 'defaults' object in the clientsettings obj)
 			settings = $.extend(true, {}, settings, clientSettings);
-			//Add 'defaultSettings' to root settings object (except the default tab settings, as we use this manually later on in this class)
+			
+			//Add 'defaultSettings' to root settings object (except the default tab settings, as we use this manually later on)
+			//This will make sure that every 'default setting' which is not instantiated in our settings object, gets their initial default value
 			var defaultSettings = $.extend(true, {}, settings.defaultSettings);//make clone. we don't want to remove tabSettings from original object
 			deleteKey(defaultSettings, "tabSettings");
 			settings = $.extend(true, {}, defaultSettings, settings);

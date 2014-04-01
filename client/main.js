@@ -11,6 +11,7 @@ Yasgui.prefixes = new Yasgui.objs.Prefixes();
 Yasgui.endpoints = new Yasgui.objs.Endpoints();
 Session.set("queryStatus", "query");//on page load, reset our query status (there can't be any running queries anyway)
 
+Yasgui.logger = new Yasgui.objs.Logger();
 //Register handlers
 window.onresize = function() {
    Yasgui.tabs.positionElements();
@@ -19,10 +20,11 @@ window.onresize = function() {
 
 
 $( document ).ready(function() {
-	if (Yasgui.settings.trackUsage == null || Yasgui.settings.trackUsage == undefined) {
+	if (Yasgui.settings.logging && !Yasgui.settings.logging.enabled) {
 		Yasgui.widgets.ConsentWindow();
 	}
 });
+
 
 
 //Meteor.startup(function() {
