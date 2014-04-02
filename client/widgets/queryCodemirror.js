@@ -124,7 +124,7 @@
 			
 		};
 		var addHoverComponents = function() {
-			var hoverDiv = $("<div class='queryHoverComponents'></div>").zIndex(Yasgui.constants.zIndexes.tabHeader).appendTo(parent);
+			var hoverDiv = $("<div class='queryHoverComponents'></div>").appendTo(parent);
 			
 			Yasgui.widgets.BookmarkQuery(hoverDiv, tabSettings);
 			Yasgui.widgets.ShareQuery(hoverDiv, tabSettings);
