@@ -122,7 +122,7 @@
 		};
 		
 		var query = function(tabSettings) {
-			var loggingEnabled = Yasgui.logger.isQueryLoggingEnabled();
+			var loggingEnabled = Yasgui.logger.queryLoggingEnabled();
 			var callback = function(error, result) {
 				if (executionId in executedQueries) {
 					var startTime = executedQueries[executionId];
@@ -202,7 +202,9 @@
 //			console.log(options);
 			
 			try {
-				if (corsEnabled[endpoint]) {
+				if (corsEnabled[endpoint] && !$.isEmptyObject(tabSettings.headers)) {
+					//execute from client when endpoint is CORS enabled, AND when no custom headers are set 
+					//(the latter is important, as some endpoints (e.g.) enforce the Access-Control-Request-Header check, which gets checked on cross domain calls (but not when executed via the server!)
 					HTTP.call(method, endpoint, options, callback);
 				} else {
 					Meteor.call("query", method, endpoint, options, callback);
