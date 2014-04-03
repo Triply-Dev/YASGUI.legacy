@@ -25,9 +25,11 @@ var QueryHeader = function(parent, tabSettings) {
 	var positionElement = function(){
 		var extraOffset = 12; //need to adjust to overflow of query icon
 		//position header itself
-		queryHeader.css("top", ( $("#tabs").outerHeight(true) + extraOffset) + "px");
+		//queryHeader.css("top", ( $("#tabs").outerHeight(true) + extraOffset) + "px");
+		//queryHeader.css("top", extraOffset + "px");
 		//redraw background div, otherwise the query content will appear under our query header
-		$("#queryHeaderBackground").height($("#tabs").outerHeight(true) + extraOffset + queryHeader.outerHeight(true));
+//		console.log(extraOffset + queryHeader.outerHeight(true));
+		$("#queryHeaderBackground").height( extraOffset + queryHeader.outerHeight(true) +  $("#tabs").outerHeight(true));
 	};
 	init();
 	

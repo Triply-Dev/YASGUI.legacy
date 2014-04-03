@@ -4,3 +4,7 @@
 	right: 5px;
 }
 
+.codemirrorContainer {
+	position:relative;
+	width: 100%;
+}

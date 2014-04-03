@@ -4,6 +4,7 @@
 	
 	
 	this.Yasgui.widgets.QueryCodemirror = function(parent, tabSettings, onChangeCallback) {
+		var container = $("<div class='codemirrorContainer'></div>").appendTo(parent);
 		var codemirror = null;
 		var prevQueryValid = false;
 		var clearError = null;
@@ -74,7 +75,7 @@
 		};
 		var initCodemirror = function() {
 			
-			codemirror = CodeMirror(parent.get(0), {
+			codemirror = CodeMirror(container.get(0), {
 				mode : "sparql11",
 				theme: "yasgui",
 				value: tabSettings.query,
@@ -124,7 +125,7 @@
 			
 		};
 		var addHoverComponents = function() {
-			var hoverDiv = $("<div class='queryHoverComponents'></div>").appendTo(parent);
+			var hoverDiv = $("<div class='queryHoverComponents'></div>").appendTo(container);
 			
 			Yasgui.widgets.BookmarkQuery(hoverDiv, tabSettings);
 			Yasgui.widgets.ShareQuery(hoverDiv, tabSettings);

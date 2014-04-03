@@ -14,23 +14,26 @@ var TabContent = function(tabSettings) {
 		
 	};
 	var mainTabContent = $("#" + tabSettings.id);
-	
+	var fixedTabContent = $("<div class='fixedTabContent'></div>").appendTo(mainTabContent);
 	//fixed
-	var queryHeader = new Yasgui.objs.QueryHeader(mainTabContent, tabSettings);
-	//this div is scrollable. the query header is fixed
+	var queryHeader = new Yasgui.objs.QueryHeader(fixedTabContent, tabSettings);
+	
+	
+	var codemirror = new Yasgui.widgets.QueryCodemirror(fixedTabContent, tabSettings, codemirrorChangeCallback);
+	
+	//this div is scrollable. the query header and 	query text areay is fixed
 	var scrollableSubContent = $("<div class='scrollableTabContent'></div>");
 	mainTabContent.append(scrollableSubContent);
-	
-	var codemirror = new Yasgui.widgets.QueryCodemirror(scrollableSubContent, tabSettings, codemirrorChangeCallback);
 	var results = new Yasgui.objs.QueryResults(scrollableSubContent, tabSettings);
-	console.log(tabSettings.results);
 	if (tabSettings.results) results.drawContent(tabSettings.results);
 	codemirrorChangeCallback(); //init query types
 	
 	
 	var positionElements = function() {
+		fixedTabContent.css("top", ($("#tabs").outerHeight(true) + 12 ) + "px");
 		queryHeader.positionElement();
-		scrollableSubContent.css("margin-top", ($("#tabs").outerHeight(true) + 12 + queryHeader.get().outerHeight(true)) + "px"); 
+//		console.log(mainTabContent.find(".CodeMirror").outerHeight(true));
+		scrollableSubContent.css("margin-top", ($("#tabs").outerHeight(true) + 12 + fixedTabContent.outerHeight(true)) + "px"); 
 	};
 	positionElements();
 	return {

@@ -1,6 +1,5 @@
 
 .queryHeader {
-	position:fixed;
 	width: 100%;
 	background: white;
 	z-index: 10;
@@ -14,14 +13,12 @@
 	margin-left: 4px;
 	height: 27px;
 	position: relative;
-	
 }
 
 .queryHeader li.rightAlignQueryHeader  {
 	float:right;
 	margin-left: 4px;
 	position: relative;
-	
 }
 
 #queryHeaderBackground {
